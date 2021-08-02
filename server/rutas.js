@@ -1,8 +1,15 @@
+const dbManager = require('./db/dbManager');
 
-module.exports = function(app){
+module.exports = function(app, DB){
 	
+	//ruta raiz
 	app.get('/', function(req, res) {
-		res.render("index");
+		
+		//muestra
+		dbManager.queryDB(DB, "boxs", "", {bump: -1}, function(response){
+			res.send(response);
+		});
+		
 	});
 	
 }

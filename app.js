@@ -1,9 +1,10 @@
 const express = require("express");
 const http = require("http");
 const path = require("path");
+const dbManager = require('./server/db/dbManager');
+const sConfig = require('./server/serverConfig');
 
 /* SETUP INICIAL */
-var PORT = process.env.PORT || 3000;
 var app = express();
 var server = http.createServer(app);
 
@@ -15,9 +16,14 @@ app.use('/', express.static(path.join(__dirname, 'client/static')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './client/views'));
 
-/* RUTAS */
-var rutas = require('./server/rutas')(app);
+/* BASE DE DATOS */
+dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}, function (db){
+	
+	/* RUTAS */
+	require('./server/rutas')(app, db);
+	
+});
 
 //poner server en escucha en el puerto especificado.
-server.listen(PORT);
-console.log("[Server] Puerto: " + PORT + " en escucha.");
+server.listen(sConfig.PORT);
+console.log("[Server] Puerto: " + sConfig.PORT + " en escucha.");
