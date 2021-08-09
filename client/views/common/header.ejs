@@ -26,58 +26,17 @@
 			<li class="navbarCategories pointer">
 				<div class="categorySelected" data-toggle="modal" data-target="#categoryListNavbar" data-backdrop="false"><i class="fas fa-list"></i><div class="navCategoryTitle">Categorias</div></div>
 				<div class="categoryListNavbar hide" id="categoryListNavbar">
-					<a href="/off" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/off.jpg" alt=""></div>
-						<div class="categoryTitleNav">General</div>
-					</a>
-					<a href="/anm" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/anm.jpg" alt=""></div>
-						<div class="categoryTitleNav">Anime General</div>
-					</a>
-					<a href="/man" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/man.jpg" alt=""></div>
-						<div class="categoryTitleNav">Manga General</div>
-					</a>
-					<a href="/jp" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/jp.jpg" alt=""></div>
-						<div class="categoryTitleNav">Otaku</div>
-					</a>
-					<a href="/art" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/art.jpg" alt=""></div>
-						<div class="categoryTitleNav">Arte y Dibujo</div>
-					</a>
-					<a href="/3dm" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/3dm.jpg" alt=""></div>
-						<div class="categoryTitleNav">Modelado 3D</div>
-					</a>
-					<a href="/gmr" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/gmr.jpg" alt=""></div>
-						<div class="categoryTitleNav">Juegos</div>
-					</a>
-					<a href="/mus" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/mus.jpg" alt=""></div>
-						<div class="categoryTitleNav">Música</div>
-					</a>
-					<a href="/lnk" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/lnk.jpg" alt=""></div>
-						<div class="categoryTitleNav">Links y Compartidos</div>
-					</a>
-					<a href="/tec" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/tec.jpg" alt=""></div>
-						<div class="categoryTitleNav">Tecnología</div>
-					</a> 
-					<a href="/cnc" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/cnc.jpg" alt=""></div>
-						<div class="categoryTitleNav">Ciencia</div>
-					</a>					 	
-					<a href="/cix" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/cix.jpg" alt=""></div>
-						<div class="categoryTitleNav">Cine y Cultura Occidental</div>
-					</a>
-					<a href="/lit" class="categoryIndividual">
-						<div class="categoryAvatar"><img src="/cat/lit.jpg" alt=""></div>
-						<div class="categoryTitleNav">Literatura</div>
-					</a>
+				
+				<!-- cargar lista de categorias directamente de la base de datos. -->
+				<% data.categorias.forEach(function(categoria){ %>
+					<% if (categoria.type === 0){ %>
+							<a href="/<%= categoria.tid %>" class="categoryItem">
+								<div class="categoryItemIcon"><img src="/assets/<%= categoria.icon %>" alt=""></div>
+								<div class="categoryItemTitle"><%= categoria.name %></div>
+							</a>
+					<% } %>
+				<% }); %>
+				
 				</div>
 			</li>
 			
@@ -85,6 +44,8 @@
 			<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#notificationsList" data-backdrop="false">
 				<i class="fas fa-bell"><span class="menuIconCount hide" id="notify">X</span>
 					
+					<!-- cargar notificaciones directamente de la base de datos. -->
+					<!-- TODO: carga asincronica? -->
 					<% if (data.notificaciones != undefined){ %>
 						<% if (data.notificaciones.length != 0){ %>
 							<span class="menuIconCount" id="menuIconCount" data-count="<%= data.notificaciones.length %>"><%= data.notificaciones.length %></span>
@@ -95,9 +56,8 @@
 			</li>
 			
 			<li class="menuIcon tooltip-bottom mobile" id="slideMenuIcon" data-toggle="modal" data-target="#slideMenu" data-tooltip="Menu" data-backdrop="false"><i class="fas fa-bars"></i></li>
-			<li class="newVox" data-toggle="modal" data-target="#createVox" data-backdrop="false">Nuevo Tema</li>
+			<li class="newBox" data-toggle="modal" data-target="#createVox" data-backdrop="false">Nuevo Tema</li>
 		</ul>
-		
 		
 	</nav>
 </body>

@@ -93,22 +93,22 @@ nav {
     height: 50px;
     position: fixed;
     width: 100%;
-    z-index: 6;
+    /*z-index: 6;*/
     top: 0; 
 }
 
 body {
 	padding:50px 0px 0px;
 	margin: 0px;
+    font-family: Lato,sans-serif;
 	background-color: var(--base-background);
 	color: var(--box-text);
 }
 
 .logo {
     display: flex;
-    align-items: baseline; 
     cursor: pointer;
-    font-family: 'Caveat', cursive;
+    align-items: flex-end;
 	font-size: 1.4rem;
 	color: var(--logo-color);
     padding: 4px;
@@ -135,7 +135,7 @@ ul.menu {
     padding: 4px;
 }
 
-li.newVox { 
+li.newBox { 
     color: white;
     background: var(--newbox-button);
     padding: 9px;
@@ -146,12 +146,12 @@ li.newVox {
     cursor: pointer;
 }
 
-li.newVox:hover{
+li.newBox:hover{
     transition: .5s; 
 }
 
-li.newVox:hover { background: var(--newbox-button-hover); }
-li.newVox:active { background: var(--newbox-button-hover); }
+li.newBox:hover { background: var(--newbox-button-hover); }
+li.newBox:active { background: var(--newbox-button-hover); }
 
 li.menuIcon {
     padding: 10px 12px;
@@ -187,16 +187,17 @@ li.navbarCategories {
 }
 
 
-.categoryIndividual {
+.categoryItem {
     display: flex;
     align-items: center;
     padding: 8px 12px;
     font-size: 14px;
     margin-bottom: 2px;
     cursor: pointer;
+	text-decoration: none;
 }
 
-.categoryIndividual:hover {
+.categoryItem:hover {
     background: var(--menumodal-notif-hover);
 }
 
@@ -279,13 +280,23 @@ li.navbarCategories:hover {
     display: flex;
 }
 
-body {
-    margin: 0;
-    font-family: Lato,sans-serif;
-}
-
 .pointer{
     cursor: pointer;
+}
+
+.categoryItemIcon {
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.categoryItemIcon img {
+    width: 24px;
+    border-radius: 4px;
+}
+
+.categoryItemTitle {
+    color: var(--menumodal-notif-text);
 }
 
 
@@ -357,7 +368,7 @@ body {
         position: static;
     }
 
-    .navbarCategories .categoryAvatar img {width: 52px;}
+    .navbarCategories .categoryItemIcon img {width: 52px;}
 
     .navCategoryTitle{ display: none; }
 

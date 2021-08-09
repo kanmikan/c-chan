@@ -10,6 +10,8 @@ module.exports = function(app, DB){
 		
 		var uid = "bot"; //uso el usuario "bot" de la base de datos de mikanchan como muestra.
 		dbManager.mQuery(DB, models.HOME_QUERY(uid), function(result){
+			//debug
+			//console.log(result.categorias);
 			res.render("index", {data: result});
 		});
 		
