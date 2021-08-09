@@ -1,4 +1,5 @@
 const client = require('mongodb').MongoClient;
+const mdbScheme = require('./models/mdbScheme');
 const sConfig = require('../serverConfig');
 
 function connect(dbURL, config, callback){
@@ -44,7 +45,7 @@ function queryDB(DB, cname, query, sort, callback){
 }
 
 function queryAggregate(DB, cname, aggregate, callback){
-	DB.db(sConfig.DBNAME).collection("boxs").aggregate(aggregate).toArray(function(err, result){
+	DB.db(sConfig.DBNAME).collection(mdbScheme.C_BOXS).aggregate(aggregate).toArray(function(err, result){
 		if (err){
 			console.log("[Error] " + err);
 		} else {

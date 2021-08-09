@@ -12,6 +12,9 @@ var server = http.createServer(app);
 /* MIDDLEWARES */
 //carpeta donde van los archivos estaticos.
 app.use('/', express.static(path.join(__dirname, './client/static')));
+//carpeta del node.
+app.use('/node', express.static(path.join(__dirname, 'node_modules/')))
+
 
 /* VIEW ENGINE (EJS) */
 app.set('view engine', 'ejs');

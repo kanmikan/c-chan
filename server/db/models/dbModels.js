@@ -1,9 +1,11 @@
+const mdbScheme = require('./mdbScheme');
+
 function HOME_QUERY(uid){
 	return [
-		["jerarquia", {uid: uid}, ""],
-		["boxs", "", {sticky: -1, bump: -1}],
-		["notificaciones", {uid: uid}, {tiempo: -1}],
-		["categorias", "", {sticky:-1, order: -1}]
+		[mdbScheme.C_ADM, {uid: uid}, ""],
+		[mdbScheme.C_BOXS, "", {sticky: -1, bump: -1}],
+		[mdbScheme.C_NOTIF, {uid: uid}, {tiempo: -1}],
+		[mdbScheme.C_CATS, "", {sticky:-1, order: -1}]
 	];
 }
 
