@@ -1,4 +1,4 @@
-const sConfig = require('./serverConfig');
+const sConfig = require('./config/serverConfig');
 const dbManager = require('./db/dbManager');
 const mdbScheme = require('./db/models/mdbScheme');
 

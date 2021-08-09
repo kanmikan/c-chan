@@ -1,6 +1,6 @@
 const client = require('mongodb').MongoClient;
 const mdbScheme = require('./models/mdbScheme');
-const sConfig = require('../serverConfig');
+const sConfig = require('../config/serverConfig');
 
 function connect(dbURL, config, callback){
 	client.connect(dbURL, config, function (err, db){

@@ -2,8 +2,9 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const dbManager = require('./server/db/dbManager');
-const sConfig = require('./server/serverConfig');
+const sConfig = require('./server/config/serverConfig');
 const routes = require('./server/routes');
+const sesionManager = require('./server/sesion/sesionManager');
 
 /* SETUP INICIAL */
 var app = express();
@@ -15,13 +16,15 @@ app.use('/', express.static(path.join(__dirname, './client/static')));
 //carpeta del node.
 app.use('/node', express.static(path.join(__dirname, 'node_modules/')))
 
-
 /* VIEW ENGINE (EJS) */
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './client/views'));
 
 /* BASE DE DATOS */
 dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}, function (db){
+	
+	/* SESION */
+	sesionManager.create(app);
 	
 	/* RUTAS */
 	routes(app, db);
