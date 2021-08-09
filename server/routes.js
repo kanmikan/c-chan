@@ -1,7 +1,7 @@
 const dbManager = require('./db/dbManager');
 const models = require('./db/models/dbModels');
 const api = require('./api');
-
+const renderConfig = require('./renderConfig');
 
 module.exports = function(app, DB){
 	
@@ -10,9 +10,7 @@ module.exports = function(app, DB){
 		
 		var uid = "bot"; //uso el usuario "bot" de la base de datos de mikanchan como muestra.
 		dbManager.mQuery(DB, models.HOME_QUERY(uid), function(result){
-			//debug
-			//console.log(result.categorias);
-			res.render("index", {data: result});
+			res.render("index", {data: result, renderConfig: renderConfig});
 		});
 		
 	});
