@@ -1,0 +1,370 @@
+:root {
+	--logoimg: url(/assets/logo.png);
+    --base-background1: #e6e6e6;
+    --base-background2: #e0e0e0;
+    --base-background3: #ececec;
+    --navbar-background: #fbfbfb;
+    --newbox-button: #2196f3;
+    --newbox-button-hover: #3fa5f7;
+    --button1: #e8850a;
+    --button1-hover: #f99519;
+    --button1b: #d07b12;
+    --button1b-hover: #f99519;
+    --comment-background: #f5f5f5;
+    --comment-background-hover: #f9f9f9;
+	--comment-background-jump: #ffffff;
+    --box-links: #549645;
+    --bar1: #f5f5f5;
+    --bar1-text: #dc3545;
+    --box-text: #0a0a0a;
+    --text-name: #4c4c4c;
+    --text-author: #5d3505;
+    --text-createdAt: #960000;
+    --text-createdAt2: #00000096;
+    --text-voxCount: #343a40;
+    --tag1: #1d6d22;
+    --box-links-hover: #216311;
+    --comment-textArea: #efefef;
+    --comment-textArea-border: #afafaf;
+    --comment-textArea-focus: white;
+    --comment-textArea-text: #0a0a0a;
+    --slidemenu-background: #fdfdfd;
+    --slidemenu-chat: #eaeaea;
+    --slidemenu-chat-hover: #c7c6c4;
+    --scrollbar-thumb: #f38537;
+    --scrollbar-thumb-hover: #d07b12;
+    --scrollbar-track: #d4d4d4;
+    --logo-color: #2196f3;
+    --navbar-icon-color: #2196f3;
+    --navbar-icon-hover: #ececec;
+    --menumodal-notif-background: #ffffff;
+    --menumodal-notif-hover: #e2e2e2;
+    --menumodal-notif-text: #961a26;
+    --menumodal-notif-text-hover: #961a26;
+    --menumodal-bordertop-color: #e2e2e2;
+    --menumodal-borderbottom-color: #dedede;
+    --slidemenu-text: #ab2121;
+    --slidemenu-text-hover: white;
+    --slidemenu-background-hover: #ff9426;
+    --slidemenu-color1: #c1934e;
+    --slidemenu-chat-text: black;
+    --box-attach-background: #dcdcdc;
+    --quote-border: #b99d6c;
+    --loadmore-background: #f5cc81;
+    --loadmore-background-hover: #ffb65c;
+    --modalbox-background: white;
+    --info-background: #fbfbfb;
+    --button2: white;
+    --button2-color: #4a4a4a;
+    --button2-border: #d1d1d1;
+    --button3: #f3f3f3;
+    --button3-color: #9c9c9c;
+    --button3-border: #eaeaea;
+    --form-textArea: white;
+    --form-textArea-border: #c1c1c1;
+    --button-close: black;
+    --button-close-hover: black;
+    --preview-background: #f9f9f9;
+    --button3-hover: #eaeaea;
+	--alert-background: #dedede;
+    --alert-border: #929292;
+    --alert-color: black;
+    --link-color: #43439e;
+    --activity-user: #05630c;
+    --tarjeta-title-background: #ffffff;
+    --tarjeta-background: #ffffff;
+    --tarjeta-border-color: #cecece;
+    --homebar-background: #ffffff;
+    --homebar-tarjeta-background: #ffffff;
+	--home-menu-background: white;
+	--home-menu-element-hover: #c3c3c3;
+	--goup: #f5f5f5;
+	--goup-hover: #ffffff;
+	--rawAttach-background: #dcdcdc;
+}
+
+/* CODIGO DE VOXEDRIP.CSS */
+/* RECICLADO TEMPORALMENTE COMO ESQUELETO BASE */
+
+nav {
+	display: flex;
+	background: var(--navbar-background);
+    box-shadow: 0 2px 3px 0 rgba(0,0,0,.2);
+    height: 50px;
+    position: fixed;
+    width: 100%;
+    z-index: 6;
+    top: 0; 
+}
+
+body {
+	padding:50px 0px 0px;
+	margin: 0px;
+	background-color: var(--base-background);
+	color: var(--box-text);
+}
+
+.logo {
+    display: flex;
+    align-items: baseline; 
+    cursor: pointer;
+    font-family: 'Caveat', cursive;
+	font-size: 1.4rem;
+	color: var(--logo-color);
+    padding: 4px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 8px;
+}
+
+.logo img{
+	width: auto;
+	max-width: 100%;
+    height: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 2px;
+	content: var(--logoimg);
+}
+
+ul.menu {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+    padding: 4px;
+}
+
+li.newVox { 
+    color: white;
+    background: var(--newbox-button);
+    padding: 9px;
+    border-radius: 4px;
+    font-family: Arial,"Lucida Grande",sans-serif;
+    font-weight: 600;
+    font-size: .8em;
+    cursor: pointer;
+}
+
+li.newVox:hover{
+    transition: .5s; 
+}
+
+li.newVox:hover { background: var(--newbox-button-hover); }
+li.newVox:active { background: var(--newbox-button-hover); }
+
+li.menuIcon {
+    padding: 10px 12px;
+    margin-right: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--navbar-icon-color);
+    display: flex;
+    align-items: center;
+}
+
+li.menuIcon:hover { background: var(--navbar-icon-hover); }
+li.menuIcon:active { background: var(--navbar-icon-hover);  }
+
+.categoryListNavbar {
+    position: absolute;
+    background: var(--menumodal-notif-background);
+    height: 20vw;
+    /*overflow: overlay;*/
+    overflow-y: scroll;
+    top: 43px;
+    width: 220px;
+    box-shadow: 0px 2px 5px 0 #6b6b6b7a;
+    left: 0px;
+}
+
+li.navbarCategories {
+    display: flex;
+    position: relative;
+    margin-right: 4px;
+    border-radius: 4px;
+    color: #545454;
+}
+
+
+.categoryIndividual {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-bottom: 2px;
+    cursor: pointer;
+}
+
+.categoryIndividual:hover {
+    background: var(--menumodal-notif-hover);
+}
+
+.categorySelected {
+    font-size: 14px;
+    padding: 10px 12px;
+    color: var(--navbar-icon-color);
+    display: flex;
+    align-items: center;
+}
+
+li.navbarCategories:hover {
+    background: var(--navbar-icon-hover);
+}
+
+.categorySelected i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.menu .search {
+    display: none;
+}
+
+.menu .mobile.closeSearch {
+    display: none;
+}
+
+.searchBox .menuIcon {
+    display: none;
+}
+
+.searchBox li.menuIcon.mobile{
+    display: none;
+}
+
+.searchBox .mobile.menuIcon.closeSearch {
+    display: flex;
+}
+.searchBox .search {
+    display: flex;
+}
+
+.hide {
+    display: none;
+}
+
+.menuIconCount {
+    background: red;
+    color: white;
+    border-radius: 4px;
+    font-size: 11px;
+    padding: 4px;
+    min-width: 14px;
+    text-align: center;
+	position: absolute;
+}
+
+[data-tooltip][class*=tooltip-bottom]:after, [data-tooltip][class*=tooltip-bottom]:before {
+    font-size: 12px;
+}
+
+[data-tooltip][class*=tooltip-bottom]:before{
+    z-index: 2;
+}
+
+[data-tooltip][class*=tooltip-bottom]:after{
+    z-index: 2;
+}
+
+.button{
+    color: white;
+    background: #256587;
+    padding: 12px;
+    border-radius: 4px;
+    font-family: Arial,"Lucida Grande",sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+}
+
+body {
+    margin: 0;
+    font-family: Lato,sans-serif;
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+
+/* CODIGO DE VOXEDRIP.CSS RESPONSIVO */
+@media only screen and (max-width: 1000px) {
+
+    .slideMenu{
+        width: 40vw;
+    }
+
+}
+
+/* Celulares */
+@media only screen and (max-width: 600px) {
+	.modalBox {
+        min-width: auto;
+        width: calc(100% - 12px) !important;
+    }
+	
+	.onlyMobile {
+        display: flex !important;
+    }
+
+    .alertBox {
+        max-width: calc(100vw - 32px);
+    }
+	
+	[data-tooltip][class*=tooltip-bottom]:before{
+        display:none;
+    }
+    [data-tooltip][class*=tooltip-bottom]:after{
+        display:none;
+    }
+	
+	nav {
+        min-height: 50px;
+    }
+	
+	.menuModal {
+        left: 0;
+        width: 100%;
+        max-height: 100vh;
+        height: calc(100vh - 52px);
+    }
+	
+	.newVox{
+        display: none;
+    }
+
+    li.menuIcon{
+        display: none;
+    }
+	
+	li.menuIcon.mobile{
+		display: flex;
+	}
+	
+	.bottonContextual{
+        display: flex;
+    }
+	
+	.slideMenu{
+        width: 100%;
+    }
+	
+	.categoryListNavbar {top: 50px;left: 0;width: 100%;height: calc(100vh - 50px);}
+
+    li.navbarCategories {
+        position: static;
+    }
+
+    .navbarCategories .categoryAvatar img {width: 52px;}
+
+    .navCategoryTitle{ display: none; }
+
+    .categorySelected i {
+        margin: 0px;
+    }
+	
+}
+
+/* FIN DEL CODIGO DE VOXEDRIP.CSS */

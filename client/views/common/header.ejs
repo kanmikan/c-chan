@@ -1,0 +1,103 @@
+<head>
+	<%- include('./head'); %>
+	<!-- Aca iran los estilos css cargados en el header -->
+	<link rel="stylesheet" href="/node/bootstrap/dist/cssbootstrap.min.css">
+	<link rel="stylesheet" href="/css/cchan.css">
+	<link rel="stylesheet" href="/css/fontawesome.css">
+	
+	<!-- Fuente que utilizaba voxed -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap" async defer>
+
+</head>
+<body>
+	<!-- Aca iran los js de primera carga -->
+	<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
+	<script src="/node/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+	
+	<!-- inicio del navbar -->
+	<nav>
+		<div class="logo"><img/><span>Cchan</span></div>
+		<ul class="menu unselect" id="navbarMenu">
+			<!-- boton de comunidades, desactivable -->
+			<li class="navbarCategories pointer">
+				<div class="categorySelected" id="navbarComu"><i class="fas fa-user-friends"></i><div class="navCategoryTitle">Comunidades</div></div>
+			</li>
+			
+			<li class="navbarCategories pointer">
+				<div class="categorySelected" data-toggle="modal" data-target="#categoryListNavbar" data-backdrop="false"><i class="fas fa-list"></i><div class="navCategoryTitle">Categorias</div></div>
+				<div class="categoryListNavbar hide" id="categoryListNavbar">
+					<a href="/off" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/off.jpg" alt=""></div>
+						<div class="categoryTitleNav">General</div>
+					</a>
+					<a href="/anm" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/anm.jpg" alt=""></div>
+						<div class="categoryTitleNav">Anime General</div>
+					</a>
+					<a href="/man" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/man.jpg" alt=""></div>
+						<div class="categoryTitleNav">Manga General</div>
+					</a>
+					<a href="/jp" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/jp.jpg" alt=""></div>
+						<div class="categoryTitleNav">Otaku</div>
+					</a>
+					<a href="/art" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/art.jpg" alt=""></div>
+						<div class="categoryTitleNav">Arte y Dibujo</div>
+					</a>
+					<a href="/3dm" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/3dm.jpg" alt=""></div>
+						<div class="categoryTitleNav">Modelado 3D</div>
+					</a>
+					<a href="/gmr" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/gmr.jpg" alt=""></div>
+						<div class="categoryTitleNav">Juegos</div>
+					</a>
+					<a href="/mus" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/mus.jpg" alt=""></div>
+						<div class="categoryTitleNav">Música</div>
+					</a>
+					<a href="/lnk" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/lnk.jpg" alt=""></div>
+						<div class="categoryTitleNav">Links y Compartidos</div>
+					</a>
+					<a href="/tec" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/tec.jpg" alt=""></div>
+						<div class="categoryTitleNav">Tecnología</div>
+					</a> 
+					<a href="/cnc" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/cnc.jpg" alt=""></div>
+						<div class="categoryTitleNav">Ciencia</div>
+					</a>					 	
+					<a href="/cix" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/cix.jpg" alt=""></div>
+						<div class="categoryTitleNav">Cine y Cultura Occidental</div>
+					</a>
+					<a href="/lit" class="categoryIndividual">
+						<div class="categoryAvatar"><img src="/cat/lit.jpg" alt=""></div>
+						<div class="categoryTitleNav">Literatura</div>
+					</a>
+				</div>
+			</li>
+			
+			<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#searchModal" data-backdrop="false"><i class="fas fa-search"></i></li>
+			<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#notificationsList" data-backdrop="false">
+				<i class="fas fa-bell"><span class="menuIconCount hide" id="notify">X</span>
+					
+					<% if (data.notificaciones != undefined){ %>
+						<% if (data.notificaciones.length != 0){ %>
+							<span class="menuIconCount" id="menuIconCount" data-count="<%= data.notificaciones.length %>"><%= data.notificaciones.length %></span>
+						<% } %>
+					<% } %>
+					
+				</i>
+			</li>
+			
+			<li class="menuIcon tooltip-bottom mobile" id="slideMenuIcon" data-toggle="modal" data-target="#slideMenu" data-tooltip="Menu" data-backdrop="false"><i class="fas fa-bars"></i></li>
+			<li class="newVox" data-toggle="modal" data-target="#createVox" data-backdrop="false">Nuevo Tema</li>
+		</ul>
+		
+		
+	</nav>
+</body>
