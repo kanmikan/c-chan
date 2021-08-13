@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const path = require("path");
+const eta = require("eta");
 const dbManager = require('./server/db/dbManager');
 const sConfig = require('./server/config/serverConfig');
 const routes = require('./server/routes');
@@ -16,8 +17,10 @@ app.use('/', express.static(path.join(__dirname, './client/static')));
 //carpeta del node.
 app.use('/node', express.static(path.join(__dirname, 'node_modules/')))
 
-/* VIEW ENGINE (EJS) */
-app.set('view engine', 'ejs');
+/* VIEW ENGINE (ETA) */
+app.engine("eta", eta.renderFile);
+app.set("view engine", "eta");
+//app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './client/views'));
 
 /* BASE DE DATOS */

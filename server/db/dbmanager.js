@@ -13,23 +13,20 @@ function connect(dbURL, config, callback){
 	});
 }
 
-function mQuery(DB, clist, callback){
-	var obj = [];
-	var resout = {};
-	
-	for (var i=0; i<clist.length; i++){
-		let clt = clist[i];
-		
-		//prueba
-		DB.db(sConfig.DBNAME).collection(clt[0]).find(clt[1]).sort(clt[2]).toArray(function (err, result){
-			obj.push(1);
-			resout[clt[0]] = result;
-			if (obj.length === clist.length){
-				callback(resout);
+function mQuery(DB, qlist, callback){
+	var rout = {};
+	let count = 0;
+	qlist.forEach(function(query){
+		DB.db(sConfig.DBNAME).collection(query[0]).find(query[1]).sort(query[2]).limit(query[3]).toArray(
+		function (err, result){
+			rout[query[0]] = result;
+			if (count === (qlist.length-1)){
+				callback(rout);
 			}
+			count++;
 		});
-		
-	}
+	});
+	
 }
 
 function queryDB(DB, cname, query, sort, callback){

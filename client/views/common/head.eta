@@ -8,3 +8,11 @@
 <title>CChan</title>
 <link rel="shortcut icon" href="/favicon.ico?v=4.1.7">
 
+<!-- Aca iran los estilos css cargados en el header -->
+<link rel="stylesheet" href="/css/cchan.css">
+<link rel="stylesheet" href="/css/fontawesome.css">
+	
+<!-- Fuente que utilizaba voxed -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap" async defer>
+
+<%~ includeFile('./common/header', it); %>

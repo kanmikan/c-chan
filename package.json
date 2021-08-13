@@ -6,7 +6,7 @@
   "dependencies": {
     "bootstrap": "^3.4.1",
     "connect-mongo": "^4.4.1",
-    "ejs": "^3.1.6",
+    "eta": "^1.12.3",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "jquery": "^3.6.0",
