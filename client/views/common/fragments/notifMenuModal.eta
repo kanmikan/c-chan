@@ -1,0 +1,29 @@
+<div class="menuModal notifications hide" id="notificationsList">
+	<ul>
+		<% if (it.data.notificaciones == undefined || it.data.notificaciones.length == 0){ %>
+			<li class="noNotification ">No hay notificaciones</li>
+		<% } else { %>
+			<% it.data.notificaciones.forEach(function(noti) { %>
+				<% if (noti.tag) { %>
+					<li class="Notification " onclick="location.href='/ntf/<%= noti.bid %>/<%= noti.cid %>'">
+					<div class="avatar"><img src="<%= noti.bimg %>"></div>
+					<% if (noti.type != undefined && noti.type === "den") { %>
+						<div class="report"><span class="report-title">Alerta: </span></br><span><%= noti.btitle %></span></div>
+					<% } else { %>
+						<div class="report"><span class="report-title">Te respondieron en: </span></br><span><%= noti.btitle %></span></div>
+					<% } %>
+					</li>
+				<% } else { %>
+					<li class="Notification " onclick="location.href='/ntf/<%= noti.bid %>/<%= noti.cid %>'">
+					<div class="avatar"><img src="<%= noti.bimg %>"></div>
+					<% if (noti.type != undefined && noti.type === "den") { %>
+						<div class="report"><span class="report-title">Alerta: </span></br><span><%= noti.btitle %></span></div>
+					<% } else { %>
+						<div class="report"><span class="report-title">Comentaron en tu tema: </span></br><span><%= noti.btitle %></span></div>
+					<% } %>
+					</li>
+				<% } %>	
+			<% }); %>
+		<% }%>			
+	</ul>
+</div>

@@ -1,0 +1,11 @@
+<div class="categoryListNavbar hide" id="categoryListNavbar">
+	<!-- cargar lista de categorias directamente de la base de datos. -->
+	<% it.data.categorias.forEach(function(categoria){ %>
+		<% if (categoria.type === 0){ %>
+			<a href="/<%= categoria.tid %>" class="categoryItem">
+				<div class="categoryItemIcon"><img src="/assets/<%= categoria.icon %>" alt=""></div>
+				<div class="categoryItemTitle"><%= categoria.name %></div>
+			</a>
+		<% } %>
+	<% }); %>			
+</div>

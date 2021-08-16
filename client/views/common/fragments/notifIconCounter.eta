@@ -1,0 +1,7 @@
+<!-- cargar notificaciones directamente de la base de datos. -->
+<!-- TODO: carga asincronica? -->
+<% if (it.data.notificaciones != undefined){ %>
+	<% if (it.data.notificaciones.length != 0){ %>
+		<span class="menuIconCount" id="menuIconCount" data-count="<%= it.data.notificaciones.length %>"><%= it.data.notificaciones.length %></span>
+	<% } %>
+<% } %>	

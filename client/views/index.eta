@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
 <%~ includeFile('./common/head', it); %>
+<!-- El navbar se renderiza primero -->
+<%~ includeFile('./common/header', it); %>
 </head>
 <body>
-		<div class="boxList" id="boxList">
-		
+	<div class="boxList" id="boxList">
 		<% 
 			it.data.boxs.forEach(function(box){
 				renderBox(box);
 			});
 				
 		%>
-			
-		</div>
-				
-	</body>
+	</div>		
+</body>
 <%~ includeFile('./common/footer', it); %>
 </html>
+
 
 <!-- FRAGMENTOS DE HTML -->
 <!-- FUNCION: renderiza un elemento box con los datos especificados. -->
@@ -27,7 +27,7 @@
 		<div class="voxHeader">
 			<div class="tagList">
 				<div class="tag categoryTag">
-					<img src="" style="width: 20px"></img><%= box.cat %>
+					<img src="assets/<%= getCategory(box.cat).icon %>" style="width: 20px;vertical-align: middle;"><%= box.cat.toUpperCase() %></img>
 				</div>
 				<% if (box.sticky > 0){ %>
 					<div class="tag sticky">Sticky</div>
@@ -86,3 +86,10 @@
 	</a>
 	<% } %>
 <% } %>
+
+<%
+	/* FUNCIONES UTILITARIAS */
+	function getCategory(tid){
+		return it.data.categorias.filter( item => item.tid === tid)[0];
+	}
+%>

@@ -1,0 +1,60 @@
+<form class="modalBox createVox show" id="createVox" enctype="multipart/form-data" action="/new" method="POST" aria-modal="true" role="dialog">
+	<input id="nlink" name="link" type="hidden" value="">
+	<input id="nvideo" name="video" type="hidden" value="false">
+	<input id="nvideourl" name="videourl" type="hidden" value="">
+	<input id="ndata" name="data" type="hidden" value="">
+	<input type="hidden" id="nimgData" name="imgData" value="">
+	<div class="createVox-container">
+		<div class="createVox-titlebar">
+			<button type="buttonPress" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+		</div>
+		<div class="createVox-panelcontainer">
+			<div class="createVox-panel1">
+				<select name="cat" style="width: 90%">
+					<option value="" selected="selected" disabled="disabled">Elige una categoría o comunidad</option>
+					<% it.data.categorias.forEach(function(categoria){ %>
+						<option value="<%= categoria.tid %>"><%= categoria.name %></option>
+					<% }); %>
+				</select>
+				<input name="title" class="field" type="text" placeholder="Titulo" maxlength="120">
+				<textarea name="content" class="newVoxContent" id="voxTextarea" maxlength="5000" placeholder="Escribe el contenido del tema..."></textarea>
+				<div class="subtitle pointer" data-toggle="modal" data-target="#polls" data-backdrop="false">
+					<span class="subtitleText"><i class="fas fa-poll"></i>Encuesta</span>
+					<span class="subtitleToggle"><i class="fas fa-plus"></i></span>
+				</div>
+				<div class="polls hide" id="polls">
+					<input type="text" name="pollOne" maxlength="50" placeholder="Opcion 1">
+					<input type="text" name="pollTwo" maxlength="50" placeholder="Opcion 2">
+				</div>
+				
+				<div class="subtitle pointer" id="toggleanime" data-toggle="modal" data-target="#anime" data-backdrop="false">
+					<span class="subtitleText"><i class="fas fa-film"></i>Anime/Manga</span>
+					<span class="subtitleToggle"><i class="fas fa-plus"></i></span>
+				</div>
+				<div class="polls hide" id="anime">
+					<input type="text" name="anime" maxlength="50" placeholder="Titulo del anime/manga">
+				</div>
+				
+			</div>
+			<div class="createVox-panel2">
+			<div class="createVox-panel2a">
+				<div class="preview previewb" id="previewInputVox">
+					<img id="nimgpreview" src="/dragdrop.png" alt=""> 
+				</div>
+			</div>
+			<div class="createVox-panel2b">
+				<div class="selectAttach" id="voxAttachs">
+					<div id="uploadButtonPost" class="uploadFromLocal tooltip-bottom" onclick="document.getElementById('bfile').click();" data-tooltip="Subir archivo"><i class="fas fa-upload"></i></div>
+					
+					<div class="uploadFromLink tooltip-bottom" data-tooltip="Subir via link" data-toggle="modal" data-target="#nlinkModal" data-backdrop="false"><i class="fas fa-link"></i></div>	
+					
+					<input name="file" type="file" id="bfile" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput" data-preview="previewInputComment">
+				</div>
+				<button class="buttonPress buttonPressv2" id="newVox" type="submit">
+					<i class="fas fa-circle-notch fa-spin"></i><b id="bupp"></b><span>Iniciar Tema</span> 
+				</button>
+			</div>
+			</div>
+		</div>
+		</div>
+</form>

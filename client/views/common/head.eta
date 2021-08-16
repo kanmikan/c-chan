@@ -14,5 +14,3 @@
 	
 <!-- Fuente que utilizaba voxed -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap" async defer>
-
-<%~ includeFile('./common/header', it); %>
