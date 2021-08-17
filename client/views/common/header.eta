@@ -5,7 +5,7 @@
 
 <!-- inicio del navbar -->
 <nav>
-	<div class="logo"><img/><span>Cchan</span></div>
+	<a href="/" class="logo"><img/><span>Cchan</span></a>
 	<ul class="menu unselect" id="navbarMenu">
 	
 		<% if (it.renderConfig.ENABLE_COMMUNITIES){ %>

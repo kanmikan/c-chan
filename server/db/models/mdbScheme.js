@@ -5,5 +5,7 @@ module.exports = {
 	C_COMS: "comentarios",
 	C_ADM: "jerarquia",
 	C_NOTIF: "notificaciones",
-	C_CATS : "categorias"
+	C_CATS : "categorias",
+	C_COMS : "comentarios",
+	C_ENC : "encuestas"
 }

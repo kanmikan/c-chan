@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en">
+<head>
+<%~ includeFile('./common/head', it); %>
+</head>
+<%~ includeFile('./common/header', it); %>
+<body>
+	<%~ JSON.stringify(it.data.comentarios[0]); %>
+</body>

@@ -18,9 +18,9 @@ app.use('/', express.static(path.join(__dirname, './client/static')));
 app.use('/node', express.static(path.join(__dirname, 'node_modules/')))
 
 /* VIEW ENGINE (ETA) */
+eta.configure({cache: true });
 app.engine("eta", eta.renderFile);
 app.set("view engine", "eta");
-//app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './client/views'));
 
 /* BASE DE DATOS */

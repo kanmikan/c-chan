@@ -11,4 +11,15 @@ function HOME_QUERY(uid){
 	];
 }
 
-module.exports = {HOME_QUERY};
+function BOX_QUERY(uid, bid){
+	return [
+		[mdbScheme.C_ADM, {uid: uid}, "", 0],
+		[mdbScheme.C_BOXS, {bid: bid}, {bump: -1}, 0],
+		[mdbScheme.C_NOTIF, {uid: uid}, {tiempo: -1}, 0],
+		[mdbScheme.C_CATS, "", {sticky: -1, order: -1}, 0],
+		[mdbScheme.C_COMS, {bid: bid}, {tiempo: -1}, 0],
+		[mdbScheme.C_ENC, {bid: bid, uid: uid}, "", 0]
+	];
+}
+
+module.exports = {HOME_QUERY, BOX_QUERY};

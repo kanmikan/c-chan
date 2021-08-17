@@ -1,7 +1,9 @@
 const dbManager = require('./db/dbManager');
 const models = require('./db/models/dbModels');
 const api = require('./api');
+const utils = require('./utils');
 const renderConfig = require('./config/renderConfig');
+const mdbScheme = require('./db/models/mdbScheme');
 
 module.exports = function(app, DB){
 	
@@ -11,15 +13,65 @@ module.exports = function(app, DB){
 		
 		dbManager.mQuery(DB, models.HOME_QUERY(uid), function(result){
 			res.render("index", {
-				data: result, 
+				utils: utils,
 				renderConfig: renderConfig,
-				sesion: req.session //envio la sesion al render
+				sesion: req.session,
+				data: result
 			});
 		});
 
 	});
 	
+	/* RUTA DE LOS BOXS */
+	app.get('/tema/:bid', function(req, res) {
+		var uid = req.session.id;
+		var bid = req.params.bid;
+		
+		dbManager.mQuery(DB, models.BOX_QUERY(uid, bid), function(result){
+			//si existe el box, el C_BOXS tendrá datos, de lo contrario se asume que el tema no existe.
+			if (result[mdbScheme.C_BOXS][0] === undefined){
+				res.redirect("/error/1");
+			} else {
+				res.render("box", {
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session,
+					data: result
+				});
+			}
+		});
+		
+	});
+	
 	/* RUTAS DEL API */
 	api(app, DB);
+	
+	/* CATEGORIAS */
+	app.get('/:cat', function(req, res) {
+		var cat = req.params.cat;
+		//el server hace un pequeño request de la lista de categorias, si existe accede a ella.
+		dbManager.queryDB(DB, mdbScheme.C_CATS, {tid: cat}, "", function(result){
+			if (result[0] === undefined){
+				res.redirect("/error/2");
+			} else {
+				//si existe la categoria, cargar los boxs que pertenezcan a ella.
+				//TODO
+				res.send("CATEGORIA: " + cat);
+				
+			}
+		});
+	});
+	
+	/* RUTAS DE ERROR */
+	app.get('/error/:id', function(req, res) {
+		var id = req.params.id;
+		//placeholder del control de errores.
+		res.send("ERROR: " + id);
+	});
+	
+	app.get('*', function(req, res) {
+		//placeholder del control de errores.
+		res.send("PAGINA NO ENCONTRADA");
+	});
 	
 }
