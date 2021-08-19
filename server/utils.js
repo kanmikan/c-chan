@@ -1,6 +1,11 @@
 /* FUNCIONES UTILITARIAS DE USO EN EL SERVER Y EN EL RENDER */
 function getCategoryData(categorias, tid){
+	if (categorias[0] === undefined){return {icon: "/assets/logo.png"}}
 	return categorias.filter( item => item.tid === tid)[0];
+}
+
+function filterComMedia(comments){
+	return comments.filter( item => item.img === true);
 }
 
 function getCatShow(categoria){
@@ -9,4 +14,39 @@ function getCatShow(categoria){
 	return categoria.toUpperCase();
 }
 
-module.exports = {getCategoryData, getCatShow};
+function timeSince(timestamp) {
+	var now = new Date(); 
+	var secondsPast = (now.getTime() - timestamp) / 1000;
+	
+	if (secondsPast < 60) {
+		return parseInt(secondsPast) + 's';
+	} else if (secondsPast < 3600) {
+		return parseInt(secondsPast / 60) + 'm';
+	} else if (secondsPast < 86400) {
+		return parseInt(secondsPast / 3600) + 'h';
+	} else if (secondsPast < 2678400) {
+		return parseInt(secondsPast / 86400) + 'd';
+	} else if (secondsPast <= 32140800) {
+		return parseInt(secondsPast / 2678400) + 'ms';
+	} else if (secondsPast > 32140800) {
+		return parseInt(secondsPast / 32140800) + 'a';
+	}	
+}
+
+function formatBytes(a,b=2){
+	if (0===a) return "0 Bytes";
+	const c=0>b?0:b,d=Math.floor(Math.log(a)/Math.log(1024));
+	return parseFloat((a/Math.pow(1024,d)).toFixed(c))+" "+["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"][d];
+}
+		
+
+function getPollPercent(poll1, poll2){
+	var total = poll1+poll2;
+	if (total === 0) return ["",""];
+	//sacar porcentaje de diferencia segun cantidad de votos
+	var per = (poll1/total) * 100;
+	var per2 = (poll2/total) * 100;
+	return [Math.round(per) + "%", Math.round(per2) + "%"];
+} 
+
+module.exports = {getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent};

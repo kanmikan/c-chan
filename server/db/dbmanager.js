@@ -13,6 +13,7 @@ function connect(dbURL, config, callback){
 	});
 }
 
+/* CONSULTAS A LA DB */
 function mQuery(DB, qlist, callback){
 	var rout = {};
 	let count = 0;
@@ -26,7 +27,6 @@ function mQuery(DB, qlist, callback){
 			count++;
 		});
 	});
-	
 }
 
 function queryDB(DB, cname, query, sort, callback){
@@ -42,7 +42,7 @@ function queryDB(DB, cname, query, sort, callback){
 }
 
 function queryAggregate(DB, cname, aggregate, callback){
-	DB.db(sConfig.DBNAME).collection(mdbScheme.C_BOXS).aggregate(aggregate).toArray(function(err, result){
+	DB.db(sConfig.DBNAME).collection(cname).aggregate(aggregate).toArray(function(err, result){
 		if (err){
 			console.log("[Error] " + err);
 		} else {
@@ -51,4 +51,17 @@ function queryAggregate(DB, cname, aggregate, callback){
 	});
 }
 
-module.exports = {connect, queryDB, mQuery, queryAggregate};
+/* INSERCION DE DATOS A LA DB */
+function insertDB(DB, cname, object, callback){
+	DB.db(sConfig.DBNAME).collection(cname).insertOne(object, function(err, result){
+		callback(result);
+	});
+}
+
+function updateDBAll(DB, cname, criterio, valor, callback){
+	DB.db(sConfig.DBNAME).collection(cname).updateMany(criterio, {$set: valor}, function(err, result){
+		callback(result);
+	});
+}
+
+module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll};

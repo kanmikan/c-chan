@@ -2,8 +2,7 @@
 logs
 *.log
 npm-debug.log*
-datos_del_db.txt
-qovery.exe
+CODEDUMP.txt
 *.lnk
 
 # Runtime data

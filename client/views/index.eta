@@ -21,36 +21,40 @@
 <!-- FRAGMENTOS DE HTML -->
 <% function renderBox(box) { %>
 	<% if (box != undefined) { %>
-		<a class="box" id="<%~ box.bid %>" href="/tema/<%~ box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%~ box.img %>); text-decoration: none; background-position: top;">
+		<a class="box" id="<%~ box.bid %>" href="/tema/<%~ box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%~ box.img.preview %>); text-decoration: none; background-position: top;">
 		<div class="voxHeader">
 			<div class="tagList">
 				<div class="tag categoryTag">
 					<img src="<%~ it.utils.getCategoryData(it.data.categorias, box.cat).icon %>" style="width: 20px;vertical-align: middle;"><%~ it.utils.getCatShow(box.cat) %></img>
 				</div>
-				
-				<% if (box.sticky > 0){ %>
+				<!-- tag sticky global -->
+				<% if (box.flag.includes("sticky")){ %>
 					<div class="tag sticky">Sticky</div>
 				<% } %>
-				<% if (box.csticky != undefined && box.csticky > 0){ %>
+				<!-- tag sticky local -->
+				<% if (box.flag.includes("csticky")){ %>
 					<div class="tagInvisible csticky"><div class="tagWrapperTransparent"></div><i class="fas fa-thumbtack"></i></div>
 				<% } %>
-				<% if (box.video != undefined && box.video){ %>
+				<!-- tag video -->
+				<% if (box.type.includes("video")){ %>
 					<div class="tagInvisible ytb"><div class="tagWrapper"></div><i class="fab fa-youtube"></i></div>
 				<% } %>
-				<% if (box.poll != undefined && box.poll){ %>
-					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>
-				<% } %>
-				<% if (box.flag != undefined && box.flag === "rss"){ %>
-					<div class="tagInvisible rss"><div class="tagWrapperTransparent"></div><i class="fas fa-rss"></i></div>
-				<% } %>
-				<% if (box.flag != undefined && box.flag === 1){ %>
+				<!-- tag dados -->
+				<% if (box.type.includes("dice")){ %>
 					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>
 				<% } %>
-				
+				<!-- tag encuesta -->
+				<% if (box.type.includes("poll")){ %>
+					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>
+				<% } %>
+				<!-- tag rss -->
+				<% if (box.flag.includes("rss")){ %>
+					<div class="tagInvisible rss"><div class="tagWrapperTransparent"></div><i class="fas fa-rss"></i></div>
+				<% } %>
 			</div>
 			<div class="voxComments textShadon">
 				<i class="fas fa-comment"></i>
-				<span class="countComments"><%~ box.comments %></span>
+				<span class="countComments"><%~ box.content.comments %></span>
 			</div>
 			<div class="voxAction textShadon">
 				<div class="actionBotton" data-voxaction="<%~ box.bid %>">
@@ -59,26 +63,18 @@
 			</div>
 		</div>
 		
-		<% if (box.data != undefined && box.data.anime != undefined && box.data.anime != ""){ %>
-			<h5 class="animetitle textShadon"><%~ box.data.anime %></h5>
+		<% if (box.content.extra != undefined && box.content.extra.title2 != undefined){ %>
+			<h5 class="animetitle textShadon"><%~ box.content.extra.title2 %></h5>
 		<% } %>
 		
-		<h4 class="title textShadon"><%~ box.title %></h4>
+		<h4 class="title textShadon"><%~ box.content.title %></h4>
 		<div class="over"></div>
 		<div class="voxActions unselect">
 			<div class="voxActionBotton">
-				<% if (box.cat != "hide") { %>
-					<div class="actionText" data-act="hide" data-contentid="<%~ box.bid %>">Ocultar</div>
-				<% } else { %>
-					<div class="actionText" data-act="hide" data-contentid="<%~ box.bid %>">Mostrar</div>
-				<% } %>
+				<div class="actionText" data-act="hide" data-contentid="<%~ box.bid %>">Ocultar</div>
 			</div>
 			<div class="voxActionBotton">
-				<% if (it.data.juid != ""){ %>
-					<div class="actionText" data-act="report" data-contentid="<%~ box.bid %>">Advertir</div>
-				<% } else { %>
-					<div class="actionText" data-act="report" data-contentid="<%~ box.bid %>">Reportar</div>
-				<% } %>
+				<div class="actionText" data-act="report" data-contentid="<%~ box.bid %>">Reportar</div>
 			</div>
 			<div class="voxActionBotton">
 				<div class="actionText" data-act="close"><i class="fas fa-times"></i></div>

@@ -4,6 +4,262 @@
 <%~ includeFile('./common/head', it); %>
 </head>
 <%~ includeFile('./common/header', it); %>
+<% 
+	/* VARIABLES DE USO LOCAL EN EL RENDER */
+	var BOX = it.data.boxs[0];
+	var categoryData = it.utils.getCategoryData(it.data.categorias, BOX.cat); 
+%>
 <body>
-	<%~ JSON.stringify(it.data.comentarios[0]); %>
+	<main>
+		<!-- barra/header del box -->
+		<div class="voxWraper">
+			<section class="voxData">
+				<div class="voxBar">
+					<a href="/<%~ categoryData.tid %>">
+						<div class="voxCategory">
+							<div class="categoryAvatar"><img src="<%~ categoryData.icon %>" alt=""></div>
+							<div class="categoryTitle"><%~ categoryData.name %></div>
+						</div>
+					</a>
+				</div>
+			
+				<div class="voxBarTools">
+					<div class="actions">
+						<div class="voxOption">
+							<i class="fas fa-flag"></i>
+							<span class="voxOptionText">Denunciar</span>
+						</div>
+						
+						<div class="voxOption" id="iconfav">
+							<i class="fas fa-star"></i>
+							<span class="voxOptionText">Favorito</span>
+						</div>
+						
+						<div class="voxOption" id="iconhide">
+							<i class="fas fa-lock"></i>
+							<span class="voxOptionText">Ocultar</span>
+						</div>
+					</div>
+					<div class="metadata">
+						<% if (BOX.user.jerarquia.nick != undefined && BOX.user.jerarquia.autor != undefined){ %>
+							<div class="authorVox">
+								<span class="name"><%~ BOX.user.jerarquia.nick %></span>
+								<% if (BOX.user.jerarquia.jcolor != ""){ %>
+									<span class="commentTag" style="background-color: <%~ BOX.user.jerarquia.jcolor %>"><%~ BOX.user.jerarquia.autor %></span>
+								<% } else { %>
+									<span class="commentTag"><%~ BOX.user.jerarquia.autor %></span>
+								<% } %>
+							</div>
+						<% } else { %>
+							<div class="authorVox">
+								<span class="name">Anonimo</span>
+								<span class="commentTag">anon</span>
+							</div>
+						<% } %>
+						<div class="voxCreatedAt"><%~ it.utils.timeSince(BOX.date.created) %></div>
+					</div>
+				</div>
+
+			<!-- encuestas -->
+			<% if (BOX.type.includes("poll")){
+				var pollData = it.utils.getPollPercent(BOX.content.extra.poll.pollOneV, BOX.content.extra.poll.pollTwoV); %>
+				<div class="voxBar pollBar" id="pollBar">
+					<div class="pollOption" data-poll="1" id="pollOne">
+                        <div class="pollOptionText"><%~ BOX.content.extra.poll.pollOne %></div>
+                        <div class="pollOptionPerent" id="pollOnePorcen"><%~ pollData[0] %></div>
+                    </div>
+				
+					<div class="pollOption" data-poll="2" id="pollTwo">
+                        <div class="pollOptionText"><%~ BOX.content.extra.poll.pollTwo %></div>
+                        <div class="pollOptionPercent" id="pollTwoPorcen"><%~ pollData[1] %></div>
+                    </div>
+				</div>
+			<% } %>
+			
+			<!-- cuerpo del box -->
+			<article class="voxContent" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
+				<!-- multimedia del box, imagen, video, etc. -->
+				<% if (!BOX.type.includes("video")) {%>
+					<figure class="voxAttach">
+						<div style="position: relative;width: 100%;height: 100%;">
+							<i class="fa fa-search-plus attachExpandIcon hidden"></i>
+							<a class="voxImage" target="_BLANK" href="<%~ BOX.img.full %>"><img src="<%~ BOX.img.preview %>"></img></a>
+						</div>
+					</figure>
+				<% } else { %>
+					<figure class="voxAttachVideo">
+						<% if (BOX.type.includes("object")){ %>
+							<object class="objectContainer" data="<%~ BOX.media.raw %>" width="100%" height="100%"></object>
+						<% } else { %>
+							<iframe class="objectContainer videoPreview" width="100%" height="100%" src="<%~ BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%~ BOX.media.raw %>?autoplay=1><img src=<%~ BOX.media.preview %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						<% } %>
+					</figure>
+				<% } %>
+				
+				<!-- contenido del box, titulo, texto, etc. -->
+				<header class="voxBody">
+					<h1 itemprop="name" id="voxTitle"><%~ BOX.content.title %></h1>
+					<div class="voxDescription" itemprop="articleBody" id="voxContent"><%~ BOX.content.body %></div>
+				</header>
+			</article>
+		</section>
+		
+		<!-- area de comentarios -->
+		<section class="voxCommentList">
+		
+			<!-- formulario de comentario -->
+			<form class="commentBox" id="createComment" action="/com" method="POST" enctype="multipart/form-data">
+				<input type="hidden" name="bid" value="<%~ BOX.bid %>">
+				<input type="hidden" name="link" id="link" value="">
+				<input type="hidden" name="data" id="data" value="">
+				<input type="hidden" name="video" id="video" value="false">
+				<input type="hidden" name="video_url" id="video_url" value="">
+				
+				<textarea name="content" class="commentTextarea" id="commentTextarea" maxlength="3000" placeholder="Escribe un comentario o pega una imagen..."></textarea>
+				
+				<div class="commentBoxButtons">
+					<div class="attachs" id="commentAttachs">
+						<div id="uploadButton" onclick="document.getElementById('cfile').click();" class="attachButton tooltip-bottom" 
+						data-upload="{ &quot;type&quot;: &quot;local&quot;, &quot;container&quot;: &quot;commentAttachs&quot; }" 
+						data-tooltip="Subir archivo"> <i class="fas fa-upload"></i> 
+						</div>
+						<input name="file" type="file" id="cfile" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput" data-preview="previewInputComment">
+						
+						<input type="text" class="modalInput hidden" name="url" id="vurl" placeholder="Pega un link de youtube, video o imagen...">
+						<div id="linkButton" class="attachButton tooltip-bottom" data-tooltip="Subir via link"><i class="fas fa-link"></i> 
+						</div>
+						
+						<div class="preview" id="previewInputComment">
+							<div class="closePreview" data-closepreview="previewInputComment"> 
+								<i class="fas fa-times"></i> 
+							</div> 
+							<i class="fas fa-circle-notch fa-spin loading-elem hidden" id="loadingElem"></i>
+							<img id="imgpreview" class="previewOn" src="/" alt="">
+						</div>
+					</div>
+					
+					<button class="buttonPress newComment" id="newComment"><i class="fas fa-circle-notch fa-spin"></i><b id="upp"></b><span>Comentar</span> </button>
+				</div>
+			</form>
+
+			<!-- header de lista de comentarios -->
+			<div class="commentsVoxCount"> 
+				<span class="commentsVoxText" id="commentsVoxText">Comentarios (<span id="voxComments"><%~ it.data.comentarios.length %></span>) </span> 
+				<span class="attachsVox">
+					<i class="fas fa-folder" id="attach-ilist"></i>
+					<i class="fas fa-arrow-down" id="attach-gdown" style="margin-left: 10px;"></i>
+				</span> 
+			</div>
+			
+			<div class="commentsVoxCount loadmore disabled unselect" id="commentLoadMore" data-comments="0"></div>
+			<div class="comment loadmore disabled" id="loadmore">
+				<span class="loadcontent">Cargar nuevos comentarios</span>
+			</div>
+			
+			<div class="attachList hide" id="attachList">
+			<% it.utils.filterComMedia(it.data.comentarios).forEach(function(com) { %>
+				<% if (com.img) { %>
+					<a class="attach" target="_BLANK" href="<%~ com.img_url %>"> <img data-attach="<%~ com.cid %>" src="<%~ com.img_url %>" alt="">
+						<div class="attachType"><i class="fas fa-image"></i></div>
+					</a>
+				<% } %>
+			<% }); %>
+			</div>
+			
+			<!-- lista de comentarios -->
+			<div class="commentList" id="commentList">
+			<% it.data.comentarios.forEach(function(com) { %>			
+				<div class="comment" id="<%~ com.cid %>">	
+					<div class="commentAvatar">
+						<img class="avatar" src="/anon/<%~ com.color %>" alt="">
+					</div>
+					<div class="commentBody">
+						<div class="commentMetadata">
+						<div class="commentsTag unselect">
+						
+							<% if (BOX.uid === com.uid){ %>
+								<span class="commentTag op">OP</span>
+							<% } %>
+							
+							<% if (com.data != undefined && com.data.idunico){ %>
+								<span class="commentIdUnico" style="background-color: #<%~ com.data.idcolor %>"><%~ com.data.idu %></span>
+							<% } else { %>
+								<% if (com.nick == undefined){ %>
+									<span class="author">Anonimo</span>
+								<% } else { %>
+									<span class="author"><%~ com.nick %></span>
+								<% } %>
+							<% } %>
+							
+							<% if (com.nick == undefined || com.jcolor == undefined){ %>
+								<span class="commentTag">anon</span>
+							<% } else { %>
+								<span class="commentTag" style="background-color: <%~ com.jcolor %>"><%~ com.autor %></span>
+							<% } %>
+							
+							<span class="commentTag pointer" data-tag="<%~ com.cid %>" onclick="tag('>><%~ com.cid %>')"><%~ com.cid %></span>
+							
+							<% if (it.data.juid != ""){ %>
+								<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span>
+								<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
+								<span class="commentTag pointer"><i class="fas fa-trash"></i></span>
+							<% } else { %>
+								<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
+							<% } %>
+						</div>
+						<div class="commentCreatedAt"><%~ it.utils.timeSince(com.tiempo) %></div>
+					</div>
+						
+					<div class="commentReply">
+						<% com.tags.forEach(function(tag){ %>
+							<a href="#<%~ tag %>" class="tag" data-tag="<%~ tag %>">>><%~ tag %></a>
+						<% }); %>
+					</div>
+					<div class="commentData">
+						<% if (com.img){ %>
+							<% if (com.data != undefined && com.data.cdata === "raw_img"){ %>
+								<figure class="commentAttach" style="max-width: 100%;">
+									<div class="rawElement" style="position: relative;width: 100%;">
+										<a class="voxImage rawView" target="_BLANK" href="<%~ com.video_url.rawurl %>">
+											<img style="height: inherit;object-fit: cover;object-position: top;" src="<%~ com.img_url %>"></img>
+										</a>
+										<div class="rawData">
+											<span><%~ com.video_url.name %></span>
+											<span><%~ com.video_url.format %></span>
+											<span><%~ com.video_url.width + "x" + com.video_url.height %></span>
+											<span>tamaño: <%= it.utils.formatBytes(com.video_url.size) %></span>
+										</div>
+									</div>
+								</figure>
+							<% } else { %>
+								<figure class="commentAttach">
+									<div style="position: relative;width: 100%;height: 100%;">
+										<i class="fa fa-search-plus attachExpandIcon hidden"></i>
+										<a class="voxImage" target="_BLANK" href="<%~ com.img_url %>"><img src="<%~ com.img_url %>"></img></a>
+									</div>
+								</figure>
+							<% } %>
+						<% } %>
+						<% if (com.video){ %>	
+							<figure class="commentAttachVideo">
+								<div class="video-container">
+									<iframe id="<%~ "vid_" + com.cid %>" src="<%~ com.video_url %>"
+										  srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%~ com.video_url %>?autoplay=1><img src=<%~ com.video_url %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+									</iframe>
+								</div>
+							</figure>
+						<% } %>
+						<div class="commentContent"><%~ com.texto %><br></div>
+					</div>
+				</div>
+			</div>
+		<% }); %>
+			<div style="margin: 20px;"></div>
+			<div class="commentsVoxCount gotop hidden" id="attach-gup"><span style="width: 100%"><i class="fas fa-arrow-up"></i></span></div>
+		</section>
+		
+			<div class="floatQuote" id="floatQuote"></div>
+			</div>
+		</div>
+	</main>
 </body>
