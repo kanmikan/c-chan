@@ -8,6 +8,7 @@
     "connect-mongo": "^4.4.1",
     "eta": "^1.12.3",
     "express": "^4.17.1",
+    "express-formidable": "^1.2.0",
     "express-session": "^1.17.2",
     "jquery": "^3.6.0",
     "mongodb": "^3.6.4"

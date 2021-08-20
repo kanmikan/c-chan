@@ -5,7 +5,7 @@ function getCategoryData(categorias, tid){
 }
 
 function filterComMedia(comments){
-	return comments.filter( item => item.img === true);
+	return comments.filter( item => item.img.full != "");
 }
 
 function getCatShow(categoria){
@@ -38,7 +38,15 @@ function formatBytes(a,b=2){
 	const c=0>b?0:b,d=Math.floor(Math.log(a)/Math.log(1024));
 	return parseFloat((a/Math.pow(1024,d)).toFixed(c))+" "+["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"][d];
 }
-		
+
+function genCID(len){
+	var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	var result = "";
+	for (var i = len; i > 0; --i){
+		result += chars[Math.floor(Math.random() * chars.length)];
+	}
+	return result;
+}		
 
 function getPollPercent(poll1, poll2){
 	var total = poll1+poll2;
@@ -49,4 +57,4 @@ function getPollPercent(poll1, poll2){
 	return [Math.round(per) + "%", Math.round(per2) + "%"];
 } 
 
-module.exports = {getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent};
+module.exports = {getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID};

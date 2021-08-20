@@ -108,12 +108,9 @@
 		<section class="voxCommentList">
 		
 			<!-- formulario de comentario -->
-			<form class="commentBox" id="createComment" action="/com" method="POST" enctype="multipart/form-data">
+			<form class="commentBox" id="createComment" action="/api/com" method="POST" enctype="multipart/form-data">
 				<input type="hidden" name="bid" value="<%~ BOX.bid %>">
-				<input type="hidden" name="link" id="link" value="">
 				<input type="hidden" name="data" id="data" value="">
-				<input type="hidden" name="video" id="video" value="false">
-				<input type="hidden" name="video_url" id="video_url" value="">
 				
 				<textarea name="content" class="commentTextarea" id="commentTextarea" maxlength="3000" placeholder="Escribe un comentario o pega una imagen..."></textarea>
 				
@@ -144,7 +141,7 @@
 
 			<!-- header de lista de comentarios -->
 			<div class="commentsVoxCount"> 
-				<span class="commentsVoxText" id="commentsVoxText">Comentarios (<span id="voxComments"><%~ it.data.comentarios.length %></span>) </span> 
+				<span class="commentsVoxText" id="commentsVoxText">Comentarios (<span id="voxComments"><%~ it.data.coms.length %></span>) </span> 
 				<span class="attachsVox">
 					<i class="fas fa-folder" id="attach-ilist"></i>
 					<i class="fas fa-arrow-down" id="attach-gdown" style="margin-left: 10px;"></i>
@@ -157,7 +154,7 @@
 			</div>
 			
 			<div class="attachList hide" id="attachList">
-			<% it.utils.filterComMedia(it.data.comentarios).forEach(function(com) { %>
+			<% it.utils.filterComMedia(it.data.coms).forEach(function(com) { %>
 				<% if (com.img) { %>
 					<a class="attach" target="_BLANK" href="<%~ com.img_url %>"> <img data-attach="<%~ com.cid %>" src="<%~ com.img_url %>" alt="">
 						<div class="attachType"><i class="fas fa-image"></i></div>
@@ -168,33 +165,33 @@
 			
 			<!-- lista de comentarios -->
 			<div class="commentList" id="commentList">
-			<% it.data.comentarios.forEach(function(com) { %>			
+			<% it.data.coms.forEach(function(com) { %>
 				<div class="comment" id="<%~ com.cid %>">	
 					<div class="commentAvatar">
-						<img class="avatar" src="/anon/<%~ com.color %>" alt="">
+						<img class="avatar" src="<%~ com.icon %>" alt="">
 					</div>
 					<div class="commentBody">
 						<div class="commentMetadata">
 						<div class="commentsTag unselect">
 						
-							<% if (BOX.uid === com.uid){ %>
+							<% if (BOX.user.uid === com.user.uid){ %>
 								<span class="commentTag op">OP</span>
 							<% } %>
 							
-							<% if (com.data != undefined && com.data.idunico){ %>
+							<% if (com.type.includes("idunico")){ %>
 								<span class="commentIdUnico" style="background-color: #<%~ com.data.idcolor %>"><%~ com.data.idu %></span>
 							<% } else { %>
-								<% if (com.nick == undefined){ %>
+								<% if (com.user.jerarquia.nick == undefined){ %>
 									<span class="author">Anonimo</span>
 								<% } else { %>
-									<span class="author"><%~ com.nick %></span>
+									<span class="author"><%~ com.user.jerarquia.nick %></span>
 								<% } %>
 							<% } %>
 							
-							<% if (com.nick == undefined || com.jcolor == undefined){ %>
+							<% if (com.user.jerarquia.nick == undefined || com.user.jerarquia.jcolor == undefined){ %>
 								<span class="commentTag">anon</span>
 							<% } else { %>
-								<span class="commentTag" style="background-color: <%~ com.jcolor %>"><%~ com.autor %></span>
+								<span class="commentTag" style="background-color: <%~ com.user.jerarquia.jcolor %>"><%~ com.user.jerarquia.autor %></span>
 							<% } %>
 							
 							<span class="commentTag pointer" data-tag="<%~ com.cid %>" onclick="tag('>><%~ com.cid %>')"><%~ com.cid %></span>
@@ -207,49 +204,33 @@
 								<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
 							<% } %>
 						</div>
-						<div class="commentCreatedAt"><%~ it.utils.timeSince(com.tiempo) %></div>
+						<div class="commentCreatedAt"><%~ it.utils.timeSince(com.date.created) %></div>
 					</div>
 						
 					<div class="commentReply">
-						<% com.tags.forEach(function(tag){ %>
+						<% com.content.extra.tags.forEach(function(tag){ %>
 							<a href="#<%~ tag %>" class="tag" data-tag="<%~ tag %>">>><%~ tag %></a>
 						<% }); %>
 					</div>
 					<div class="commentData">
-						<% if (com.img){ %>
-							<% if (com.data != undefined && com.data.cdata === "raw_img"){ %>
-								<figure class="commentAttach" style="max-width: 100%;">
-									<div class="rawElement" style="position: relative;width: 100%;">
-										<a class="voxImage rawView" target="_BLANK" href="<%~ com.video_url.rawurl %>">
-											<img style="height: inherit;object-fit: cover;object-position: top;" src="<%~ com.img_url %>"></img>
-										</a>
-										<div class="rawData">
-											<span><%~ com.video_url.name %></span>
-											<span><%~ com.video_url.format %></span>
-											<span><%~ com.video_url.width + "x" + com.video_url.height %></span>
-											<span>tamaño: <%= it.utils.formatBytes(com.video_url.size) %></span>
-										</div>
-									</div>
-								</figure>
-							<% } else { %>
-								<figure class="commentAttach">
-									<div style="position: relative;width: 100%;height: 100%;">
-										<i class="fa fa-search-plus attachExpandIcon hidden"></i>
-										<a class="voxImage" target="_BLANK" href="<%~ com.img_url %>"><img src="<%~ com.img_url %>"></img></a>
-									</div>
-								</figure>
-							<% } %>
+						<% if (com.img.full != ""){ %>
+							<figure class="commentAttach">
+								<div style="position: relative;width: 100%;height: 100%;">
+									<i class="fa fa-search-plus attachExpandIcon hidden"></i>
+									<a class="voxImage" target="_BLANK" href="<%~ com.img.full %>"><img src="<%~ com.img.preview %>"></img></a>
+								</div>
+							</figure>
 						<% } %>
-						<% if (com.video){ %>	
+						<% if (com.media.raw != ""){ %>	
 							<figure class="commentAttachVideo">
 								<div class="video-container">
-									<iframe id="<%~ "vid_" + com.cid %>" src="<%~ com.video_url %>"
-										  srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%~ com.video_url %>?autoplay=1><img src=<%~ com.video_url %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+									<iframe src="<%~ com.media.raw %>"
+										  srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%~ com.media.raw %>?autoplay=1><img src=<%~ com.media.preview %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 									</iframe>
 								</div>
 							</figure>
 						<% } %>
-						<div class="commentContent"><%~ com.texto %><br></div>
+						<div class="commentContent"><%~ com.content.body %><br></div>
 					</div>
 				</div>
 			</div>

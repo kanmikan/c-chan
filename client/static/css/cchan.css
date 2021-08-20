@@ -434,7 +434,7 @@ ul.slideMenuOptions li:hover.optionBolt {
     color: #f7d014;
 }
 
-.boxList {
+.voxList {
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -487,12 +487,12 @@ ul.slideMenuOptions li:hover.optionBolt {
 
 .box .tagList .tag {
     color: #fefefe;
-    padding: 2px 2px;
+    padding: 1px;
     border-radius: 3px;
     font-size: 11px;
-    background: #00000073;
-    margin-right: 4px;
-    margin-bottom: 4px;
+    background: #3f51b5;
+    margin-right: 3px;
+    margin-bottom: 3px;
 }
 
 .tagInvisible.rss i {
@@ -513,8 +513,10 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .box .tagList .tag.sticky {
-    background-color: #FFA900;
-	margin-top: 2.5px;
+	background-color: #ffc107;
+    margin-top: 0.5px;
+    margin-left: 3px;
+    padding: 3px;
 }
 
 .box .tagList .tag.csticky{
@@ -522,12 +524,13 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .tagInvisible.csticky i {
-    color: #ffffff;
-    background-color: #308726;
-    padding: 4px 4px;
+	color: #ffffff;
+    background-color: #3f51b5;
+    padding: 3.5px 4px;
     border-radius: 3px;
-    font-size: 13px;
-    margin-top: 3px;
+    font-size: 11px;
+    margin-top: 1px;
+    margin-bottom: 5px;
 }
 
 .title {
@@ -616,14 +619,14 @@ span.countComments {
 }
 
 .tagInvisible.pollTag i {
-    color: #308726;
-    font-size: 22px;
-    margin-top: 3px;
+	color: #3f51b5;
+    font-size: 21px;
+    margin-right: 3px;
 }
 
 .tagInvisible.pollTag .tagWrapper {
-    width: 17px;
-    height: 16px;
+	width: 14px;
+    height: 13px;
     margin-top: 6px;
     margin-left: 1px;
 }
@@ -639,7 +642,7 @@ span.countComments {
     justify-content: flex-end;
     position: absolute;
     top: 0;
-    padding: 14px 12px 12px 6px;
+	padding: 12px 12px 12px 6px;
     right: 0;
 }
 
@@ -687,7 +690,7 @@ a.selectedVox.box .over {border-color: #f4a833 !important;background: #fff8f866;
 
 .voxWraper {
     display: flex;
-    height: calc(100vh - 50px);
+    /*height: calc(100vh - 50px);*/
 }
 
 /* MODALS */
@@ -1698,11 +1701,6 @@ textarea{
 
 .voxImage{
     width: 100%;
-}
-
-.voxWraper {
-    display: flex;
-    height: calc(100vh - 50px);
 }
 
 section.voxData {

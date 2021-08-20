@@ -1,8 +1,51 @@
 const sConfig = require('./config/serverConfig');
 const dbManager = require('./db/dbManager');
 const mdbScheme = require('./db/models/mdbScheme');
+const utils = require('./utils');
 
 module.exports = function(app, DB){
+	
+	//MUESTRA: crea un comentario.
+	//PRUEBA PRELIMINAR
+	app.post('/api/com', function(req, res) {
+		let bid = req.fields.bid;
+		let content = req.fields.content;
+		let data = req.fields.data;
+		
+		let json = {
+			cid: utils.genCID(7),
+			bid: bid,
+			user: {
+				uid: req.session.id,
+				jerarquia: ""
+			},
+			type: [],
+			flag: [],
+			date: {
+				created: Date.now()
+			},
+			icon: "/assets/anon/1.png",
+			img: {
+				preview: "",
+				full: "",
+				raw: ""
+			},
+			media: {
+				preview: "",
+				raw: ""
+			},
+			content: {
+				body: content,
+				extra: {
+					tags: []
+				}
+			}
+		};
+		dbManager.insertDB(DB, "coms", json, function(){
+			res.redirect("/tema/" + bid);
+		});
+		
+	});
 	
 	//MUESTRA: obtener todos los boxs, ordenados por ultimo bump y stickys
 	//TODO: añadir filtro de datos
@@ -79,12 +122,14 @@ module.exports = function(app, DB){
 			type: [ //poll, dice, video, object
 				"poll"
 			],
-			flag: [ //csticky, sticky, rss
-				"sticky"
+			flag: [ //rss
+				"rss"
 			],
 			date: {
 				created: 0, //timestamp de fecha de creacion.
-				bump: 0 //timestamp de ultimo bump.
+				bump: 0, //timestamp de ultimo bump.
+				sticky: 0, //me olvide de añadir estos..
+				csticky: 0
 			},
 			img: {
 				preview: "/assets/logo.png", //version optimizada de la imagen para uso como thumbnail.
