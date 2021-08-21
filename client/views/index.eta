@@ -25,7 +25,7 @@
 		<div class="voxHeader">
 			<div class="tagList">
 				<div class="tag categoryTag">
-					<img src="<%~ it.utils.getCategoryData(it.data.categorias, box.cat).icon %>" style="width: 20px;vertical-align: middle;"><span style="margin-right: 5px;align-self: center;"><%~ it.utils.getCatShow(box.cat) %></span></img>
+					<img src="<%~ it.utils.getCategoryData(it.data.categorias, box.cat).icon %>" style="width: 20px;vertical-align: middle;"><span style="margin-left: 4px;margin-right: 5px;align-self: center;"><%~ it.utils.getCatShow(box.cat) %></span></img>
 				</div>
 				<!-- tag video -->
 				<% if (box.type.includes("video")){ %>

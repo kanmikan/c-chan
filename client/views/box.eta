@@ -107,37 +107,8 @@
 		<!-- area de comentarios -->
 		<section class="voxCommentList">
 		
-			<!-- formulario de comentario -->
-			<form class="commentBox" id="createComment" action="/api/com" method="POST" enctype="multipart/form-data">
-				<input type="hidden" name="bid" value="<%~ BOX.bid %>">
-				<input type="hidden" name="data" id="data" value="">
-				
-				<textarea name="content" class="commentTextarea" id="commentTextarea" maxlength="3000" placeholder="Escribe un comentario o pega una imagen..."></textarea>
-				
-				<div class="commentBoxButtons">
-					<div class="attachs" id="commentAttachs">
-						<div id="uploadButton" onclick="document.getElementById('cfile').click();" class="attachButton tooltip-bottom" 
-						data-upload="{ &quot;type&quot;: &quot;local&quot;, &quot;container&quot;: &quot;commentAttachs&quot; }" 
-						data-tooltip="Subir archivo"> <i class="fas fa-upload"></i> 
-						</div>
-						<input name="file" type="file" id="cfile" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput" data-preview="previewInputComment">
-						
-						<input type="text" class="modalInput hidden" name="url" id="vurl" placeholder="Pega un link de youtube, video o imagen...">
-						<div id="linkButton" class="attachButton tooltip-bottom" data-tooltip="Subir via link"><i class="fas fa-link"></i> 
-						</div>
-						
-						<div class="preview" id="previewInputComment">
-							<div class="closePreview" data-closepreview="previewInputComment"> 
-								<i class="fas fa-times"></i> 
-							</div> 
-							<i class="fas fa-circle-notch fa-spin loading-elem hidden" id="loadingElem"></i>
-							<img id="imgpreview" class="previewOn" src="/" alt="">
-						</div>
-					</div>
-					
-					<button class="buttonPress newComment" id="newComment"><i class="fas fa-circle-notch fa-spin"></i><b id="upp"></b><span>Comentar</span> </button>
-				</div>
-			</form>
+			<!-- formulario de comentario. -->
+			<%~ includeFile('./common/fragments/box/commentForm', it); %>
 
 			<!-- header de lista de comentarios -->
 			<div class="commentsVoxCount"> 

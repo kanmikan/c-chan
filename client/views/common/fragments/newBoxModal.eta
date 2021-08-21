@@ -1,9 +1,6 @@
-<form class="modalBox createVox show" id="createVox" enctype="multipart/form-data" action="/new" method="POST" aria-modal="true" role="dialog">
-	<input id="nlink" name="link" type="hidden" value="">
-	<input id="nvideo" name="video" type="hidden" value="false">
-	<input id="nvideourl" name="videourl" type="hidden" value="">
-	<input id="ndata" name="data" type="hidden" value="">
-	<input type="hidden" id="nimgData" name="imgData" value="">
+<form class="modalBox createVox show" id="createVox" enctype="multipart/form-data" action="/api/new" method="POST" aria-modal="true" role="dialog">
+	<input id="data" name="data" type="hidden" value="">
+	
 	<div class="createVox-container">
 		<div class="createVox-titlebar">
 			<button type="buttonPress" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -51,10 +48,12 @@
 					<input name="file" type="file" id="bfile" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput" data-preview="previewInputComment">
 				</div>
 				<button class="buttonPress buttonPressv2" id="newVox" type="submit">
-					<i class="fas fa-circle-notch fa-spin"></i><b id="bupp"></b><span>Iniciar Tema</span> 
+					<i class="fas fa-circle-notch fa-spin"></i>
+					<b id="bupp"></b>
+					<span>Iniciar Tema</span> 
 				</button>
 			</div>
 			</div>
 		</div>
-		</div>
+	</div>
 </form>

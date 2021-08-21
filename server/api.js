@@ -5,12 +5,61 @@ const utils = require('./utils');
 
 module.exports = function(app, DB){
 	
-	//MUESTRA: crea un comentario.
+	//MUESTRA: crea un nuevo box.
 	//PRUEBA PRELIMINAR
+	app.post('/api/new', function(req, res) {
+		let cat = req.fields.cat;
+		let title = req.fields.title;
+		let content = req.fields.content;
+		let time = Date.now();
+		let bid = utils.uuidv4();
+		
+		let json = {
+			bid: bid,
+			cat: cat,
+			user: {
+				uid: req.session.id,
+				jerarquia: ""
+			},
+			type: [],
+			flag: [],
+			date: {
+				created: time,
+				bump: time,
+				sticky: 0,
+				csticky: 0
+			},
+			img: {
+				preview: "/assets/logo.png",
+				full: "/assets/logo.png", 
+				raw: ""
+			},
+			media: {
+				preview: "",
+				raw: ""
+			},
+			content: {
+				title: title,
+				body: content,
+				comments: 0,
+				extra: {
+					
+				}
+			}
+		};
+		
+		dbManager.insertDB(DB, "boxs", json, function(){
+			res.redirect("/tema/" + bid);
+		});
+		
+	});
+	
 	app.post('/api/com', function(req, res) {
 		let bid = req.fields.bid;
 		let content = req.fields.content;
 		let data = req.fields.data;
+		
+		console.log(data);
 		
 		let json = {
 			cid: utils.genCID(7),
@@ -113,8 +162,8 @@ module.exports = function(app, DB){
 	app.get('/dev', function(req, res) {
 		
 		let data = {
-			bid: "id",
-			cat: "tst",
+			bid: utils.uuidv4(),
+			cat: "oficial",
 			user: {
 				uid: "uid",
 				jerarquia: "" //datos incrustados de jerarquia.
@@ -158,7 +207,6 @@ module.exports = function(app, DB){
 					}
 				}
 			}
-			
 		};
 		dbManager.insertDB(DB, "boxs", data, function(){
 			res.redirect("/");

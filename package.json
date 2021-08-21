@@ -11,7 +11,8 @@
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.2",
     "jquery": "^3.6.0",
-    "mongodb": "^3.6.4"
+    "mongodb": "^3.6.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"

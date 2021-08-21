@@ -434,7 +434,7 @@ ul.slideMenuOptions li:hover.optionBolt {
     color: #f7d014;
 }
 
-.voxList {
+.boxList {
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -500,8 +500,8 @@ ul.slideMenuOptions li:hover.optionBolt {
     border-radius: 3px;
     padding: 2px;
     color: white;
-    font-size: 15px;
-    margin-top: 2px;
+    font-size: 14px;
+    margin-top: 0.5px;
 }
 
 .tagInvisible.ytb i {
@@ -1457,6 +1457,7 @@ body {
 
 html {
   overflow-y: scroll !important;
+  background-color : var(--base-background2);
 }
 
 .createCommunity-titlebar{
@@ -1697,6 +1698,7 @@ textarea{
 .voxWraper a {
     color: var(--box-links);
     cursor: pointer;
+	text-decoration: none;
 }
 
 .voxImage{

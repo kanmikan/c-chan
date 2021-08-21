@@ -1,3 +1,5 @@
+const {v4: uuidv4} = require("uuid");
+
 /* FUNCIONES UTILITARIAS DE USO EN EL SERVER Y EN EL RENDER */
 function getCategoryData(categorias, tid){
 	if (categorias[0] === undefined){return {icon: "/assets/logo.png"}}
@@ -57,4 +59,4 @@ function getPollPercent(poll1, poll2){
 	return [Math.round(per) + "%", Math.round(per2) + "%"];
 } 
 
-module.exports = {getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID};
+module.exports = {getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4};

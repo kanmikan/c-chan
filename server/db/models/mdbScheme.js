@@ -1,5 +1,5 @@
 module.exports = {
-	//estructura de la base de datos de mikanchan
+	//estructura de la base de datos de mikandbv2
 	//colecciones
 	C_BOXS: "boxs",
 	C_COMS: "coms",
