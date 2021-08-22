@@ -1631,10 +1631,6 @@ textarea{
     line-height: 1.5;
 }
 
-.buttonPress i {
-    display: none;
-}
-
 .gotop {
 	position: fixed;
     bottom: 0px;
@@ -2045,13 +2041,14 @@ textarea.commentTextarea:focus {
 }
 
 .commentBox .preview {
-	max-width: 210px;
+	max-width: 110px;
     min-width: 100px;
     min-height: 100px;
 }
 
 .commentBox .preview img {
-	min-width: 100px;
+	width: 100%;
+    height: 100%;
 }
 
 .commentData video {
@@ -2218,7 +2215,6 @@ span.greentext {
 
 .preview{
     position: relative;
-	display: none !important;
 }
 
 span.attachsVox {

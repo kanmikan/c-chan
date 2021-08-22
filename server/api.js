@@ -2,8 +2,21 @@ const sConfig = require('./config/serverConfig');
 const dbManager = require('./db/dbManager');
 const mdbScheme = require('./db/models/mdbScheme');
 const utils = require('./utils');
+const imgur = require('imgur');
 
 module.exports = function(app, DB){
+	
+	//subida de imagenes
+	app.post('/api/upload', function(req, res) {
+		let imgdata = req.files.imgData;
+		
+		//uso imgur como servidor de muestra.
+		imgur.uploadFile(imgdata.path).then((json) => {
+			res.json({success: true, data: {link: json.link}});
+		}).catch((err) => {
+			res.json({success: false, data: err.message});
+		});	
+	})
 	
 	//MUESTRA: crea un nuevo box.
 	//PRUEBA PRELIMINAR

@@ -215,3 +215,4 @@
 		</div>
 	</main>
 </body>
+<%~ includeFile('./common/footer', it); %>
