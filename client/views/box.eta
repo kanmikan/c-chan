@@ -184,7 +184,7 @@
 						<% }); %>
 					</div>
 					<div class="commentData">
-						<% if (com.img.full != ""){ %>
+						<% if (com.type.includes("image")){ %>
 							<figure class="commentAttach">
 								<div style="position: relative;width: 100%;height: 100%;">
 									<i class="fa fa-search-plus attachExpandIcon hidden"></i>
@@ -192,7 +192,7 @@
 								</div>
 							</figure>
 						<% } %>
-						<% if (com.media.raw != ""){ %>	
+						<% if (com.type.includes("video")){ %>	
 							<figure class="commentAttachVideo">
 								<div class="video-container">
 									<iframe src="<%~ com.media.raw %>"

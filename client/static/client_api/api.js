@@ -44,8 +44,46 @@ function post(formdata, url, before, callback){
 	});
 }
 
+function postForm(formdata, url, before, callback){
+	$.ajax({
+		type: 'POST',
+		url: url,
+		data: formdata,
+		beforeSend: function() {
+			before(event.target.result);
+		}
+	}).done(function(data) {
+		callback(data);
+	});
+}
+
+function resetCommentInputData(){
+	element("createComment").dispatchEvent(new Event("reset"));
+	element("commentTextarea").value = "";
+	//cerrar mini vista previa, si es que esta abierta..
+	element("previewInputComment").classList.add("hide");
+	element("imgpreview").setAttribute("src", "");
+}
+
 /* EVENTOS */
 $(document).ready(function() {
+	
+	//evento: post de comentario.
+	element("newComment").addEventListener("click", function(e){
+		e.preventDefault();
+		let form = $("#createComment").serialize();
+		//formdata.append("data", {test: "test"});
+		postForm(form, "/api/com", function(target){
+			//accion antes de enviar.
+		}, function(result){
+			//accion al terminar.
+			if (result.success){
+				//añadir comentario y limpiar vista.
+				resetCommentInputData();
+			}
+		});
+	});
+	
 	//evento: al seleccionar un archivo en los comentarios.
 	element("cfile").addEventListener("change", function (e){
 		let file = element("cfile").files.item(0);
@@ -57,9 +95,19 @@ $(document).ready(function() {
 			getDataURL(file, function(target){
 				console.log("subiendo...");
 				element("imgpreview").setAttribute("src", target);
+				
 				element("previewInputComment").classList.remove("hide");
 				element("loadingCom").classList.remove("hidden");
 			}, function(data){
+				if (data.success){
+					element("imgpreview").setAttribute("src", data.data.link);
+					let img = data.data.link + ";" + data.data.thumb;
+					element("cimg").value = img;
+				} else {
+					element("previewInputComment").classList.add("hide");
+					element("imgpreview").setAttribute("src", "");
+				}
+				
 				element("loadingCom").classList.add("hidden");
 				console.log(data);
 			});	
@@ -69,6 +117,8 @@ $(document).ready(function() {
 			element("previewInputComment").classList.add("hide");
 			element("imgpreview").setAttribute("src", "");
 		});
-		
 	});
+	
+	
+	
 });

@@ -1,21 +1,20 @@
 const sConfig = require('./config/serverConfig');
 const dbManager = require('./db/dbManager');
 const mdbScheme = require('./db/models/mdbScheme');
+const jsonScheme = require('./db/models/jsonScheme');
+
 const utils = require('./utils');
-const imgur = require('imgur');
+const uploadManager = require('./api/upload');
+const parser = require('./api/parser');
 
 module.exports = function(app, DB){
 	
 	//subida de imagenes
 	app.post('/api/upload', function(req, res) {
 		let imgdata = req.files.imgData;
-		
-		//uso imgur como servidor de muestra.
-		imgur.uploadFile(imgdata.path).then((json) => {
-			res.json({success: true, data: {link: json.link}});
-		}).catch((err) => {
-			res.json({success: false, data: err.message});
-		});	
+		uploadManager.upload(imgdata, function(result){
+			res.json(result);
+		});
 	})
 	
 	//MUESTRA: crea un nuevo box.
@@ -27,39 +26,18 @@ module.exports = function(app, DB){
 		let time = Date.now();
 		let bid = utils.uuidv4();
 		
-		let json = {
-			bid: bid,
-			cat: cat,
-			user: {
-				uid: req.session.id,
-				jerarquia: ""
-			},
-			type: [],
-			flag: [],
-			date: {
-				created: time,
-				bump: time,
-				sticky: 0,
-				csticky: 0
-			},
-			img: {
-				preview: "/assets/logo.png",
-				full: "/assets/logo.png", 
-				raw: ""
-			},
-			media: {
-				preview: "",
-				raw: ""
-			},
-			content: {
-				title: title,
-				body: content,
-				comments: 0,
-				extra: {
-					
-				}
-			}
-		};
+		let json = utils.clone(jsonScheme.BOX_SCHEME);
+		json.bid = bid;
+		json.cat = cat;
+		json.user.uid = req.session.id;
+		json.date.created = time;
+		json.date.bump = time;
+		
+		//todo: imagen y videos
+		
+		json.content.title = title;
+		json.content.body = content;
+		json.extra.poll = {};
 		
 		dbManager.insertDB(DB, "boxs", json, function(){
 			res.redirect("/tema/" + bid);
@@ -70,41 +48,29 @@ module.exports = function(app, DB){
 	app.post('/api/com', function(req, res) {
 		let bid = req.fields.bid;
 		let content = req.fields.content;
-		let data = req.fields.data;
+		let img = req.fields.img.split(";");
+		let vid = req.fields.vid.split(";");
 		
-		console.log(data);
+		let json = utils.clone(jsonScheme.COMMENT_SCHEME);
+		json.cid = utils.genCID(7);
+		json.bid = bid;
+		json.user.uid = req.session.id;
+		json.date.created = Date.now();
+		json.icon = "/assets/anon/1.png";
+		if (img[0] != ""){
+			json.type.push("image");
+			json.img.full = img[0];
+			json.img.preview = img[1];
+		}
+		if (vid[0] != ""){
+			json.type.push("video");
+			json.media.raw = vid[0];
+			json.media.preview = vid[1];
+		}
+		json.content.body = parser.parseInput(content);
 		
-		let json = {
-			cid: utils.genCID(7),
-			bid: bid,
-			user: {
-				uid: req.session.id,
-				jerarquia: ""
-			},
-			type: [],
-			flag: [],
-			date: {
-				created: Date.now()
-			},
-			icon: "/assets/anon/1.png",
-			img: {
-				preview: "",
-				full: "",
-				raw: ""
-			},
-			media: {
-				preview: "",
-				raw: ""
-			},
-			content: {
-				body: content,
-				extra: {
-					tags: []
-				}
-			}
-		};
 		dbManager.insertDB(DB, "coms", json, function(){
-			res.redirect("/tema/" + bid);
+			res.json({success: true, data: "Comentario Enviado."})
 		});
 		
 	});

@@ -1,6 +1,10 @@
 const {v4: uuidv4} = require("uuid");
 
 /* FUNCIONES UTILITARIAS DE USO EN EL SERVER Y EN EL RENDER */
+function clone(json){
+	return JSON.parse(JSON.stringify(json));
+}
+
 function getCategoryData(categorias, tid){
 	if (categorias[0] === undefined){return {icon: "/assets/logo.png"}}
 	return categorias.filter( item => item.tid === tid)[0];
@@ -59,4 +63,4 @@ function getPollPercent(poll1, poll2){
 	return [Math.round(per) + "%", Math.round(per2) + "%"];
 } 
 
-module.exports = {getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4};
+module.exports = {clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4};
