@@ -123,58 +123,132 @@ function commentRender(com){
 	$("#commentList").prepend(cbody);
 }
 
+function checkBoxFieldLocal(){
+	//Este es un simple control de campos local, su funcion es simplemente ahorrarse una request al pedo.
+	if (element("bcat").value === ""){
+		alert("Elige una categoria valida");
+		return false;
+	} else if (element("btitle").value === ""){
+		alert("Falta un titulo");
+		return false;
+	} else if ((element("bimg").value === "" && element("bvid").value === "")){
+		alert("Añade una imagen o video");
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function checkComFieldLocal(){
+	if (element("cimg").value === "" && element("cvid").value === ""){
+		if (element("commentTextarea").value === ""){
+			alert("Escribe algo o sube una imagen.");
+			return false;
+		}
+	}
+	return true;
+}
+
 /* EVENTOS */
 $(document).ready(function() {
 	
 	//evento: post de comentario.
-	element("newComment").addEventListener("click", function(e){
-		e.preventDefault();
-		let form = $("#createComment").serialize();
-		//formdata.append("data", {test: "test"});
-		postForm(form, "/api/com", function(target){
-			//accion antes de enviar.
-		}, function(result){
-			//accion al terminar.
-			if (result.success){
-				//añadir comentario y limpiar vista.
-				resetCommentInputData();
-				commentRender(result.data);
+	if (element("newComment")) {
+		element("newComment").addEventListener("click", function(e){
+			e.preventDefault();
+			let form = $("#createComment").serialize();
+			//formdata.append("data", {test: "test"});
+			
+			if (checkComFieldLocal()){
+				postForm(form, "/api/com", function(target){
+					//accion antes de enviar.
+				}, function(result){
+					//accion al terminar.
+					if (result.success){
+						//añadir comentario y limpiar vista.
+						resetCommentInputData();
+						commentRender(result.data);
+					}
+				});
 			}
 		});
-	});
+	}
+	
+	//evento: al crear un tema (este evento no es explicitamente necesario, pero sirve para manejo de errores)
+	if (element("newVox")) {
+		element("newVox").addEventListener("click", function(e){
+			e.preventDefault();
+			let form = $("#createVox").serialize();
+			
+			//control de campos local
+			if (checkBoxFieldLocal()){
+				postForm(form, "/api/new", function(target){	
+				}, function(result){
+					if (result.success){
+						window.location.href = result.data.url;
+					} else {
+						alert(result.data);
+					}
+				});
+			}
+		});
+	}
+	
+	
+	//evento: al seleccinar un archivo en el modal de nuevo tema
+	if (element("bfile")){
+		element("bfile").addEventListener("change", function(e){
+			let file = element("bfile").files.item(0);
+			if (file && file.type.split("/")[0] === "image"){
+				getDataURL(file, function(target){
+					element("nimgpreview").setAttribute("src", target);
+					console.log("subiendo...");
+				}, function(data){
+					if (data.success){
+						element("nimgpreview").setAttribute("src", data.data.link);
+						let img = data.data.link + ";" + data.data.thumb;
+						element("bimg").value = img;
+					} else {
+						element("nimgpreview").setAttribute("src", "");
+					}
+					
+					console.log(data);
+				});	
+			}
+		});
+	}
 	
 	//evento: al seleccionar un archivo en los comentarios.
-	element("cfile").addEventListener("change", function (e){
-		let file = element("cfile").files.item(0);
-		//comprobacion rapida de que el archivo sea una imagen.
-		if (file && file.type.split("/")[0] === "image"){
-			//si es una imagen, subir
-			let formdata = new FormData();
-			formdata.append("imgData", file);
-			getDataURL(file, function(target){
-				element("imgpreview").setAttribute("src", target);
-				element("previewInputComment").classList.remove("hide");
-				element("loadingCom").classList.remove("hidden");
-			}, function(data){
-				if (data.success){
-					element("imgpreview").setAttribute("src", data.data.link);
-					let img = data.data.link + ";" + data.data.thumb;
-					element("cimg").value = img;
-				} else {
-					element("previewInputComment").classList.add("hide");
-					element("imgpreview").setAttribute("src", "");
-				}
-				
-				element("loadingCom").classList.add("hidden");
-			});	
-		}
-		
-		element("closePreview").addEventListener("click", function(e){
-			element("previewInputComment").classList.add("hide");
-			element("imgpreview").setAttribute("src", "");
+	if (element("cfile")){
+		element("cfile").addEventListener("change", function (e){
+			let file = element("cfile").files.item(0);
+			//comprobacion rapida de que el archivo sea una imagen.
+			if (file && file.type.split("/")[0] === "image"){
+				//si es una imagen, subir
+				getDataURL(file, function(target){
+					element("imgpreview").setAttribute("src", target);
+					element("previewInputComment").classList.remove("hide");
+					element("loadingCom").classList.remove("hidden");
+				}, function(data){
+					if (data.success){
+						element("imgpreview").setAttribute("src", data.data.link);
+						let img = data.data.link + ";" + data.data.thumb;
+						element("cimg").value = img;
+					} else {
+						element("previewInputComment").classList.add("hide");
+						element("imgpreview").setAttribute("src", "");
+					}
+					
+					element("loadingCom").classList.add("hidden");
+				});	
+			}
+			
+			element("closePreview").addEventListener("click", function(e){
+				element("previewInputComment").classList.add("hide");
+				element("imgpreview").setAttribute("src", "");
+			});
 		});
-	});
-	
+	}
 	
 	
 });

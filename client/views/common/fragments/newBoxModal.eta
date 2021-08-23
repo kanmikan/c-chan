@@ -1,5 +1,6 @@
 <form class="modalBox createVox show" id="createVox" enctype="multipart/form-data" action="/api/new" method="POST" aria-modal="true" role="dialog">
-	<input id="data" name="data" type="hidden" value="">
+	<input id="bimg" name="img" type="hidden" value="">
+	<input id="bvid" name="vid" type="hidden" value="">
 	
 	<div class="createVox-container">
 		<div class="createVox-titlebar">
@@ -7,14 +8,14 @@
 		</div>
 		<div class="createVox-panelcontainer">
 			<div class="createVox-panel1">
-				<select name="cat" style="width: 90%">
+				<select name="cat" id="bcat" style="width: 90%">
 					<option value="" selected="selected" disabled="disabled">Elige una categoría o comunidad</option>
 					<% it.data.categorias.forEach(function(categoria){ %>
 						<option value="<%= categoria.tid %>"><%= categoria.name %></option>
 					<% }); %>
 				</select>
-				<input name="title" class="field" type="text" placeholder="Titulo" maxlength="120">
-				<textarea name="content" class="newVoxContent" id="voxTextarea" maxlength="5000" placeholder="Escribe el contenido del tema..."></textarea>
+				<input id="btitle" name="title" class="field" type="text" placeholder="Titulo" maxlength="120">
+				<textarea id="voxTextarea" name="content" class="newVoxContent" maxlength="5000" placeholder="Escribe el contenido del tema..."></textarea>
 				<div class="subtitle pointer" data-toggle="modal" data-target="#polls" data-backdrop="false">
 					<span class="subtitleText"><i class="fas fa-poll"></i>Encuesta</span>
 					<span class="subtitleToggle"><i class="fas fa-plus"></i></span>
@@ -29,26 +30,26 @@
 					<span class="subtitleToggle"><i class="fas fa-plus"></i></span>
 				</div>
 				<div class="polls hide" id="anime">
-					<input type="text" name="anime" maxlength="50" placeholder="Titulo del anime/manga">
+					<input type="text" name="subtitle" maxlength="50" placeholder="Titulo del anime/manga">
 				</div>
 				
 			</div>
 			<div class="createVox-panel2">
 			<div class="createVox-panel2a">
 				<div class="preview previewb" id="previewInputVox">
-					<img id="nimgpreview" src="/dragdrop.png" alt=""> 
+					<img id="nimgpreview" class="nimgPreview" src="/assets/dragdrop.png" alt=""> 
 				</div>
 			</div>
 			<div class="createVox-panel2b">
 				<div class="selectAttach" id="voxAttachs">
-					<div id="uploadButtonPost" class="uploadFromLocal tooltip-bottom" onclick="document.getElementById('bfile').click();" data-tooltip="Subir archivo"><i class="fas fa-upload"></i></div>
+					<div id="uploadButtonPost" class="uploadFromLocal tooltip-bottom" onclick="openFileSelector('bfile')" data-tooltip="Subir archivo"><i class="fas fa-upload"></i></div>
 					
 					<div class="uploadFromLink tooltip-bottom" data-tooltip="Subir via link" data-toggle="modal" data-target="#nlinkModal" data-backdrop="false"><i class="fas fa-link"></i></div>	
 					
 					<input name="file" type="file" id="bfile" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput" data-preview="previewInputComment">
 				</div>
 				<button class="buttonPress buttonPressv2" id="newVox" type="submit">
-					<i class="fas fa-circle-notch fa-spin"></i>
+					<i id="bspin" class="fas fa-circle-notch fa-spin hidden"></i>
 					<b id="bupp"></b>
 					<span>Iniciar Tema</span> 
 				</button>
