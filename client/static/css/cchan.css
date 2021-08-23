@@ -1,29 +1,29 @@
 :root {
 	/* TEMA CLARO */
 	--logoimg: url(/assets/logo.png);
-    --base-background1: #e6e6e6;
+	--base-background1: #e6e6e6;
     --base-background2: #e0e0e0;
     --base-background3: #ececec;
     --navbar-background: #fbfbfb;
     --newbox-button: #2196f3;
     --newbox-button-hover: #3fa5f7;
-	--button1: #2196f3;
+    --button1: #2196f3;
     --button1-hover: #03a9f4;
     --button1b: #2196f3;
     --button1b-hover: #03a9f4;
     --comment-background: #f5f5f5;
     --comment-background-hover: #f9f9f9;
-	--comment-background-jump: #ffffff;
-    --box-links: #549645;
+    --comment-background-jump: #ffffff;
+    --box-links: #505050;
     --bar1: #f5f5f5;
-    --bar1-text: #dc3545;
+    --bar1-text: #2196f3;
     --box-text: #0a0a0a;
     --text-name: #4c4c4c;
     --text-author: #5d3505;
     --text-createdAt: #960000;
     --text-createdAt2: #00000096;
     --text-voxCount: #343a40;
-    --tag1: #1d6d22;
+    --tag1: #2196f3;
     --box-links-hover: #216311;
     --comment-textArea: #efefef;
     --comment-textArea-border: #afafaf;
@@ -32,7 +32,7 @@
     --slidemenu-background: #fdfdfd;
     --slidemenu-chat: #eaeaea;
     --slidemenu-chat-hover: #c7c6c4;
-	--scrollbar-thumb: #2196f3;
+    --scrollbar-thumb: #2196f3;
     --scrollbar-thumb-hover: #6db7f3;
     --scrollbar-track: #d4d4d4;
     --logo-color: #2196f3;
@@ -67,7 +67,7 @@
     --button-close-hover: black;
     --preview-background: #f9f9f9;
     --button3-hover: #eaeaea;
-	--alert-background: #dedede;
+    --alert-background: #dedede;
     --alert-border: #929292;
     --alert-color: black;
     --link-color: #43439e;
@@ -77,11 +77,16 @@
     --tarjeta-border-color: #cecece;
     --homebar-background: #ffffff;
     --homebar-tarjeta-background: #ffffff;
-	--home-menu-background: white;
-	--home-menu-element-hover: #c3c3c3;
-	--goup: #f5f5f5;
-	--goup-hover: #ffffff;
-	--rawAttach-background: #dcdcdc;
+    --home-menu-background: white;
+    --home-menu-element-hover: #c3c3c3;
+    --goup: #f5f5f5;
+    --goup-hover: #ffffff;
+    --rawAttach-background: #dcdcdc;
+	--op: #408443;
+	--poll: #2196f3;
+    --poll-hover: #03a9f4;
+    --poll-voted: #00bcd4;
+	
 }
 
 /* CODIGO DE VOXEDRIP.CSS ADAPTADO */
@@ -1775,7 +1780,7 @@ section.voxCommentList {
 
 .pollOption {
     flex-basis: 50%;
-    background: #a72828;
+    background: var(--poll);
     color: #ffffff;
     border-radius: 4px;
     display: flex;
@@ -1796,11 +1801,11 @@ section.voxCommentList {
 }
 
 .pollOption:hover {
-    background: #ce4141;
+    background: var(--poll-hover);
 }
 
 .pollOption.voted {
-    background: #ea3c3c;
+    background: var(--poll-voted);
 }
 
 
@@ -1984,7 +1989,7 @@ span.op {
     border-radius: 3px;
     font-size: 12px;
     padding: 3px 6px;
-    background: #1d6d13;
+    background: var(--op);
     color: white;
 }
 

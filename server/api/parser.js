@@ -1,6 +1,5 @@
-const dbManager = require('../db/dbManager');
-
 /* MANEJO DE TAGS, COMANDOS, ETC. DENTRO DE LOS CAMPOS DE ENTRADA. */
+const dbManager = require('../db/dbManager');
 
 function parseInput(rawtext){
 	//si... por ahora no manipula nada

@@ -10,6 +10,10 @@
 	var categoryData = it.utils.getCategoryData(it.data.categorias, BOX.cat); 
 %>
 <body>
+<script>
+	/* Calculos del lado del server */
+	var OP = <%~ (BOX.user.uid === it.sesion.id) ? true : false %>;
+</script>
 	<main>
 		<!-- barra/header del box -->
 		<div class="voxWraper">
@@ -167,7 +171,7 @@
 							
 							<span class="commentTag pointer" data-tag="<%~ com.cid %>" onclick="tag('>><%~ com.cid %>')"><%~ com.cid %></span>
 							
-							<% if (it.data.juid != ""){ %>
+							<% if (it.data.juid){ %>
 								<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span>
 								<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
 								<span class="commentTag pointer"><i class="fas fa-trash"></i></span>

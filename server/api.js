@@ -6,6 +6,7 @@ const jsonScheme = require('./db/models/jsonScheme');
 const utils = require('./utils');
 const uploadManager = require('./api/upload');
 const parser = require('./api/parser');
+const avatar = require('./api/avatar');
 
 module.exports = function(app, DB){
 	
@@ -56,13 +57,12 @@ module.exports = function(app, DB){
 		json.bid = bid;
 		json.user.uid = req.session.id;
 		json.date.created = Date.now();
-		json.icon = "/assets/anon/1.png";
+		json.icon = avatar.genAnon();
 		if (img[0] != ""){
 			json.type.push("image");
 			json.img.full = img[0];
 			json.img.preview = img[1];
-		}
-		if (vid[0] != ""){
+		} else if (vid[0] != ""){
 			json.type.push("video");
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
@@ -70,7 +70,8 @@ module.exports = function(app, DB){
 		json.content.body = parser.parseInput(content);
 		
 		dbManager.insertDB(DB, "coms", json, function(){
-			res.json({success: true, data: "Comentario Enviado."})
+			//TODO: enviar como respuesta el json del comentario?
+			res.json({success: true, data: json})
 		});
 		
 	});
