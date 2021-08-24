@@ -58,10 +58,14 @@ function insertDB(DB, cname, object, callback){
 	});
 }
 
+function pushDB(DB, cname, criterio, valor){
+	DB.db(sConfig.DBNAME).collection(cname).updateOne(criterio, valor, function (err, res){});
+}
+
 function updateDBAll(DB, cname, criterio, valor, callback){
 	DB.db(sConfig.DBNAME).collection(cname).updateMany(criterio, {$set: valor}, function(err, result){
 		callback(result);
 	});
 }
 
-module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll};
+module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll, pushDB};

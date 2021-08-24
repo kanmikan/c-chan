@@ -213,8 +213,7 @@
 			<div style="margin: 20px;"></div>
 			<div class="commentsVoxCount gotop hidden" id="attach-gup"><span style="width: 100%"><i class="fas fa-arrow-up"></i></span></div>
 		</section>
-		
-			<div class="floatQuote" id="floatQuote"></div>
+			<div class="floatQuote hidden" id="floatQuote"></div>
 			</div>
 		</div>
 	</main>

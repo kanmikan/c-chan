@@ -9,12 +9,14 @@
     --newbox-button-hover: #3fa5f7;
     --button1: #2196f3;
     --button1-hover: #03a9f4;
+	--button1-active: 2px solid #3f51b5;
     --button1b: #2196f3;
     --button1b-hover: #03a9f4;
     --comment-background: #f5f5f5;
     --comment-background-hover: #f9f9f9;
     --comment-background-jump: #ffffff;
-    --box-links: #505050;
+    --box-links: #3f51b5;
+	--box-links-hover: #03a9f4;
     --bar1: #f5f5f5;
     --bar1-text: #2196f3;
     --box-text: #0a0a0a;
@@ -24,7 +26,6 @@
     --text-createdAt2: #00000096;
     --text-voxCount: #343a40;
     --tag1: #2196f3;
-    --box-links-hover: #216311;
     --comment-textArea: #efefef;
     --comment-textArea-border: #afafaf;
     --comment-textArea-focus: white;
@@ -50,7 +51,7 @@
     --slidemenu-color1: #9e9e9e;
     --slidemenu-chat-text: black;
     --box-attach-background: #dcdcdc;
-    --quote-border: #b99d6c;
+    --quote-border: #9e9e9e;
     --loadmore-background: #f5cc81;
     --loadmore-background-hover: #ffb65c;
     --modalbox-background: white;
@@ -780,7 +781,6 @@ a.selectedVox.box .over {border-color: #f4a833 !important;background: #fff8f866;
     font-size: .9rem;
     background-color: var(--button1);
     border: 1px solid var(--button1);
-    /*border-bottom: 3px solid #bb7217;*/
     color: #ffffff;
     outline: none;
 }
@@ -791,8 +791,8 @@ a.selectedVox.box .over {border-color: #f4a833 !important;background: #fff8f866;
 }  
 
 .buttonPress:active {
-    border-top: 3px solid #15425a;
-    border-bottom: 1px solid #15425a;
+    border-top: var(--button1-active);
+    border-bottom: var(--button1-active);
 }
 
 .createVox button.buttonPress {
@@ -1112,6 +1112,7 @@ button.close:hover{
 	margin: 8px 16px;
 	border: 1px solid var(--form-textArea-border);
     width: 90%;
+	text-align: center;
 }
 
 .preview {
@@ -2059,7 +2060,11 @@ textarea.commentTextarea:focus {
 .commentData video {
     float: left;
 }
- 
+
+.comment.jump{
+    background: var(--comment-background-jump);
+} 
+
 .metadata {
     font-size: 14px;
     color: var(--text-name);
@@ -2234,8 +2239,10 @@ span.attachsVox {
 }
 
 .nimgPreview {
-	width: 100%;
+	width: auto;
+    max-width: 100%;
     height: 100%;
+    object-fit: scale-down;
 }
 
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */

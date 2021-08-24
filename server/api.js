@@ -20,7 +20,6 @@ module.exports = function(app, DB){
 	})
 	
 	//MUESTRA: crea un nuevo box.
-	//PRUEBA PRELIMINAR
 	app.post('/api/new', pass.check, function(req, res) {
 		let cat = req.fields.cat;
 		let title = req.fields.title;
@@ -77,9 +76,10 @@ module.exports = function(app, DB){
 		let content = req.fields.content;
 		let img = req.fields.img.split(";");
 		let vid = req.fields.vid.split(";");
+		let cid = utils.genCID(7);
 		
 		let json = utils.clone(jsonScheme.COMMENT_SCHEME);
-		json.cid = utils.genCID(7);
+		json.cid = cid;
 		json.bid = bid;
 		json.user.uid = req.session.id;
 		json.date.created = Date.now();
@@ -93,7 +93,7 @@ module.exports = function(app, DB){
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
 		}
-		json.content.body = parser.parseInput(content);
+		json.content.body = parser.parseInput(DB, cid, content);
 		
 		dbManager.insertDB(DB, "coms", json, function(){
 			//TODO: enviar como respuesta el json del comentario?

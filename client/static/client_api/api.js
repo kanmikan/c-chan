@@ -149,15 +149,66 @@ function checkComFieldLocal(){
 	return true;
 }
 
+function tag(cid){
+	element("commentTextarea").value += cid + "\n";
+}
+
+function hashScroll(hash){
+	if (hash != ""){
+		window.location.hash = hash;
+		let elem = element(hash.substring(1));
+		let offset = elem.offsetTop;
+		let h = elem.clientHeight - 32;
+		let wh = window.innerHeight;
+		if (h < wh) {offset = offset - ((wh/2)-(h/2));}
+		
+		[].forEach.call(document.querySelectorAll(".jump"), function(e) {
+			e.classList.remove("jump");
+		});
+		document.documentElement.scrollTo({top: offset, behavior: 'smooth'});
+		elem.classList.add("jump");
+	}
+}
+
 /* EVENTOS */
+document.addEventListener("DOMContentLoaded", function(event) {
+	//hacer scroll al comentario al cargar la pagina.
+	//TODO: es necesario cancelar scroll del navegador?
+	hashScroll(document.location.hash);
+});
+
 $(document).ready(function() {
 	
+	//evento: hover sobre un tag
+	//TODO: convertir a javascript nativo...
+	let quote = $(document).find('#floatQuote');
+	$(document).on("mouseenter", ".tag", function (e) {
+		var id = "#" + $(document).find(e.target).attr("data-tag");	
+		var targetElement = $(document).find(id);
+		quote.removeClass("hidden");
+		quote.addClass("popupw");
+		quote.css({left:  e.pageX - 40, top:   e.pageY - 100});	
+		$(document).find('#floatQuote').html(targetElement.html());		
+	});
+	$(document).on("mouseleave", ".tag", function (e) {
+		quote.addClass("hidden");
+	});
+	
+	//evento: comprobar hash al hacer click en una clase tag
+	//TODO: lo mismo de arriba.
+	$(document).on("click","a",function(event){
+		if (this.hash != "") {
+			event.preventDefault();
+			hashScroll(this.hash);
+		}
+	});
+	
 	//evento: post de comentario.
+	//TODO: añadir los efectos de la interfaz.
 	if (element("newComment")) {
 		element("newComment").addEventListener("click", function(e){
 			e.preventDefault();
 			let form = $("#createComment").serialize();
-			//formdata.append("data", {test: "test"});
 			
 			if (checkComFieldLocal()){
 				postForm(form, "/api/com", function(target){
@@ -175,6 +226,7 @@ $(document).ready(function() {
 	}
 	
 	//evento: al crear un tema (este evento no es explicitamente necesario, pero sirve para manejo de errores)
+	//TODO: añadir los efectos de la interfaz.
 	if (element("newVox")) {
 		element("newVox").addEventListener("click", function(e){
 			e.preventDefault();
@@ -196,6 +248,7 @@ $(document).ready(function() {
 	
 	
 	//evento: al seleccinar un archivo en el modal de nuevo tema
+	//TODO: añadir los efectos de la interfaz.
 	if (element("bfile")){
 		element("bfile").addEventListener("change", function(e){
 			let file = element("bfile").files.item(0);
@@ -219,6 +272,7 @@ $(document).ready(function() {
 	}
 	
 	//evento: al seleccionar un archivo en los comentarios.
+	//TODO: añadir los efectos de la interfaz.
 	if (element("cfile")){
 		element("cfile").addEventListener("change", function (e){
 			let file = element("cfile").files.item(0);
@@ -249,6 +303,5 @@ $(document).ready(function() {
 			});
 		});
 	}
-	
 	
 });
