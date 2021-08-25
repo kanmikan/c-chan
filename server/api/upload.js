@@ -27,6 +27,8 @@ function upload(file, callback){
 	}
 }
 
+//FUNCION: subida de imagenes al server localName
+//TODO: comprobar mime/type del archivo, tamaño, etc etc.
 function localStore(file, callback){
 	var buffer = fs.readFileSync(file.path);
 	var filename = utils.randomString(16) + "." + file.type.split("/")[1];

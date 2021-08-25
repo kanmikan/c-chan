@@ -11,7 +11,8 @@ const pass = require('./api/passport')
 
 module.exports = function(app, DB){
 	
-	//subida de imagenes
+	//RUTA: subida de imagenes
+	//TODO: detectar si es un video/imagen/otra cosa y redirigir
 	app.post('/api/upload', pass.check, function(req, res) {
 		let imgdata = req.files.imgData;
 		uploadManager.upload(imgdata, function(result){
@@ -19,7 +20,7 @@ module.exports = function(app, DB){
 		});
 	})
 	
-	//MUESTRA: crea un nuevo box.
+	//RUTA: crea un nuevo box.
 	app.post('/api/new', pass.check, function(req, res) {
 		let cat = req.fields.cat;
 		let title = req.fields.title;
@@ -39,7 +40,6 @@ module.exports = function(app, DB){
 		json.date.created = time;
 		json.date.bump = time;
 		
-		//todo: imagen y videos
 		if (img[0] != ""){
 			json.type.push("image");
 			json.img.full = img[0];
@@ -71,6 +71,7 @@ module.exports = function(app, DB){
 		
 	});
 	
+	//RUTA: nuevo comentario.
 	app.post('/api/com', pass.check, function(req, res) {
 		let bid = req.fields.bid;
 		let content = req.fields.content;
