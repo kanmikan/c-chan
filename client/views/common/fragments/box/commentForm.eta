@@ -13,7 +13,7 @@
 			</div>
 			<input name="file" type="file" id="cfile" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput">
 			
-			<input type="text" class="modalInput hidden" name="url" id="vurl" placeholder="Pega un link de youtube, video o imagen...">
+			<input type="text" class="modalInput hidden" name="url" id="curl" placeholder="Pega un link de youtube, video o imagen...">
 			<div id="linkButton" class="attachButton tooltip-bottom">
 				<i class="fas fa-link"></i> 
 			</div>	
@@ -25,9 +25,9 @@
 			</div>
 		</div>			
 		<button class="buttonPress newComment" id="newComment">
-			<i class="fas fa-circle-notch fa-spin hidden" id="loadingCom"></i>
+			<i id="loadingCom" class="fas fa-circle-notch fa-spin hidden"></i>
 			<b id="upp"></b>
-			<span>Comentar</span>
+			<span id="ctext">Comentar</span>
 		</button>
 	</div>
 </form>

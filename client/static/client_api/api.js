@@ -170,7 +170,13 @@ function hashScroll(hash){
 	}
 }
 
+function checkURL(url){
+	//aca se detecta si es un link de youtube, si es un video, una imagen, algo malicioso, o cualquier otra cosa
+	console.log(url);
+}
+
 /* EVENTOS */
+
 document.addEventListener("DOMContentLoaded", function(event) {
 	//hacer scroll al comentario al cargar la pagina.
 	//TODO: es necesario cancelar scroll del navegador?
@@ -179,6 +185,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 $(document).ready(function() {
 	
+	//evento: al seleccionar un link en comentarios
+	//TODO: convertir a javascript nativo.
+	element("linkButton").addEventListener("click", function(e){
+		if ($("#curl").hasClass("hidden")){
+			//esta oculto, activar
+			$("#curl").removeClass("hidden");
+			//cambiar icono a palomita
+			$("#linkButton").html('<i class="fas fa-check"></i>');
+		} else {
+			//esta visible, enviar informacion si existe y desactivar.
+			$("#curl").addClass("hidden");
+			$("#linkButton").html('<i class="fas fa-link"></i>');
+			var link = $("input[name=url]").val();
+			if (link.trim() != ""){
+				//enviar url a el detector
+				checkURL(url);
+			}
+		}
+	});
+
 	//evento: hover sobre un tag
 	//TODO: convertir a javascript nativo...
 	let quote = $(document).find('#floatQuote');
@@ -255,7 +281,9 @@ $(document).ready(function() {
 			if (file && file.type.split("/")[0] === "image"){
 				getDataURL(file, function(target){
 					element("nimgpreview").setAttribute("src", target);
-					console.log("subiendo...");
+					element("btext").classList.add("hidden");
+					element("bspin").classList.remove("hidden");
+					element("newVox").disabled = true;
 				}, function(data){
 					if (data.success){
 						element("nimgpreview").setAttribute("src", data.data.link);
@@ -264,8 +292,9 @@ $(document).ready(function() {
 					} else {
 						element("nimgpreview").setAttribute("src", "");
 					}
-					
-					console.log(data);
+					element("btext").classList.remove("hidden");
+					element("bspin").classList.add("hidden");
+					element("newVox").disabled = false;
 				});	
 			}
 		});
@@ -283,6 +312,8 @@ $(document).ready(function() {
 					element("imgpreview").setAttribute("src", target);
 					element("previewInputComment").classList.remove("hide");
 					element("loadingCom").classList.remove("hidden");
+					element("ctext").classList.add("hidden");
+					element("newComment").disabled = true;
 				}, function(data){
 					if (data.success){
 						element("imgpreview").setAttribute("src", data.data.link);
@@ -294,6 +325,8 @@ $(document).ready(function() {
 					}
 					
 					element("loadingCom").classList.add("hidden");
+					element("ctext").classList.remove("hidden");
+					element("newComment").disabled = false;
 				});	
 			}
 			

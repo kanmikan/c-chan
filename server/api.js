@@ -77,12 +77,13 @@ module.exports = function(app, DB){
 		let img = req.fields.img.split(";");
 		let vid = req.fields.vid.split(";");
 		let cid = utils.genCID(7);
+		let timestamp = Date.now();
 		
 		let json = utils.clone(jsonScheme.COMMENT_SCHEME);
 		json.cid = cid;
 		json.bid = bid;
 		json.user.uid = req.session.id;
-		json.date.created = Date.now();
+		json.date.created = timestamp;
 		json.icon = avatar.genAnon();
 		if (img[0] != ""){
 			json.type.push("image");
@@ -95,8 +96,12 @@ module.exports = function(app, DB){
 		}
 		json.content.body = parser.parseInput(DB, cid, content);
 		
-		dbManager.insertDB(DB, "coms", json, function(){
-			//TODO: enviar como respuesta el json del comentario?
+		//por cuestiones de sincronizacion, tengo que leer la cantidad de comentarios en cada envio de comentario
+		
+		dbManager.insertDB(DB, mdbScheme.C_COMS, json, function(){
+			dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", function(coms){
+				dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
+			});
 			res.json({success: true, data: json})
 		});
 		

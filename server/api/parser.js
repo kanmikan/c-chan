@@ -38,7 +38,6 @@ function htmlSanitize(rawtext){
 function parseTags(DB, cid, rawtext){
 	//se encarga de detectar los tags y actualizar la informacion en la base de datos..
 	let tags = rawtext.match(/>>{1}([^\r\n\s]{7})/gi);
-	console.log(tags);
 	if (tags){
 		tags.forEach(function(item, i){
 			let selcid = tags[i].substring(2);

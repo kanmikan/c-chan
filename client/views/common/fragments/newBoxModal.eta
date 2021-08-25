@@ -51,7 +51,7 @@
 				<button class="buttonPress buttonPressv2" id="newVox" type="submit">
 					<i id="bspin" class="fas fa-circle-notch fa-spin hidden"></i>
 					<b id="bupp"></b>
-					<span>Iniciar Tema</span> 
+					<span id="btext">Iniciar Tema</span> 
 				</button>
 			</div>
 			</div>
