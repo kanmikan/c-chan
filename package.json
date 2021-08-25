@@ -13,6 +13,7 @@
     "imgur": "^1.0.2",
     "jquery": "^3.6.0",
     "mongodb": "^3.6.4",
+    "request": "^2.88.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

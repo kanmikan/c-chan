@@ -187,24 +187,25 @@ $(document).ready(function() {
 	
 	//evento: al seleccionar un link en comentarios
 	//TODO: convertir a javascript nativo.
-	element("linkButton").addEventListener("click", function(e){
-		if ($("#curl").hasClass("hidden")){
-			//esta oculto, activar
-			$("#curl").removeClass("hidden");
-			//cambiar icono a palomita
-			$("#linkButton").html('<i class="fas fa-check"></i>');
-		} else {
-			//esta visible, enviar informacion si existe y desactivar.
-			$("#curl").addClass("hidden");
-			$("#linkButton").html('<i class="fas fa-link"></i>');
-			var link = $("input[name=url]").val();
-			if (link.trim() != ""){
-				//enviar url a el detector
-				checkURL(url);
+	if (element("linkButton")){
+		element("linkButton").addEventListener("click", function(e){
+			if ($("#curl").hasClass("hidden")){
+				//esta oculto, activar
+				$("#curl").removeClass("hidden");
+				//cambiar icono a palomita
+				$("#linkButton").html('<i class="fas fa-check"></i>');
+			} else {
+				//esta visible, enviar informacion si existe y desactivar.
+				$("#curl").addClass("hidden");
+				$("#linkButton").html('<i class="fas fa-link"></i>');
+				var link = $("input[name=url]").val();
+				if (link.trim() != ""){
+					//enviar url a el detector
+					checkURL(url);
+				}
 			}
-		}
-	});
-
+		});
+	}
 	//evento: hover sobre un tag
 	//TODO: convertir a javascript nativo...
 	let quote = $(document).find('#floatQuote');

@@ -3,7 +3,7 @@
 	<% it.data.categorias.forEach(function(categoria){ %>
 		<% if (categoria.type === 0){ %>
 			<a href="/<%= categoria.tid %>" class="categoryItem">
-				<div class="categoryItemIcon"><img src="/assets/<%= categoria.icon %>" alt=""></div>
+				<div class="categoryItemIcon"><img src="<%= categoria.icon %>" alt=""></div>
 				<div class="categoryItemTitle"><%= categoria.name %></div>
 			</a>
 		<% } %>

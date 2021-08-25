@@ -29,7 +29,7 @@ module.exports = function(app, DB){
 		
 		dbManager.mQuery(DB, models.BOX_QUERY(uid, bid), function(result){
 			//si existe el box, el C_BOXS tendrá datos, de lo contrario se asume que el tema no existe.
-			if (result[mdbScheme.C_BOXS][0] === undefined){
+			if (!result[mdbScheme.C_BOXS][0]){
 				res.redirect("/error/1");
 			} else {
 				res.render("box", {
@@ -49,14 +49,23 @@ module.exports = function(app, DB){
 	/* CATEGORIAS */
 	app.get('/:cat', function(req, res) {
 		var cat = req.params.cat;
+		var uid = req.session.id;
+		
 		//el server hace un pequeño request de la lista de categorias, si existe accede a ella.
 		dbManager.queryDB(DB, mdbScheme.C_CATS, {tid: cat}, "", function(result){
-			if (result[0] === undefined){
+			if (!result[0]){
 				res.redirect("/error/2");
 			} else {
 				//si existe la categoria, cargar los boxs que pertenezcan a ella.
 				//TODO
-				res.send("CATEGORIA: " + cat);
+				dbManager.mQuery(DB, models.CAT_QUERY(uid, cat), function(result){
+					res.render("index", {
+						utils: utils,
+						renderConfig: renderConfig,
+						sesion: req.session,
+						data: result
+					});
+				});
 				
 			}
 		});

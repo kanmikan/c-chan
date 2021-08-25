@@ -1916,8 +1916,8 @@ textarea.commentTextarea {
 }
 
 .attachButton:active {
-    border-top: 3px solid #d07b12;
-    border-bottom: 1px solid #d07b12;
+    border-top: var(--button1-active);
+    border-bottom: var(--button1-active);
 }
 
 .commentsVoxCount {

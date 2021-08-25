@@ -52,7 +52,16 @@ function genCID(len){
 		result += chars[Math.floor(Math.random() * chars.length)];
 	}
 	return result;
-}		
+}
+
+function randomString(len){
+	var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	var result = "";
+	for (var i = len; i > 0; --i){
+		result += chars[Math.floor(Math.random() * chars.length)];
+	}
+	return result;
+}	
 
 function getPollPercent(poll1, poll2){
 	var total = poll1+poll2;
@@ -63,4 +72,4 @@ function getPollPercent(poll1, poll2){
 	return [Math.round(per) + "%", Math.round(per2) + "%"];
 } 
 
-module.exports = {clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4};
+module.exports = {clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString};

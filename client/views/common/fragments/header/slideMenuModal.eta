@@ -5,11 +5,12 @@
 			<div class="optionText">Nuevo Tema</div>
 		</li>
 		
+	<% if (it.renderConfig.ENABLE_COMMUNITIES){ %>
 		<li data-toggle="modal" data-target="#createCommunity" data-backdrop="false">
 			<div class="optionIcon"><i class="fas fa-plus" aria-hidden="true"></i></div>
 			<div class="optionText">Nueva Comunidad</div>
 		</li>
-		
+	<% } %>
 		<li onclick="location.href='/favs'">
 			<div class="optionIcon"><i class="fas fa-star" aria-hidden="true"></i></div>
 			<div class="optionText">Favoritos</div>

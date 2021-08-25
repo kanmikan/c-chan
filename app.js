@@ -15,6 +15,8 @@ var server = http.createServer(app);
 /* MIDDLEWARES */
 //carpeta donde van los archivos estaticos.
 app.use('/', express.static(path.join(__dirname, './client/static')));
+//carpeta de subidas locales..
+app.use('/uploads', express.static(path.join(__dirname, './uploads')));
 //carpeta del node.
 app.use('/node', express.static(path.join(__dirname, 'node_modules/')))
 //formidable para los post request

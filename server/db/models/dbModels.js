@@ -11,6 +11,15 @@ function HOME_QUERY(uid){
 	];
 }
 
+function CAT_QUERY(uid, cat){
+	return [
+		[mdbScheme.C_ADM, {uid: uid}, "", 0],
+		[mdbScheme.C_BOXS, {cat: cat}, {"date.sticky": -1, "date.bump": -1}, 41],
+		[mdbScheme.C_NOTIF, {uid: uid}, {tiempo: -1}, 0],
+		[mdbScheme.C_CATS, "", {sticky: -1, order: -1}, 0]
+	];
+}
+
 function BOX_QUERY(uid, bid){
 	return [
 		[mdbScheme.C_ADM, {uid: uid}, "", 0],
@@ -22,4 +31,4 @@ function BOX_QUERY(uid, bid){
 	];
 }
 
-module.exports = {HOME_QUERY, BOX_QUERY};
+module.exports = {HOME_QUERY, CAT_QUERY, BOX_QUERY};

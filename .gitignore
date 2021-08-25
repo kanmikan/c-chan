@@ -4,6 +4,7 @@ logs
 npm-debug.log*
 CODEDUMP.txt
 *.lnk
+uploads/*
 
 # Runtime data
 pids
