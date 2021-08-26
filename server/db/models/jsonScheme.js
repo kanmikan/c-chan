@@ -1,4 +1,5 @@
 const COMMENT_SCHEME = {
+	version: 2,
 	cid: "cid",
 	bid: "bid",
 	user: {
@@ -31,6 +32,7 @@ const COMMENT_SCHEME = {
 }
 
 const BOX_SCHEME = {
+	version: 2, //variable indicativa de la version del modelo de la base de datos. Utilizada para añadir compatibilidad con versiones antiguas y no tener que borrar todo a la mrd.
 	bid: "bid",
 	cat: "cat",
 	user: {

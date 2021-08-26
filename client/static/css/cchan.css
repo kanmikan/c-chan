@@ -514,8 +514,7 @@ ul.slideMenuOptions li:hover.optionBolt {
     color: red;
     z-index: 2;
     padding-right: 5px;
-	margin-top: 1.5px;
-    font-size: 21px;
+	font-size: 21px;
 }
 
 .box .tagList .tag.sticky {

@@ -4,6 +4,7 @@ const api = require('./api');
 const utils = require('./utils');
 const renderConfig = require('./config/renderConfig');
 const mdbScheme = require('./db/models/mdbScheme');
+const compat = require('./compat');
 
 module.exports = function(app, DB){
 	
@@ -12,6 +13,9 @@ module.exports = function(app, DB){
 		var uid = req.session.id; //esto puede ser cambiado por un uid unico en vez de el id de la sesion.
 		
 		dbManager.mQuery(DB, models.HOME_QUERY(uid), function(result){
+			//compat test entre mdb y mdbv2
+			result.boxs = compat.checkCompat("BOX", result.boxs);
+			
 			res.render("index", {
 				utils: utils,
 				renderConfig: renderConfig,

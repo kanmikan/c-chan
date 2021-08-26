@@ -28,27 +28,27 @@
 					<img src="<%~ it.utils.getCategoryData(it.data.categorias, box.cat).icon %>" style="width: 20px;vertical-align: middle;"><span style="margin-left: 4px;margin-right: 5px;align-self: center;"><%~ it.utils.getCatShow(box.cat) %></span></img>
 				</div>
 				<!-- tag video -->
-				<% if (box.type.includes("video")){ %>
+				<% if (box.type && box.type.includes("video")){ %>
 					<div class="tagInvisible ytb"><div class="tagWrapper"></div><i class="fab fa-youtube"></i></div>
 				<% } %>
 				<!-- tag dados -->
-				<% if (box.type.includes("dice")){ %>
+				<% if (box.type && box.type.includes("dice")){ %>
 					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>
 				<% } %>
 				<!-- tag encuesta -->
-				<% if (box.type.includes("poll")){ %>
+				<% if (box.type && box.type.includes("poll")){ %>
 					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>
 				<% } %>
 				<!-- tag rss -->
-				<% if (box.flag.includes("rss")){ %>
+				<% if (box.flag && box.flag.includes("rss")){ %>
 					<div class="tagInvisible rss"><div class="tagWrapperTransparent"></div><i class="fas fa-rss"></i></div>
 				<% } %>
 				<!-- tag sticky local -->
-				<% if (box.date.csticky > 0){ %>
+				<% if (box.date && box.date.csticky > 0){ %>
 					<div class="tagInvisible csticky"><div class="tagWrapperTransparent"></div><i class="fas fa-thumbtack"></i></div>
 				<% } %>
 				<!-- tag sticky global -->
-				<% if (box.date.sticky > 0){ %>
+				<% if (box.date && box.date.sticky > 0){ %>
 					<div class="tag sticky">Sticky</div>
 				<% } %>
 			</div>

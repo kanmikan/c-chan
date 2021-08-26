@@ -1,5 +1,5 @@
 module.exports = {
-	DBNAME: "mikandbv2",
+	DBNAME: "mikanchan",
 	DBURL: "mongodb://127.0.0.1:27017",
 	SSL: false,
 	PORT: process.env.PORT || 3000,
