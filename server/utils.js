@@ -61,7 +61,11 @@ function randomString(len){
 		result += chars[Math.floor(Math.random() * chars.length)];
 	}
 	return result;
-}	
+}
+
+function isGif(url){
+	return url.slice(-4) === ".gif";
+}
 
 function getPollPercent(poll1, poll2){
 	var total = poll1+poll2;
@@ -72,4 +76,4 @@ function getPollPercent(poll1, poll2){
 	return [Math.round(per) + "%", Math.round(per2) + "%"];
 } 
 
-module.exports = {clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString};
+module.exports = {isGif, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString};

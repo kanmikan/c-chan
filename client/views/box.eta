@@ -7,7 +7,7 @@
 <% 
 	/* VARIABLES DE USO LOCAL EN EL RENDER */
 	var BOX = it.data.boxs[0];
-	var categoryData = it.utils.getCategoryData(it.data.categorias, BOX.cat); 
+	var categoryData = it.utils.getCategoryData(it.data.categorias, BOX.cat);
 %>
 <body>
 <script>
@@ -87,7 +87,7 @@
 					<figure class="voxAttach">
 						<div style="position: relative;width: 100%;height: 100%;">
 							<i class="fa fa-search-plus attachExpandIcon hidden"></i>
-							<a class="voxImage" target="_BLANK" href="<%~ BOX.img.full %>"><img src="<%~ BOX.img.preview %>"></img></a>
+							<a class="voxImage" target="_BLANK" href="<%~ BOX.img.full %>"><img src="<%~ (it.utils.isGif(BOX.img.preview)) ? BOX.img.full : BOX.img.preview %>"></img></a>
 						</div>
 					</figure>
 				<% } else { %>
@@ -95,7 +95,7 @@
 						<% if (BOX.type.includes("object")){ %>
 							<object class="objectContainer" data="<%~ BOX.media.raw %>" width="100%" height="100%"></object>
 						<% } else { %>
-							<iframe class="objectContainer videoPreview" width="100%" height="100%" src="<%~ BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%~ BOX.media.raw %>?autoplay=1><img src=<%~ BOX.media.preview %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<iframe class="objectContainer" width="100%" height="100%" src="<%~ BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%~ BOX.media.raw %>?autoplay=1><img src=<%~ BOX.media.preview %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 						<% } %>
 					</figure>
 				<% } %>
@@ -192,7 +192,7 @@
 							<figure class="commentAttach">
 								<div style="position: relative;width: 100%;height: 100%;">
 									<i class="fa fa-search-plus attachExpandIcon hidden"></i>
-									<a class="voxImage" target="_BLANK" href="<%~ com.img.full %>"><img src="<%~ com.img.preview %>"></img></a>
+									<a class="voxImage" target="_BLANK" href="<%~ com.img.full %>"><img src="<%~ (it.utils.isGif(com.img.preview)) ? com.img.full : com.img.preview %>"></img></a>
 								</div>
 							</figure>
 						<% } %>

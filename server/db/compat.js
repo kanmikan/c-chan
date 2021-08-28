@@ -1,6 +1,7 @@
 /* Herramientas de compatibilidad entre versiones de la base de datos */
-const utils = require('./utils');
-const jsonScheme = require('./db/models/jsonScheme');
+const utils = require('../utils');
+const jsonScheme = require('./models/jsonScheme');
+const upload = require('../api/upload');
 
 //FUNCION: comprueba la version de la coleccion y transcribe los elementos mdb a mdbv2.
 function checkCompat(type, collection){
@@ -35,15 +36,20 @@ function mdbTranscript(type, mdbElement){
 			if (mdbElement.img != "" && !mdbElement.video){
 				json.type.push("image");
 				json.img = {
-					preview: mdbElement.img,
+					preview: upload.genThumb(mdbElement.img),
 					full: mdbElement.img,
 					raw: ""
 				};
 			}
 			if (mdbElement.video_url != "" && mdbElement.video){
 				json.type.push("video");
+				if (upload.checkURLType(mdbElement.video_url) === "youtube-embed"){
+					json.img.preview = upload.genYoutubeThumb(mdbElement.video_url, "mq");
+				} else {
+					json.img.preview = upload.genThumb(mdbElement.video_url);
+				}
 				json.media = {
-					preview: mdbElement.img,
+					preview: upload.genThumb(mdbElement.video_url),
 					raw: mdbElement.video_url
 				};
 			}
@@ -52,6 +58,9 @@ function mdbTranscript(type, mdbElement){
 			json.content.comments = mdbElement.comments;
 			
 			//TODO: mas cosas..
+			if (json.bid === "5aa52dc7-4388-4233-bb4a-6aa1bdd01136"){
+				console.log(json);
+			}
 			return json;
 		case "COM":
 			json = utils.clone(jsonScheme.COMMENT_SCHEME);
@@ -61,11 +70,11 @@ function mdbTranscript(type, mdbElement){
 			json.user.uid = mdbElement.uid;
 			//jerarquia
 			json.date.created = mdbElement.tiempo;
-			json.icon = mdbElement.color;
+			json.icon = "/assets/anon/" + mdbElement.color;
 			if (mdbElement.img && !mdbElement.video){
 				json.type.push("image");
 				json.img = {
-					preview: mdbElement.img_url,
+					preview: upload.genThumb(mdbElement.img_url),
 					full: mdbElement.img_url,
 					raw: ""
 				};
@@ -73,7 +82,7 @@ function mdbTranscript(type, mdbElement){
 			if (mdbElement.video && !mdbElement.img){
 				json.type.push("video");
 				json.media = {
-					preview: mdbElement.img_url,
+					preview: upload.genThumb(mdbElement.video_url),
 					raw: mdbElement.video_url
 				};
 			}

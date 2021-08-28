@@ -55,7 +55,52 @@ function imgurUpload(file, callback){
 	});	
 }
 
-//funcion utilitaria para generar thumbnails de imgur
+//FUNCION: detectar si la url es imgur o cloudinary
+function checkURLType(url){
+	if (url.search("i.imgur.com") != -1){
+		return "imgur";
+	} else if (url.search("res.cloudinary.com") != -1){
+		return "cloudinary";
+	} else if (url.search("i3.ytimg.com") != -1) {
+		return "youtube-img";
+	} else if (url.search("youtube.com/embed") != -1) {
+		return "youtube-embed";
+	} else {
+		return "generic";
+	}
+}
+
+//FUNCION: detecta la url y devuelve el thumbnail
+function genThumb(url){
+	switch(checkURLType(url)){
+		case "imgur":
+			return genImgurThumb(url);
+		case "cloudinary":
+			return genCloudyThumb(url);
+		case "youtube-img":
+			console.log(url);
+			return url;
+		case "youtube-embed":
+			return genYoutubeThumb(url, "hq");
+		case "generic":
+			return url;
+	}
+}
+
+//FUNCION: obtiene el thumbnail de un video de youtube
+function genYoutubeThumb(url, quality){
+	var id = youtubeParser(url);
+	return (id) ? "http://i3.ytimg.com/vi/" + id + "/" + quality + "default.jpg" : "/assets/logo.png";
+}
+
+//FUNCION: obtiene el id del video de youtube
+function youtubeParser(url){
+	let regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+	let match = url.match(regExp);
+	return (match && match[2].length == 11) ? match[2] : null;
+}
+
+//FUNCION: generar thumbnails de imgur
 function genImgurThumb(url){
 	let v1 = url.split(".");
 	let v2 = v1[v1.length-1];
@@ -64,4 +109,11 @@ function genImgurThumb(url){
 	return res + sConfig.IMGUR_THUMBNAIL_QUALITY + "." + v2;
 }
 
-module.exports = {upload}
+//FUNCION: general thumbnails de cloudinary
+function genCloudyThumb(url){
+	let n = url.split("/");
+	let sliceA = url.slice(0, url.lastIndexOf("/"));
+	return url.slice(0, sliceA.lastIndexOf("/")) + sConfig.CLOUDINARY_THUMBNAIL_CONFIG + n[n.length - 2] + "/" + n[n.length - 1];
+}
+
+module.exports = {upload, genThumb, checkURLType, genYoutubeThumb}
