@@ -9,7 +9,7 @@ const parser = require('./api/parser');
 const avatar = require('./api/avatar');
 const pass = require('./api/passport')
 
-module.exports = function(app, DB){
+module.exports = function(app){
 	
 	//RUTA: subida de imagenes
 	//TODO: detectar si es un video/imagen/otra cosa y redirigir
@@ -21,7 +21,7 @@ module.exports = function(app, DB){
 	})
 	
 	//RUTA: crea un nuevo box.
-	app.post('/api/new', pass.check, function(req, res) {
+	app.post('/api/new', pass.check, pass.checkBoxFields, function(req, res) {
 		let cat = req.fields.cat;
 		let title = req.fields.title;
 		let subtitle = req.fields.subtitle;
@@ -65,14 +65,17 @@ module.exports = function(app, DB){
 			json.content.extra.poll = {};
 		}
 		
-		dbManager.insertDB(DB, "boxs", json, function(){
-			res.json({success: true, data: {url: "/tema/" + bid}});
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.id}, "", function(userdata){
+			json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
+			dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
+				res.json({success: true, data: {url: "/tema/" + bid}});
+			});
 		});
 		
 	});
 	
 	//RUTA: nuevo comentario.
-	app.post('/api/com', pass.check, function(req, res) {
+	app.post('/api/com', pass.check, pass.checkComFields, function(req, res) {
 		let bid = req.fields.bid;
 		let content = req.fields.content;
 		let img = req.fields.img.split(";");
@@ -95,15 +98,17 @@ module.exports = function(app, DB){
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
 		}
-		json.content.body = parser.parseInput(DB, cid, content);
+		json.content.body = parser.parseInput(req.app.locals.db, cid, content);
 		
-		//por cuestiones de sincronizacion, tengo que leer la cantidad de comentarios en cada envio de comentario
-		
-		dbManager.insertDB(DB, mdbScheme.C_COMS, json, function(){
-			dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", function(coms){
-				dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.id}, "", function(userdata){
+			json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
+			dbManager.insertDB(req.app.locals.db, mdbScheme.C_COMS, json, function(){
+				//por cuestiones de sincronizacion, tengo que leer la cantidad de comentarios en cada envio de comentario
+				dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, "", function(coms){
+					dbManager.pushDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
+				});
+				res.json({success: true, data: json})
 			});
-			res.json({success: true, data: json})
 		});
 		
 	});
@@ -111,7 +116,7 @@ module.exports = function(app, DB){
 	//MUESTRA: obtener todos los boxs, ordenados por ultimo bump y stickys
 	//TODO: añadir filtro de datos
 	app.get('/api/boxs', pass.check, function(req, res) {
-		dbManager.queryDB(DB, mdbScheme.C_BOXS, "", {sticky: -1, bump: -1}, function(boxs){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, "", {sticky: -1, bump: -1}, function(boxs){
 			if (boxs[0] != undefined){
 				res.json({success: true, data: boxs});
 			} else {
@@ -123,7 +128,7 @@ module.exports = function(app, DB){
 	//MUESTRA: obtener box especificado con el bid.
 	app.get('/api/box/:bid', pass.check, function(req, res) {
 		let bid = req.params.bid;
-		dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, {sticky: -1, bump: -1}, function(boxs){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, {sticky: -1, bump: -1}, function(boxs){
 			if (boxs[0] != undefined){
 				res.json({success: true, data: boxs});
 			} else {
@@ -135,7 +140,7 @@ module.exports = function(app, DB){
 	//MUESTRA: obtener todos los comentarios
 	//TODO: añadir filtro de datos
 	app.get('/api/coms', pass.check, function(req, res) {
-		dbManager.queryDB(DB, mdbScheme.C_COMS, "", {tiempo: -1}, function(coms){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, "", {tiempo: -1}, function(coms){
 			if (coms[0] != undefined){
 				res.json({success: true, data: coms});
 			} else {
@@ -148,7 +153,7 @@ module.exports = function(app, DB){
 	//TODO: añadir filtro de datos
 	app.get('/api/coms/:bid', pass.check, function(req, res) {
 		let bid = req.params.bid;
-		dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, {tiempo: -1}, function(coms){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, {tiempo: -1}, function(coms){
 			if (coms[0] != undefined){
 				res.json({success: true, data: coms});
 			} else {
@@ -160,7 +165,7 @@ module.exports = function(app, DB){
 	//MUESTRA: obtener comentario especificado con el cid
 	app.get('/api/com/:cid', pass.check, function(req, res) {
 		let cid = req.params.cid;
-		dbManager.queryDB(DB, mdbScheme.C_COMS, {cid: cid}, {tiempo: -1}, function(coms){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {cid: cid}, {tiempo: -1}, function(coms){
 			if (coms[0] != undefined){
 				res.json({success: true, data: coms});
 			} else {
@@ -174,53 +179,25 @@ module.exports = function(app, DB){
 	app.get('/dev', function(req, res) {
 		
 		let data = {
-			bid: utils.uuidv4(),
-			cat: "oficial",
-			user: {
-				uid: "uid",
-				jerarquia: "" //datos incrustados de jerarquia.
-			},
-			type: [ //poll, dice, video, object
-				"poll"
-			],
-			flag: [ //rss
-				"rss"
-			],
-			date: {
-				created: 0, //timestamp de fecha de creacion.
-				bump: 0, //timestamp de ultimo bump.
-				sticky: 0, //me olvide de añadir estos..
-				csticky: 0
-			},
-			img: {
-				preview: "/assets/logo.png", //version optimizada de la imagen para uso como thumbnail.
-				full: "/assets/logo.png", //imagen original subida en un servidor local.
-				raw: "" //imagen original del sitio procedente, si existe.
-			},
-			media: {
-				preview: "", //thumbnail del video/multimedia
-				raw: "" //link directo al video/multimedia
-			},
-			content: { //contenido del tema.
-				title: "title",
-				body: "contenido",
-				comments: 0, //se incrusta una referencia de la cantidad de comentarios en el box.
-				extra: { //datos especiales dependiendo del tipo de box.
-					title2: "title2", //segundo titulo, caracteristica unica de mikanchan
-					poll: { //datos extra perteneciente a una encuesta.
-						pollOne: "opcion 1",
-						pollOneV: 0,
-						pollTwo: "opcion 2",
-						pollTwoV: 0,
-						pollVotes: [ //los votos de la encuesta se almacenan en el mismo box.
-							["uid", 1],
-							["uid", 2]
-						]
-					}
+			uid: req.session.id,
+			nick: "Mikandev",
+			rango: "Admin",
+			color: "#ff0000",
+			pass: "1234",
+			token: "",
+			permisos: ["admin"],
+			state: ["banned"],
+			extra: {
+				bandata: {
+					ip: "127.0.0.1", //cuando alguien es baneado se le loguea la ip junto con el ban, para detectar clones o para asustar cepiteros.
+					fecha: 0,
+					duracion: 1000,
+					razon: "Por mogo"
 				}
 			}
 		};
-		dbManager.insertDB(DB, "boxs", data, function(){
+		
+		dbManager.insertDB(req.app.locals.db, "users", data, function(){
 			res.redirect("/");
 		});
 		

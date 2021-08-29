@@ -29,13 +29,14 @@ app.set("view engine", "eta");
 app.set('views', path.join(__dirname, './client/views'));
 
 /* BASE DE DATOS */
-dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}, function (db){
+dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}, function (db){ 
+	app.locals.db = db;
 	
 	/* SESION */
 	sesionManager.create(app);
 	
 	/* RUTAS */
-	routes(app, db);
+	routes(app);
 	
 });
 

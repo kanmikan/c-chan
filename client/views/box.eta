@@ -45,20 +45,17 @@
 						</div>
 					</div>
 					<div class="metadata">
-						<% if (BOX.user.jerarquia.nick != undefined && BOX.user.jerarquia.autor != undefined){ %>
+						<% if (BOX.user.jerarquia.nick && BOX.user.jerarquia.rango){ %>
 							<div class="authorVox">
 								<span class="name"><%~ BOX.user.jerarquia.nick %></span>
-								<% if (BOX.user.jerarquia.jcolor != ""){ %>
-									<span class="commentTag" style="background-color: <%~ BOX.user.jerarquia.jcolor %>"><%~ BOX.user.jerarquia.autor %></span>
+								<% if (BOX.user.jerarquia.color != ""){ %>
+									<span class="commentTag" style="background-color: <%~ BOX.user.jerarquia.color %>"><%~ BOX.user.jerarquia.rango %></span>
 								<% } else { %>
-									<span class="commentTag"><%~ BOX.user.jerarquia.autor %></span>
+									<span class="commentTag"><%~ BOX.user.jerarquia.rango %></span>
 								<% } %>
 							</div>
 						<% } else { %>
-							<div class="authorVox">
-								<span class="name">Anonimo</span>
-								<span class="commentTag">anon</span>
-							</div>
+							<div class="authorVox"><span class="name">Anonimo</span><span class="commentTag">anon</span></div>
 						<% } %>
 						<div class="voxCreatedAt"><%~ it.utils.timeSince(BOX.date.created) %></div>
 					</div>
@@ -156,22 +153,22 @@
 							<% if (com.type.includes("idunico")){ %>
 								<span class="commentIdUnico" style="background-color: #<%~ com.data.idcolor %>"><%~ com.data.idu %></span>
 							<% } else { %>
-								<% if (com.user.jerarquia.nick == undefined){ %>
-									<span class="author">Anonimo</span>
-								<% } else { %>
+								<% if (com.user.jerarquia.nick){ %>
 									<span class="author"><%~ com.user.jerarquia.nick %></span>
+								<% } else { %>
+									<span class="author">Anonimo</span>
 								<% } %>
 							<% } %>
 							
-							<% if (com.user.jerarquia.nick == undefined || com.user.jerarquia.jcolor == undefined){ %>
-								<span class="commentTag">anon</span>
+							<% if (com.user.jerarquia.rango || com.user.jerarquia.color){ %>
+								<span class="commentTag" style="background-color: <%~ com.user.jerarquia.color %>"><%~ com.user.jerarquia.rango %></span>
 							<% } else { %>
-								<span class="commentTag" style="background-color: <%~ com.user.jerarquia.jcolor %>"><%~ com.user.jerarquia.autor %></span>
+								<span class="commentTag">anon</span>
 							<% } %>
 							
 							<span class="commentTag pointer" data-tag="<%~ com.cid %>" onclick="tag('>><%~ com.cid %>')"><%~ com.cid %></span>
 							
-							<% if (it.data.juid){ %>
+							<% if (it.data.users){ %>
 								<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span>
 								<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
 								<span class="commentTag pointer"><i class="fas fa-trash"></i></span>

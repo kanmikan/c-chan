@@ -92,16 +92,16 @@ function commentRender(com){
 	if (com.type.includes("idunico")){
 		cbody += `<span class="commentIdUnico" style="background-color: #${com.data.idcolor}">${com.data.idu}</span>`;
 	} else {
-		if (com.user.jerarquia.nick == undefined){
-			cbody +=`<span class="author">Anonimo</span>`;
-		} else {
+		if (com.user.jerarquia.nick){
 			cbody +=`<span class="author">${com.user.jerarquia.nick}</span>`;
+		} else {
+			cbody +=`<span class="author">Anonimo</span>`;
 		}
 	}
-	if (com.user.jerarquia.nick == undefined || com.user.jerarquia.jcolor == undefined){
-		cbody +=`<span class="commentTag">anon</span>`;
+	if (com.user.jerarquia.rango || com.user.jerarquia.color){
+		cbody +=`<span class="commentTag" style="background-color: ${com.user.jerarquia.color}">${com.user.jerarquia.rango}</span>`;
 	} else {
-		cbody +=`<span class="commentTag" style="background-color: ${com.user.jerarquia.jcolor}">${com.user.jerarquia.autor}</span>`;
+		cbody +=`<span class="commentTag">anon</span>`;
 	}
 	cbody +=`<span class="commentTag pointer" data-tag="${com.cid}" onclick="tag('>>${com.cid}')">${com.cid}</span>`;			
 		
@@ -237,7 +237,7 @@ $(document).ready(function() {
 			e.preventDefault();
 			let form = $("#createComment").serialize();
 			
-			if (checkComFieldLocal()){
+			if (true){
 				postForm(form, "/api/com", function(target){
 					//accion antes de enviar.
 				}, function(result){
@@ -246,6 +246,13 @@ $(document).ready(function() {
 						//añadir comentario y limpiar vista.
 						resetCommentInputData();
 						commentRender(result.data);
+					} else {
+						if (result.data.banned){
+							//TODO: mostrar mensaje de baneo con toda la info necesaria.
+							alert(JSON.stringify(result.data.bandata));
+						} else {
+							alert(result.data);
+						}
 					}
 				});
 			}
@@ -266,7 +273,11 @@ $(document).ready(function() {
 					if (result.success){
 						window.location.href = result.data.url;
 					} else {
-						alert(result.data);
+						if (result.data.banned){
+							alert(JSON.stringify(result.data.bandata));
+						} else {
+							alert(result.data);
+						}
 					}
 				});
 			}
@@ -292,6 +303,11 @@ $(document).ready(function() {
 						element("bimg").value = img;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
+						if (data.data.banned){
+							alert(JSON.stringify(data.data.bandata));
+						} else {
+							alert(JSON.stringify(data.data));
+						}
 					}
 					element("btext").classList.remove("hidden");
 					element("bspin").classList.add("hidden");
@@ -323,6 +339,11 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
+						if (data.data.banned){
+							alert(JSON.stringify(data.data.bandata));
+						} else {
+							alert(JSON.stringify(data.data));
+						}
 					}
 					
 					element("loadingCom").classList.add("hidden");

@@ -48,7 +48,7 @@ function localStore(file, callback){
 
 function imgurUpload(file, callback){
 	imgur.uploadFile(file.path).then((json) => {
-		let thumb = genImgurThumb(json.link);
+		let thumb = genImgurThumb(json.link, sConfig.IMGUR_THUMBNAIL_QUALITY);
 		callback({success: true, data: {link: json.link, thumb: thumb}});
 	}).catch((err) => {
 		callback({success: false, data: err.message});
@@ -74,7 +74,7 @@ function checkURLType(url){
 function genThumb(url){
 	switch(checkURLType(url)){
 		case "imgur":
-			return genImgurThumb(url);
+			return genImgurThumb(url, sConfig.IMGUR_THUMBNAIL_QUALITY);
 		case "cloudinary":
 			return genCloudyThumb(url);
 		case "youtube-img":
@@ -101,12 +101,12 @@ function youtubeParser(url){
 }
 
 //FUNCION: generar thumbnails de imgur
-function genImgurThumb(url){
+function genImgurThumb(url, quality){
 	let v1 = url.split(".");
 	let v2 = v1[v1.length-1];
 	let v3 = v2.length+1;
 	let res = url.slice(0, -(v3));
-	return res + sConfig.IMGUR_THUMBNAIL_QUALITY + "." + v2;
+	return res + quality + "." + v2;
 }
 
 //FUNCION: general thumbnails de cloudinary
@@ -116,4 +116,4 @@ function genCloudyThumb(url){
 	return url.slice(0, sliceA.lastIndexOf("/")) + sConfig.CLOUDINARY_THUMBNAIL_CONFIG + n[n.length - 2] + "/" + n[n.length - 1];
 }
 
-module.exports = {upload, genThumb, checkURLType, genYoutubeThumb}
+module.exports = {upload, genThumb, checkURLType, genImgurThumb, genYoutubeThumb}

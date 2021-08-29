@@ -58,9 +58,6 @@ function mdbTranscript(type, mdbElement){
 			json.content.comments = mdbElement.comments;
 			
 			//TODO: mas cosas..
-			if (json.bid === "5aa52dc7-4388-4233-bb4a-6aa1bdd01136"){
-				console.log(json);
-			}
 			return json;
 		case "COM":
 			json = utils.clone(jsonScheme.COMMENT_SCHEME);
