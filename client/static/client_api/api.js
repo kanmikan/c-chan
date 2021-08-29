@@ -237,7 +237,7 @@ $(document).ready(function() {
 			e.preventDefault();
 			let form = $("#createComment").serialize();
 			
-			if (true){
+			if (checkComFieldLocal()){
 				postForm(form, "/api/com", function(target){
 					//accion antes de enviar.
 				}, function(result){

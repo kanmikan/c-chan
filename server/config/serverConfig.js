@@ -8,5 +8,10 @@ module.exports = {
 	/* CONFIGURACION DE SERVIDORES DE IMAGEN */
 	IMG_SERVER: 0, //0: local, 1: imgur, 2: imgbb, 3: cloudinary
 	IMGUR_THUMBNAIL_QUALITY: "m", //l: large m: medium, etc.
-	CLOUDINARY_THUMBNAIL_CONFIG: "/c_scale,pg_1,w_200/" 
+	CLOUDINARY_THUMBNAIL_CONFIG: "/c_scale,pg_1,w_200/",
+	
+	/* DELAYS ENTRE OTROS */
+	COMMENT_DELAY: 5, //tiempo de espera en segundos (5 segundos)
+	BOX_DELAY: 30,
+	MAX_TAGS: 5 //maximo numero de tagueos permitidos.
 }

@@ -107,7 +107,7 @@ module.exports = function(app){
 				dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, "", function(coms){
 					dbManager.pushDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
 				});
-				res.json({success: true, data: json})
+				res.json({success: true, data: json});
 			});
 		});
 		
