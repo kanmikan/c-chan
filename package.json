@@ -10,9 +10,11 @@
     "express": "^4.17.1",
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.2",
+    "ffmpeg": "0.0.4",
     "imgur": "^1.0.2",
     "jquery": "^3.6.0",
     "mongodb": "^3.6.4",
+    "node-thumbnail": "^0.15.0",
     "request": "^2.88.2",
     "uuid": "^8.3.2"
   },

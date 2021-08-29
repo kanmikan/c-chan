@@ -1,5 +1,6 @@
 /* MANEJO DE SUBIDA DE ARCHIVOS, SERVIDORES, ETC. */
 const fs = require('fs');
+const thumb = require('node-thumbnail').thumb;
 const imgur = require('imgur');
 const request = require("request");
 const sConfig = require('../config/serverConfig');
@@ -39,10 +40,26 @@ function localStore(file, callback){
 		if (err) {
 			callback({success: false, data: err});
 		} else {
-			
-			//TODO: aca se tiene que generar el thumbnail... pero por ahora envio la imagen completa..
-			callback({success: true, data: {link: external_path, thumb: external_path}});
+			genLocalThumb(path, filename, function(resthumb){
+				console.log(resthumb);
+				//TODO: aca se tiene que generar el thumbnail... pero por ahora envio la imagen completa..
+				callback({success: true, data: {link: external_path, thumb: resthumb}});
+			});
 		}
+	});
+}
+
+//FUNCION: genera thumbnails de imagenes locales.
+function genLocalThumb(path, filename, callback){
+	let name = filename.split(".");
+	thumb({
+		source: path,
+		destination: __dirname + '../../../uploads/',
+		concurrency: 4,
+		width: 300,
+		quiet: true
+	}, function(files, err, stdout, stderr) {
+		callback("/uploads/" + name[0] + "_thumb." + name[1]);
 	});
 }
 
@@ -109,7 +126,7 @@ function genImgurThumb(url, quality){
 	return res + quality + "." + v2;
 }
 
-//FUNCION: general thumbnails de cloudinary
+//FUNCION: genera thumbnails de cloudinary
 function genCloudyThumb(url){
 	let n = url.split("/");
 	let sliceA = url.slice(0, url.lastIndexOf("/"));
