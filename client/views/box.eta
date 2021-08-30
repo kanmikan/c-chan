@@ -13,6 +13,22 @@
 <script>
 	/* Calculos del lado del server */
 	var OP = <%~ (BOX.user.uid === it.sesion.id) ? true : false %>;
+	var TOKEN = "<%~ it.token %>";
+	
+	/* LISTENERS DEL SOCKETIO */
+	$(function () {
+		var socket = io();
+		
+		socket.on('connect', function(){
+			socket.emit("room", "<%~ BOX.bid %>");
+		});
+		
+		socket.on('comment', function(data){
+			if (TOKEN != data.token){
+				commentRender(data.op, data.data);
+			}
+		});
+	});
 </script>
 	<main>
 		<!-- barra/header del box -->

@@ -76,4 +76,14 @@ function getPollPercent(poll1, poll2){
 	return [Math.round(per) + "%", Math.round(per2) + "%"];
 } 
 
-module.exports = {isGif, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString};
+function parseCookies(raw){
+	let cookie = raw.split(";");
+	let obj = {};
+	for (var i=0; i<cookie.length; i++){
+		let data = cookie[i].split("=");
+		obj[data[0].trim()] = data[1];
+	}
+	return obj;
+}
+
+module.exports = {isGif, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies};

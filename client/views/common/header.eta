@@ -1,7 +1,13 @@
 
 <!-- Aca iran los js de primera carga -->
+<script src="/socket.io/socket.io.js"></script>
 <script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
 <script src="/node/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script>
+	$(function () {
+		var socket = io();
+	});
+</script>
 
 <!-- inicio del navbar -->
 <nav>

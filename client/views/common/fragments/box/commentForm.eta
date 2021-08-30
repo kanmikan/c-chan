@@ -3,6 +3,8 @@
 	<input type="hidden" name="bid" value="<%~ it.data.boxs[0].bid %>">
 	<input type="hidden" name="img" id="cimg" value="">
 	<input type="hidden" name="vid" id="cvid" value="">
+	<input type="hidden" name="token" id="token" value="<%~ it.token %>">
+	
 	
 	<textarea name="content" class="commentTextarea" id="commentTextarea" maxlength="3000" placeholder="Escribe un comentario o pega una imagen..."></textarea>
 				

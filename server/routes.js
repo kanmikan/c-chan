@@ -38,6 +38,7 @@ module.exports = function(app){
 				res.redirect("/error/1");
 			} else {
 				res.render("box", {
+					token: utils.randomString(16),
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session,

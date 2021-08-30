@@ -83,10 +83,10 @@ function resetCommentInputData(){
 	
 }
 
-function commentRender(com){
+function commentRender(op, com){
 	//render de comentarios del lado del cliente.			
 	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar"><img class="avatar" src="${com.icon}" alt=""></div><div class="commentBody"><div class="commentMetadata"><div class="commentsTag unselect">`;
-	if (OP){
+	if (op){
 		cbody += `<span class="commentTag op">OP</span>`;
 	}
 	if (com.type.includes("idunico")){
@@ -245,7 +245,7 @@ $(document).ready(function() {
 					if (result.success){
 						//añadir comentario y limpiar vista.
 						resetCommentInputData();
-						commentRender(result.data);
+						commentRender(OP, result.data);
 					} else {
 						if (result.data.banned){
 							//TODO: mostrar mensaje de baneo con toda la info necesaria.

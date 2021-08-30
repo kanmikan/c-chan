@@ -106,12 +106,16 @@ function checkTags(req, res, callback){
 //FUNCION: calcula el tiempo del ultimo comentario guardado y el momento del request actual.
 function checkRecursiveRequest(req, res, cname, delay, callback){
 	let currentTimestamp = Date.now();
-	dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {"user.uid": req.session.id}, {"date.created": -1}, function(coms){
-		let ultimoComentario = coms[0].date.created;
-		let diferencia = (currentTimestamp - ultimoComentario) / 1000;
-		let faltan = delay - diferencia;
-		if (diferencia < delay){
-			callback({success: false, data: `Espera ${faltan} segundos.`});
+	dbManager.queryDB(req.app.locals.db, cname, {"user.uid": req.session.id}, {"date.created": -1}, function(coms){
+		if (coms[0]){
+			let ultimoComentario = coms[0].date.created;
+			let diferencia = (currentTimestamp - ultimoComentario) / 1000;
+			let faltan = delay - diferencia;
+			if (diferencia < delay){
+				callback({success: false, data: `Espera ${faltan} segundos.`});
+			} else {
+				callback(null);
+			}
 		} else {
 			callback(null);
 		}

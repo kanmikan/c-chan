@@ -7,6 +7,7 @@ const dbManager = require('./server/db/dbManager');
 const sConfig = require('./server/config/serverConfig');
 const routes = require('./server/routes');
 const sesionManager = require('./server/sesion/sesionManager');
+const live = require('./server/api/live');
 
 /* SETUP INICIAL */
 var app = express();
@@ -33,7 +34,10 @@ dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: tru
 	app.locals.db = db;
 	
 	/* SESION */
-	sesionManager.create(app);
+	let sesion = sesionManager.create(app);
+	
+	/* WEBSOCKETS (socket.io) */
+	live.init(server, sesion);
 	
 	/* RUTAS */
 	routes(app);

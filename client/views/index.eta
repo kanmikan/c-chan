@@ -5,6 +5,15 @@
 </head>
 <!-- ..El navbar se renderiza aca.. -->
 <%~ includeFile('./common/header', it); %>
+<script>
+	/* ABANDONA LA INSTANCIA DE TODOS LOS TEMAS */
+	$(function () {
+		var socket = io();
+		socket.on('connect', function(){
+			socket.emit("leave", "all");
+		});
+	});
+</script>
 <body>
 	<div class="boxList" id="boxList">
 		<% 

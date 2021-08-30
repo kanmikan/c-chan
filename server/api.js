@@ -7,7 +7,8 @@ const utils = require('./utils');
 const uploadManager = require('./api/upload');
 const parser = require('./api/parser');
 const avatar = require('./api/avatar');
-const pass = require('./api/passport')
+const pass = require('./api/passport');
+const live = require('./api/live');
 
 module.exports = function(app){
 	
@@ -66,7 +67,9 @@ module.exports = function(app){
 		}
 		
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.id}, "", function(userdata){
-			json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
+			if (userdata[0]){
+				json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
+			}
 			dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
 				res.json({success: true, data: {url: "/tema/" + bid}});
 			});
@@ -82,6 +85,8 @@ module.exports = function(app){
 		let vid = req.fields.vid.split(";");
 		let cid = utils.genCID(7);
 		let timestamp = Date.now();
+		let DB = req.app.locals.db;
+		let token = req.fields.token;
 		
 		let json = utils.clone(jsonScheme.COMMENT_SCHEME);
 		json.cid = cid;
@@ -98,14 +103,23 @@ module.exports = function(app){
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
 		}
-		json.content.body = parser.parseInput(req.app.locals.db, cid, content);
+		json.content.body = parser.parseInput(DB, cid, content);
 		
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.id}, "", function(userdata){
-			json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
-			dbManager.insertDB(req.app.locals.db, mdbScheme.C_COMS, json, function(){
+		dbManager.queryDB(DB, mdbScheme.C_ADM, {uid: req.session.id}, "", function(userdata){
+			if (userdata[0]){json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};}
+			
+			dbManager.insertDB(DB, mdbScheme.C_COMS, json, function(){
 				//por cuestiones de sincronizacion, tengo que leer la cantidad de comentarios en cada envio de comentario
-				dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, "", function(coms){
-					dbManager.pushDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
+				dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", function(coms){
+					dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
+				});
+				
+				
+				dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", function(box){
+					if (box[0]){
+						let op = (box[0].user.uid === req.session.id) ? true : false;
+						live.sendDataTo(bid, "comment", {token: token, op: op, data: json});
+					}
 				});
 				res.json({success: true, data: json});
 			});
