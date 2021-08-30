@@ -27,11 +27,11 @@ function sendData(key, data){
 
 function liveSession(io){
 	io.on('connection', function(socket){
-		console.log("[SocketIO] Sesion Iniciada.");
+		//console.log("[SocketIO] Sesion Iniciada.");
 		socket.join(socket.handshake.session.id);
 		
 		socket.on('disconnect', () => {
-			console.log("[SocketIO] Sesion Terminada.");
+			//console.log("[SocketIO] Sesion Terminada.");
 			socket.leave(socket.handshake.session.id);
 		});
 		
@@ -40,6 +40,7 @@ function liveSession(io){
 		});
 		socket.on('leave', function(data){
 			socket.leaveAll();
+			socket.join(socket.handshake.session.id);
 		});
 		socket.on('test', function(data){
 			console.log(data);

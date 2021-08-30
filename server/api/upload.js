@@ -1,6 +1,6 @@
 /* MANEJO DE SUBIDA DE ARCHIVOS, SERVIDORES, ETC. */
 const fs = require('fs');
-const thumb = require('node-thumbnail').thumb;
+const thumb = require('image-thumbnail');
 const imgur = require('imgur');
 const request = require("request");
 const sConfig = require('../config/serverConfig');
@@ -36,15 +36,28 @@ function localStore(file, callback){
 	var path = __dirname + '../../../uploads/' + filename;
 	var external_path = "/uploads/" + filename;
     
-	fs.writeFile(path, buffer, function(err){
-		if (err) {
+	writeFile(path, buffer, function(err){
+		if (err){
 			callback({success: false, data: err});
 		} else {
 			genLocalThumb(path, filename, function(resthumb){
-				console.log(resthumb);
-				//TODO: aca se tiene que generar el thumbnail... pero por ahora envio la imagen completa..
-				callback({success: true, data: {link: external_path, thumb: resthumb}});
+				if (resthumb){
+					callback({success: true, data: {link: external_path, thumb: resthumb}});
+				} else {
+					callback({success: false, data: "Hubo un error al subir la imagen."});
+				}
 			});
+		}
+	});
+}
+
+//FUNCION: escribe un buffer en un archivo
+function writeFile(path, buffer, callback){
+	fs.writeFile(path, buffer, function(err){
+		if (err){
+			callback(err);
+		} else {
+			callback(null);
 		}
 	});
 }
@@ -52,14 +65,19 @@ function localStore(file, callback){
 //FUNCION: genera thumbnails de imagenes locales.
 function genLocalThumb(path, filename, callback){
 	let name = filename.split(".");
-	thumb({
-		source: path,
-		destination: __dirname + '../../../uploads/',
-		concurrency: 4,
-		width: 300,
-		quiet: true
-	}, function(files, err, stdout, stderr) {
-		callback("/uploads/" + name[0] + "_thumb." + name[1]);
+	let thumbPath = __dirname + '../../../uploads/' + name[0] + "_thumb." + name[1];
+	
+	//generar thumbnail
+	thumb(path, {percentage: sConfig.IMG_LOCAL_THUMBNAIL_CONFIG}).then(function(thumbnailBuffer){
+		writeFile(thumbPath, thumbnailBuffer, function(rerr){
+			if (!rerr){
+				callback("/uploads/" + name[0] + "_thumb." + name[1]);
+			} else {
+				callback(null);
+			}
+		});
+	}).catch(function(err){
+		callback(null);
 	});
 }
 
