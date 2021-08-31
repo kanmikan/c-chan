@@ -114,13 +114,15 @@ function commentRender(op, com){
 	});
 	cbody +=`</div><div class="commentData">`;
 	if (com.type.includes("image")){
-		cbody +=`<figure class="commentAttach"><div style="position: relative;width: 100%;height: 100%;"><i class="fa fa-search-plus attachExpandIcon hidden"></i><a class="voxImage" target="_BLANK" href="${com.img.full}"><img src="${com.img.preview}"></img></a></div></figure>`;
+		cbody +=`<figure class="commentAttach"><div style="position: relative;width: 100%;height: 100%;"><i class="fa fa-search-plus attachExpandIcon hidden"></i><a class="voxImage" target="_BLANK" href="${com.img.full}"><img src="${(isGif(com.img.preview)) ? com.img.full : com.img.preview}"></img></a></div></figure>`;
 	}
 	if (com.type.includes("video")){
 		cbody +=`<figure class="commentAttachVideo"><div class="video-container"><iframe src="${com.media.raw}" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=${com.media.raw}?autoplay=1><img src=${ com.media.preview}><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></figure>`;
 	}
 	cbody +=`<div class="commentContent">${com.content.body}<br></div></div></div></div>`;	
 	$("#commentList").prepend(cbody);
+	//TODO: cambiar todo esto urgente......
+	element("voxComments").innerHTML = $("#commentList").children().length-2;
 }
 
 function checkBoxFieldLocal(){
@@ -175,6 +177,10 @@ function checkURL(url){
 	console.log(url);
 }
 
+function isGif(url){
+	return url.slice(-4) === ".gif";
+}
+
 /* EVENTOS */
 
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -184,6 +190,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 $(document).ready(function() {
+	
+	//evento: al hacer click en cargar mas comentarios.
+	if (element("commentLoadMore")){
+		element("commentLoadMore").addEventListener("click", function(e){
+			//ordenar array en base al timestamp:
+			COMS.sort(function(a, b){
+				return a.created - b.created;
+			});
+			
+			for (var i=0; i<COMS.length; i++){
+				commentRender(COMS[i].op, COMS[i].data);
+			}
+			COMS = [];
+			element("commentLoadMore").classList.add("hidden");
+		});
+	}
 	
 	//evento: al seleccionar un link en comentarios
 	//TODO: convertir a javascript nativo.
@@ -245,7 +267,7 @@ $(document).ready(function() {
 					if (result.success){
 						//añadir comentario y limpiar vista.
 						resetCommentInputData();
-						commentRender(OP, result.data);
+						//commentRender(OP, result.data);
 					} else {
 						if (result.data.banned){
 							//TODO: mostrar mensaje de baneo con toda la info necesaria.

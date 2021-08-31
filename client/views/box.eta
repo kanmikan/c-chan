@@ -14,6 +14,7 @@
 	/* Calculos del lado del server */
 	var OP = <%~ (BOX.user.uid === it.sesion.id) ? true : false %>;
 	var TOKEN = "<%~ it.token %>";
+	var COMS = []; //buffer de comentarios.
 	
 	/* LISTENERS DEL SOCKETIO */
 	$(function () {
@@ -24,8 +25,16 @@
 		});
 		
 		socket.on('comment', function(data){
+			COMS.push({created: data.data.date.created, op: data.op, data: data.data});
+			let bufferCount = (COMS.length > 1) ? `${COMS.length} comentarios` : `1 comentario`;
+			element("comBufferNumber").innerHTML = bufferCount;
+			
 			if (TOKEN != data.token){
-				commentRender(data.op, data.data);
+				//si no es el emisor, mostrar el boton.
+				element("commentLoadMore").classList.remove("hidden");
+			} else {
+				//de lo contrario, renderizar la lista.
+				element("commentLoadMore").click();
 			}
 		});
 	});
@@ -129,16 +138,15 @@
 
 			<!-- header de lista de comentarios -->
 			<div class="commentsVoxCount"> 
-				<span class="commentsVoxText" id="commentsVoxText">Comentarios (<span id="voxComments"><%~ it.data.coms.length %></span>) </span> 
+				<span class="commentsVoxText" id="commentsVoxText">Comentarios (<span id="voxComments"><%~ it.data.coms.length %></span>)</span>
 				<span class="attachsVox">
 					<i class="fas fa-folder" id="attach-ilist"></i>
 					<i class="fas fa-arrow-down" id="attach-gdown" style="margin-left: 10px;"></i>
 				</span> 
 			</div>
 			
-			<div class="commentsVoxCount loadmore disabled unselect" id="commentLoadMore" data-comments="0"></div>
-			<div class="comment loadmore disabled" id="loadmore">
-				<span class="loadcontent">Cargar nuevos comentarios</span>
+			<div class="commentsVoxCount loadmore unselect hidden" id="commentLoadMore">
+				<span class="loadcontent">Cargar <span id="comBufferNumber">x</span></span>
 			</div>
 			
 			<div class="attachList hide" id="attachList">
