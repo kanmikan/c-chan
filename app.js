@@ -8,6 +8,7 @@ const sConfig = require('./server/config/serverconfig.js');
 const routes = require('./server/routes');
 const sesionManager = require('./server/sesion/sesionmanager.js');
 const live = require('./server/api/live.js');
+const cache = require('./server/db/cache.js');
 
 /* SETUP INICIAL */
 var app = express();
@@ -35,6 +36,9 @@ dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: tru
 	
 	/* SESION */
 	let sesion = sesionManager.create(app);
+	
+	/* CACHE MANAGER */
+	cache.init(db);
 	
 	/* WEBSOCKETS (socket.io) */
 	live.init(server, sesion);

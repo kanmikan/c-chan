@@ -6,7 +6,10 @@ function create(app){
 	var expires = new Date(Number(new Date()) + 315360000000); //si, caduca dentro de 10 años... kjj
 	let sesion = session({
 		secret: sConfig.SESSION_SECRET,
-		store: MongoStore.create({mongoUrl: sConfig.DBURL}),
+		store: MongoStore.create({
+			mongoUrl: sConfig.DBURL,
+			mongoOptions: {tls: sConfig.SSL}
+		}),
 		cookie: {maxAge: expires}
 	});
 	app.use(sesion);

@@ -15,6 +15,7 @@
     "image-thumbnail": "^1.0.13",
     "imgur": "^1.0.2",
     "jquery": "^3.6.0",
+    "mingo": "^4.1.4",
     "mongodb": "^3.6.4",
     "request": "^2.88.2",
     "socket.io": "^4.1.3",
