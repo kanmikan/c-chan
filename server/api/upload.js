@@ -2,9 +2,8 @@
 const fs = require('fs');
 const thumb = require('image-thumbnail');
 const imgur = require('imgur');
-const request = require("request");
-const sConfig = require('../config/serverConfig');
-const utils = require('../utils');
+const sConfig = require('../config/serverconfig.js');
+const utils = require('../utils.js');
 
 //MUESTRA: subida de archivos, esto se encargaría de seleccionar el servidor configurado por el host, etc.
 function upload(file, callback){

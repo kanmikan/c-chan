@@ -1,7 +1,7 @@
 /* Herramientas de compatibilidad entre versiones de la base de datos */
 const utils = require('../utils');
-const jsonScheme = require('./models/jsonScheme');
-const upload = require('../api/upload');
+const jsonScheme = require('./models/jsonscheme.js');
+const upload = require('../api/upload.js');
 
 //FUNCION: comprueba la version de la coleccion y transcribe los elementos mdb a mdbv2.
 function checkCompat(type, collection){

@@ -1,6 +1,6 @@
 /* MANEJO DE TAGS, COMANDOS, ETC. DENTRO DE LOS CAMPOS DE ENTRADA. */
-const dbManager = require('../db/dbManager');
-const mdbScheme = require('../db/models/mdbScheme');
+const dbManager = require('../db/dbmanager.js');
+const mdbScheme = require('../db/models/mdbscheme.js');
 
 function parseInput(DB, cid, rawtext){
 	parseTags(DB, cid, rawtext); //obligatoriamente, se invoca el parser de tags aunque no se utilize la informacion de retorno.

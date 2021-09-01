@@ -3,11 +3,11 @@ const http = require("http");
 const path = require("path");
 const eta = require("eta");
 const formidable = require('express-formidable');
-const dbManager = require('./server/db/dbManager');
-const sConfig = require('./server/config/serverConfig');
+const dbManager = require('./server/db/dbmanager.js');
+const sConfig = require('./server/config/serverconfig.js');
 const routes = require('./server/routes');
-const sesionManager = require('./server/sesion/sesionManager');
-const live = require('./server/api/live');
+const sesionManager = require('./server/sesion/sesionmanager.js');
+const live = require('./server/api/live.js');
 
 /* SETUP INICIAL */
 var app = express();

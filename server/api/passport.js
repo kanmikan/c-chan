@@ -1,7 +1,7 @@
 /* COMPRUEBA LA JERARQUIA, BANEOS, WHITELIST, ETC. */
-const dbManager = require('../db/dbManager');
-const mdbScheme = require('../db/models/mdbScheme');
-const sConfig = require('../config/serverConfig');
+const dbManager = require('../db/dbmanager.js');
+const mdbScheme = require('../db/models/mdbscheme.js');
+const sConfig = require('../config/serverconfig.js');
 
 /* MIDDLEWARES */
 function check(req, res, next){

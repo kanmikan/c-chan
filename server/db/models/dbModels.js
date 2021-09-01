@@ -1,4 +1,4 @@
-const mdbScheme = require('./mdbScheme');
+const mdbScheme = require('./mdbscheme.js');
 
 /* QUERY DE DATOS NECESARIOS PARA LA HOME DE CCHAN */
 /* PARAMETROS: uid - id del usuario que esta realizando la query, utilizada para obtener los datos de administracion y notificaciones */

@@ -1,10 +1,10 @@
-const dbManager = require('./db/dbManager');
-const models = require('./db/models/dbModels');
-const api = require('./api');
-const utils = require('./utils');
-const renderConfig = require('./config/renderConfig');
-const mdbScheme = require('./db/models/mdbScheme');
-const compat = require('./db/compat');
+const dbManager = require('./db/dbmanager.js');
+const models = require('./db/models/dbmodels.js');
+const api = require('./api.js');
+const utils = require('./utils.js');
+const renderConfig = require('./config/renderconfig.js');
+const mdbScheme = require('./db/models/mdbscheme.js');
+const compat = require('./db/compat.js');
 
 module.exports = function(app){
 	

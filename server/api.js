@@ -1,14 +1,14 @@
-const sConfig = require('./config/serverConfig');
-const dbManager = require('./db/dbManager');
-const mdbScheme = require('./db/models/mdbScheme');
-const jsonScheme = require('./db/models/jsonScheme');
+const sConfig = require('./config/serverconfig.js');
+const dbManager = require('./db/dbmanager.js');
+const mdbScheme = require('./db/models/mdbscheme.js');
+const jsonScheme = require('./db/models/jsonscheme.js');
 
-const utils = require('./utils');
-const uploadManager = require('./api/upload');
-const parser = require('./api/parser');
-const avatar = require('./api/avatar');
-const pass = require('./api/passport');
-const live = require('./api/live');
+const utils = require('./utils.js');
+const uploadManager = require('./api/upload.js');
+const parser = require('./api/parser.js');
+const avatar = require('./api/avatar.js');
+const pass = require('./api/passport.js');
+const live = require('./api/live.js');
 
 module.exports = function(app){
 	
