@@ -32,7 +32,8 @@ function upload(file, callback){
 function localStore(file, callback){
 	var buffer = fs.readFileSync(file.path);
 	var filename = utils.randomString(16) + "." + file.type.split("/")[1];
-	var path = __dirname + '../../../uploads/' + filename;
+	//var path = __dirname + '../../../uploads/' + filename;
+	var path = process.cwd() + "/uploads/" + filename;
 	var external_path = "/uploads/" + filename;
     
 	writeFile(path, buffer, function(err){
@@ -67,7 +68,8 @@ function genLocalThumb(path, filename, callback){
 	
 	//pasar formato a webp
 	name[1] = "webp";
-	let thumbPath = __dirname + '../../../uploads/' + name[0] + "_thumb." + name[1];
+	//let thumbPath = __dirname + '../../../uploads/' + name[0] + "_thumb." + name[1];
+	let thumbPath = process.cwd() + "/uploads/" + name[0] + "_thumb." + name[1];
 	sharp(path)
 	.resize(sConfig.IMG_LOCAL_THUMBNAIL_SIZE)
 	.webp({quality: 90})
