@@ -7,7 +7,7 @@ module.exports = {
 	
 	/* CONFIGURACION DE SERVIDORES DE IMAGEN */
 	IMG_SERVER: 0, //0: local, 1: imgur, 2: imgbb, 3: cloudinary
-	IMG_LOCAL_THUMBNAIL_CONFIG: 30, //porcentaje 30% 
+	IMG_LOCAL_THUMBNAIL_SIZE: 300, //300px
 	IMGUR_THUMBNAIL_QUALITY: "m", //l: large m: medium, etc.
 	CLOUDINARY_THUMBNAIL_CONFIG: "/c_scale,pg_1,w_200,f_auto/",
 	

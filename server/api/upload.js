@@ -1,6 +1,6 @@
 /* MANEJO DE SUBIDA DE ARCHIVOS, SERVIDORES, ETC. */
 const fs = require('fs');
-const thumb = require('image-thumbnail');
+const sharp = require('sharp');
 const imgur = require('imgur');
 const sConfig = require('../config/serverconfig.js');
 const utils = require('../utils.js');
@@ -64,11 +64,16 @@ function writeFile(path, buffer, callback){
 //FUNCION: genera thumbnails de imagenes locales.
 function genLocalThumb(path, filename, callback){
 	let name = filename.split(".");
-	let thumbPath = __dirname + '../../../uploads/' + name[0] + "_thumb." + name[1];
 	
-	//generar thumbnail
-	thumb(path, {percentage: sConfig.IMG_LOCAL_THUMBNAIL_CONFIG}).then(function(thumbnailBuffer){
-		writeFile(thumbPath, thumbnailBuffer, function(rerr){
+	//pasar formato a webp
+	name[1] = "webp";
+	let thumbPath = __dirname + '../../../uploads/' + name[0] + "_thumb." + name[1];
+	sharp(path)
+	.resize(sConfig.IMG_LOCAL_THUMBNAIL_SIZE)
+	.webp({quality: 90})
+	.toBuffer()
+	.then(function(data){
+		writeFile(thumbPath, data, function(rerr){
 			if (!rerr){
 				callback("/uploads/" + name[0] + "_thumb." + name[1]);
 			} else {
@@ -76,8 +81,9 @@ function genLocalThumb(path, filename, callback){
 			}
 		});
 	}).catch(function(err){
-		callback(null);
+		console.log(err);
 	});
+		
 }
 
 function imgurUpload(file, callback){
