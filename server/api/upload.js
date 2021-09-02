@@ -81,7 +81,7 @@ function genLocalThumb(path, filename, callback){
 			}
 		});
 	}).catch(function(err){
-		console.log(err);
+		callback(null);
 	});
 		
 }

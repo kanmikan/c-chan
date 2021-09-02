@@ -8,7 +8,7 @@ function create(app){
 		secret: sConfig.SESSION_SECRET,
 		store: MongoStore.create({
 			mongoUrl: sConfig.DBURL,
-			mongoOptions: {tls: sConfig.SSL}
+			mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}
 		}),
 		cookie: {maxAge: expires}
 	});
