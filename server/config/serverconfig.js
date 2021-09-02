@@ -1,7 +1,7 @@
 module.exports = {
 	DBNAME: "mikandbv2",
-	DBURL: "mongodb://127.0.0.1:27017",
-	SSL: false,
+	DBURL: process.env.MONGOURI || "mongodb://127.0.0.1:27017",
+	SSL: process.env.SSL || false,
 	PORT: process.env.PORT || 3000,
 	SESSION_SECRET: process.env.SESSION_SECRET || "test",
 	
