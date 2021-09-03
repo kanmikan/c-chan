@@ -132,4 +132,18 @@ function checkBan(req, res, callback){
 	});
 }
 
-module.exports = {check, checkBoxFields, checkComFields}
+function filterProtectedUID(arr){
+	//proteger el uid reemplazandola en el array.
+	if (Array.isArray(arr)){
+		arr.forEach(function(elem){
+			elem.user.uid = "-privado-";
+		});
+	} else {
+		if (arr){
+			arr.user.uid = "-privado-"
+		}
+	}
+	return arr;
+}
+
+module.exports = {check, checkBoxFields, checkComFields, filterProtectedUID}

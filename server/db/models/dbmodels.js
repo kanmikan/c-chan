@@ -26,8 +26,7 @@ function BOX_QUERY(uid, bid){
 		[mdbScheme.C_BOXS, {bid: bid}, {"date.bump": -1}, 0],
 		[mdbScheme.C_NOTIF, {uid: uid}, {tiempo: -1}, 0],
 		[mdbScheme.C_CATS, "", {sticky: -1, order: -1}, 0],
-		[mdbScheme.C_COMS, {bid: bid}, {"date.created": -1}, 0],
-		[mdbScheme.C_ENC, {bid: bid, uid: uid}, "", 0]
+		[mdbScheme.C_COMS, {bid: bid}, {"date.created": -1}, 0]
 	];
 }
 

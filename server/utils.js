@@ -11,7 +11,11 @@ function getCategoryData(categorias, tid){
 }
 
 function filterComMedia(comments){
-	return comments.filter( item => item.img.full != "");
+	if (comments){
+		return comments.filter( item => item.img.full != "");
+	} else {
+		return comments;
+	}
 }
 
 function getCatShow(categoria){

@@ -118,10 +118,10 @@ module.exports = function(app){
 				dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", function(box){
 					if (box[0]){
 						let op = (box[0].user.uid === req.session.id) ? true : false;
-						live.sendDataTo(bid, "comment", {token: token, op: op, data: json});
+						live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
 					}
 				});
-				res.json({success: true, data: json});
+				res.json({success: true, data: pass.filterProtectedUID(json)});
 			});
 		});
 		
@@ -130,9 +130,9 @@ module.exports = function(app){
 	//MUESTRA: obtener todos los boxs, ordenados por ultimo bump y stickys
 	//TODO: añadir filtro de datos
 	app.get('/api/boxs', pass.check, function(req, res) {
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, "", {sticky: -1, bump: -1}, function(boxs){
-			if (boxs[0] != undefined){
-				res.json({success: true, data: boxs});
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, function(boxs){
+			if (boxs[0] != undefined){			
+				res.json({success: true, data: pass.filterProtectedUID(boxs)});
 			} else {
 				res.json({success: false, data: null});
 			}
@@ -142,9 +142,9 @@ module.exports = function(app){
 	//MUESTRA: obtener box especificado con el bid.
 	app.get('/api/box/:bid', pass.check, function(req, res) {
 		let bid = req.params.bid;
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, {sticky: -1, bump: -1}, function(boxs){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, {"date.sticky": -1, "date.bump": -1}, function(boxs){
 			if (boxs[0] != undefined){
-				res.json({success: true, data: boxs});
+				res.json({success: true, data: pass.filterProtectedUID(boxs)});
 			} else {
 				res.json({success: false, data: null});
 			}
@@ -154,9 +154,9 @@ module.exports = function(app){
 	//MUESTRA: obtener todos los comentarios
 	//TODO: añadir filtro de datos
 	app.get('/api/coms', pass.check, function(req, res) {
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, "", {tiempo: -1}, function(coms){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, "", {"date.created": -1}, function(coms){
 			if (coms[0] != undefined){
-				res.json({success: true, data: coms});
+				res.json({success: true, data: pass.filterProtectedUID(coms)});
 			} else {
 				res.json({success: false, data: null});
 			}
@@ -167,9 +167,9 @@ module.exports = function(app){
 	//TODO: añadir filtro de datos
 	app.get('/api/coms/:bid', pass.check, function(req, res) {
 		let bid = req.params.bid;
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, {tiempo: -1}, function(coms){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, {"date.created": -1}, function(coms){
 			if (coms[0] != undefined){
-				res.json({success: true, data: coms});
+				res.json({success: true, data: pass.filterProtectedUID(coms)});
 			} else {
 				res.json({success: false, data: null});
 			}
@@ -179,9 +179,9 @@ module.exports = function(app){
 	//MUESTRA: obtener comentario especificado con el cid
 	app.get('/api/com/:cid', pass.check, function(req, res) {
 		let cid = req.params.cid;
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {cid: cid}, {tiempo: -1}, function(coms){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {cid: cid}, {"date.created": -1}, function(coms){
 			if (coms[0] != undefined){
-				res.json({success: true, data: coms});
+				res.json({success: true, data: pass.filterProtectedUID(coms)});
 			} else {
 				res.json({success: false, data: null});
 			}

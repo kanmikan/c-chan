@@ -25,7 +25,7 @@ app.use('/node', express.static(path.join(__dirname, 'node_modules/')))
 app.use(formidable());
 
 /* VIEW ENGINE (ETA) */
-eta.configure({cache: true });
+eta.configure({cache: true});
 app.engine("eta", eta.renderFile);
 app.set("view engine", "eta");
 app.set('views', path.join(__dirname, './client/views'));
