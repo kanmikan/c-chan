@@ -70,6 +70,19 @@ function queryDB(DB, cname, query, sort, callback){
 	}
 }
 
+//TODO: soporte para la cache.
+function queryDBSkip(DB, cname, query, sort, from, to, callback){
+	return new Promise((resolve, reject) => {
+		DB.db(sConfig.DBNAME).collection(cname).find(query).sort(sort).skip(from).limit(to).toArray(function(err, result){
+			if (err){
+				console.log("[Error] " + err);
+			} else {
+				callback(result);
+			}
+		});
+	});
+}
+
 function queryAggregate(DB, cname, aggregate, callback){
 	DB.db(sConfig.DBNAME).collection(cname).aggregate(aggregate).toArray(function(err, result){
 		if (err){
@@ -113,4 +126,4 @@ function updateDBAll(DB, cname, criterio, valor, callback){
 	});
 }
 
-module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll, pushDB};
+module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll, pushDB, queryDBSkip};

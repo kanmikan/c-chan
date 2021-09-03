@@ -139,12 +139,56 @@ module.exports = function(app){
 		});
 	});
 	
+	//MUESTRA: obtener boxs por la categoria.
+	app.get('/api/boxs/:cat', pass.check, function(req, res) {
+		let cat = req.params.cat;
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {cat: cat}, {"date.sticky": -1, "date.bump": -1}, function(boxs){
+			if (boxs[0]){
+				res.json({success: true, data: pass.filterProtectedUID(boxs)});
+			} else {
+				res.json({success: false, data: null});
+			}
+		});
+	});
+	
 	//MUESTRA: obtener box especificado con el bid.
 	app.get('/api/box/:bid', pass.check, function(req, res) {
 		let bid = req.params.bid;
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, {"date.sticky": -1, "date.bump": -1}, function(boxs){
-			if (boxs[0] != undefined){
+			if (boxs[0]){
 				res.json({success: true, data: pass.filterProtectedUID(boxs)});
+			} else {
+				res.json({success: false, data: null});
+			}
+		});
+	});
+	
+	//API: obtener boxs de x categoria desde un bid especifico
+	app.get('/api/box/:index/:kind', pass.check, function(req, res){
+		let index = req.params.index;
+		let kind = req.params.kind;
+		let db = req.app.locals.db;
+		
+		let criterio = (kind === "home") ? {} : {cat: kind};
+		let orden = (kind === "home") ? {"date.sticky": -1, "date.bump": -1} : {"date.sticky": -1, "date.csticky": -1, "date.bump": -1};
+		
+		dbManager.queryDB(db, mdbScheme.C_BOXS, criterio, orden, function(boxs){
+			if (boxs[0]){
+				let indice = 0;
+				for (var i=0; i<boxs.length; i++){
+					if (boxs[i].bid === index){
+						indice = i;
+					}
+				}
+				let desde = indice+1;
+				let hasta = 20; //numero de boxs a cargar.
+				dbManager.queryDBSkip(db, mdbScheme.C_BOXS, criterio, orden, desde, hasta, function(limitBoxs){
+					if (limitBoxs[0]){	
+						res.json({success: true, data: pass.filterProtectedUID(limitBoxs)});
+					} else {
+						res.json({success: false, data: null});
+					}
+				});
 			} else {
 				res.json({success: false, data: null});
 			}
