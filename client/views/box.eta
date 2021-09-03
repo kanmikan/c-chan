@@ -169,7 +169,6 @@
 					<div class="commentBody">
 						<div class="commentMetadata">
 						<div class="commentsTag unselect">
-						
 							<% if (BOX.user.uid === com.user.uid){ %>
 								<span class="commentTag op">OP</span>
 							<% } %>

@@ -121,7 +121,7 @@ module.exports = function(app){
 						live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
 					}
 				});
-				res.json({success: true, data: pass.filterProtectedUID(json)});
+				res.json({success: true, data: json});
 			});
 		});
 		
@@ -178,6 +178,7 @@ module.exports = function(app){
 				for (var i=0; i<boxs.length; i++){
 					if (boxs[i].bid === index){
 						indice = i;
+						break;
 					}
 				}
 				let desde = indice+1;

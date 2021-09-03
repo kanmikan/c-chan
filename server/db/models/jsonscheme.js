@@ -76,4 +76,24 @@ const BOX_SCHEME = {
 	}
 };
 
-module.exports = {COMMENT_SCHEME, BOX_SCHEME}
+const USER_SCHEME = {
+	version: 2,
+	uid: "uid",
+	nick: "Anonimo",
+	rango: "anon",
+	color: "",
+	pass: "",
+	token: "",
+	permisos: ["CREAR_BOX", "CREAR_COM"],
+	state: [],
+	extra: {
+		bandata: {
+			ip: "",
+			fecha: 0,
+			duracion: 0,
+			razon: ""
+		}
+	}
+}
+
+module.exports = {COMMENT_SCHEME, BOX_SCHEME, USER_SCHEME}

@@ -2,6 +2,7 @@
 const dbManager = require('../db/dbmanager.js');
 const mdbScheme = require('../db/models/mdbscheme.js');
 const sConfig = require('../config/serverconfig.js');
+const utils = require('../utils.js');
 
 /* MIDDLEWARES */
 function check(req, res, next){
@@ -135,15 +136,21 @@ function checkBan(req, res, callback){
 function filterProtectedUID(arr){
 	//proteger el uid reemplazandola en el array.
 	if (Array.isArray(arr)){
-		arr.forEach(function(elem){
+		let arcopy = new Array();
+		for(var i=0; i < arr.length; i++){
+			arcopy.push(arr[i]);
+		}
+		arcopy.forEach(function(elem){
 			elem.user.uid = "-privado-";
 		});
+		return arcopy;
 	} else {
 		if (arr){
-			arr.user.uid = "-privado-"
+			let jcopy = utils.clone(arr);
+			jcopy.user.uid = "-privado-";
+			return jcopy;
 		}
 	}
-	return arr;
 }
 
 module.exports = {check, checkBoxFields, checkComFields, filterProtectedUID}
