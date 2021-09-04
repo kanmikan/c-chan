@@ -6,7 +6,7 @@ const utils = require('../utils.js');
 
 /* MIDDLEWARES */
 function check(req, res, next){
-	console.log("-middleware de control-");
+	//console.log("-middleware de control-");
 	checkBan(req, res, function(ban){
 		if (ban){
 			res.send(ban);
@@ -113,7 +113,7 @@ function checkRecursiveRequest(req, res, cname, delay, callback){
 			let diferencia = (currentTimestamp - ultimoComentario) / 1000;
 			let faltan = delay - diferencia;
 			if (diferencia < delay){
-				callback({success: false, data: `Espera ${faltan} segundos.`});
+				callback({success: false, data: `Espera ${Math.round(faltan)} segundos.`});
 			} else {
 				callback(null);
 			}

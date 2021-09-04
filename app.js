@@ -16,11 +16,11 @@ var server = http.createServer(app);
 
 /* MIDDLEWARES */
 //carpeta donde van los archivos estaticos.
-app.use('/', express.static(path.join(__dirname, './client/static')));
+app.use('/', express.static(path.join(__dirname, './client/static'), {maxAge: 3600000*12}));
 //carpeta de subidas locales..
-app.use('/uploads', express.static(path.join(__dirname, './uploads')));
+app.use('/uploads', express.static(path.join(__dirname, './uploads'), {maxAge: 3600000*12}));
 //carpeta del node.
-app.use('/node', express.static(path.join(__dirname, 'node_modules/')))
+app.use('/node', express.static(path.join(__dirname, 'node_modules/'))); //TODO: sacar esto de aca.
 //formidable para los post request
 app.use(formidable());
 
