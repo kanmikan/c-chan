@@ -141,13 +141,24 @@ function filterProtectedUID(arr){
 			arcopy.push(arr[i]);
 		}
 		arcopy.forEach(function(elem){
-			elem.user.uid = "-privado-";
+			if (elem.user){
+				elem.user.uid = "-privado-";
+			} else {
+				elem.sender.uid = "-private-";
+				elem.receiver.uid = "-private-";
+			}
+			
 		});
 		return arcopy;
 	} else {
 		if (arr){
 			let jcopy = utils.clone(arr);
-			jcopy.user.uid = "-privado-";
+			if (jcopy.user){
+				jcopy.user.uid = "-privado-";
+			} else {
+				jcopy.sender.uid = "-privado-";
+				jcopy.receiver.uid = "-privado-";
+			}
 			return jcopy;
 		}
 	}

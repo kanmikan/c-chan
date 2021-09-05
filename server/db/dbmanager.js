@@ -126,4 +126,13 @@ function updateDBAll(DB, cname, criterio, valor, callback){
 	});
 }
 
-module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll, pushDB, queryDBSkip};
+function deleteDB(DB, cname, criterio, callback){
+	DB.db(sConfig.DBNAME).collection(cname).remove(criterio, function(err, result){
+		if (sConfig.DATABASE_CACHE){
+			cache.update(cname);
+		}
+		callback(result);
+	});
+}
+
+module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll, pushDB, queryDBSkip, deleteDB};

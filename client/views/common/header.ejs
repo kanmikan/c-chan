@@ -6,6 +6,15 @@
 <script>
 	$(function () {
 		var socket = io();
+		socket.on('notif', function(data){
+			
+			//actualizar notificaciones
+			/* TODO: cambiar todo esto */
+			$('#notif_icon').load(document.URL + ' #notif_icon>*');
+			$('#notificationsList').load(document.URL + ' #notificationsList>*', function (){});	
+			/* */
+			
+		});
 	});
 </script>
 
@@ -35,7 +44,7 @@
 			<i class="fas fa-search"></i>
 		</li>
 		
-		<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#notificationsList" data-backdrop="false">
+		<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" id="notif_icon" data-target="#notificationsList" data-backdrop="false">
 			<i class="fas fa-bell">
 				<%- include('../common/fragments/header/notifIconCounter', it); %>
 			</i>

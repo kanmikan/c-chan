@@ -114,11 +114,28 @@ module.exports = function(app){
 					dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
 				});
 				
-				
 				dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", function(box){
 					if (box[0]){
 						let op = (box[0].user.uid === req.session.id) ? true : false;
 						live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
+						
+						/* Notificar al dueño del box */
+						let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
+						notifdata.sender.uid = req.session.id;
+						notifdata.receiver.uid = box[0].user.uid;
+						notifdata.date.created = timestamp;
+						notifdata.state.push("new");
+						notifdata.content.cid = cid;
+						notifdata.content.bid = bid;
+						notifdata.content.preview = {
+							title: box[0].content.title,
+							desc: json.content.body,
+							thumb: box[0].img.preview
+						}
+						dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
+						live.sendDataTo(box[0].user.uid, "notif", pass.filterProtectedUID(notifdata));
+						/* fin de notificacion */
+						
 					}
 				});
 				res.json({success: true, data: json});
@@ -194,6 +211,34 @@ module.exports = function(app){
 				res.json({success: false, data: null});
 			}
 		});
+	});
+	
+	
+	//API: controla y redirige las notificaciones
+	app.get('/api/ntf/:bid/:cid', function(req, res) {
+		let bid = req.params.bid;
+		let cid = req.params.cid;
+		let uid = req.session.id;
+		
+		//limpiar notificacion
+		dbManager.deleteDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "content.cid": cid}, function(){
+			res.redirect("/tema/" + bid + "#" + cid);
+		});
+	});
+	
+	//API: obtener lista de notificaciones del uid.
+	app.get('/api/notifs/:created', function(req, res) {
+		let uid = req.session.id;
+		let timestamp = req.params.created;
+		
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "date.created": timestamp}, {"date.created": -1}, function(ntf){
+			if (ntf[0]){
+				res.send({success: true, data: ntf});
+			} else {
+				res.send({success: false, data: null});
+			}
+		});
+		
 	});
 	
 	//MUESTRA: obtener todos los comentarios

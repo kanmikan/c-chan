@@ -96,4 +96,28 @@ const USER_SCHEME = {
 	}
 }
 
-module.exports = {COMMENT_SCHEME, BOX_SCHEME, USER_SCHEME}
+const NOTIF_SCHEME = {
+	version: 2,
+	type: [], //tag, etc.
+	state: [], //placeholder para un sistema de guardado de notificaciones viejas.
+	sender: { //datos del emisor del comentario.
+		uid: "suid"
+	},
+	receiver: { //datos del que recibe la notificacion
+		uid: "ruid"
+	},
+	date: { //timestamp del momento en que se envió
+		created: 0
+	},
+	content: { //datos de la notificacion.
+		cid: "cid",
+		bid: "bid",
+		preview: {
+			title: "title",
+			desc: "descripcion o fragmento del comentario.",
+			thumb: "thumb"
+		}
+	}
+}
+
+module.exports = {COMMENT_SCHEME, BOX_SCHEME, USER_SCHEME, NOTIF_SCHEME}
