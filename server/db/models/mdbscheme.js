@@ -4,7 +4,7 @@ module.exports = {
 	C_BOXS: "boxs",
 	C_COMS: "coms",
 	C_ADM: "users",
-	C_NOTIF: "notificaciones",
+	C_NOTIF: "notifs",
 	C_CATS : "categorias",
 	C_ENC : "encuestas"
 }

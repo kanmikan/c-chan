@@ -1,7 +1,6 @@
 const express = require("express");
 const http = require("http");
 const path = require("path");
-const eta = require("eta");
 const formidable = require('express-formidable');
 const dbManager = require('./server/db/dbmanager.js');
 const sConfig = require('./server/config/serverconfig.js');
@@ -24,9 +23,7 @@ app.use('/node', express.static(path.join(__dirname, 'node_modules/'))); //TODO:
 //formidable para los post request
 app.use(formidable());
 
-/* VIEW ENGINE (ETA) */
-//eta.configure({cache: true});
-//app.engine("eta", eta.renderFile);
+/* VIEW ENGINE (EJS) */
 app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, './client/views'));
 

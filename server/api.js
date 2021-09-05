@@ -236,27 +236,30 @@ module.exports = function(app){
 	//DEBUG: MUESTRA DE LA ESTRUCTURA DE LOS TEMAS EN MIKANDBV2
 	//SOLO PARA DEBUG Y TEST, ESTO LO VOY A SACAR
 	app.get('/dev', function(req, res) {
-		
 		let data = {
-			uid: req.session.id,
-			nick: "Mikandev",
-			rango: "Admin",
-			color: "#ff0000",
-			pass: "1234",
-			token: "",
-			permisos: ["admin"],
-			state: ["banned"],
-			extra: {
-				bandata: {
-					ip: "127.0.0.1", //cuando alguien es baneado se le loguea la ip junto con el ban, para detectar clones o para asustar cepiteros.
-					fecha: 0,
-					duracion: 1000,
-					razon: "Por mogo"
+			version: 2,
+			type: ["comment", "tag"], //si es un comentario en el box del dueño, o si tiene un tag, o los dos.
+			state: ["new"], //placeholder para un sistema de guardado de notificaciones viejas.
+			sender: { //datos del emisor del comentario.
+				uid: "sender-uid"
+			},
+			receiver: { //datos del que recibe la notificacion
+				uid: "receiver-uid"
+			},
+			date: { //timestamp del momento en que se envió
+				created: 0
+			},
+			content: { //datos de la notificacion.
+				cid: "id del comentario del emisor",
+				bid: "id del box en el que se comentó",
+				preview: {
+					title: "titulo del box en el que se comentó",
+					thumb: "thumbnail del box en el que se comentó"
 				}
 			}
 		};
 		
-		dbManager.insertDB(req.app.locals.db, "users", data, function(){
+		dbManager.insertDB(req.app.locals.db, "notifs", data, function(){
 			res.redirect("/");
 		});
 		

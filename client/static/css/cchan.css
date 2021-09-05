@@ -164,8 +164,8 @@ li.newBox:hover{
 li.newBox:active { background: var(--newbox-button-hover); }
 
 li.menuIcon {
-    padding: 10px 12px;
-    margin-right: 4px;
+	padding: 10px 10px;
+    /* margin-right: 4px; */
     border-radius: 4px;
     cursor: pointer;
     color: var(--navbar-icon-color);
@@ -331,14 +331,13 @@ li.noNotification {
 }
 
 .menuIconCount {
-    background: red;
+	background: red;
     color: white;
     border-radius: 4px;
     font-size: 11px;
     padding: 4px;
     min-width: 14px;
     text-align: center;
-	position: absolute;
 }
 
 .button{

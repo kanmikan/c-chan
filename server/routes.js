@@ -66,10 +66,12 @@ module.exports = function(app){
 				//TODO
 				dbManager.mQuery(req.app.locals.db, models.CAT_QUERY(uid, cat), function(result){
 					res.render("index", {
-						utils: utils,
-						renderConfig: renderConfig,
-						sesion: req.session,
-						data: result
+						it : {
+							utils: utils,
+							renderConfig: renderConfig,
+							sesion: req.session,
+							data: result
+						}
 					});
 				});
 			}

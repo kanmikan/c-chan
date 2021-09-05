@@ -28,7 +28,7 @@
 				<i class="fas fa-list"></i>
 				<div class="navCategoryTitle">Categorias</div>
 			</div>
-			<%~ include('../common/fragments/header/categoryMenuModal', it); %>
+			<%- include('../common/fragments/header/categoryMenuModal', it); %>
 		</li>
 		
 		<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#searchModal" data-backdrop="false">
@@ -37,10 +37,10 @@
 		
 		<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#notificationsList" data-backdrop="false">
 			<i class="fas fa-bell">
-				<%~ include('../common/fragments/header/notifIconCounter', it); %>
+				<%- include('../common/fragments/header/notifIconCounter', it); %>
 			</i>
 		</li>
-		<%~ include('../common/fragments/header/notifMenuModal', it); %>
+		<%- include('../common/fragments/header/notifMenuModal', it); %>
 		
 		<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#slideMenu" data-backdrop="false">
 			<i class="fas fa-bars"></i>
@@ -50,5 +50,5 @@
 	</ul>
 </nav>
 
-<%~ include('../common/fragments/header/slideMenuModal', it); %>
-<%~ include('../common/fragments/header/newBoxModal', it); %>
+<%- include('../common/fragments/header/slideMenuModal', it); %>
+<%- include('../common/fragments/header/newBoxModal', it); %>
