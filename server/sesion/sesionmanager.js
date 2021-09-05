@@ -31,11 +31,11 @@ function createUser(req, res, next){
 	if (!USER_FLAG.includes(uid)){
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: uid}, "", function(user){
 			if (user[0]){
-				USER_FLAG.push(uid);
+				cacheUser(uid);
 				next();
 			} else {
 				//añadir al uid dentro del flag para que no haga otra query al pedo.
-				USER_FLAG.push(uid);
+				cacheUser(uid);
 				//si no existe el usuario con el uid, crear usuario.
 				let json = utils.clone(jsonScheme.USER_SCHEME);
 				json.uid = uid;
@@ -49,6 +49,13 @@ function createUser(req, res, next){
 	} else {
 		next();
 	}	
+}
+
+function cacheUser(uid){
+	USER_FLAG.push(uid);
+	if (USER_FLAG.length > 50){
+		USER_FLAG.shift();
+	}
 }
 
 module.exports = {create};

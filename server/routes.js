@@ -13,10 +13,12 @@ module.exports = function(app){
 		var uid = req.session.id; //esto puede ser cambiado por un uid unico en vez de el id de la sesion.
 		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
 			res.render("index", {
-				utils: utils,
-				renderConfig: renderConfig,
-				sesion: req.session,
-				data: result
+				it : {
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session,
+					data: result
+				}
 			});
 		});
 	});
@@ -25,6 +27,7 @@ module.exports = function(app){
 	app.get('/tema/:bid', function(req, res) {
 		var uid = req.session.id;
 		var bid = req.params.bid;
+		
 		if (bid){
 			dbManager.mQuery(req.app.locals.db, models.BOX_QUERY(uid, bid), function(result){
 				//si existe el box, el C_BOXS tendrá datos, de lo contrario se asume que el tema no existe.
@@ -32,11 +35,13 @@ module.exports = function(app){
 					res.redirect("/error/1");
 				} else {
 					res.render("box", {
-						token: utils.randomString(16),
-						utils: utils,
-						renderConfig: renderConfig,
-						sesion: req.session,
-						data: result
+						it : {
+							token: utils.randomString(16),
+							utils: utils,
+							renderConfig: renderConfig,
+							sesion: req.session,
+							data: result
+						}
 					});
 				}
 			});
