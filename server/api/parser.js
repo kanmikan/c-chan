@@ -50,23 +50,24 @@ function parseTags(DB, cid, uid, rawtext){
 			let timestamp = Date.now();
 			let c_receiver = await dbManager.queryDB(DB, mdbScheme.C_COMS, {cid: selcid}, "", function(){});
 			let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: c_receiver[0].bid}, "", function(){});
-			
-			let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
-			notifdata.sender.uid = uid;
-			notifdata.receiver.uid = c_receiver[0].user.uid;
-			notifdata.date.created = timestamp;
-			notifdata.state.push("new");
-			notifdata.content.cid = cid;
-			notifdata.content.bid = c_receiver[0].bid;
-			notifdata.content.tag = true;
-			notifdata.content.preview = {
-				title: box[0].content.title,
-				desc: htmlSanitize(rawtext),
-				thumb: box[0].img.preview
+			//si es el mismo autotaggeandose, no notificar.
+			if (c_receiver[0].user.uid != uid){
+				let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
+				notifdata.sender.uid = uid;
+				notifdata.receiver.uid = c_receiver[0].user.uid;
+				notifdata.date.created = timestamp;
+				notifdata.state.push("new");
+				notifdata.content.cid = cid;
+				notifdata.content.bid = c_receiver[0].bid;
+				notifdata.content.tag = true;
+				notifdata.content.preview = {
+					title: box[0].content.title,
+					desc: htmlSanitize(rawtext),
+					thumb: box[0].img.preview
+				}
+				await dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
+				live.sendDataTo(c_receiver[0].user.uid, "notif", pass.filterProtectedUID(notifdata));
 			}
-			console.log(notifdata);
-			await dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
-			live.sendDataTo(c_receiver[0].user.uid, "notif", pass.filterProtectedUID(notifdata));
 		});
 	}
 	
