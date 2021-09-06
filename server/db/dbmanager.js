@@ -29,7 +29,10 @@ function mQuery(DB, qlist, callback){
 			} else {
 				output_[query[0]] = {};
 			}
-			if (count === (qlist.length-1)){callback(output_);}
+			if (count === (qlist.length-1)){
+				callback(output_);
+				return output_;
+			}
 			count++;
 		});
 	} else {
@@ -42,6 +45,7 @@ function mQuery(DB, qlist, callback){
 				output[query[0]] = result;
 				if (count2 === (qlist.length-1)){
 					callback(output);
+					return output;
 				}
 				count2++;
 			});
@@ -56,30 +60,29 @@ function queryDB(DB, cname, query, sort, callback){
 		if (CACHE[cname]){
 			let cursor = new Query(query).find(CACHE[cname]).sort(sort);	
 			callback(cursor.all());
+			return cursor.all();
 		}
 	} else {
-		return new Promise((resolve, reject) => {
-			DB.db(sConfig.DBNAME).collection(cname).find(query).sort(sort).toArray(function(err, result){
-				if (err){
-					console.log("[Error] " + err);
-				} else {
-					callback(result);
-				}
-			});
+		DB.db(sConfig.DBNAME).collection(cname).find(query).sort(sort).toArray(function(err, result){
+			if (err){
+				console.log("[Error] " + err);
+			} else {
+				callback(result);
+				return result;
+			}
 		});
 	}
 }
 
 //TODO: soporte para la cache.
 function queryDBSkip(DB, cname, query, sort, from, to, callback){
-	return new Promise((resolve, reject) => {
-		DB.db(sConfig.DBNAME).collection(cname).find(query).sort(sort).skip(from).limit(to).toArray(function(err, result){
-			if (err){
-				console.log("[Error] " + err);
-			} else {
-				callback(result);
-			}
-		});
+	DB.db(sConfig.DBNAME).collection(cname).find(query).sort(sort).skip(from).limit(to).toArray(function(err, result){
+		if (err){
+			console.log("[Error] " + err);
+		} else {
+			callback(result);
+			return result;
+		}
 	});
 }
 
@@ -89,6 +92,7 @@ function queryAggregate(DB, cname, aggregate, callback){
 			console.log("[Error] " + err);
 		} else {
 			callback(result);
+			return result;
 		}
 	});
 }

@@ -22,7 +22,7 @@ module.exports = function(app){
 	})
 	
 	//RUTA: crea un nuevo box.
-	app.post('/api/new', pass.check, pass.checkBoxFields, function(req, res) {
+	app.post('/api/new', pass.check, pass.checkBoxFields, async function(req, res) {
 		let cat = req.fields.cat;
 		let title = req.fields.title;
 		let subtitle = req.fields.subtitle;
@@ -66,19 +66,17 @@ module.exports = function(app){
 			json.content.extra.poll = {};
 		}
 		
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.id}, "", function(userdata){
-			if (userdata[0]){
-				json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
-			}
-			dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
-				res.json({success: true, data: {url: "/tema/" + bid}});
-			});
+		let userdata = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.id}, "", () => {});
+		if (userdata[0]){
+			json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
+		}
+		dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
+			res.json({success: true, data: {url: "/tema/" + bid}});
 		});
-		
 	});
 	
 	//RUTA: nuevo comentario.
-	app.post('/api/com', pass.check, pass.checkComFields, function(req, res) {
+	app.post('/api/com', pass.check, pass.checkComFields, async function(req, res) {
 		let bid = req.fields.bid;
 		let content = req.fields.content;
 		let img = req.fields.img.split(";");
@@ -105,11 +103,43 @@ module.exports = function(app){
 		}
 		json.content.body = parser.parseInput(DB, cid, content);
 		
+		//test anti callback hell
+		let userdata = await dbManager.queryDB(DB, mdbScheme.C_ADM, {uid: req.session.id}, "", () => {});
+		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};}
+		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
+		
+		let coms = await dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", () => {});
+		let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", () => {});
+		if (box[0]){
+			let op = (box[0].user.uid === req.session.id) ? true : false;
+			live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});	
+			/* Notificar al dueño del box */
+			let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
+			notifdata.sender.uid = req.session.id;
+			notifdata.receiver.uid = box[0].user.uid;
+			notifdata.date.created = timestamp;
+			notifdata.state.push("new");
+			notifdata.content.cid = cid;
+			notifdata.content.bid = bid;
+			notifdata.content.preview = {
+				title: box[0].content.title,
+				desc: json.content.body,
+				thumb: box[0].img.preview
+			}
+			dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
+			live.sendDataTo(box[0].user.uid, "notif", pass.filterProtectedUID(notifdata));
+			/* fin de notificacion */
+		}
+		res.json({success: true, data: json});
+		
+		
+		/*
 		dbManager.queryDB(DB, mdbScheme.C_ADM, {uid: req.session.id}, "", function(userdata){
 			if (userdata[0]){json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};}
 			
 			dbManager.insertDB(DB, mdbScheme.C_COMS, json, function(){
 				//por cuestiones de sincronizacion, tengo que leer la cantidad de comentarios en cada envio de comentario
+				
 				dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", function(coms){
 					dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
 				});
@@ -118,8 +148,6 @@ module.exports = function(app){
 					if (box[0]){
 						let op = (box[0].user.uid === req.session.id) ? true : false;
 						live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
-						
-						/* Notificar al dueño del box */
 						let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
 						notifdata.sender.uid = req.session.id;
 						notifdata.receiver.uid = box[0].user.uid;
@@ -134,13 +162,12 @@ module.exports = function(app){
 						}
 						dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
 						live.sendDataTo(box[0].user.uid, "notif", pass.filterProtectedUID(notifdata));
-						/* fin de notificacion */
-						
 					}
 				});
 				res.json({success: true, data: json});
 			});
 		});
+		*/
 		
 	});
 	
