@@ -101,7 +101,7 @@ module.exports = function(app){
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
 		}
-		json.content.body = parser.parseInput(DB, cid, content);
+		json.content.body = parser.parseInput(DB, cid, req.session.id, content);
 		
 		//test anti callback hell
 		let userdata = await dbManager.queryDB(DB, mdbScheme.C_ADM, {uid: req.session.id}, "", () => {});
@@ -109,66 +109,33 @@ module.exports = function(app){
 		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
 		
 		let coms = await dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", () => {});
+		await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
+		
 		let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", () => {});
 		if (box[0]){
 			let op = (box[0].user.uid === req.session.id) ? true : false;
-			live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});	
-			/* Notificar al dueño del box */
-			let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
-			notifdata.sender.uid = req.session.id;
-			notifdata.receiver.uid = box[0].user.uid;
-			notifdata.date.created = timestamp;
-			notifdata.state.push("new");
-			notifdata.content.cid = cid;
-			notifdata.content.bid = bid;
-			notifdata.content.preview = {
-				title: box[0].content.title,
-				desc: json.content.body,
-				thumb: box[0].img.preview
+			live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
+			
+			/* Notificar al dueño del box, si no es el mismo que comenta kjj */
+			if (box[0].user.uid != req.session.id){
+				let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
+				notifdata.sender.uid = req.session.id;
+				notifdata.receiver.uid = box[0].user.uid;
+				notifdata.date.created = timestamp;
+				notifdata.state.push("new");
+				notifdata.content.cid = cid;
+				notifdata.content.bid = bid;
+				notifdata.content.preview = {
+					title: box[0].content.title,
+					desc: json.content.body,
+					thumb: box[0].img.preview
+				}
+				await dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
+				live.sendDataTo(box[0].user.uid, "notif", pass.filterProtectedUID(notifdata));
 			}
-			dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
-			live.sendDataTo(box[0].user.uid, "notif", pass.filterProtectedUID(notifdata));
 			/* fin de notificacion */
 		}
-		res.json({success: true, data: json});
-		
-		
-		/*
-		dbManager.queryDB(DB, mdbScheme.C_ADM, {uid: req.session.id}, "", function(userdata){
-			if (userdata[0]){json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};}
-			
-			dbManager.insertDB(DB, mdbScheme.C_COMS, json, function(){
-				//por cuestiones de sincronizacion, tengo que leer la cantidad de comentarios en cada envio de comentario
-				
-				dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", function(coms){
-					dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
-				});
-				
-				dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", function(box){
-					if (box[0]){
-						let op = (box[0].user.uid === req.session.id) ? true : false;
-						live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
-						let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
-						notifdata.sender.uid = req.session.id;
-						notifdata.receiver.uid = box[0].user.uid;
-						notifdata.date.created = timestamp;
-						notifdata.state.push("new");
-						notifdata.content.cid = cid;
-						notifdata.content.bid = bid;
-						notifdata.content.preview = {
-							title: box[0].content.title,
-							desc: json.content.body,
-							thumb: box[0].img.preview
-						}
-						dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
-						live.sendDataTo(box[0].user.uid, "notif", pass.filterProtectedUID(notifdata));
-					}
-				});
-				res.json({success: true, data: json});
-			});
-		});
-		*/
-		
+		res.json({success: true, data: json});		
 	});
 	
 	//MUESTRA: obtener todos los boxs, ordenados por ultimo bump y stickys
@@ -240,25 +207,21 @@ module.exports = function(app){
 		});
 	});
 	
-	
 	//API: controla y redirige las notificaciones
-	app.get('/api/ntf/:bid/:cid', function(req, res) {
+	app.get('/api/ntf/:bid/:cid', async function(req, res) {
 		let bid = req.params.bid;
 		let cid = req.params.cid;
 		let uid = req.session.id;
-		
-		//limpiar notificacion
-		dbManager.deleteDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "content.cid": cid}, function(){
-			res.redirect("/tema/" + bid + "#" + cid);
-		});
+		//limpiar notificaciones
+		await dbManager.deleteDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "content.bid": bid, "content.tag": false}, ()=>{});
+		await dbManager.deleteDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "content.bid": bid, "content.cid": cid, "content.tag": true}, ()=>{});
+		res.redirect("/tema/" + bid + "#" + cid);
 	});
 	
 	//API: obtener lista de notificaciones del uid.
-	app.get('/api/notifs/:created', function(req, res) {
+	app.get('/api/notifs', function(req, res) {
 		let uid = req.session.id;
-		let timestamp = req.params.created;
-		
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "date.created": timestamp}, {"date.created": -1}, function(ntf){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid}, {"date.created": -1}, function(ntf){
 			if (ntf[0]){
 				res.send({success: true, data: ntf});
 			} else {

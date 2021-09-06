@@ -7,7 +7,7 @@
 				<li class="Notification" onclick="location.href='/api/ntf/<%= noti.content.bid %>/<%= noti.content.cid %>'">
 					<div class="avatar"><img src="<%= noti.content.preview.thumb %>"></div>
 					<div class="report">
-					<% if (noti.type.includes("tag")) { %>
+					<% if (noti.content.tag) { %>
 						<% if (noti.type.includes("alert")) { %>
 							<span class="report-title">Alerta: </span></br><span><%= noti.content.preview.title %></span>
 						<% } else { %>

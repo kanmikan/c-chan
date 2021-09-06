@@ -98,7 +98,7 @@ const USER_SCHEME = {
 
 const NOTIF_SCHEME = {
 	version: 2,
-	type: [], //tag, etc.
+	type: [], 
 	state: [], //placeholder para un sistema de guardado de notificaciones viejas.
 	sender: { //datos del emisor del comentario.
 		uid: "suid"
@@ -112,6 +112,7 @@ const NOTIF_SCHEME = {
 	content: { //datos de la notificacion.
 		cid: "cid",
 		bid: "bid",
+		tag: false, //si es una notificacion de tag.
 		preview: {
 			title: "title",
 			desc: "descripcion o fragmento del comentario.",
