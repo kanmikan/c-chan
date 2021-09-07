@@ -52,7 +52,8 @@ module.exports = function(app){
 		}
 		
 		json.content.title = title;
-		json.content.body = content;
+		json.content.body = parser.htmlSanitize(content);
+		
 		if (pollOne != "" && pollTwo != ""){
 			json.type.push("poll");
 			json.content.extra.poll = {
@@ -117,7 +118,7 @@ module.exports = function(app){
 			live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
 			
 			/* Notificar al dueño del box, si no es el mismo que comenta kjj */
-			if (box[0].user.uid != req.session.id){
+			if (!op){
 				let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
 				notifdata.sender.uid = req.session.id;
 				notifdata.receiver.uid = box[0].user.uid;
@@ -271,33 +272,13 @@ module.exports = function(app){
 	//DEBUG: MUESTRA DE LA ESTRUCTURA DE LOS TEMAS EN MIKANDBV2
 	//SOLO PARA DEBUG Y TEST, ESTO LO VOY A SACAR
 	app.get('/dev', function(req, res) {
-		let data = {
-			version: 2,
-			type: ["comment", "tag"], //si es un comentario en el box del dueño, o si tiene un tag, o los dos.
-			state: ["new"], //placeholder para un sistema de guardado de notificaciones viejas.
-			sender: { //datos del emisor del comentario.
-				uid: "sender-uid"
-			},
-			receiver: { //datos del que recibe la notificacion
-				uid: "receiver-uid"
-			},
-			date: { //timestamp del momento en que se envió
-				created: 0
-			},
-			content: { //datos de la notificacion.
-				cid: "id del comentario del emisor",
-				bid: "id del box en el que se comentó",
-				preview: {
-					title: "titulo del box en el que se comentó",
-					thumb: "thumbnail del box en el que se comentó"
-				}
-			}
-		};
-		
+
+		/*
 		dbManager.insertDB(req.app.locals.db, "notifs", data, function(){
 			res.redirect("/");
 		});
-		
+		*/
+		res.redirect("/");
 	});
 	
 }

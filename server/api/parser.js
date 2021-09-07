@@ -74,4 +74,4 @@ function parseTags(DB, cid, uid, rawtext){
 	return []; //por defecto, no hay tags
 }
 
-module.exports = {parseInput, parseTags}
+module.exports = {parseInput, htmlSanitize, parseTags}

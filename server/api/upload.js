@@ -120,7 +120,6 @@ function genThumb(url){
 		case "cloudinary":
 			return genCloudyThumb(url);
 		case "youtube-img":
-			console.log(url);
 			return url;
 		case "youtube-embed":
 			return genYoutubeThumb(url, "hq");

@@ -125,7 +125,7 @@
 				<!-- contenido del box, titulo, texto, etc. -->
 				<header class="voxBody">
 					<h1 itemprop="name" id="voxTitle"><%= BOX.content.title %></h1>
-					<div class="voxDescription" itemprop="articleBody" id="voxContent"><%= BOX.content.body %></div>
+					<div class="voxDescription" itemprop="articleBody" id="voxContent"><%- BOX.content.body %></div>
 				</header>
 			</article>
 		</section>
@@ -161,6 +161,7 @@
 			
 			<!-- lista de comentarios -->
 			<div class="commentList" id="commentList">
+			
 			<% it.data.coms.forEach(function(com) { %>
 				<div class="comment" id="<%= com.cid %>">	
 					<div class="commentAvatar">
@@ -191,7 +192,7 @@
 							
 							<span class="commentTag pointer" data-tag="<%= com.cid %>" onclick="tag('>><%= com.cid %>')"><%= com.cid %></span>
 							
-							<% if (it.data.users){ %>
+							<% if (it.data.users.permisos && (it.data.users.permisos.includes("ADMIN") || it.data.users.permisos.includes("GMOD"))){ %>
 								<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span>
 								<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
 								<span class="commentTag pointer"><i class="fas fa-trash"></i></span>
@@ -230,6 +231,7 @@
 				</div>
 			</div>
 		<% }); %>
+		
 			<div style="margin: 20px;"></div>
 			<div class="commentsVoxCount gotop hidden" id="attach-gup"><span style="width: 100%"><i class="fas fa-arrow-up"></i></span></div>
 		</section>

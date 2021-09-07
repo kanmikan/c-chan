@@ -6,7 +6,6 @@ const utils = require('../utils.js');
 
 /* MIDDLEWARES */
 function check(req, res, next){
-	//console.log("-middleware de control-");
 	checkBan(req, res, function(ban){
 		if (ban){
 			res.send(ban);

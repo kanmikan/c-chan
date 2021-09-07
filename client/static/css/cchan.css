@@ -2050,9 +2050,10 @@ textarea.commentTextarea:focus {
 }
 
 .commentBox .preview {
+	height: auto;
 	max-width: 110px;
-    min-width: 100px;
-    min-height: 100px;
+	min-width: 100px;
+	max-height: 110px;
 }
 
 .commentBox .preview img {
@@ -2340,7 +2341,7 @@ span.attachsVox {
     
     figure.commentAttach {
         width: 100%;
-        max-width: calc(100% - 30px);
+        max-width: calc(50% - 30px);
     }
 
 
