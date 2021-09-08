@@ -172,13 +172,52 @@ function hashScroll(hash){
 	}
 }
 
-function checkURL(url){
-	//aca se detecta si es un link de youtube, si es un video, una imagen, algo malicioso, o cualquier otra cosa
-	console.log(url);
+function checkURLType(url){
+	if (url.search("i.imgur.com") != -1){
+		return "imgur";
+	} else if (url.search("res.cloudinary.com") != -1){
+		return "cloudinary";
+	} else if (url.search("i3.ytimg.com") != -1) {
+		return "youtube-img";
+	} else if (url.search("youtube.com/embed") != -1) {
+		return "youtube-embed";
+	} else if (url.search("youtube.com/watch") != -1){
+		return "youtube-url";
+	} else {
+		return "generic";
+	}
 }
 
 function isGif(url){
 	return url.slice(-4) === ".gif";
+}
+
+function detectMedia(url){
+	let type = checkURLType(url);
+	if (type === "youtube-embed" || type === "youtube-url"){
+		if (type === "youtube-url"){
+			//primero convertir a embed
+			url = "https://www.youtube.com/embed/" + youtubeParser(url);
+		}
+		//es un video de youtube
+		return {video: true, raw: url, thumb: genYoutubeThumb(url, "mq")};
+ 	} else {
+		//lo demas esta desactivado.
+		return null;
+	}
+}
+	
+	//FUNCION: obtiene el thumbnail de un video de youtube
+function genYoutubeThumb(url, quality){
+	var id = youtubeParser(url);
+	return (id) ? "https://i3.ytimg.com/vi/" + id + "/" + quality + "default.jpg" : "/assets/logo.png";
+}
+
+//FUNCION: obtiene el id del video de youtube
+function youtubeParser(url){
+	let regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+	let match = url.match(regExp);
+	return (match && match[2].length == 11) ? match[2] : null;
 }
 
 /* EVENTOS */
@@ -198,7 +237,6 @@ $(document).ready(function() {
 			COMS.sort(function(a, b){
 				return a.created - b.created;
 			});
-			
 			for (var i=0; i<COMS.length; i++){
 				commentRender(COMS[i].op, COMS[i].data);
 			}
@@ -222,12 +260,26 @@ $(document).ready(function() {
 				$("#linkButton").html('<i class="fas fa-link"></i>');
 				var link = $("input[name=url]").val();
 				if (link.trim() != ""){
-					//enviar url a el detector
-					checkURL(url);
+					//analizar y manipular la url
+					let mediaData = detectMedia(link);
+					if (mediaData){
+						//enviar imagen del thumbnail al form
+						if (mediaData.video){
+							element("cvid").value = mediaData.raw + ";" + mediaData.thumb;
+						} else {
+							element("cimg").value = mediaData.raw + ";" + mediaData.thumb;
+						}
+						
+						//mostrar imagen en el cuadro de preview
+						element("imgpreview").setAttribute("src", mediaData.thumb);
+						element("previewInputComment").classList.remove("hide");
+					}
+					
 				}
 			}
 		});
 	}
+	
 	//evento: hover sobre un tag
 	//TODO: convertir a javascript nativo...
 	let quote = $(document).find('#floatQuote');

@@ -149,6 +149,7 @@ li.newBox {
 	color: white;
 	background: var(--newbox-button);
 	padding: 12px;
+	margin-left: 3px;
 	border-radius: 4px;
 	font-family: Arial,"Lucida Grande",sans-serif;
 	font-weight: 600;

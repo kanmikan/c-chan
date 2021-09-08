@@ -131,7 +131,7 @@ function genThumb(url){
 //FUNCION: obtiene el thumbnail de un video de youtube
 function genYoutubeThumb(url, quality){
 	var id = youtubeParser(url);
-	return (id) ? "http://i3.ytimg.com/vi/" + id + "/" + quality + "default.jpg" : "/assets/logo.png";
+	return (id) ? "https://i3.ytimg.com/vi/" + id + "/" + quality + "default.jpg" : "/assets/logo.png";
 }
 
 //FUNCION: obtiene el id del video de youtube

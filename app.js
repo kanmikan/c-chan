@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const path = require("path");
+const compression = require("compression");
 const formidable = require('express-formidable');
 const dbManager = require('./server/db/dbmanager.js');
 const sConfig = require('./server/config/serverconfig.js');
@@ -15,13 +16,15 @@ var server = http.createServer(app);
 
 /* MIDDLEWARES */
 //carpeta donde van los archivos estaticos.
-app.use('/', express.static(path.join(__dirname, './client/static'), {maxAge: 3600000*12}));
+app.use('/', express.static(path.join(__dirname, './client/static'), sConfig.STATIC_CACHE_VALUE));
 //carpeta de subidas locales..
-app.use('/uploads', express.static(path.join(__dirname, './uploads'), {maxAge: 3600000*12}));
+app.use('/uploads', express.static(path.join(__dirname, './uploads'), sConfig.STATIC_CACHE_VALUE));
 //carpeta del node.
 app.use('/node', express.static(path.join(__dirname, 'node_modules/'))); //TODO: sacar esto de aca.
 //formidable para los post request
 app.use(formidable());
+//compresion
+app.use(compression());
 
 /* VIEW ENGINE (EJS) */
 app.set("view engine", "ejs");
