@@ -4,6 +4,7 @@ const sharp = require('sharp');
 const imgur = require('imgur');
 const sConfig = require('../config/serverconfig.js');
 const utils = require('../utils.js');
+const youtube = require('./youtube.js');
 
 //MUESTRA: subida de archivos, esto se encargaría de seleccionar el servidor configurado por el host, etc.
 function upload(file, callback){
@@ -122,23 +123,10 @@ function genThumb(url){
 		case "youtube-img":
 			return url;
 		case "youtube-embed":
-			return genYoutubeThumb(url, "hq");
+			return youtube.genYoutubeThumb(url, "hq");
 		case "generic":
 			return url;
 	}
-}
-
-//FUNCION: obtiene el thumbnail de un video de youtube
-function genYoutubeThumb(url, quality){
-	var id = youtubeParser(url);
-	return (id) ? "https://i3.ytimg.com/vi/" + id + "/" + quality + "default.jpg" : "/assets/logo.png";
-}
-
-//FUNCION: obtiene el id del video de youtube
-function youtubeParser(url){
-	let regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-	let match = url.match(regExp);
-	return (match && match[2].length == 11) ? match[2] : null;
 }
 
 //FUNCION: generar thumbnails de imgur
@@ -157,4 +145,4 @@ function genCloudyThumb(url){
 	return url.slice(0, sliceA.lastIndexOf("/")) + sConfig.CLOUDINARY_THUMBNAIL_CONFIG + n[n.length - 2] + "/" + n[n.length - 1];
 }
 
-module.exports = {upload, genThumb, checkURLType, genImgurThumb, genYoutubeThumb}
+module.exports = {upload, genThumb, checkURLType, genImgurThumb}

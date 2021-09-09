@@ -6,7 +6,7 @@ const utils = require('../utils.js');
 const pass = require('./passport.js');
 const live = require('./live.js');
 
-function parseInput(DB, cid, uid, rawtext){
+function parseComInput(DB, cid, uid, rawtext){
 	parseTags(DB, cid, uid, rawtext); //obligatoriamente, se invoca el parser de tags aunque no se utilize la informacion de retorno.
 	
 	return htmlSanitize(rawtext);
@@ -74,4 +74,4 @@ function parseTags(DB, cid, uid, rawtext){
 	return []; //por defecto, no hay tags
 }
 
-module.exports = {parseInput, htmlSanitize, parseTags}
+module.exports = {parseComInput, htmlSanitize, parseTags}

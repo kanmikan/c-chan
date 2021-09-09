@@ -21,8 +21,8 @@
 					<span class="subtitleToggle"><i class="fas fa-plus"></i></span>
 				</div>
 				<div class="polls hide" id="polls">
-					<input type="text" name="pollOne" maxlength="50" placeholder="Opcion 1">
-					<input type="text" name="pollTwo" maxlength="50" placeholder="Opcion 2">
+					<input class="fieldv2" type="text" name="pollOne" maxlength="50" placeholder="Opcion 1">
+					<input class="fieldv2" type="text" name="pollTwo" maxlength="50" placeholder="Opcion 2">
 				</div>
 				
 				<div class="subtitle pointer" id="toggleanime" data-toggle="modal" data-target="#anime" data-backdrop="false">
@@ -30,7 +30,7 @@
 					<span class="subtitleToggle"><i class="fas fa-plus"></i></span>
 				</div>
 				<div class="polls hide" id="anime">
-					<input type="text" name="subtitle" maxlength="50" placeholder="Titulo del anime/manga">
+					<input class="fieldv2" type="text" name="subtitle" maxlength="50" placeholder="Titulo del anime/manga">
 				</div>
 				
 			</div>
@@ -44,10 +44,13 @@
 				<div class="selectAttach" id="voxAttachs">
 					<div id="uploadButtonPost" class="uploadFromLocal tooltip-bottom" onclick="openFileSelector('bfile')" data-tooltip="Subir archivo"><i class="fas fa-upload"></i></div>
 					
-					<div class="uploadFromLink tooltip-bottom" data-tooltip="Subir via link" data-toggle="modal" data-target="#nlinkModal" data-backdrop="false"><i class="fas fa-link"></i></div>	
+					<div id="blinkButton" class="uploadFromLink tooltip-bottom"><i class="fas fa-link"></i></div>	
 					
 					<input name="file" type="file" id="bfile" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput" data-preview="previewInputComment">
 				</div>
+				
+				<input class="field fieldv2 hidden" id="burl" type="text" name="burl" maxlength="300" placeholder="Pega un link de youtube o imagen...">
+				
 				<button class="buttonPress buttonPressv2" id="newVox" type="submit">
 					<i id="bspin" class="fas fa-circle-notch fa-spin hidden"></i>
 					<b id="bupp"></b>

@@ -102,7 +102,7 @@ module.exports = function(app){
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
 		}
-		json.content.body = parser.parseInput(DB, cid, req.session.id, content);
+		json.content.body = parser.parseComInput(DB, cid, req.session.id, content);
 		
 		//test anti callback hell
 		let userdata = await dbManager.queryDB(DB, mdbScheme.C_ADM, {uid: req.session.id}, "", () => {});
@@ -271,8 +271,14 @@ module.exports = function(app){
 	
 	//DEBUG: MUESTRA DE LA ESTRUCTURA DE LOS TEMAS EN MIKANDBV2
 	//SOLO PARA DEBUG Y TEST, ESTO LO VOY A SACAR
-	app.get('/dev', function(req, res) {
+	app.get('/dev', async function(req, res) {
 
+		const youtube = require("./api/youtube.js");
+		
+		youtube.getVideoData("cwptTf-64Uo", function(resu){
+			console.log(resu);
+		});
+		
 		/*
 		dbManager.insertDB(req.app.locals.db, "notifs", data, function(){
 			res.redirect("/");

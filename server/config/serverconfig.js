@@ -5,7 +5,10 @@ module.exports = {
 	PORT: process.env.PORT || 3000,
 	SESSION_SECRET: process.env.SESSION_SECRET || "test",
 	DATABASE_CACHE: true,
-	STATIC_CACHE_VALUE: {maxAge: 3600000*12},
+	STATIC_CACHE_VALUE: {},//{maxAge: 3600000*12},
+	
+	/* APIS EXTERNAS */
+	YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,
 	
 	/* CONFIGURACION DE SERVIDORES DE IMAGEN */
 	IMG_SERVER: 0, //0: local, 1: imgur, 2: imgbb, 3: cloudinary

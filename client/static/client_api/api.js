@@ -192,6 +192,11 @@ function isGif(url){
 	return url.slice(-4) === ".gif";
 }
 
+function isImg(url){
+	let match = url.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i)
+	return (match) ? true : false;
+}
+
 function detectMedia(url){
 	let type = checkURLType(url);
 	if (type === "youtube-embed" || type === "youtube-url"){
@@ -199,9 +204,11 @@ function detectMedia(url){
 			//primero convertir a embed
 			url = "https://www.youtube.com/embed/" + youtubeParser(url);
 		}
-		//es un video de youtube
 		return {video: true, raw: url, thumb: genYoutubeThumb(url, "mq")};
- 	} else {
+ 	} else if (isImg(url)) {
+		//es una imagen
+		return {video: false, raw: url, thumb: url};
+	} else {
 		//lo demas esta desactivado.
 		return null;
 	}
@@ -245,21 +252,55 @@ $(document).ready(function() {
 		});
 	}
 	
+	//evento: al seleccinar un link en modal de tema
+	if (element("blinkButton")){
+		element("blinkButton").addEventListener("click", function(e){
+			if ($("#burl").hasClass("hidden")){
+				element("burl").classList.remove("hidden");
+				$("#blinkButton").html('<i class="fas fa-check"></i>');
+			} else {
+				element("burl").classList.add("hidden");
+				$("#blinkButton").html('<i class="fas fa-link"></i>');
+				
+				var link = $("input[name=burl]").val();
+				if (link.trim() != ""){
+					element("burl").value = "";
+					console.log(link);
+					
+					let mediaData = detectMedia(link);
+					if (mediaData){
+						//enviar imagen del thumbnail al form
+						if (mediaData.video){
+							element("bvid").value = mediaData.raw + ";" + mediaData.thumb;
+						} else {
+							element("bimg").value = mediaData.raw + ";" + mediaData.thumb;
+						}
+						//mostrar imagen en el cuadro de preview
+						element("nimgpreview").setAttribute("src", mediaData.thumb);
+						$("#previewInputVox").attr("style", "display: block !important");
+					}
+					
+				}
+			}
+		});
+	}
+	
 	//evento: al seleccionar un link en comentarios
 	//TODO: convertir a javascript nativo.
 	if (element("linkButton")){
 		element("linkButton").addEventListener("click", function(e){
 			if ($("#curl").hasClass("hidden")){
 				//esta oculto, activar
-				$("#curl").removeClass("hidden");
+				element("curl").classList.remove("hidden");
 				//cambiar icono a palomita
 				$("#linkButton").html('<i class="fas fa-check"></i>');
 			} else {
 				//esta visible, enviar informacion si existe y desactivar.
-				$("#curl").addClass("hidden");
+				element("curl").classList.add("hidden");
 				$("#linkButton").html('<i class="fas fa-link"></i>');
 				var link = $("input[name=url]").val();
 				if (link.trim() != ""){
+					element("curl").value = "";
 					//analizar y manipular la url
 					let mediaData = detectMedia(link);
 					if (mediaData){
@@ -269,7 +310,6 @@ $(document).ready(function() {
 						} else {
 							element("cimg").value = mediaData.raw + ";" + mediaData.thumb;
 						}
-						
 						//mostrar imagen en el cuadro de preview
 						element("imgpreview").setAttribute("src", mediaData.thumb);
 						element("previewInputComment").classList.remove("hide");
@@ -277,6 +317,10 @@ $(document).ready(function() {
 					
 				}
 			}
+		});
+		element("closePreview").addEventListener("click", function(e){
+			element("previewInputComment").classList.add("hide");
+			element("imgpreview").setAttribute("src", "");
 		});
 	}
 	
