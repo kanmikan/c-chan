@@ -106,8 +106,12 @@ function commentRender(op, com){
 	cbody +=`<span class="commentTag pointer" data-tag="${com.cid}" onclick="tag('>>${com.cid}')">${com.cid}</span>`;			
 		
 	//aca irían los botones de moderacion..
-	cbody +=`<span class="commentTag pointer"><i class="fas fa-flag"></i></span>`;
-			
+	if (USERDATA && (USERDATA.includes("ADMIN") || USERDATA.includes("GMOD"))){
+		cbody +=`<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span><span class="commentTag pointer"><i class="fas fa-flag"></i></span><span class="commentTag pointer"><i class="fas fa-trash"></i></span>`;
+	} else {
+		cbody +=`<span class="commentTag pointer"><i class="fas fa-flag"></i></span>`;
+
+	}	
 	cbody +=`</div><div class="commentCreatedAt">${timeSince(com.date.created)}</div></div><div class="commentReply">`;
 	com.content.extra.tags.forEach(function(tag){
 		cbody +=`<a href="#${tag}" class="tag" data-tag="${tag}">>>${tag}</a>`;
@@ -214,7 +218,7 @@ function detectMedia(url){
 	}
 }
 	
-	//FUNCION: obtiene el thumbnail de un video de youtube
+//FUNCION: obtiene el thumbnail de un video de youtube
 function genYoutubeThumb(url, quality){
 	var id = youtubeParser(url);
 	return (id) ? "https://i3.ytimg.com/vi/" + id + "/" + quality + "default.jpg" : "/assets/logo.png";
@@ -236,6 +240,34 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 $(document).ready(function() {
+	
+	//evento: menu de opciones de los boxs
+	$(document).on("click",".actionBotton",function(e){
+		e.preventDefault();
+		let menu = $(this).parent().parent().parent();
+		$(menu).addClass("actionMode");
+	});
+	$(document).on("click",".voxActionBotton",function(e){
+		e.preventDefault();
+		let action = $(e.target).data("act");
+		let buttons = $(this).parent().parent();
+		
+		//TODO: llamada al server a la ruta /action/id, el server comprueba los privilegios y realiza la accion, de esta manera sería seguro enviar los botones y rutas de moderacion al cliente, porque aunque tengan acceso a esa data, no tendrian manera de explotarlo.
+		
+		switch(action){
+			case "close":
+				$(buttons).removeClass("actionMode");
+				break;
+			case "report":
+				console.log("report box");
+				$(buttons).removeClass("actionMode");
+				break;
+			case "hide":
+				console.log("hide box");
+				$(buttons).removeClass("actionMode");
+				break;
+		}
+	});
 	
 	//evento: al hacer click en cargar mas comentarios.
 	if (element("commentLoadMore")){

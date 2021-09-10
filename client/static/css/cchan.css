@@ -14,7 +14,7 @@
 	--button1b-hover: #03a9f4;
 	--comment-background: #f5f5f5;
 	--comment-background-hover: #f9f9f9;
-	--comment-background-jump: #abfbff;
+	--comment-background-jump: #d9fdff;
 	--box-links: #2196f3;
 	--box-links-hover: #00bcd4;
 	--bar1: #f5f5f5;
@@ -656,13 +656,14 @@ span.countComments {
 }
 
 .voxActions {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #00000036;
-    display: none;
-    flex-wrap: wrap;
-    z-index: 3;
+	display: flex;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: #00000036;
+	display: none;
+	flex-wrap: wrap;
+	z-index: 3;
 }
 
 .actionMode .voxActions {

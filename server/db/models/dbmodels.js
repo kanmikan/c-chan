@@ -22,7 +22,7 @@ function CAT_QUERY(uid, cat){
 
 function BOX_QUERY(uid, bid){
 	return [
-		[mdbScheme.C_ADM, "", "", 0],
+		[mdbScheme.C_ADM, {uid: uid}, "", 0],
 		[mdbScheme.C_BOXS, {bid: bid}, {"date.bump": -1}, 0],
 		[mdbScheme.C_NOTIF, {"receiver.uid": uid}, {"date.created": -1}, 0],
 		[mdbScheme.C_CATS, "", {sticky: -1, order: -1}, 0],
