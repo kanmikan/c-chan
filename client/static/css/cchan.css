@@ -14,7 +14,7 @@
 	--button1b-hover: #03a9f4;
 	--comment-background: #f5f5f5;
 	--comment-background-hover: #f9f9f9;
-	--comment-background-jump: #d9fdff;
+	--comment-background-jump: #ffffff;
 	--box-links: #2196f3;
 	--box-links-hover: #00bcd4;
 	--bar1: #f5f5f5;
@@ -1276,7 +1276,7 @@ h4{
 }
 
 .tag:hover {
-	text-decoration: underline;
+	/*text-decoration: underline;*/
 }
 
 .tag:link {
@@ -2280,6 +2280,65 @@ span.attachsVox {
 .fieldv2 {
 	height: 15px;
     font-size: 13px !important;
+}
+
+.alertBox {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    margin: 16px;
+    flex-wrap: wrap;
+    max-width: 350px;
+    width: 100%;
+}
+
+.alert {
+    border: 1px solid var(--alert-border);
+    border-bottom: 2px solid var(--alert-border);
+    border-radius: 4px;
+    display: flex;
+    margin-top: 4px;
+    background: var(--alert-background);
+    max-width: 350px;
+    width: 100%;
+    padding: 12px;
+    color: var(--alert-color);
+    font-size: 14px;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+.alert .content {
+    flex-grow: 1;
+    word-break: break-word;
+}
+
+.alert .image img {
+    width: 48px;
+    border-radius: 4px;
+    height: 48px;
+    background: #3f96c5;
+    display: flex;
+}
+
+.alert .image {
+    margin-right: 12px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.alert:hover {
+    box-shadow: 0px 0px 2px #00000073;
+}
+
+.ntfclose {
+	position: absolute;
+    right: 0;
+    margin-top: -15px;
+    font-weight: bold;
+    padding: 8px;
+    font-size: 16px;
 }
 
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */

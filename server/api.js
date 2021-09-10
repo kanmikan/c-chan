@@ -219,12 +219,14 @@ module.exports = function(app){
 		res.redirect("/tema/" + bid + "#" + cid);
 	});
 	
-	//API: obtener lista de notificaciones del uid.
-	app.get('/api/notifs', function(req, res) {
+	//API: obtener una notificacion especificada por el timestamp, usada por el popup.
+	app.get('/api/notifs/:date', function(req, res) {
 		let uid = req.session.id;
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid}, {"date.created": -1}, function(ntf){
+		let date = req.params.date;
+		
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "date.created": Number(date)}, {"date.created": -1}, function(ntf){
 			if (ntf[0]){
-				res.send({success: true, data: ntf});
+				res.send({success: true, data: ntf[0]});
 			} else {
 				res.send({success: false, data: null});
 			}

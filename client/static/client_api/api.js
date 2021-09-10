@@ -9,6 +9,12 @@ function element(eid){
 	return document.getElementById(eid);
 }
 
+function request(url, callback){
+	fetch(url)
+	.then(response => response.json())
+	.then(data => callback(data));
+}
+
 function getDataURL(file, before, callback) {
 	var reader = new FileReader();
 	reader.onload = function(event) {		
@@ -231,9 +237,36 @@ function youtubeParser(url){
 	return (match && match[2].length == 11) ? match[2] : null;
 }
 
-/* EVENTOS */
+function action_newNotification(data){
+	//actualizar notificaciones
+	/* TODO: cambiar todo esto, es horrible :c */
+	$('#notif_icon').load(document.URL + ' #notif_icon>*');
+	$('#notificationsList').load(document.URL + ' #notificationsList>*', function (){
+		//aca se actualiza el titulo de la web...
+	});	
+	//popup de la notificacion
+	action_openPopup(data);
+}
 
-document.addEventListener("DOMContentLoaded", function(event) {
+//TODO: javascript nativo.
+function action_openPopup(data){
+	let img = data.content.preview.thumb;
+	let title = data.content.preview.title;
+	let cpreview = data.content.preview.desc;
+	let msgHtml = "";
+	let type = (data.content.tag) ? "Te respondieron en:" : "Comentaron en tu tema:";
+	
+	msgHtml = `<div class="alert" data-bid="${data.content.bid}" data-cid="${data.content.cid}"><div class="ntfclose">x</div><div class="avatar"><img class="ntfavatar" src="${img}"></div><div class="ntfreport"><span>${type} ${title}</span></br><span>${cpreview}</span></div></div>`;
+	
+	//10 segundos hasta que remueva el primer elemento en la lista
+	$("#alertBox").append(msgHtml);
+	setTimeout(function(){
+		$("#alertBox").children().first().remove();
+	}, 10000);
+}
+
+/* EVENTOS */
+document.addEventListener("DOMContentLoaded", function(e) {
 	//hacer scroll al comentario al cargar la pagina.
 	//TODO: es necesario cancelar scroll del navegador?
 	hashScroll(document.location.hash);
@@ -241,13 +274,29 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 $(document).ready(function() {
 	
+	//evento: click en popup de notificacion.
+	$(document).on("click", ".alert", function(e){
+		e.preventDefault();
+		if (!$(e.target).hasClass("ntfclose")){
+			let target = $(e.target).parent();
+			let popData = (target.data().bid) ? target.data() : target.parent().data();
+			location.href = `/api/ntf/${popData.bid}/${popData.cid}`;
+		}
+	});
+	
+	$(document).on("click", ".ntfclose", function(e){
+		e.preventDefault();
+		//quita la notificacion de la lista.
+		$(e.target).parent().remove();
+	});
+	
 	//evento: menu de opciones de los boxs
-	$(document).on("click",".actionBotton",function(e){
+	$(document).on("click",".actionBotton", function(e){
 		e.preventDefault();
 		let menu = $(this).parent().parent().parent();
 		$(menu).addClass("actionMode");
 	});
-	$(document).on("click",".voxActionBotton",function(e){
+	$(document).on("click",".voxActionBotton", function(e){
 		e.preventDefault();
 		let action = $(e.target).data("act");
 		let buttons = $(this).parent().parent();

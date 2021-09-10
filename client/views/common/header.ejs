@@ -7,13 +7,7 @@
 	$(function () {
 		var socket = io();
 		socket.on('notif', function(data){
-			
-			//actualizar notificaciones
-			/* TODO: cambiar todo esto */
-			$('#notif_icon').load(document.URL + ' #notif_icon>*');
-			$('#notificationsList').load(document.URL + ' #notificationsList>*', function (){});	
-			/* */
-			
+			action_newNotification(data);
 		});
 	});
 </script>
@@ -57,6 +51,9 @@
 		
 		<li class="newBox" data-toggle="modal" data-target="#createVox" data-backdrop="false">Nuevo Tema</li>
 	</ul>
+
+	<div class="alertBox" id="alertBox"></div>
+	<div class="loadNewVox disabled" id="newAlert">Cargar x Temas</div>
 </nav>
 
 <%- include('../common/fragments/header/slideMenuModal', it); %>
