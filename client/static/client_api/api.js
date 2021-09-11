@@ -274,6 +274,30 @@ document.addEventListener("DOMContentLoaded", function(e) {
 
 $(document).ready(function() {
 	
+	//evento: hover de imagenes
+	$(document).on("click", ".attachExpandIcon", function (e) {
+		e.preventDefault();
+		$(e.target).parent().parent().toggleClass("commentAttachExpand");
+		let voxImageE = $(e.currentTarget).parent().find(".voxImage");
+		let pics = voxImageE.data("pics").split(",");
+		
+		if ($(e.currentTarget).hasClass("fa-search-plus")){
+			$(e.currentTarget).removeClass("fa-search-plus");
+			$(e.currentTarget).addClass("fa-search-minus");
+			voxImageE.children().attr("src", pics[0]);
+		} else {
+			$(e.currentTarget).removeClass("fa-search-minus");
+			$(e.currentTarget).addClass("fa-search-plus");
+			voxImageE.children().attr("src", pics[1]);
+		}
+	});
+	$(document).on("mouseenter", ".commentAttach, .voxAttach", function (e) {
+		$(e.currentTarget).find(".attachExpandIcon").removeClass("hidden");
+	});
+	$(document).on("mouseleave", ".commentAttach, .voxAttach", function (e) {
+		$(e.currentTarget).find(".attachExpandIcon").addClass("hidden");
+	});
+	
 	//evento: click en popup de notificacion.
 	$(document).on("click", ".alert", function(e){
 		e.preventDefault();
