@@ -72,6 +72,7 @@ module.exports = function(app){
 			json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
 		}
 		dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
+			live.sendData("new", {kind: "newbox", data: json});
 			res.json({success: true, data: {url: "/tema/" + bid}});
 		});
 	});
@@ -136,6 +137,7 @@ module.exports = function(app){
 			}
 			/* fin de notificacion */
 		}
+		live.sendData("new", {kind: "newcom", data: json});
 		res.json({success: true, data: json});		
 	});
 	

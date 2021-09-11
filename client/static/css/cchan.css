@@ -2341,6 +2341,11 @@ span.attachsVox {
     font-size: 16px;
 }
 
+.over.action {
+	/*border-color: #d8832b !important;*/
+	transition: border 1400ms ease-in-out;
+}
+
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */
 
 @media only screen and (max-width: 1000px) {

@@ -265,6 +265,29 @@ function action_openPopup(data){
 	}, 10000);
 }
 
+function action_newBoxPopup(data){
+	//TODO
+}
+
+function action_newComCupdate(data){
+	//actualiza el contador de comentarios.
+	let counter = $(`#${data.data.bid}`).find(".countComments");
+	counter.html(parseInt(counter.html()) + 1);
+}
+
+function action_newComEffect(data){
+	let border = $(`#${data.data.bid}`).find(".over");
+	let color = ((data.eff) ? data.eff.color : null) || "#00bcd4";
+	let trs = ((data.eff) ? data.eff.trs : null) || "1400ms";
+	
+	//activar y desactivar el efecto del borde.
+	border.attr("style", `border-color: ${color} !important;transition: border ${trs} ease-in-out`);
+	
+	setTimeout(function(){
+		border.attr("style", ``);
+	}, 1200);
+}
+
 /* EVENTOS */
 document.addEventListener("DOMContentLoaded", function(e) {
 	//hacer scroll al comentario al cargar la pagina.
@@ -522,6 +545,7 @@ $(document).ready(function() {
 				}, function(data){
 					if (data.success){
 						element("nimgpreview").setAttribute("src", data.data.link);
+						$("#previewInputVox").attr("style", "display: block !important");
 						let img = data.data.link + ";" + data.data.thumb;
 						element("bimg").value = img;
 					} else {
