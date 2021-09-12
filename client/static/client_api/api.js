@@ -89,6 +89,42 @@ function resetCommentInputData(){
 	
 }
 
+function boxRender(box){
+	//render de boxs del lado del cliente.
+	let boxThumb = (box.type.includes("video")) ? box.media.preview : box.img.preview;
+	
+	let bbody = `<a class="box" id="${box.bid}" href="/tema/${box.bid}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${boxThumb}); text-decoration: none; background-position: top;"><div class="voxHeader"><div class="tagList"><div class="tag categoryTag"><img src="" style="width: 20px;vertical-align: middle;"><span style="margin-left: 4px;margin-right: 5px;align-self: center;">${box.cat.toUpperCase()}</span></img></div>`;
+	
+	if (box.type && box.type.includes("video")){
+		bbody +=`<div class="tagInvisible ytb"><div class="tagWrapper"></div><i class="fab fa-youtube"></i></div>`;
+	}
+	if (box.type && box.type.includes("dice")){
+		bbody +=`<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>`;
+	}
+	if (box.type && box.type.includes("poll")){
+		bbody +=`<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>`;
+	}
+	if (box.type && box.type.includes("rss")){
+		bbody +=`<div class="tagInvisible rss"><div class="tagWrapperTransparent"></div><i class="fas fa-rss"></i></div>`;
+	}
+	if (box.date && box.date.csticky > 0){
+		bbody +=`<div class="tagInvisible csticky"><div class="tagWrapperTransparent"></div><i class="fas fa-thumbtack"></i></div>`;
+	}
+	if (box.date && box.date.sticky > 0){
+		bbody +=`<div class="tag sticky">Sticky</div>`;
+	}
+	
+	bbody +=`</div><div class="voxComments textShadon"><i class="fas fa-comment"></i><span class="countComments">${box.content.comments}</span></div><div class="voxAction textShadon"><div class="actionBotton" data-voxaction="${box.bid}"><i class="fas fa-ellipsis-v" data-voxaction="${box.bid}"></i></div></div></div>`;
+	
+	if (box.content.extra != undefined && box.content.extra.title2 != undefined){
+		bbody +=`<h5 class="animetitle textShadon">${box.content.extra.title2}</h5>`;
+	}
+	
+	bbody +=`<h4 class="title textShadon">${box.content.title}</h4><div class="over"></div><div class="voxActions unselect"><div class="voxActionBotton"><div class="actionText" data-act="hide" data-contentid="${box.bid}">Ocultar</div></div><div class="voxActionBotton"><div class="actionText" data-act="report" data-contentid="${box.bid}">Reportar</div></div><div class="voxActionBotton"><div class="actionText" data-act="close"><i class="fas fa-times"></i></div></div></div></a>`;
+	
+	$("#boxList").prepend(bbody);
+}
+
 function commentRender(op, com){
 	//render de comentarios del lado del cliente.			
 	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar"><img class="avatar" src="${com.icon}" alt=""></div><div class="commentBody"><div class="commentMetadata"><div class="commentsTag unselect">`;
@@ -266,7 +302,29 @@ function action_openPopup(data){
 }
 
 function action_newBoxPopup(data){
-	//TODO
+	//añadir box al buffer
+	B_BUFFER.push(data.data);
+	//mostrar cantidad de nuevos temas
+	let msg = (B_BUFFER.length > 1) ? `Cargar ${B_BUFFER.length} Temas` : `Cargar 1 Tema`;
+	$("#newAlert").html(msg);
+	element("newAlert").classList.remove("disabled");
+	
+	//evento: click en popup de nuevo tema.
+	element("newAlert").addEventListener("click", function(e){
+		//cargar nuevos temas AL INICIO DE LA LISTA o actualizar lista.
+		B_BUFFER.sort(function(a, b){
+			return a.date.bump - b.date.bump;
+		});
+		B_BUFFER.forEach(function(box){
+			box.flag.push("new");
+		});
+		for (var i=0; i<B_BUFFER.length; i++){
+			boxRender(B_BUFFER[i]);
+		}
+		
+		B_BUFFER = [];
+		element("newAlert").classList.add("disabled");
+	});
 }
 
 function action_newComCupdate(data){

@@ -2346,6 +2346,31 @@ span.attachsVox {
 	transition: border 1400ms ease-in-out;
 }
 
+.loadNewVox {
+    z-index: 5;
+    background: #2196f3;
+    width: 200px;
+    padding: 12px;
+    font-size: 13px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    position: fixed;
+    top: 65px;
+    left: calc(50% - 112px);
+    border-radius: 8px;
+    box-shadow: 2px 2px 2px 0px rgb(30 44 56 / 55%);
+    border: 2px solid #0973c7;
+}
+
+.loadNewVox:hover {
+    background: #03a9f4;
+}
+
+.loadNewVox:active {
+    background: #03a9f4;
+}
+
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */
 
 @media only screen and (max-width: 1000px) {
