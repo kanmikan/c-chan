@@ -2371,6 +2371,19 @@ span.attachsVox {
     background: #03a9f4;
 }
 
+.searchInput{
+	z-index: 99;
+	top: 100%;
+	padding: 8px 12px;
+	color: var(--form-textArea-text);
+	background: var(--form-textArea);
+	border: 1px solid var(--form-textArea-border);
+	border-radius: 4px;
+	outline: none;
+	font-family: inherit;
+	padding-right: 10px !important;
+}
+
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */
 
 @media only screen and (max-width: 1000px) {
@@ -2379,6 +2392,12 @@ span.attachsVox {
 	}
 	.attachExpandIcon {
 		display: none !important;
+	}
+	.searchInput{
+		position: absolute;
+		height: 50%;
+		width: 100%;
+		left: 0;
 	}
 }
 

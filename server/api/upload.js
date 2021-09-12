@@ -5,6 +5,7 @@ const imgur = require('imgur');
 const sConfig = require('../config/serverconfig.js');
 const utils = require('../utils.js');
 const youtube = require('./youtube.js');
+const cloudy = require('./cloudinary.js');
 
 //MUESTRA: subida de archivos, esto se encargaría de seleccionar el servidor configurado por el host, etc.
 function upload(file, callback){
@@ -23,7 +24,7 @@ function upload(file, callback){
 			break;
 		case 3:
 			//cloudinary
-			callback({success: false, data: "-no implementado-"});
+			cloudyUpload(file, callback);
 			break;
 	}
 }
@@ -89,6 +90,12 @@ function genLocalThumb(path, filename, callback){
 		
 }
 
+function cloudyUpload(file, callback){
+	cloudy.uploadImg(file, function(data){
+		callback(data);
+	});
+}
+
 function imgurUpload(file, callback){
 	imgur.uploadFile(file.path).then((json) => {
 		let thumb = genImgurThumb(json.link, sConfig.IMGUR_THUMBNAIL_QUALITY);
@@ -119,7 +126,7 @@ function genThumb(url){
 		case "imgur":
 			return genImgurThumb(url, sConfig.IMGUR_THUMBNAIL_QUALITY);
 		case "cloudinary":
-			return genCloudyThumb(url);
+			return cloudy.genCloudyThumb(url);
 		case "youtube-img":
 			return url;
 		case "youtube-embed":
@@ -136,13 +143,6 @@ function genImgurThumb(url, quality){
 	let v3 = v2.length+1;
 	let res = url.slice(0, -(v3));
 	return res + quality + "." + v2;
-}
-
-//FUNCION: genera thumbnails de cloudinary
-function genCloudyThumb(url){
-	let n = url.split("/");
-	let sliceA = url.slice(0, url.lastIndexOf("/"));
-	return url.slice(0, sliceA.lastIndexOf("/")) + sConfig.CLOUDINARY_THUMBNAIL_CONFIG + n[n.length - 2] + "/" + n[n.length - 1];
 }
 
 module.exports = {upload, genThumb, checkURLType, genImgurThumb}

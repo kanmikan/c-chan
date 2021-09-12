@@ -50,6 +50,38 @@ module.exports = function(app){
 		}
 	});
 	
+	//API: buscar palabras clave en temas y devolver resultado
+	app.get('/search/:query', function(req, res) {
+		let query = req.params.query;
+		
+		let regexQuery = {$regex: '.*' + query + '.*', $options: 'i'};
+		let search = {$or: [
+				{"content.title": regexQuery},
+				{"content.body": regexQuery},
+				{"content.extra.title2": regexQuery}
+		]};
+		
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, search, {"date.created": -1, "date.bump": -1}, function(rboxs){
+			if (rboxs[0]){
+				//res.json({success: true, data: rboxs});
+				dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(req.session.id), function(result){
+					result[mdbScheme.C_BOXS] = rboxs;
+					res.render("index", {
+						it : {
+							utils: utils,
+							renderConfig: renderConfig,
+							sesion: req.session,
+							data: result
+						}
+					});
+				});
+			} else {
+				//res.json({success: false, data: "No hay coincidencias"});
+				res.redirect("/");
+			}
+		});
+	});
+	
 	/* RUTAS DEL API */
 	api(app);
 	

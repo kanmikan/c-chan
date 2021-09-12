@@ -5,7 +5,7 @@ module.exports = {
 	PORT: process.env.PORT || 3000,
 	SESSION_SECRET: process.env.SESSION_SECRET || "test",
 	DATABASE_CACHE: ((process.env.DATABASE_CACHE === "true") ? true : false) || true,
-	STATIC_CACHE_VALUE: process.env.STATIC_CACHE || {},//{maxAge: 3600000*12},
+	STATIC_CACHE_VALUE: {}, //{maxAge: 3600000*12}
 	
 	/* APIS EXTERNAS */
 	YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,
@@ -14,7 +14,11 @@ module.exports = {
 	IMG_SERVER: parseInt(process.env.IMG_SERVER) || 0, //0: local, 1: imgur, 2: imgbb, 3: cloudinary
 	IMG_LOCAL_THUMBNAIL_SIZE: 300, //300px
 	IMGUR_THUMBNAIL_QUALITY: "m", //l: large m: medium, etc.
-	CLOUDINARY_THUMBNAIL_CONFIG: "/c_scale,pg_1,w_200,f_auto/",
+	/* CLOUDINARY */
+	CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+	CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+	CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+	CLOUDINARY_THUMBNAIL_CONFIG: "/c_scale,pg_1,w_300,f_auto/",
 	
 	/* DELAYS ENTRE OTROS */
 	COMMENT_DELAY: 5, //tiempo de espera en segundos (5 segundos)

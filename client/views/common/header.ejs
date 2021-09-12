@@ -34,7 +34,9 @@
 			<%- include('../common/fragments/header/categoryMenuModal', it); %>
 		</li>
 		
-		<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#searchModal" data-backdrop="false">
+		<input id="searchInput" class="searchInput hide" type="text" placeholder="Introduce el criterio a buscar..." maxlength="50">
+		
+		<li id="searchButton" class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#searchInput" data-backdrop="false">
 			<i class="fas fa-search"></i>
 		</li>
 		

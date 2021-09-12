@@ -160,7 +160,7 @@ function commentRender(op, com){
 	});
 	cbody +=`</div><div class="commentData">`;
 	if (com.type.includes("image")){
-		cbody +=`<figure class="commentAttach"><div style="position: relative;width: 100%;height: 100%;"><i class="fa fa-search-plus attachExpandIcon hidden"></i><a class="voxImage" target="_BLANK" href="${com.img.full}"><img src="${(isGif(com.img.preview)) ? com.img.full : com.img.preview}"></img></a></div></figure>`;
+		cbody +=`<figure class="commentAttach"><div style="position: relative;width: 100%;height: 100%;"><i class="fa fa-search-plus attachExpandIcon hidden"></i><a class="voxImage" data-pics="${com.img.full}|${com.img.preview}" target="_BLANK" href="${com.img.full}"><img src="${(isGif(com.img.preview)) ? com.img.full : com.img.preview}"></img></a></div></figure>`;
 	}
 	if (com.type.includes("video")){
 		cbody +=`<figure class="commentAttachVideo"><div class="video-container"><iframe src="${com.media.raw}" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=${com.media.raw}?autoplay=1><img src=${ com.media.preview}><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></figure>`;
@@ -305,7 +305,7 @@ function action_newBoxPopup(data){
 	//añadir box al buffer
 	B_BUFFER.push(data.data);
 	//mostrar cantidad de nuevos temas
-	let msg = (B_BUFFER.length > 1) ? `Cargar ${B_BUFFER.length} Temas` : `Cargar 1 Tema`;
+	let msg = (B_BUFFER.length > 1) ? `Cargar ${B_BUFFER.length} temas nuevos` : `Cargar 1 tema nuevo`;
 	$("#newAlert").html(msg);
 	element("newAlert").classList.remove("disabled");
 }
@@ -338,6 +338,20 @@ document.addEventListener("DOMContentLoaded", function(e) {
 
 $(document).ready(function() {
 	
+	//evento: al realizar busqueda
+	if (element("searchInput")){
+		element("searchInput").addEventListener("keypress", function(e){
+			if (e.key === "Enter"){
+				let query = element("searchInput").value;
+				if (query.trim() != ""){
+					element("searchInput").value = "";
+					element("searchButton").click();
+					location.href = `/search/${query}`;	
+				}
+			}
+		});
+	}
+	
 	//evento: click en popup de nuevo tema.
 	if (element("newAlert")){
 		element("newAlert").addEventListener("click", function(e){
@@ -362,7 +376,7 @@ $(document).ready(function() {
 		e.preventDefault();
 		$(e.target).parent().parent().toggleClass("commentAttachExpand");
 		let voxImageE = $(e.currentTarget).parent().find(".voxImage");
-		let pics = voxImageE.data("pics").split(",");
+		let pics = voxImageE.data("pics").split("|");
 		
 		if ($(e.currentTarget).hasClass("fa-search-plus")){
 			$(e.currentTarget).removeClass("fa-search-plus");
@@ -453,8 +467,6 @@ $(document).ready(function() {
 				var link = $("input[name=burl]").val();
 				if (link.trim() != ""){
 					element("burl").value = "";
-					console.log(link);
-					
 					let mediaData = detectMedia(link);
 					if (mediaData){
 						//enviar imagen del thumbnail al form
@@ -604,7 +616,7 @@ $(document).ready(function() {
 					element("newVox").disabled = true;
 				}, function(data){
 					if (data.success){
-						element("nimgpreview").setAttribute("src", data.data.link);
+						element("nimgpreview").setAttribute("src", data.data.thumb);
 						$("#previewInputVox").attr("style", "display: block !important");
 						let img = data.data.link + ";" + data.data.thumb;
 						element("bimg").value = img;
@@ -640,7 +652,7 @@ $(document).ready(function() {
 					element("newComment").disabled = true;
 				}, function(data){
 					if (data.success){
-						element("imgpreview").setAttribute("src", data.data.link);
+						element("imgpreview").setAttribute("src", data.data.thumb);
 						let img = data.data.link + ";" + data.data.thumb;
 						element("cimg").value = img;
 					} else {
