@@ -3,7 +3,7 @@ logs
 npm-debug.log*
 CODEDUMP.txt
 *.lnk
-uploads/*
+uploads/*.*
 .env
 
 node_modules

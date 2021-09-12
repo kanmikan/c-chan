@@ -308,23 +308,6 @@ function action_newBoxPopup(data){
 	let msg = (B_BUFFER.length > 1) ? `Cargar ${B_BUFFER.length} Temas` : `Cargar 1 Tema`;
 	$("#newAlert").html(msg);
 	element("newAlert").classList.remove("disabled");
-	
-	//evento: click en popup de nuevo tema.
-	element("newAlert").addEventListener("click", function(e){
-		//cargar nuevos temas AL INICIO DE LA LISTA o actualizar lista.
-		B_BUFFER.sort(function(a, b){
-			return a.date.bump - b.date.bump;
-		});
-		B_BUFFER.forEach(function(box){
-			box.flag.push("new");
-		});
-		for (var i=0; i<B_BUFFER.length; i++){
-			boxRender(B_BUFFER[i]);
-		}
-		
-		B_BUFFER = [];
-		element("newAlert").classList.add("disabled");
-	});
 }
 
 function action_newComCupdate(data){
@@ -354,6 +337,25 @@ document.addEventListener("DOMContentLoaded", function(e) {
 });
 
 $(document).ready(function() {
+	
+	//evento: click en popup de nuevo tema.
+	if (element("newAlert")){
+		element("newAlert").addEventListener("click", function(e){
+			//cargar nuevos temas AL INICIO DE LA LISTA o actualizar lista.
+			B_BUFFER.sort(function(a, b){
+				return a.date.bump - b.date.bump;
+			});
+			B_BUFFER.forEach(function(box){
+				box.flag.push("new");
+			});
+			for (var i=0; i<B_BUFFER.length; i++){
+				boxRender(B_BUFFER[i]);
+			}
+			
+			B_BUFFER = [];
+			element("newAlert").classList.add("disabled");
+		});
+	}
 	
 	//evento: hover de imagenes
 	$(document).on("click", ".attachExpandIcon", function (e) {
