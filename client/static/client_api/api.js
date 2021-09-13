@@ -227,7 +227,7 @@ function checkURLType(url){
 		return "youtube-img";
 	} else if (url.search("youtube.com/embed") != -1) {
 		return "youtube-embed";
-	} else if (url.search("youtube.com/watch") != -1){
+	} else if (url.search("youtube.com/watch") != -1 || url.search("youtu.be") != -1){
 		return "youtube-url";
 	} else {
 		return "generic";
