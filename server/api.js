@@ -9,6 +9,7 @@ const parser = require('./api/parser.js');
 const avatar = require('./api/avatar.js');
 const pass = require('./api/passport.js');
 const live = require('./api/live.js');
+const compat = require('./db/compat.js');
 
 module.exports = function(app){
 	
@@ -277,12 +278,12 @@ module.exports = function(app){
 	//SOLO PARA DEBUG Y TEST, ESTO LO VOY A SACAR
 	app.get('/dev', async function(req, res) {
 
+		/*
 		const youtube = require("./api/youtube.js");
-		
 		youtube.getVideoData("cwptTf-64Uo", function(resu){
 			console.log(resu);
 		});
-		
+		*/
 		/*
 		dbManager.insertDB(req.app.locals.db, "notifs", data, function(){
 			res.redirect("/");

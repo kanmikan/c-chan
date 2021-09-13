@@ -2,6 +2,7 @@
 const utils = require('../utils');
 const jsonScheme = require('./models/jsonscheme.js');
 const upload = require('../api/upload.js');
+const youtube = require('../api/youtube.js');
 
 //FUNCION: comprueba la version de la coleccion y transcribe los elementos mdb a mdbv2.
 function checkCompat(type, collection){
@@ -44,7 +45,7 @@ function mdbTranscript(type, mdbElement){
 			if (mdbElement.video_url != "" && mdbElement.video){
 				json.type.push("video");
 				if (upload.checkURLType(mdbElement.video_url) === "youtube-embed"){
-					json.img.preview = upload.genYoutubeThumb(mdbElement.video_url, "mq");
+					json.img.preview = youtube.genYoutubeThumb(mdbElement.video_url, "mq");
 				} else {
 					json.img.preview = upload.genThumb(mdbElement.video_url);
 				}

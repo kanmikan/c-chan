@@ -122,7 +122,8 @@ function boxRender(box){
 	
 	bbody +=`<h4 class="title textShadon">${box.content.title}</h4><div class="over"></div><div class="voxActions unselect"><div class="voxActionBotton"><div class="actionText" data-act="hide" data-contentid="${box.bid}">Ocultar</div></div><div class="voxActionBotton"><div class="actionText" data-act="report" data-contentid="${box.bid}">Reportar</div></div><div class="voxActionBotton"><div class="actionText" data-act="close"><i class="fas fa-times"></i></div></div></div></a>`;
 	
-	$("#boxList").prepend(bbody);
+	//$("#boxList").prepend(bbody);
+	return bbody;
 }
 
 function commentRender(op, com){
@@ -202,6 +203,7 @@ function tag(cid){
 }
 
 function hashScroll(hash){
+	console.log("hash: " + hash);
 	if (hash != ""){
 		window.location.hash = hash;
 		let elem = element(hash.substring(1));
@@ -273,6 +275,15 @@ function youtubeParser(url){
 	return (match && match[2].length == 11) ? match[2] : null;
 }
 
+//FUNCION copypaste: obtiene la media de altura del documento en la vista.
+function getDocumentHeight() {
+    return Math.max(
+        Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+        Math.max(document.body.offsetHeight, document.documentElement.offsetHeight),
+        Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+    );
+}
+
 function action_newNotification(data){
 	//actualizar notificaciones
 	/* TODO: cambiar todo esto, es horrible :c */
@@ -329,14 +340,42 @@ function action_newComEffect(data){
 	}, 1200);
 }
 
-/* EVENTOS */
-document.addEventListener("DOMContentLoaded", function(e) {
-	//hacer scroll al comentario al cargar la pagina.
-	//TODO: es necesario cancelar scroll del navegador?
-	hashScroll(document.location.hash);
-});
+function action_updateBoxList(indexID, callback){
+	request(`/api/box/${indexID}/home`, function(result){
+		callback(result);
+	});
+}
 
+/* EVENTOS */
 $(document).ready(function() {
+	//hacer scroll al comentario al cargar la pagina.
+	hashScroll(document.location.hash);
+	
+	//evento generico: al hacer scroll
+	$(document.body).on("touchmove", onScroll);
+	$(window).on("scroll", onScroll);
+	let complete = true;
+	function onScroll(){
+		//evento: al llegar al final
+		if ($(window).height()+$(window).scrollTop() > (getDocumentHeight() - 100)){
+			if (complete){
+				complete = false;
+				let indexID = $("#boxList").children().last().attr("id");
+				$("#moreload").removeClass("hidden");
+				action_updateBoxList(indexID, function(data){
+					if (data.success){
+						let lboxs = data.data;
+						for (var i=0; i<lboxs.length; i++){
+							$("#boxList").append(boxRender(lboxs[i]));
+							complete = true;
+						}
+					}
+					$("#moreload").addClass("hidden");
+				});
+				
+			}
+		}
+	}
 	
 	//evento: al realizar busqueda
 	if (element("searchInput")){
@@ -363,7 +402,7 @@ $(document).ready(function() {
 				box.flag.push("new");
 			});
 			for (var i=0; i<B_BUFFER.length; i++){
-				boxRender(B_BUFFER[i]);
+				$("#boxList").prepend(boxRender(B_BUFFER[i]));
 			}
 			
 			B_BUFFER = [];
