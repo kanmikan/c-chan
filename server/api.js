@@ -110,8 +110,11 @@ module.exports = function(app){
 		let userdata = sesionManager.getUserData();
 		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};}
 		
-		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
+		//se envia la respuesta, con el comentario armado, sin importar si esta insertada en la base de datos.
+		res.json({success: true, data: json});
+		//el resto de acciones ocurrer luego de la respuesta al cliente.
 		
+		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
 		let coms = await dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", () => {});
 		await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
 		
@@ -139,8 +142,7 @@ module.exports = function(app){
 			}
 			/* fin de notificacion */
 		}
-		live.sendData("new", {kind: "newcom", data: pass.filterProtectedUID(json)});
-		res.json({success: true, data: json});		
+		live.sendData("new", {kind: "newcom", data: pass.filterProtectedUID(json)});		
 	});
 	
 	//MUESTRA: obtener todos los boxs, ordenados por ultimo bump y stickys
