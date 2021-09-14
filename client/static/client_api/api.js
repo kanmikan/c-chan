@@ -203,7 +203,6 @@ function tag(cid){
 }
 
 function hashScroll(hash){
-	console.log("hash: " + hash);
 	if (hash != ""){
 		window.location.hash = hash;
 		let elem = element(hash.substring(1));

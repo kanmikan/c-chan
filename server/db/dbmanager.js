@@ -99,17 +99,17 @@ function queryAggregate(DB, cname, aggregate, callback){
 
 /* INSERCION DE DATOS A LA DB */
 function insertDB(DB, cname, object, callback){
-	if (sConfig.DATABASE_CACHE){
-		let CACHE = cache.getCache();
-		CACHE[cname].push(object);
-		cache.setCache(CACHE);
-		callback("");
-		DB.db(sConfig.DBNAME).collection(cname).insertOne(object, function(err, result){});
-	} else {
-		DB.db(sConfig.DBNAME).collection(cname).insertOne(object, function(err, result){
-			callback(result);
-		});
-	}
+	
+	DB.db(sConfig.DBNAME).collection(cname).insertOne(object, function(err, result){
+		if (sConfig.DATABASE_CACHE){
+			//EN UNA ESCRITURA, ES PREFERIBLE EVITAR DESINCRONIZACIONES LLAMANDO SIEMPRE A LA BASE DE DATOS.
+			//let CACHE = cache.getCache();
+			//CACHE[cname].push(object);
+			//cache.setCache(CACHE);
+			cache.update(cname);
+		}
+		callback(result);
+	});
 }
 
 function pushDB(DB, cname, criterio, valor){
