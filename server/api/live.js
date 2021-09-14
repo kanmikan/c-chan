@@ -28,11 +28,11 @@ function sendData(key, data){
 function liveSession(io){
 	io.on('connection', function(socket){
 		//console.log("[SocketIO] Sesion Iniciada.");
-		socket.join(socket.handshake.session.id);
+		socket.join(socket.handshake.session.uid);
 		
 		socket.on('disconnect', () => {
 			//console.log("[SocketIO] Sesion Terminada.");
-			socket.leave(socket.handshake.session.id);
+			socket.leave(socket.handshake.session.uid);
 		});
 		
 		socket.on('room', function(data){
@@ -40,7 +40,7 @@ function liveSession(io){
 		});
 		socket.on('leave', function(data){
 			socket.leaveAll();
-			socket.join(socket.handshake.session.id);
+			socket.join(socket.handshake.session.uid);
 		});
 		socket.on('test', function(data){
 			console.log(data);

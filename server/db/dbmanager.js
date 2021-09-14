@@ -39,15 +39,17 @@ function mQuery(DB, qlist, callback){
 		//query comun a la base de datos.
 		var output = {};
 		let count2 = 0;
-		qlist.forEach(function(query){
-			DB.db(sConfig.DBNAME).collection(query[0]).find(query[1]).sort(query[2]).limit(query[3]).toArray(
-			function (err, result){
-				output[query[0]] = result;
-				if (count2 === (qlist.length-1)){
-					callback(output);
-					return output;
-				}
-				count2++;
+		return new Promise(function(resolve, reject){
+			qlist.forEach(function(query){
+				DB.db(sConfig.DBNAME).collection(query[0]).find(query[1]).sort(query[2]).limit(query[3]).toArray(
+				function (err, result){
+					output[query[0]] = result;
+					if (count2 === (qlist.length-1)){
+						callback(output);
+						resolve(output);
+					}
+					count2++;
+				});
 			});
 		});
 	}
@@ -63,79 +65,109 @@ function queryDB(DB, cname, query, sort, callback){
 			return cursor.all();
 		}
 	} else {
-		DB.db(sConfig.DBNAME).collection(cname).find(query).sort(sort).toArray(function(err, result){
-			if (err){
-				console.log("[Error] " + err);
-			} else {
-				callback(result);
-				return result;
-			}
+		return new Promise(function(resolve, reject){
+			DB.db(sConfig.DBNAME).collection(cname).find(query).sort(sort).toArray(function(err, result){
+				if (err){
+					console.log("[Error] " + err);
+				} else {
+					callback(result);
+					resolve(result);
+				}
+			});
 		});
 	}
 }
 
 //TODO: soporte para la cache.
 function queryDBSkip(DB, cname, query, sort, from, to, callback){
-	DB.db(sConfig.DBNAME).collection(cname).find(query).sort(sort).skip(from).limit(to).toArray(function(err, result){
-		if (err){
-			console.log("[Error] " + err);
-		} else {
-			callback(result);
-			return result;
-		}
+	return new Promise(function(resolve, reject){
+		DB.db(sConfig.DBNAME).collection(cname).find(query).sort(sort).skip(from).limit(to).toArray(function(err, result){
+			if (err){
+				console.log("[Error] " + err);
+			} else {
+				callback(result);
+				resolve(result);
+			}
+		});
 	});
 }
 
 function queryAggregate(DB, cname, aggregate, callback){
-	DB.db(sConfig.DBNAME).collection(cname).aggregate(aggregate).toArray(function(err, result){
-		if (err){
-			console.log("[Error] " + err);
-		} else {
-			callback(result);
-			return result;
-		}
+	return new Promise(function(resolve, reject){
+		DB.db(sConfig.DBNAME).collection(cname).aggregate(aggregate).toArray(function(err, result){
+			if (err){
+				console.log("[Error] " + err);
+			} else {
+				callback(result);
+				resolve(result);
+			}
+		});
 	});
 }
 
 /* INSERCION DE DATOS A LA DB */
 function insertDB(DB, cname, object, callback){
-	
-	DB.db(sConfig.DBNAME).collection(cname).insertOne(object, function(err, result){
-		if (sConfig.DATABASE_CACHE){
-			//EN UNA ESCRITURA, ES PREFERIBLE EVITAR DESINCRONIZACIONES LLAMANDO SIEMPRE A LA BASE DE DATOS.
-			//let CACHE = cache.getCache();
-			//CACHE[cname].push(object);
-			//cache.setCache(CACHE);
-			cache.update(cname);
-		}
-		callback(result);
+	return new Promise(function(resolve, reject){
+		DB.db(sConfig.DBNAME).collection(cname).insertOne(object, function(err, result){
+			if (sConfig.DATABASE_CACHE){
+				//EN UNA ESCRITURA, ES PREFERIBLE EVITAR DESINCRONIZACIONES LLAMANDO SIEMPRE A LA BASE DE DATOS.
+				//let CACHE = cache.getCache();
+				//CACHE[cname].push(object);
+				//cache.setCache(CACHE);
+				cache.update(cname, function(){
+					callback(result);
+					resolve(result);
+				});
+			} else {
+				callback(result);
+				resolve(result);
+			}
+		});
 	});
 }
 
 function pushDB(DB, cname, criterio, valor){
-	DB.db(sConfig.DBNAME).collection(cname).updateOne(criterio, valor, function (err, res){
-		//TODO: un workaround bastante flojo... pero me sirve por ahora.
-		if (sConfig.DATABASE_CACHE){
-			cache.update(cname);
-		}
+	return new Promise(function(resolve, reject){
+		DB.db(sConfig.DBNAME).collection(cname).updateOne(criterio, valor, function (err, res){
+			//TODO: un workaround bastante flojo... pero me sirve por ahora.
+			if (sConfig.DATABASE_CACHE){
+				cache.update(cname, function(){
+					resolve(res);
+				});
+			}
+		});
 	});
 }
 
 function updateDBAll(DB, cname, criterio, valor, callback){
-	DB.db(sConfig.DBNAME).collection(cname).updateMany(criterio, {$set: valor}, function(err, result){
-		if (sConfig.DATABASE_CACHE){
-			cache.update(cname);
-		}
-		callback(result);
+	return new Promise(function(resolve, reject){
+		DB.db(sConfig.DBNAME).collection(cname).updateMany(criterio, {$set: valor}, function(err, result){
+			if (sConfig.DATABASE_CACHE){
+				cache.update(cname, function(){
+					callback(result);
+					resolve(result);
+				});
+			} else {
+				callback(result);
+				resolve(result);
+			}
+		});
 	});
 }
 
 function deleteDB(DB, cname, criterio, callback){
-	DB.db(sConfig.DBNAME).collection(cname).remove(criterio, function(err, result){
-		if (sConfig.DATABASE_CACHE){
-			cache.update(cname);
-		}
-		callback(result);
+	return new Promise(function(resolve, reject){
+		DB.db(sConfig.DBNAME).collection(cname).remove(criterio, function(err, result){
+			if (sConfig.DATABASE_CACHE){
+				cache.update(cname, function(){
+					callback(result);
+					resolve(result);
+				});
+			} else {
+				callback(result);
+				resolve(result);
+			}
+		});
 	});
 }
 

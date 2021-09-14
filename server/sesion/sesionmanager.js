@@ -25,24 +25,28 @@ function create(app){
 
 function createUser(req, res, next){
 	//aca se compara el uid del usuario
-	let uid = req.session.id;
+	let uid = utils.randomString(32); //id unico generado para el uid.
+	let sid = req.session.id;
 	
 	//solo comprobar UNA vez, la implementacion no me gusta nada pero MESSIRVE
-	if (!USER_FLAG.includes(uid)){
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: uid}, "", function(user){
+	if (!(USER_FLAG.filter(item => item.sid === sid).length > 0)){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {sid: sid}, "", function(user){
 			if (user[0]){
-				cacheUser(uid);
+				cacheUser({sid: sid, data: user[0]});
+				req.session.uid = user[0].uid;
 				next();
 			} else {
-				//añadir al uid dentro del flag para que no haga otra query al pedo.
-				cacheUser(uid);
 				//si no existe el usuario con el uid, crear usuario.
 				let json = utils.clone(jsonScheme.USER_SCHEME);
 				json.uid = uid;
+				json.sid = sid;
 				json.extra = {};
 				//insertar el usuario a la base de datos de manera asincronica.
 				dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){});
 				console.log("[Sesion] Nuevo usuario anonimo generado.");
+				//añadir al uid dentro del flag para que no haga otra query al pedo.
+				cacheUser({sid: sid, data: json});
+				req.session.uid = uid;
 				next();
 			}
 		});
@@ -51,11 +55,15 @@ function createUser(req, res, next){
 	}	
 }
 
-function cacheUser(uid){
-	USER_FLAG.push(uid);
+function getUserData(sid){
+	return USER_FLAG.filter(item => item.sid === sid);
+}
+
+function cacheUser(sid){
+	USER_FLAG.push(sid);
 	if (USER_FLAG.length > 50){
 		USER_FLAG.shift();
 	}
 }
 
-module.exports = {create};
+module.exports = {create, getUserData};

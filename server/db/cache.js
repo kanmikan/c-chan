@@ -23,9 +23,10 @@ function init(DB){
 	
 }
 
-function update(cname){
+function update(cname, callback){
 	query(db, cname, function(res){
 		CACHE[cname] = res;
+		callback(res);
 	});
 }
 

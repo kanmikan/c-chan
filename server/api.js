@@ -2,6 +2,7 @@ const sConfig = require('./config/serverconfig.js');
 const dbManager = require('./db/dbmanager.js');
 const mdbScheme = require('./db/models/mdbscheme.js');
 const jsonScheme = require('./db/models/jsonscheme.js');
+const sesionManager = require('./sesion/sesionmanager.js');
 
 const utils = require('./utils.js');
 const uploadManager = require('./api/upload.js');
@@ -38,7 +39,7 @@ module.exports = function(app){
 		let json = utils.clone(jsonScheme.BOX_SCHEME);
 		json.bid = bid;
 		json.cat = (cat != "") ? cat : "off";
-		json.user.uid = req.session.id;
+		json.user.uid = req.session.uid;
 		json.date.created = time;
 		json.date.bump = time;
 		
@@ -68,7 +69,7 @@ module.exports = function(app){
 			json.content.extra.poll = {};
 		}
 		
-		let userdata = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.id}, "", () => {});
+		let userdata = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.uid}, "", () => {});
 		if (userdata[0]){
 			json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
 		}
@@ -92,7 +93,7 @@ module.exports = function(app){
 		let json = utils.clone(jsonScheme.COMMENT_SCHEME);
 		json.cid = cid;
 		json.bid = bid;
-		json.user.uid = req.session.id;
+		json.user.uid = req.session.uid;
 		json.date.created = timestamp;
 		json.icon = avatar.genAnon();
 		if (img[0] != ""){
@@ -104,11 +105,11 @@ module.exports = function(app){
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
 		}
-		json.content.body = parser.parseComInput(DB, cid, req.session.id, content);
+		json.content.body = parser.parseComInput(DB, cid, req.session.uid, content);
 		
-		//test anti callback hell
-		let userdata = await dbManager.queryDB(DB, mdbScheme.C_ADM, {uid: req.session.id}, "", () => {});
+		let userdata = sesionManager.getUserData();
 		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};}
+		
 		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
 		
 		let coms = await dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", () => {});
@@ -116,13 +117,13 @@ module.exports = function(app){
 		
 		let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", () => {});
 		if (box[0]){
-			let op = (box[0].user.uid === req.session.id) ? true : false;
+			let op = (box[0].user.uid === req.session.uid) ? true : false;
 			live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
 			
 			/* Notificar al dueño del box, si no es el mismo que comenta kjj */
 			if (!op){
 				let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
-				notifdata.sender.uid = req.session.id;
+				notifdata.sender.uid = req.session.uid;
 				notifdata.receiver.uid = box[0].user.uid;
 				notifdata.date.created = timestamp;
 				notifdata.state.push("new");
@@ -215,7 +216,7 @@ module.exports = function(app){
 	app.get('/api/ntf/:bid/:cid', async function(req, res) {
 		let bid = req.params.bid;
 		let cid = req.params.cid;
-		let uid = req.session.id;
+		let uid = req.session.uid;
 		//limpiar notificaciones
 		await dbManager.deleteDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "content.bid": bid, "content.tag": false}, ()=>{});
 		await dbManager.deleteDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "content.bid": bid, "content.cid": cid, "content.tag": true}, ()=>{});
@@ -224,7 +225,7 @@ module.exports = function(app){
 	
 	//API: obtener una notificacion especificada por el timestamp, usada por el popup.
 	app.get('/api/notifs/:date', function(req, res) {
-		let uid = req.session.id;
+		let uid = req.session.uid;
 		let date = req.params.date;
 		
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "date.created": Number(date)}, {"date.created": -1}, function(ntf){

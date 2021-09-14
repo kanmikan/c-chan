@@ -79,6 +79,7 @@ const BOX_SCHEME = {
 const USER_SCHEME = {
 	version: 2,
 	uid: "uid",
+	sid: "id de sesion",
 	nick: "Anonimo",
 	rango: "anon",
 	color: "",

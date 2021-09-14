@@ -10,7 +10,7 @@ module.exports = function(app){
 	
 	/* RUTA PRINCIPAL */
 	app.get('/', function(req, res) {
-		var uid = req.session.id; //esto puede ser cambiado por un uid unico en vez de el id de la sesion.
+		var uid = req.session.uid;
 		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
 			res.render("index", {
 				it : {
@@ -25,9 +25,8 @@ module.exports = function(app){
 	
 	/* RUTA DE LOS BOXS */
 	app.get('/tema/:bid', function(req, res) {
-		var uid = req.session.id;
+		var uid = req.session.uid;
 		var bid = req.params.bid;
-		
 		if (bid){
 			dbManager.mQuery(req.app.locals.db, models.BOX_QUERY(uid, bid), function(result){
 				//si existe el box, el C_BOXS tendrá datos, de lo contrario se asume que el tema no existe.
@@ -64,7 +63,7 @@ module.exports = function(app){
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, search, {"date.created": -1, "date.bump": -1}, function(rboxs){
 			if (rboxs[0]){
 				//res.json({success: true, data: rboxs});
-				dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(req.session.id), function(result){
+				dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(req.session.uid), function(result){
 					result[mdbScheme.C_BOXS] = rboxs;
 					res.render("index", {
 						it : {
@@ -88,7 +87,7 @@ module.exports = function(app){
 	/* CATEGORIAS */
 	app.get('/:cat', function(req, res) {
 		var cat = req.params.cat;
-		var uid = req.session.id;
+		var uid = req.session.uid;
 		//el server hace un pequeño request de la lista de categorias, si existe accede a ella.
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_CATS, {tid: cat}, "", function(result){
 			if (!result[0]){
