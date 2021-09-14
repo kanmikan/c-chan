@@ -601,7 +601,7 @@ $(document).ready(function() {
 					if (result.success){
 						//añadir comentario y limpiar vista.
 						resetCommentInputData();
-						//commentRender(OP, result.data);
+						if (ASYNC_COMMENTS){commentRender(OP, result.data)}
 					} else {
 						if (result.data.banned){
 							//TODO: mostrar mensaje de baneo con toda la info necesaria.

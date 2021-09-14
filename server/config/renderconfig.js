@@ -1,4 +1,8 @@
 module.exports = {
 	/* MODULOS DEL RENDER */
-	ENABLE_COMMUNITIES: false
+	/* activar botones y accesos de las comunidades */
+	ENABLE_COMMUNITIES: false,
+	
+	/* esto desincroniza el orden de los comentarios enviados, pero da el efecto de carga instantanea en el emisor, es necesario invalidar la cache. */
+	ASYNC_COMMENTS: false
 }

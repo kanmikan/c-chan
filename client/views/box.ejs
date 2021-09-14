@@ -16,6 +16,7 @@
 	var TOKEN = "<%= it.token %>";
 	var COMS = []; //buffer de comentarios.
 	var USERDATA = "<%= it.data.users[0].permisos %>".split(",");
+	var ASYNC_COMMENTS = <%= it.renderConfig.ASYNC_COMMENTS %>;
 	
 	/* LISTENERS DEL SOCKETIO */
 	$(function () {
@@ -34,8 +35,15 @@
 				//si no es el emisor, mostrar el boton.
 				element("commentLoadMore").classList.remove("hidden");
 			} else {
-				//de lo contrario, renderizar la lista.
-				element("commentLoadMore").click();
+				<% if (it.renderConfig.ASYNC_COMMENTS){ %>
+					//test: no renderizar buffer, y eliminar el push del comentario en cuestion.
+					COMS = COMS.filter(item => item.data.cid != data.data.cid);
+					bufferCount = (COMS.length > 1) ? `${COMS.length} comentarios` : `1 comentario`;
+					element("comBufferNumber").innerHTML = bufferCount;
+				<% } else { %>
+					//de lo contrario, renderizar la lista una vez recibida.
+					element("commentLoadMore").click();
+				<% } %>
 			}
 		});
 	});
