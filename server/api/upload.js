@@ -2,12 +2,14 @@
 const fs = require('fs');
 const sharp = require('sharp');
 const imgur = require('imgur');
+const ffmpeg = require('fluent-ffmpeg');
+const ffmpeg_static = require('ffmpeg-static');
 const sConfig = require('../config/serverconfig.js');
 const utils = require('../utils.js');
 const youtube = require('./youtube.js');
 const cloudy = require('./cloudinary.js');
 
-//MUESTRA: subida de archivos, esto se encargaría de seleccionar el servidor configurado por el host, etc.
+//FUNCION: subida de imagenes, esto se encargaría de seleccionar el servidor configurado por el host, etc.
 function upload(file, callback){
 	switch(sConfig.IMG_SERVER){
 		case 0:
@@ -29,26 +31,45 @@ function upload(file, callback){
 	}
 }
 
-//FUNCION: subida de imagenes al server localName
-//TODO: comprobar mime/type del archivo, tamaño, etc etc.
+//FUNCION: subida de videos
+function uploadVid(file, callback){
+	//todo: opciones de subida local, o subida a cloudinary
+	localStore(file, callback);
+}
+
+//FUNCION: subida de archivos al server local
 function localStore(file, callback){
-	var buffer = fs.readFileSync(file.path);
-	var filename = utils.randomString(16) + "." + file.type.split("/")[1];
-	//var path = __dirname + '../../../uploads/' + filename;
-	var path = process.cwd() + "/uploads/" + filename;
-	var external_path = "/uploads/" + filename;
+	let buffer = fs.readFileSync(file.path);
+	let filename = utils.randomString(16) + "." + file.type.split("/")[1];
+	let path = process.cwd() + "/uploads/" + filename;
+	let external_path = "/uploads/" + filename;
     
 	writeFile(path, buffer, function(err){
 		if (err){
 			callback({success: false, data: err});
 		} else {
-			genLocalThumb(path, filename, function(resthumb){
-				if (resthumb){
-					callback({success: true, data: {link: external_path, thumb: resthumb}});
-				} else {
-					callback({success: false, data: "Hubo un error al subir la imagen."});
-				}
-			});
+			if (file.type.split("/")[0] === "video"){
+				let thumbname = filename.split(".")[0] + "_thumb.png";
+				let thumb_path = process.cwd() + "/uploads/";
+				ffmpeg(path).setFfmpegPath(ffmpeg_static)
+				.screenshots({
+					timestamps: [0.0],
+					filename: thumbname,
+					folder: thumb_path,
+					size: '?x250'
+				}).on('end', function() {
+					callback({success: true, data: {link: external_path, thumb: "/uploads/" + thumbname}});
+				});
+			} else {
+				genLocalThumb(path, filename, function(resthumb){
+					if (resthumb){
+						callback({success: true, data: {link: external_path, thumb: resthumb}});
+					} else {
+						callback({success: false, data: "Hubo un error al subir la imagen."});
+					}
+				});
+			}
+			
 		}
 	});
 }
@@ -145,4 +166,4 @@ function genImgurThumb(url, quality){
 	return res + quality + "." + v2;
 }
 
-module.exports = {upload, genThumb, checkURLType, genImgurThumb}
+module.exports = {upload, uploadVid, genThumb, checkURLType, genImgurThumb}

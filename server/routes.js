@@ -49,7 +49,7 @@ module.exports = function(app){
 		}
 	});
 	
-	//API: buscar palabras clave en temas y devolver resultado
+	//RUTA: buscar palabras clave en temas y devolver resultado
 	app.get('/search/:query', function(req, res) {
 		let query = req.params.query;
 		
@@ -61,23 +61,18 @@ module.exports = function(app){
 		]};
 		
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, search, {"date.created": -1, "date.bump": -1}, function(rboxs){
-			if (rboxs[0]){
-				//res.json({success: true, data: rboxs});
-				dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(req.session.uid), function(result){
-					result[mdbScheme.C_BOXS] = rboxs;
-					res.render("index", {
-						it : {
-							utils: utils,
-							renderConfig: renderConfig,
-							sesion: req.session,
-							data: result
-						}
-					});
+			//res.json({success: true, data: rboxs});
+			dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(req.session.uid), function(result){
+				result[mdbScheme.C_BOXS] = rboxs;
+				res.render("index", {
+					it : {
+						utils: utils,
+						renderConfig: renderConfig,
+						sesion: req.session,
+						data: result
+					}
 				});
-			} else {
-				//res.json({success: false, data: "No hay coincidencias"});
-				res.redirect("/");
-			}
+			});
 		});
 	});
 	

@@ -11,17 +11,33 @@ const avatar = require('./api/avatar.js');
 const pass = require('./api/passport.js');
 const live = require('./api/live.js');
 const compat = require('./db/compat.js');
+const formidable = require('express-formidable');
+
 
 module.exports = function(app){
 	
 	//RUTA: subida de imagenes
 	//TODO: detectar si es un video/imagen/otra cosa y redirigir
 	app.post('/api/upload', pass.check, function(req, res) {
-		let imgdata = req.files.imgData;
-		uploadManager.upload(imgdata, function(result){
-			res.json(result);
-		});
-	})
+		let filedata = req.files.fileData;
+		let mimetype = filedata.type.split("/");
+		let size = filedata.size;
+		if (size > sConfig.UPLOAD_MAX_SIZE){
+			res.json({success: false, data: `Archivo muy grande, máximo ${utils.formatBytes(sConfig.UPLOAD_MAX_SIZE)}`});
+		} else {
+			if (mimetype[0] === "image"){
+				uploadManager.upload(filedata, function(result){
+					res.json(result);
+				});
+			} else if (mimetype[0] === "video"){
+				uploadManager.uploadVid(filedata, function(result){
+					res.json(result);
+				});
+			} else {
+				res.json({success: false, data: "formato no admitido."});
+			}
+		}
+	});
 	
 	//RUTA: crea un nuevo box.
 	app.post('/api/new', pass.check, pass.checkBoxFields, async function(req, res) {

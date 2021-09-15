@@ -2385,6 +2385,10 @@ span.attachsVox {
 	padding-right: 10px !important;
 }
 
+.disable-hover {
+  pointer-events: none;
+}
+
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */
 
 @media only screen and (max-width: 1000px) {

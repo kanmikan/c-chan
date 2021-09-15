@@ -19,7 +19,7 @@ function getDataURL(file, before, callback) {
 	var reader = new FileReader();
 	reader.onload = function(event) {		
 		var formData = new FormData();
-		formData.append("imgData", file);
+		formData.append("fileData", file);
 		post(formData, "/api/upload", 
 		function(target){
 			before(event.target.result);
@@ -43,6 +43,10 @@ function post(formdata, url, before, callback){
 		}
 	}).done(function(data) {
 		callback(data);
+	}).fail(function(xhr, status, error){
+		if (status === "error"){
+			callback({success: false, data: "error"});
+		}
 	});
 }
 
@@ -347,14 +351,25 @@ function action_updateBoxList(indexID, callback){
 
 /* EVENTOS */
 $(document).ready(function() {
+	
 	//hacer scroll al comentario al cargar la pagina.
 	hashScroll(document.location.hash);
-	
 	//evento generico: al hacer scroll
+	let timer;
 	$(document.body).on("touchmove", onScroll);
 	$(window).on("scroll", onScroll);
 	let complete = true;
 	function onScroll(){
+		
+		//TEST: desactivar efectos de hovering al hacer scroll.
+		clearTimeout(timer);
+		if (!document.body.classList.contains("disable-hover")){
+			document.body.classList.add("disable-hover");
+		};
+		timer = setTimeout(function(){
+			document.body.classList.remove("disable-hover");
+		}, 500);
+		
 		//evento: al llegar al final
 		if ($(window).height()+$(window).scrollTop() > (getDocumentHeight() - 100)){
 			if (complete){
@@ -676,6 +691,7 @@ $(document).ready(function() {
 	
 	//evento: al seleccionar un archivo en los comentarios.
 	//TODO: añadir los efectos de la interfaz.
+	//TODO: limpiar codigo repetido.
 	if (element("cfile")){
 		element("cfile").addEventListener("change", function (e){
 			let file = element("cfile").files.item(0);
@@ -707,6 +723,33 @@ $(document).ready(function() {
 					element("ctext").classList.remove("hidden");
 					element("newComment").disabled = false;
 				});	
+			} else if (file.type.split("/")[0] === "video"){
+				//subir video.
+				getDataURL(file, function(){
+					element("loadingCom").classList.remove("hidden");
+					element("ctext").classList.add("hidden");
+					element("newComment").disabled = true;
+				}, function(data){
+					if (data.success){
+						element("previewInputComment").classList.remove("hide");
+						element("imgpreview").setAttribute("src", data.data.thumb);
+						let vid = data.data.link + ";" + data.data.thumb;
+						element("cvid").value = vid;
+					} else {
+						element("previewInputComment").classList.add("hide");
+						element("imgpreview").setAttribute("src", "");
+						if (data.data.banned){
+							alert(JSON.stringify(data.data.bandata));
+						} else {
+							alert(JSON.stringify(data.data));
+						}
+					}
+					element("loadingCom").classList.add("hidden");
+					element("ctext").classList.remove("hidden");
+					element("newComment").disabled = false;
+				});
+			} else {
+				alert("Formato no admitido");
 			}
 			
 			element("closePreview").addEventListener("click", function(e){

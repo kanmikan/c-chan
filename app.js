@@ -21,8 +21,10 @@ app.use('/', express.static(path.join(__dirname, './client/static'), sConfig.STA
 app.use('/uploads', express.static(path.join(__dirname, './uploads'), sConfig.STATIC_CACHE_VALUE));
 //carpeta del node.
 app.use('/node', express.static(path.join(__dirname, 'node_modules/'))); //TODO: sacar esto de aca.
+
 //formidable para los post request
-app.use(formidable());
+app.use(formidable({}, [{event: 'error', action: function (req, res, next, name){console.log("[formidable] Error en el post request.");}}]));
+
 //compresion
 app.use(compression());
 
