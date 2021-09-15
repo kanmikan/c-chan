@@ -16,8 +16,7 @@ const formidable = require('express-formidable');
 
 module.exports = function(app){
 	
-	//RUTA: subida de imagenes
-	//TODO: detectar si es un video/imagen/otra cosa y redirigir
+	//API: subida de imagenes
 	app.post('/api/upload', pass.check, function(req, res) {
 		let filedata = req.files.fileData;
 		let mimetype = filedata.type.split("/");
@@ -37,6 +36,14 @@ module.exports = function(app){
 				res.json({success: false, data: "formato no admitido."});
 			}
 		}
+	});
+	
+	//API: manipulacion de urls
+	app.post('/api/uplink', pass.check, function(req, res) {
+		let link = req.fields.link;
+		uploadManager.uploadLink(link, function(result){
+			res.json(result);
+		});
 	});
 	
 	//RUTA: crea un nuevo box.

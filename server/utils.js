@@ -71,6 +71,11 @@ function isGif(url){
 	return url.slice(-4) === ".gif";
 }
 
+function isImg(url){
+	let match = url.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i)
+	return (match) ? true : false;
+}
+
 function getPollPercent(poll1, poll2){
 	var total = poll1+poll2;
 	if (total === 0) return ["",""];
@@ -90,4 +95,4 @@ function parseCookies(raw){
 	return obj;
 }
 
-module.exports = {isGif, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies};
+module.exports = {isGif, isImg, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies};

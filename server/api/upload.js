@@ -1,5 +1,6 @@
 /* MANEJO DE SUBIDA DE ARCHIVOS, SERVIDORES, ETC. */
 const fs = require('fs');
+const axios = require('axios');
 const sharp = require('sharp');
 const imgur = require('imgur');
 const ffmpeg = require('fluent-ffmpeg');
@@ -35,6 +36,54 @@ function upload(file, callback){
 function uploadVid(file, callback){
 	//todo: opciones de subida local, o subida a cloudinary
 	localStore(file, callback);
+}
+
+//FUNCION: subida/manipulacion de links
+function uploadLink(url, callback){
+	let type = checkURLType(url);
+	if (type === "youtube-embed" || type === "youtube-url"){
+		//TODO: manipular videos de youtube si es necesario.		
+		if (type === "youtube-url"){
+			url = "https://www.youtube.com/embed/" + youtube.youtubeParser(url);
+		}
+		callback({success: true, data: {video: true, type: type, raw: url, thumb: youtube.genYoutubeThumb(url, "mq")}});
+	} else if (utils.isImg(url)){
+		//aca manipular la imagen, subir al server de preferencia, etc.
+		link2localStore(url, function(data){
+			if (data.success){
+				callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+			} else {
+				callback({success: false, data: null});
+			}
+		});
+	} else {
+		callback({success: false, data: null});
+	}
+}
+
+function link2localStore(url, callback){
+	let namesplit = url.split(".");
+	let filename = utils.randomString(16) + "." + namesplit[namesplit.length-1];
+	let path = process.cwd() + "/uploads/" + filename;
+	let external_path = "/uploads/" + filename;
+	
+	axios.get(url, {responseType: 'arraybuffer'})
+	.then(function(response){
+		//console.log(response.data);
+		writeFile(path, response.data, function(err){
+			if (err){
+				callback({success: false, data: err});
+			} else {
+				genLocalThumb(path, filename, function(resthumb){
+					if (resthumb){
+						callback({success: true, data: {link: external_path, thumb: resthumb}});
+					} else {
+						callback({success: false, data: "Hubo un error al subir la imagen."});
+					}
+				});
+			}
+		});
+	});
 }
 
 //FUNCION: subida de archivos al server local
@@ -136,6 +185,8 @@ function checkURLType(url){
 		return "youtube-img";
 	} else if (url.search("youtube.com/embed") != -1) {
 		return "youtube-embed";
+	} else if (url.search("youtube.com/watch") != -1 || url.search("youtu.be") != -1){
+		return "youtube-url";
 	} else {
 		return "generic";
 	}
@@ -166,4 +217,4 @@ function genImgurThumb(url, quality){
 	return res + quality + "." + v2;
 }
 
-module.exports = {upload, uploadVid, genThumb, checkURLType, genImgurThumb}
+module.exports = {upload, uploadVid, uploadLink, genThumb, checkURLType, genImgurThumb}
