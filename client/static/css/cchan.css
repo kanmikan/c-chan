@@ -87,7 +87,7 @@
 	--poll: #2196f3;
 	--poll-hover: #03a9f4;
 	--poll-voted: #00bcd4;
-	
+	--newBoxButton-background: #3f51b5;
 }
 
 /* CODIGO DE VOXEDRIP.CSS ADAPTADO */
@@ -113,12 +113,10 @@ body {
 }
 
 .logo {
-	/*height: -webkit-fill-available;
-	margin: 4px 0px 4px 2px !important;*/
 	display: flex;
 	cursor: pointer;
 	align-items: center;
-	font-size: 1.4rem;
+	font-size: 1.3rem;
 	font-family: monospace;
 	color: var(--logo-color);
 	padding: 4px;
@@ -131,7 +129,7 @@ body {
 .logo img{
 	width: auto;
 	max-width: 100%;
-	height: 5vh;
+	height: 30px;
 	margin-top: auto;
 	margin-bottom: auto;
 	margin-right: 2px;
@@ -2391,8 +2389,22 @@ span.attachsVox {
   pointer-events: none;
 }
 
-/* CODIGO DE VOXEDRIP.CSS RESPONSIVO */
+.bottonContextual {
+	position: fixed;
+	bottom: 12px;
+	right: 12px;
+	color: white;
+	background: var(--newBoxButton-background);
+	width: 48px;
+	height: 48px;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	z-index: 3;
+	border-radius: 100%;
+}
 
+/* CODIGO DE VOXEDRIP.CSS RESPONSIVO */
 @media only screen and (max-width: 1000px) {
 	.actbar {
 		display: inherit !important;
