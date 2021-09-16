@@ -321,7 +321,7 @@ $(document).ready(function() {
 		};
 		timer = setTimeout(function(){
 			document.body.classList.remove("disable-hover");
-		}, 500);
+		}, 200);
 		onScroll();
 	}
 	
