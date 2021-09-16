@@ -34,8 +34,13 @@ function upload(file, callback){
 
 //FUNCION: subida de videos
 function uploadVid(file, callback){
-	//todo: opciones de subida local, o subida a cloudinary
-	localStore(file, callback);
+	switch(sConfig.VIDEO_SERVER){
+		case 0:
+			localStore(file, callback);
+			break;
+		case 1:
+			cloudyUpload(file, callback);
+	}	
 }
 
 //FUNCION: subida/manipulacion de links
@@ -56,6 +61,10 @@ function uploadLink(url, callback){
 				callback({success: false, data: null});
 			}
 		});
+	} else if (utils.isVideo(url)){
+		//si es un link directo a un video, linkearlo con un thumbnail genérico.
+		//desactivado por ahora porque algunos links descargan el video en vez de reproducirlo.
+		callback({success: false, data: {video: true, type: type, raw: url, thumb: "/assets/thumb.jpg"}});
 	} else {
 		callback({success: false, data: null});
 	}
@@ -137,10 +146,8 @@ function writeFile(path, buffer, callback){
 //FUNCION: genera thumbnails de imagenes locales.
 function genLocalThumb(path, filename, callback){
 	let name = filename.split(".");
-	
 	//pasar formato a webp
 	name[1] = "webp";
-	//let thumbPath = __dirname + '../../../uploads/' + name[0] + "_thumb." + name[1];
 	let thumbPath = process.cwd() + "/uploads/" + name[0] + "_thumb." + name[1];
 	sharp(path)
 	.resize(sConfig.IMG_LOCAL_THUMBNAIL_SIZE)
@@ -161,9 +168,15 @@ function genLocalThumb(path, filename, callback){
 }
 
 function cloudyUpload(file, callback){
-	cloudy.uploadImg(file, function(data){
-		callback(data);
-	});
+	if (file.type.split("/")[0] === "video"){
+		cloudy.uploadVid(file, function(data){
+			callback(data);
+		});
+	} else {
+		cloudy.uploadImg(file, function(data){
+			callback(data);
+		});
+	}
 }
 
 function imgurUpload(file, callback){

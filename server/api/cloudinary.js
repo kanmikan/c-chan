@@ -19,7 +19,13 @@ function uploadImg(file, callback){
 }
 
 function uploadVid(file, callback){
-	
+	cloudinary.uploader.upload_large(file.path, {resource_type: "video"}, function(error, result){
+		if (error){
+			callback({success: false, data: error});
+		} else {
+			callback({success: true, data: {link: result.secure_url, thumb: genCloudyThumb(result.secure_url)}});
+		}
+	});
 }
 
 //FUNCION: genera thumbnails de imagenes de cloudinary

@@ -113,9 +113,11 @@ body {
 }
 
 .logo {
+	height: -webkit-fill-available;
+	margin: 4px 0px 4px 2px !important;
 	display: flex;
 	cursor: pointer;
-	align-items: flex-end;
+	align-items: center;
 	font-size: 1.4rem;
 	font-family: monospace;
 	color: var(--logo-color);
@@ -129,8 +131,8 @@ body {
 .logo img{
 	width: auto;
 	max-width: 100%;
-	height: 30px;
-	margin-top: auto;
+	height: auto;
+	max-height: 100%;
 	margin-bottom: auto;
 	margin-right: 2px;
 	content: var(--logoimg);

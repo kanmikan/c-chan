@@ -76,6 +76,11 @@ function isImg(url){
 	return (match) ? true : false;
 }
 
+function isVideo(url){
+	let match = url.match(/\.(webm|mp4)$/i)
+	return (match) ? true : false;
+}
+
 function getPollPercent(poll1, poll2){
 	var total = poll1+poll2;
 	if (total === 0) return ["",""];
@@ -95,4 +100,4 @@ function parseCookies(raw){
 	return obj;
 }
 
-module.exports = {isGif, isImg, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies};
+module.exports = {isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies};

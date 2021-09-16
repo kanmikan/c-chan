@@ -311,11 +311,10 @@ $(document).ready(function() {
 	//evento generico: al hacer scroll
 	let timer;
 	$(document.body).on("touchmove", onScroll);
-	$(window).on("scroll", onScroll);
+	$(window).on("scroll", onScrollDesktop);
 	let complete = true;
-	function onScroll(){
-		
-		//TEST: desactivar efectos de hovering al hacer scroll.
+	
+	function onScrollDesktop(){
 		clearTimeout(timer);
 		if (!document.body.classList.contains("disable-hover")){
 			document.body.classList.add("disable-hover");
@@ -323,7 +322,10 @@ $(document).ready(function() {
 		timer = setTimeout(function(){
 			document.body.classList.remove("disable-hover");
 		}, 500);
-		
+		onScroll();
+	}
+	
+	function onScroll(){
 		//evento: al llegar al final
 		if ($(window).height()+$(window).scrollTop() > (getDocumentHeight() - 100)){
 			if (complete){
