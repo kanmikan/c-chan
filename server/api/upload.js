@@ -40,6 +40,7 @@ function uploadVid(file, callback){
 			break;
 		case 1:
 			cloudyUpload(file, callback);
+			break;
 	}	
 }
 

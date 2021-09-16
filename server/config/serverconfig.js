@@ -13,7 +13,7 @@ module.exports = {
 	/* CONFIGURACION DE SERVIDORES DE IMAGEN/VIDEO */
 	UPLOAD_MAX_SIZE: 53000000, //tamaño maximo de subidas (en bytes)
 	IMG_SERVER: parseInt(process.env.IMG_SERVER) || 0, //0: local, 1: imgur, 2: imgbb, 3: cloudinary
-	VIDEO_SERVER: parseInt(process.env.VIDEO_SERVER) || 1, //0: local, 1: cloudinary
+	VIDEO_SERVER: parseInt(process.env.VIDEO_SERVER) || 0, //0: local, 1: cloudinary
 	IMG_LOCAL_THUMBNAIL_SIZE: 300, //300px
 	IMGUR_THUMBNAIL_QUALITY: "m", //l: large m: medium, etc.
 	/* CLOUDINARY */
