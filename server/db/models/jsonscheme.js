@@ -122,4 +122,26 @@ const NOTIF_SCHEME = {
 	}
 }
 
-module.exports = {COMMENT_SCHEME, BOX_SCHEME, USER_SCHEME, NOTIF_SCHEME}
+const CATEGORY_SCHEME = {
+	version: 2,
+	catid: "off",
+	type: 0,
+	state: [],
+	date: {
+		created: 0,
+		order: 0,
+		sticky: 0
+	},
+	content: {
+		tid: "OFF",
+		name: "Off Topic",
+		description: "Temas Mixtos",
+		media: {
+			icon: "/assets/cat/icon/off.jpg",
+			image: "/assets/cat/off.jpg",
+			misc: []
+		}
+	}
+}
+
+module.exports = {COMMENT_SCHEME, BOX_SCHEME, USER_SCHEME, NOTIF_SCHEME, CATEGORY_SCHEME}

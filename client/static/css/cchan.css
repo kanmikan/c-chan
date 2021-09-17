@@ -501,6 +501,13 @@ ul.slideMenuOptions li:hover.optionBolt {
     margin-bottom: 3px;
 }
 
+.box .tagList .tag img{
+	width: 17px;
+	vertical-align: middle;
+	border-radius: 3px;
+	padding: 1px;
+}
+
 .tagInvisible.rss i {
     background-color: orange;
     border-radius: 3px;

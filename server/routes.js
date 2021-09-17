@@ -84,7 +84,7 @@ module.exports = function(app){
 		var cat = req.params.cat;
 		var uid = req.session.uid;
 		//el server hace un pequeño request de la lista de categorias, si existe accede a ella.
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_CATS, {tid: cat}, "", function(result){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_CATS, {"catid": cat}, "", function(result){
 			if (!result[0]){
 				res.redirect("/error/2");
 			} else {

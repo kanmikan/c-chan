@@ -7,7 +7,7 @@
 <% 
 	/* VARIABLES DE USO LOCAL EN EL RENDER */
 	var BOX = it.data.boxs[0];
-	var categoryData = it.utils.getCategoryData(it.data.categorias, BOX.cat);
+	var categoryData = it.utils.getCategoryData(it.data.cats, BOX.cat);
 %>
 <body>
 <script>
@@ -53,10 +53,10 @@
 		<div class="voxWraper">
 			<section class="voxData">
 				<div class="voxBar">
-					<a href="/<%= categoryData.tid %>">
+					<a href="/<%= categoryData.content.tid %>">
 						<div class="voxCategory">
-							<div class="categoryAvatar"><img src="<%= categoryData.icon %>" alt=""></div>
-							<div class="categoryTitle"><%= categoryData.name %></div>
+							<div class="categoryAvatar"><img src="<%= categoryData.content.media.icon %>" alt=""></div>
+							<div class="categoryTitle"><%= categoryData.content.name %></div>
 						</div>
 					</a>
 				</div>

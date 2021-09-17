@@ -5,6 +5,6 @@ module.exports = {
 	C_COMS: "coms",
 	C_ADM: "users",
 	C_NOTIF: "notifs",
-	C_CATS : "categorias",
+	C_CATS : "cats",
 	C_ENC : "encuestas"
 }

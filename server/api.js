@@ -304,18 +304,27 @@ module.exports = function(app){
 	//SOLO PARA DEBUG Y TEST, ESTO LO VOY A SACAR
 	app.get('/dev', async function(req, res) {
 
-		/*
-		const youtube = require("./api/youtube.js");
-		youtube.getVideoData("cwptTf-64Uo", function(resu){
-			console.log(resu);
+		//TEST: añadir categorias a mikandbv2
+		let defCategories = [
+			["oficial", "oficial", "Oficial", "Temas oficiales", "/assets/cat/icon/oficial.jpg", "/assets/cat/oficial.jpg"],
+			["off", "off", "Off Topic", "Temas Mixtos", "/assets/cat/icon/off.jpg", "/assets/cat/off.jpg"],
+			["anm", "anm", "Anime", "Categoría general sobre animacion", "/assets/cat/icon/anm.jpg", "/assets/cat/anm.jpg"]
+		];
+		
+		defCategories.forEach(function(category){
+			let scheme = utils.clone(jsonScheme.CATEGORY_SCHEME);
+			scheme.catid = category[0];
+			scheme.content.tid = category[1];
+			scheme.content.name = category[2];
+			scheme.content.description = category[3];
+			scheme.content.media.icon = category[4];
+			scheme.content.media.image = category[5];
+			
+			dbManager.insertDB(req.app.locals.db, "cats", scheme, function(){});
+			
 		});
-		*/
-		/*
-		dbManager.insertDB(req.app.locals.db, "notifs", data, function(){
-			res.redirect("/");
-		});
-		*/
 		res.redirect("/");
+		
 	});
 	
 }

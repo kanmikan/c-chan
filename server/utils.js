@@ -5,9 +5,11 @@ function clone(json){
 	return JSON.parse(JSON.stringify(json));
 }
 
-function getCategoryData(categorias, tid){
-	if (categorias[0] === undefined){return {icon: "/assets/logo.png"}}
-	return categorias.filter( item => item.tid === tid)[0];
+function getCategoryData(categorias, catid){
+	let default_ = {content: {media: {icon: "/assets/logo.png", image: "/assets/logo.png", misc: []}}}
+	if (categorias[0] === undefined){return default_;}
+	let filteredCat = categorias.filter( item => item.catid === catid)[0];
+	return (filteredCat) ? filteredCat : default_;
 }
 
 function filterComMedia(comments){
