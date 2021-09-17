@@ -34,7 +34,8 @@ function genCloudyThumb(url, video=false){
 	let o = n[n.length-1].split(".");
 	o[1] = ".webp"; //asignar formato webp en la url.
 	let sliceA = url.slice(0, url.lastIndexOf("/"));
-	return url.slice(0, sliceA.lastIndexOf("/")) + (video) ? "/so_auto/" : "" + sConfig.CLOUDINARY_THUMBNAIL_CONFIG + n[n.length - 2] + "/" + o[0]+o[1];
+	let vcfg = (video) ? "/so_auto/" : "";
+	return url.slice(0, sliceA.lastIndexOf("/")) + vcfg + sConfig.CLOUDINARY_THUMBNAIL_CONFIG + n[n.length - 2] + "/" + o[0]+o[1];
 }
 
 module.exports = {uploadImg, uploadVid, genCloudyThumb}
