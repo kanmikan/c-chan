@@ -13,7 +13,6 @@ const live = require('./api/live.js');
 const compat = require('./db/compat.js');
 const formidable = require('express-formidable');
 
-
 module.exports = function(app){
 	
 	//API: subida de imagenes
@@ -263,8 +262,7 @@ module.exports = function(app){
 		
 	});
 	
-	//MUESTRA: obtener todos los comentarios
-	//TODO: añadir filtro de datos
+	//API: obtener todos los comentarios
 	app.get('/api/coms', pass.check, function(req, res) {
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, "", {"date.created": -1}, function(coms){
 			if (coms[0] != undefined){
@@ -275,8 +273,7 @@ module.exports = function(app){
 		});
 	});
 	
-	//MUESTRA: obtener todos los comentarios en base al bid
-	//TODO: añadir filtro de datos
+	//API: obtener todos los comentarios en base al bid
 	app.get('/api/coms/:bid', pass.check, function(req, res) {
 		let bid = req.params.bid;
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, {"date.created": -1}, function(coms){
@@ -288,7 +285,7 @@ module.exports = function(app){
 		});
 	});
 	
-	//MUESTRA: obtener comentario especificado con el cid
+	//API: obtener comentario especificado con el cid
 	app.get('/api/com/:cid', pass.check, function(req, res) {
 		let cid = req.params.cid;
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {cid: cid}, {"date.created": -1}, function(coms){
@@ -298,6 +295,48 @@ module.exports = function(app){
 				res.json({success: false, data: null});
 			}
 		});
+	});
+	
+	//API: modificar las preferencias del usuario.
+	//todo: filtro de datos.
+	app.post('/api/config', pass.check, function(req, res) {
+		let data = req.fields.data;
+		let options = data.split(":");
+		let sesiondata = sesionManager.getUserData(req.session.id)[0].data;
+		
+		//manipular opciones.
+		if (options[0]){
+			let subopt = options[0].split("_");
+			if (subopt[1]){
+				switch(subopt[1]){
+					case "add":
+						req.session.config[subopt[0]].push(options[1]);
+						sesiondata.extra.config[subopt[0]].push(options[1]);
+						break;
+					case "del":
+						let tmpconf = req.session.config[subopt[0]];
+						tmpconf = tmpconf.filter(item => item != options[1]);
+						
+						req.session.config[subopt[0]] = tmpconf;
+						sesiondata.extra.config[subopt[0]] = tmpconf;
+						break;
+				}
+			} else {
+				//detectar y convertir booleanos
+				if (options[1] === "true"){options[1] = true;}
+				if (options[1] === "false"){options[1] = false;}
+				
+				//se asume que es una reasignacion común
+				if (!req.session.config){req.session.config = {};}
+				if (!sesiondata.extra.config){sesiondata.extra.config = {};}
+				req.session.config[options[0]] = options[1];
+				sesiondata.extra.config[options[0]] = options[1];
+			}
+			//guardar info en el usuario.
+			//console.log(sesiondata);
+			dbManager.pushDB(req.app.locals.db, mdbScheme.C_ADM, {sid: req.session.id}, {$set: {"extra.config": sesiondata.extra.config}}, function(resp){});
+		}
+		res.send({success: true, data: req.session.config});
 	});
 		
 	//DEBUG: MUESTRA DE LA ESTRUCTURA DE LOS TEMAS EN MIKANDBV2

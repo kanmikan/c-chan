@@ -14,3 +14,12 @@
 	
 <!-- Fuente que utilizaba voxed -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap" async defer>
+
+<!-- carga de configuraciones y temas en el head. -->
+<script>
+	const html = document.getElementsByTagName('html')[0];
+	var darkmode = <%= (it.sesion.config) ? it.sesion.config.darkmode : false %>;
+	//seleccionar tema
+	html.dataset.theme = (darkmode) ? "darkmode" : "";
+	
+</script>

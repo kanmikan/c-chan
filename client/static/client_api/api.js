@@ -39,7 +39,7 @@ function post(formdata, url, before, callback){
 		processData: false,
 		contentType: false,
 		beforeSend: function() {
-			before(event.target.result);
+			before();
 		}
 	}).done(function(data) {
 		callback(data);
@@ -56,7 +56,7 @@ function postForm(formdata, url, before, callback){
 		url: url,
 		data: formdata,
 		beforeSend: function() {
-			before(event.target.result);
+			before();
 		}
 	}).done(function(data) {
 		callback(data);
@@ -300,6 +300,19 @@ function action_newComEffect(data){
 function action_updateBoxList(indexID, callback){
 	request(`/api/box/${indexID}/home`, function(result){
 		callback(result);
+	});
+}
+
+function applyConfig(query){
+	let formData = new FormData();
+	//ejemplo opcion:valor
+	//opcion_add:valor = añadir elemento a lista
+	//opcion_del:valor = eliminar elemento de lista
+	//opcion:valor = actualizar elemento
+	
+	formData.append("data", query);
+	post(formData, "/api/config", function(){}, function(response){
+		console.log(response);
 	});
 }
 

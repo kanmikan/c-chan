@@ -34,29 +34,44 @@ function createUser(req, res, next){
 			if (user[0]){
 				cacheUser({sid: sid, data: user[0]});
 				req.session.uid = user[0].uid;
+				req.session.config = user[0].extra.config;
 				next();
 			} else {
 				//si no existe el usuario con el uid, crear usuario.
 				let json = utils.clone(jsonScheme.USER_SCHEME);
 				json.uid = uid;
 				json.sid = sid;
-				json.extra = {};
+				json.extra = {
+					config: {
+						darkmode: true, //tema claro/oscuro.
+						boxhides: [], //lista de boxs ocultos
+						cathides: [], //lista de categorias ocultas.
+						favs: [], //lista de favoritos.
+						comus: [] //lista de comunidades suscritas.
+					}
+				};
 				//insertar el usuario a la base de datos de manera asincronica.
 				dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){});
 				console.log("[Sesion] Nuevo usuario anonimo generado.");
 				//añadir al uid dentro del flag para que no haga otra query al pedo.
 				cacheUser({sid: sid, data: json});
+				//configurar en el middleware.
 				req.session.uid = uid;
+				req.session.config = json.extra.config;
 				next();
 			}
 		});
 	} else {
 		next();
-	}	
+	}
 }
 
 function getUserData(sid){
 	return USER_FLAG.filter(item => item.sid === sid);
+}
+
+function disposeUserCache(sid){
+	USER_FLAG = USER_FLAG.filter(item => item.sid != sid);
 }
 
 function cacheUser(sid){
@@ -66,4 +81,4 @@ function cacheUser(sid){
 	}
 }
 
-module.exports = {create, getUserData};
+module.exports = {create, getUserData, disposeUserCache};
