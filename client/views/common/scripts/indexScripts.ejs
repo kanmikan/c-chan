@@ -1,0 +1,21 @@
+<script>
+	var B_BUFFER = [];
+	$(function () {
+		var socket = io();
+		socket.on('connect', function(){
+			/* abandonar cualquier instancia que haya quedado abierta */
+			socket.emit("leave", "all");
+		});
+		socket.on('new', function(data){
+			switch(data.kind){
+				case "newbox":
+					action_newBoxPopup(data);
+				break;
+				case "newcom":
+					action_newComEffect(data);
+					action_newComCupdate(data);
+				break;
+			}
+		});
+	});
+</script>

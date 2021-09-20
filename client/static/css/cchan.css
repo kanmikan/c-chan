@@ -1401,6 +1401,15 @@ h4{
 	color: var(--activity-user);
 }
 
+.moreContainer {
+	width: 100%;
+	height: auto;
+	display: flex;
+	z-index: 10; 
+	position: fixed; 
+	bottom: 0
+}
+
 .moreload {
 	margin-top: 5px;
 	margin-bottom: 5px;

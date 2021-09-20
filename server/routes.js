@@ -50,21 +50,59 @@ module.exports = function(app){
 	});
 	
 	//RUTA: lista de favoritos.
+	//llamada para añadir elemento: applyConfig("favs_add:bid"), donde bid es el id del box a añadir a favoritos.
 	app.get('/favoritos', function(req, res) {
 		//leer favoritos del usuario
 		let favoritos = req.session.config.favs;
 		
-		//TODO: los favoritos son un array de bids, identificar los boxs con tales bid y enviar la lista al render.
+		//preparar filtro para mongodb
+		//TODO: filtrar elementos para evitar ataques a la base de datos.
+		let filterArrayElements = [];
+		favoritos.forEach(function(fav){
+			filterArrayElements.push({bid: fav});
+		});
+		let filter = {$or: filterArrayElements};
 		
-		res.send(favoritos);
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, filter, {"date.created": -1, "date.bump": -1}, function(rboxs){
+			dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(req.session.uid), function(result){
+				result[mdbScheme.C_BOXS] = rboxs;
+				res.render("index", {
+					it : {
+						utils: utils,
+						renderConfig: renderConfig,
+						sesion: req.session,
+						data: result
+					}
+				});
+			});
+		});
 	});
 	
 	//RUTA: lista de temas ocultos.
-	//TODO: lo mismo de arriba, basicamente.
+	//llamada para añadir elemento: applyConfig("boxhides_add:bid"), donde bid es el id del box a ocultar.
+	//TODO: hacer generico el codigo repetido.
 	app.get('/ocultos', function(req, res) {
 		let ocultos = req.session.config.boxhides;
 		
-		res.send(ocultos);
+		let filterArrayElements = [];
+		ocultos.forEach(function(oculto){
+			filterArrayElements.push({bid: oculto});
+		});
+		let filter = {$or: filterArrayElements};
+		
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, filter, {"date.created": -1, "date.bump": -1}, function(rboxs){
+			dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(req.session.uid), function(result){
+				result[mdbScheme.C_BOXS] = rboxs;
+				res.render("index", {
+					it : {
+						utils: utils,
+						renderConfig: renderConfig,
+						sesion: req.session,
+						data: result
+					}
+				});
+			});
+		});
 	});
 	
 	//RUTA: buscar palabras clave en temas y devolver resultado
@@ -79,7 +117,6 @@ module.exports = function(app){
 		]};
 		
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, search, {"date.created": -1, "date.bump": -1}, function(rboxs){
-			//res.json({success: true, data: rboxs});
 			dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(req.session.uid), function(result){
 				result[mdbScheme.C_BOXS] = rboxs;
 				res.render("index", {

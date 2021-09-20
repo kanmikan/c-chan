@@ -1,0 +1,57 @@
+<div class="comment" id="<%= com.cid %>">	
+	<div class="commentAvatar"><img class="avatar" src="<%= com.icon %>" alt=""></div>
+	<div class="commentBody">
+		<div class="commentMetadata">
+			<div class="commentsTag unselect">
+			<% if (BOX.user.uid === com.user.uid){ %><span class="commentTag op">OP</span><% } %>
+			<% if (com.type.includes("idunico")){ %>
+				<span class="commentIdUnico" style="background-color: #<%= com.data.idcolor %>"><%= com.data.idu %></span>
+			<% } else { %>
+				<% if (com.user.jerarquia.nick){ %>
+					<span class="author"><%= com.user.jerarquia.nick %></span>
+				<% } else { %>
+					<span class="author">Anonimo</span>
+				<% } %>
+			<% } %>
+			<% if (com.user.jerarquia.rango || com.user.jerarquia.color){ %>
+				<span class="commentTag" style="background-color: <%= com.user.jerarquia.color %>"><%= com.user.jerarquia.rango %></span>
+			<% } else { %>
+				<span class="commentTag">anon</span>
+			<% } %>		
+			<span class="commentTag pointer" data-tag="<%= com.cid %>" onclick="tag('>><%= com.cid %>')"><%= com.cid %></span>			
+			<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))){ %>
+				<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span>
+				<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
+				<span class="commentTag pointer"><i class="fas fa-trash"></i></span>
+			<% } else { %>
+				<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
+			<% } %>
+			</div>
+			<div class="commentCreatedAt"><%= it.utils.timeSince(com.date.created) %></div>
+		</div>
+		<div class="commentReply">
+		<% com.content.extra.tags.forEach(function(tag){ %>
+			<a href="#<%= tag %>" class="tag" data-tag="<%= tag %>">>><%= tag %></a>
+		<% }); %>
+		</div>
+		<div class="commentData">
+		<% if (com.type.includes("image")){ %>
+			<figure class="commentAttach">
+				<div style="position: relative;width: 100%;height: 100%;">
+					<i class="fa fa-search-plus attachExpandIcon hidden"></i>
+					<a class="voxImage" data-pics="<%= com.img.full %>|<%= com.img.preview %>" target="_BLANK" href="<%= com.img.full %>"><img src="<%= (it.utils.isGif(com.img.full)) ? com.img.full : com.img.preview %>"></img></a>
+				</div>
+			</figure>
+		<% } %>
+		<% if (com.type.includes("video")){ %>	
+			<figure class="commentAttachVideo">
+				<div class="video-container">
+					<iframe src="<%= com.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= com.media.raw %>?autoplay=1><img src=<%= com.media.preview %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+					</iframe>
+				</div>
+			</figure>
+		<% } %>
+		<div class="commentContent"><%- com.content.body %><br></div>
+		</div>
+	</div>
+</div>

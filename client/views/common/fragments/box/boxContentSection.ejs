@@ -1,0 +1,70 @@
+<div class="voxBar">
+	<a href="/<%= categoryData.content.tid %>">
+		<div class="voxCategory">
+			<div class="categoryAvatar"><img src="<%= categoryData.content.media.icon %>" alt=""></div>
+			<div class="categoryTitle"><%= categoryData.content.name %></div>
+		</div>
+	</a>
+</div>
+
+<div class="voxBarTools">
+	<div class="actions">
+		<div class="voxOption"><i class="fas fa-flag"></i><span class="voxOptionText">Denunciar</span></div>
+		<div class="voxOption" id="iconfav"><i class="fas fa-star"></i><span class="voxOptionText">Favorito</span></div>
+		<div class="voxOption" id="iconhide"><i class="fas fa-lock"></i><span class="voxOptionText">Ocultar</span></div>
+	</div>
+	<div class="metadata">
+		<% if (BOX.user.jerarquia.nick && BOX.user.jerarquia.rango){ %>
+			<div class="authorVox">
+			<span class="name"><%= BOX.user.jerarquia.nick %></span>
+			<% if (BOX.user.jerarquia.color != ""){ %>
+				<span class="commentTag" style="background-color: <%= BOX.user.jerarquia.color %>"><%= BOX.user.jerarquia.rango %></span>
+			<% } else { %>
+				<span class="commentTag"><%= BOX.user.jerarquia.rango %></span>
+			<% } %>
+			</div>
+		<% } else { %>
+			<div class="authorVox"><span class="name">Anonimo</span><span class="commentTag">anon</span></div>
+		<% } %>
+		<div class="voxCreatedAt"><%= it.utils.timeSince(BOX.date.created) %></div>
+	</div>
+</div>
+<!-- encuestas -->
+<% if (BOX.type.includes("poll")){
+	var pollData = it.utils.getPollPercent(BOX.content.extra.poll.pollOneV, BOX.content.extra.poll.pollTwoV); %>
+	<div class="voxBar pollBar" id="pollBar">
+		<div class="pollOption" data-poll="1" id="pollOne">
+			<div class="pollOptionText"><%= BOX.content.extra.poll.pollOne %></div>
+			<div class="pollOptionPerent" id="pollOnePorcen"><%= pollData[0] %></div>
+		</div>
+		<div class="pollOption" data-poll="2" id="pollTwo">
+			<div class="pollOptionText"><%= BOX.content.extra.poll.pollTwo %></div>
+			<div class="pollOptionPercent" id="pollTwoPorcen"><%= pollData[1] %></div>
+		</div>
+	</div>
+<% } %>
+<!-- cuerpo del box -->
+<article class="voxContent" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
+	<!-- multimedia del box, imagen, video, etc. -->
+	<% if (!BOX.type.includes("video")) {%>
+		<figure class="voxAttach">
+			<div style="position: relative;width: 100%;height: 100%;">
+				<i class="fa fa-search-plus attachExpandIcon hidden"></i>
+				<a class="voxImage" data-pics="<%= BOX.img.full %>|<%= BOX.img.preview %>" target="_BLANK" href="<%= BOX.img.full %>"><img src="<%= (it.utils.isGif(BOX.img.full)) ? BOX.img.full : BOX.img.preview %>"></img></a>
+			</div>
+		</figure>
+	<% } else { %>
+		<figure class="voxAttachVideo">
+		<% if (BOX.type.includes("object")){ %>
+			<object class="objectContainer" data="<%= BOX.media.raw %>" width="100%" height="100%"></object>
+		<% } else { %>
+			<iframe class="objectContainer" width="100%" height="100%" src="<%= BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= BOX.media.raw %>?autoplay=1><img src=<%= BOX.media.preview %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		<% } %>
+		</figure>
+	<% } %>
+	<!-- contenido del box, titulo, texto, etc. -->
+	<header class="voxBody">
+		<h1 itemprop="name" id="voxTitle"><%= BOX.content.title %></h1>
+		<div class="voxDescription" itemprop="articleBody" id="voxContent"><%- BOX.content.body %></div>
+	</header>
+</article>

@@ -1,252 +1,29 @@
 <!doctype html>
 <html lang="en">
-<head>
-<%- include('./common/head', it); %>
-</head>
-<%- include('./common/header', it); %>
-<% 
-	/* VARIABLES DE USO LOCAL EN EL RENDER */
-	var BOX = it.data.boxs[0];
-	var categoryData = it.utils.getCategoryData(it.data.cats, BOX.cat);
-%>
-<body>
-<script>
-	/* Calculos del lado del server */
-	var OP = <%= (BOX.user.uid === it.sesion.id) ? true : false %>;
-	var TOKEN = "<%= it.token %>";
-	var COMS = []; //buffer de comentarios.
-	var USERDATA = "<%= (it.data.users[0]) ? it.data.users[0].permisos : [] %>".split(",");
-	var ASYNC_COMMENTS = <%= it.renderConfig.ASYNC_COMMENTS %>;
-	
-	/* LISTENERS DEL SOCKETIO */
-	$(function () {
-		var socket = io();
-		
-		socket.on('connect', function(){
-			socket.emit("room", "<%= BOX.bid %>");
-		});
-		
-		socket.on('comment', function(data){
-			COMS.push({created: data.data.date.created, op: data.op, data: data.data});
-			let bufferCount = (COMS.length > 1) ? `${COMS.length} comentarios` : `1 comentario`;
-			element("comBufferNumber").innerHTML = bufferCount;
-			
-			if (TOKEN != data.token){
-				//si no es el emisor, mostrar el boton.
-				element("commentLoadMore").classList.remove("hidden");
-			} else {
-				<% if (it.renderConfig.ASYNC_COMMENTS){ %>
-					//test: no renderizar buffer, y eliminar el push del comentario en cuestion.
-					COMS = COMS.filter(item => item.data.cid != data.data.cid);
-					bufferCount = (COMS.length > 1) ? `${COMS.length} comentarios` : `1 comentario`;
-					element("comBufferNumber").innerHTML = bufferCount;
-				<% } else { %>
-					//de lo contrario, renderizar la lista una vez recibida.
-					element("commentLoadMore").click();
-				<% } %>
-			}
-		});
-	});
-</script>
-	<main>
-		<!-- barra/header del box -->
-		<div class="voxWraper">
-			<section class="voxData">
-				<div class="voxBar">
-					<a href="/<%= categoryData.content.tid %>">
-						<div class="voxCategory">
-							<div class="categoryAvatar"><img src="<%= categoryData.content.media.icon %>" alt=""></div>
-							<div class="categoryTitle"><%= categoryData.content.name %></div>
-						</div>
-					</a>
-				</div>
-			
-				<div class="voxBarTools">
-					<div class="actions">
-						<div class="voxOption">
-							<i class="fas fa-flag"></i>
-							<span class="voxOptionText">Denunciar</span>
-						</div>
-						
-						<div class="voxOption" id="iconfav">
-							<i class="fas fa-star"></i>
-							<span class="voxOptionText">Favorito</span>
-						</div>
-						
-						<div class="voxOption" id="iconhide">
-							<i class="fas fa-lock"></i>
-							<span class="voxOptionText">Ocultar</span>
-						</div>
-					</div>
-					<div class="metadata">
-						<% if (BOX.user.jerarquia.nick && BOX.user.jerarquia.rango){ %>
-							<div class="authorVox">
-								<span class="name"><%= BOX.user.jerarquia.nick %></span>
-								<% if (BOX.user.jerarquia.color != ""){ %>
-									<span class="commentTag" style="background-color: <%= BOX.user.jerarquia.color %>"><%= BOX.user.jerarquia.rango %></span>
-								<% } else { %>
-									<span class="commentTag"><%= BOX.user.jerarquia.rango %></span>
-								<% } %>
-							</div>
-						<% } else { %>
-							<div class="authorVox"><span class="name">Anonimo</span><span class="commentTag">anon</span></div>
-						<% } %>
-						<div class="voxCreatedAt"><%= it.utils.timeSince(BOX.date.created) %></div>
-					</div>
-				</div>
-
-			<!-- encuestas -->
-			<% if (BOX.type.includes("poll")){
-				var pollData = it.utils.getPollPercent(BOX.content.extra.poll.pollOneV, BOX.content.extra.poll.pollTwoV); %>
-				<div class="voxBar pollBar" id="pollBar">
-					<div class="pollOption" data-poll="1" id="pollOne">
-                        <div class="pollOptionText"><%= BOX.content.extra.poll.pollOne %></div>
-                        <div class="pollOptionPerent" id="pollOnePorcen"><%= pollData[0] %></div>
-                    </div>
-				
-					<div class="pollOption" data-poll="2" id="pollTwo">
-                        <div class="pollOptionText"><%= BOX.content.extra.poll.pollTwo %></div>
-                        <div class="pollOptionPercent" id="pollTwoPorcen"><%= pollData[1] %></div>
-                    </div>
-				</div>
-			<% } %>
-			
-			<!-- cuerpo del box -->
-			<article class="voxContent" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
-				<!-- multimedia del box, imagen, video, etc. -->
-				<% if (!BOX.type.includes("video")) {%>
-					<figure class="voxAttach">
-						<div style="position: relative;width: 100%;height: 100%;">
-							<i class="fa fa-search-plus attachExpandIcon hidden"></i>
-							<a class="voxImage" data-pics="<%= BOX.img.full %>|<%= BOX.img.preview %>" target="_BLANK" href="<%= BOX.img.full %>"><img src="<%= (it.utils.isGif(BOX.img.full)) ? BOX.img.full : BOX.img.preview %>"></img></a>
-						</div>
-					</figure>
-				<% } else { %>
-					<figure class="voxAttachVideo">
-						<% if (BOX.type.includes("object")){ %>
-							<object class="objectContainer" data="<%= BOX.media.raw %>" width="100%" height="100%"></object>
-						<% } else { %>
-							<iframe class="objectContainer" width="100%" height="100%" src="<%= BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= BOX.media.raw %>?autoplay=1><img src=<%= BOX.media.preview %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-						<% } %>
-					</figure>
-				<% } %>
-				
-				<!-- contenido del box, titulo, texto, etc. -->
-				<header class="voxBody">
-					<h1 itemprop="name" id="voxTitle"><%= BOX.content.title %></h1>
-					<div class="voxDescription" itemprop="articleBody" id="voxContent"><%- BOX.content.body %></div>
-				</header>
-			</article>
-		</section>
-		
-		<!-- area de comentarios -->
-		<section class="voxCommentList">
-		
-			<!-- formulario de comentario. -->
-			<%- include('./common/fragments/box/commentForm', it); %>
-
-			<!-- header de lista de comentarios -->
-			<div class="commentsVoxCount"> 
-				<span class="commentsVoxText" id="commentsVoxText">Comentarios (<span id="voxComments"><%= it.data.coms.length %></span>)</span>
-				<span class="attachsVox">
-					<i class="fas fa-folder" id="attach-ilist"></i>
-					<i class="fas fa-arrow-down" id="attach-gdown" style="margin-left: 10px;"></i>
-				</span> 
+	<head>
+	<%- include('./common/head', it); %>
+	</head>
+	<%- include('./common/header', it); %>
+	<% 
+		/* VARIABLES DE USO LOCAL EN EL RENDER */
+		var BOX = it.data.boxs[0];
+		var categoryData = it.utils.getCategoryData(it.data.cats, BOX.cat);
+	%>
+	<body>
+	<%- include('./common/scripts/boxScripts', {it, BOX, categoryData}); %>
+		<main>
+			<div class="voxWraper">
+				<!-- barra/header del box -->
+				<section class="voxData">
+				<%- include('./common/fragments/box/boxContentSection', {it, BOX, categoryData}); %>
+				</section>
+				<!-- area de comentarios -->
+				<section class="voxCommentList">
+				<%- include('./common/fragments/box/boxCommentSection', {it, BOX}); %>
+				</section>
+				<div class="floatQuote hidden" id="floatQuote"></div>
 			</div>
-			
-			<div class="commentsVoxCount loadmore unselect hidden" id="commentLoadMore">
-				<span class="loadcontent">Cargar <span id="comBufferNumber">x</span></span>
-			</div>
-			
-			<div class="attachList hide" id="attachList">
-			<% it.utils.filterComMedia(it.data.coms).forEach(function(com) { %>
-				<% if (com.img) { %>
-					<a class="attach" target="_BLANK" href="<%= com.img_url %>"> <img data-attach="<%= com.cid %>" src="<%= com.img_url %>" alt="">
-						<div class="attachType"><i class="fas fa-image"></i></div>
-					</a>
-				<% } %>
-			<% }); %>
-			</div>
-			
-			<!-- lista de comentarios -->
-			<div class="commentList" id="commentList">
-			
-			<% it.data.coms.forEach(function(com) { %>
-				<div class="comment" id="<%= com.cid %>">	
-					<div class="commentAvatar">
-						<img class="avatar" src="<%= com.icon %>" alt="">
-					</div>
-					<div class="commentBody">
-						<div class="commentMetadata">
-						<div class="commentsTag unselect">
-							<% if (BOX.user.uid === com.user.uid){ %>
-								<span class="commentTag op">OP</span>
-							<% } %>
-							
-							<% if (com.type.includes("idunico")){ %>
-								<span class="commentIdUnico" style="background-color: #<%= com.data.idcolor %>"><%= com.data.idu %></span>
-							<% } else { %>
-								<% if (com.user.jerarquia.nick){ %>
-									<span class="author"><%= com.user.jerarquia.nick %></span>
-								<% } else { %>
-									<span class="author">Anonimo</span>
-								<% } %>
-							<% } %>
-							
-							<% if (com.user.jerarquia.rango || com.user.jerarquia.color){ %>
-								<span class="commentTag" style="background-color: <%= com.user.jerarquia.color %>"><%= com.user.jerarquia.rango %></span>
-							<% } else { %>
-								<span class="commentTag">anon</span>
-							<% } %>
-							
-							<span class="commentTag pointer" data-tag="<%= com.cid %>" onclick="tag('>><%= com.cid %>')"><%= com.cid %></span>
-							
-							<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))){ %>
-								<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span>
-								<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
-								<span class="commentTag pointer"><i class="fas fa-trash"></i></span>
-							<% } else { %>
-								<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
-							<% } %>
-						</div>
-						<div class="commentCreatedAt"><%= it.utils.timeSince(com.date.created) %></div>
-					</div>
-						
-					<div class="commentReply">
-						<% com.content.extra.tags.forEach(function(tag){ %>
-							<a href="#<%= tag %>" class="tag" data-tag="<%= tag %>">>><%= tag %></a>
-						<% }); %>
-					</div>
-					<div class="commentData">
-						<% if (com.type.includes("image")){ %>
-							<figure class="commentAttach">
-								<div style="position: relative;width: 100%;height: 100%;">
-									<i class="fa fa-search-plus attachExpandIcon hidden"></i>
-									<a class="voxImage" data-pics="<%= com.img.full %>|<%= com.img.preview %>" target="_BLANK" href="<%= com.img.full %>"><img src="<%= (it.utils.isGif(com.img.full)) ? com.img.full : com.img.preview %>"></img></a>
-								</div>
-							</figure>
-						<% } %>
-						<% if (com.type.includes("video")){ %>	
-							<figure class="commentAttachVideo">
-								<div class="video-container">
-									<iframe src="<%= com.media.raw %>"
-										  srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= com.media.raw %>?autoplay=1><img src=<%= com.media.preview %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-									</iframe>
-								</div>
-							</figure>
-						<% } %>
-						<div class="commentContent"><%- com.content.body %><br></div>
-					</div>
-				</div>
-			</div>
-		<% }); %>
-		
-			<div style="margin: 20px;"></div>
-			<div class="commentsVoxCount gotop hidden" id="attach-gup"><span style="width: 100%"><i class="fas fa-arrow-up"></i></span></div>
-		</section>
-			<div class="floatQuote hidden" id="floatQuote"></div>
-			</div>
-		</div>
-	</main>
-</body>
-<%- include('./common/footer', it); %>
+		</main>
+	</body>
+	<%- include('./common/footer', it); %>
+</html>
