@@ -1,0 +1,62 @@
+<div class="modalBox modalConfig" id="config">
+    <div class="modalHeader">
+        <div class="modalTitle">Configuracion</div>
+        <div class="closeModal" data-dismiss="modal">Cerrar</div>
+    </div>
+    <div class="modalContent">
+        <ul class="config">
+			<li>
+                <div class="configTitle">Tema oscuro</div>
+                <div class="configToggle">
+                    <label class="switch">
+					<% if (it.sesion.config && it.sesion.config.darkmode) { %>
+						<input type="checkbox"  id="dkswitch" checked="true">
+					<% } else { %>
+						<input type="checkbox"  id="dkswitch">
+					<% } %>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </li>
+
+<!--
+			<li style="" data-function="visibleCategories">
+				<div class="optionIcon"><i class="fas fa-dice-d6" aria-hidden="true"></i></div>
+				<div class="optionText">Categorias visibles</div>
+			</li>
+			<li>
+				<div class="configTitle">Home clásica</div>
+				<div class="configToggle">
+					<label class="switch">
+						<input type="checkbox"  id="clswitch">
+						<span class="slider"></span>
+					</label>
+				</div>
+			</li>
+			
+		    <li style="" data-function="hiddenWords">
+				<div class="optionIcon"><i class="fas fa-eye" aria-hidden="true"></i></div>
+				<div class="optionText">Palabras ocultas </div>
+			</li>
+-->
+			
+        </ul>
+    </div>
+</div>
+<script>
+	/* EVENTOS */
+	//EVENTO: al cambiar el switch del darkmode.
+	$("#dkswitch").on('change', function() {
+		if ($(this).is(':checked')) {
+			darkmode(true);
+		} else {
+			darkmode(false);
+		}
+	});
+
+	/* FUNCIONES */
+	function darkmode(toggle){
+		applyConfig("darkmode:" + toggle);
+		html.dataset.theme = (toggle) ? "darkmode" : "";
+	}
+</script>

@@ -303,13 +303,14 @@ function action_updateBoxList(indexID, callback){
 	});
 }
 
+//FUNCION: envia la configuracion al server
+//TODO: convertir a emit de socket (si es posible)
 function applyConfig(query){
 	let formData = new FormData();
 	//ejemplo opcion:valor
 	//opcion_add:valor = añadir elemento a lista
 	//opcion_del:valor = eliminar elemento de lista
 	//opcion:valor = actualizar elemento
-	
 	formData.append("data", query);
 	post(formData, "/api/config", function(){}, function(response){
 		console.log(response);

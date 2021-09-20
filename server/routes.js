@@ -49,6 +49,24 @@ module.exports = function(app){
 		}
 	});
 	
+	//RUTA: lista de favoritos.
+	app.get('/favoritos', function(req, res) {
+		//leer favoritos del usuario
+		let favoritos = req.session.config.favs;
+		
+		//TODO: los favoritos son un array de bids, identificar los boxs con tales bid y enviar la lista al render.
+		
+		res.send(favoritos);
+	});
+	
+	//RUTA: lista de temas ocultos.
+	//TODO: lo mismo de arriba, basicamente.
+	app.get('/ocultos', function(req, res) {
+		let ocultos = req.session.config.boxhides;
+		
+		res.send(ocultos);
+	});
+	
 	//RUTA: buscar palabras clave en temas y devolver resultado
 	app.get('/search/:query', function(req, res) {
 		let query = req.params.query;

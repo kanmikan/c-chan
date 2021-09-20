@@ -15,7 +15,7 @@
 	var OP = <%= (BOX.user.uid === it.sesion.id) ? true : false %>;
 	var TOKEN = "<%= it.token %>";
 	var COMS = []; //buffer de comentarios.
-	var USERDATA = "<%= it.data.users[0].permisos %>".split(",");
+	var USERDATA = "<%= (it.data.users[0]) ? it.data.users[0].permisos : [] %>".split(",");
 	var ASYNC_COMMENTS = <%= it.renderConfig.ASYNC_COMMENTS %>;
 	
 	/* LISTENERS DEL SOCKETIO */
@@ -201,7 +201,7 @@
 							
 							<span class="commentTag pointer" data-tag="<%= com.cid %>" onclick="tag('>><%= com.cid %>')"><%= com.cid %></span>
 							
-							<% if (it.data.users[0].permisos && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))){ %>
+							<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))){ %>
 								<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span>
 								<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
 								<span class="commentTag pointer"><i class="fas fa-trash"></i></span>
