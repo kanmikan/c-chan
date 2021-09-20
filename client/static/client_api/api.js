@@ -137,7 +137,7 @@ function commentRender(op, com){
 		cbody += `<span class="commentTag op">OP</span>`;
 	}
 	if (com.type.includes("idunico")){
-		cbody += `<span class="commentIdUnico" style="background-color: #${com.data.idcolor}">${com.data.idu}</span>`;
+		cbody += `<span class="commentIdUnico" style="background-color: ${com.content.extra.idunico.color}">${com.content.extra.idunico.id}</span>`;
 	} else {
 		if (com.user.jerarquia.nick){
 			cbody +=`<span class="author">${com.user.jerarquia.nick}</span>`;

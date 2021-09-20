@@ -26,7 +26,11 @@ const COMMENT_SCHEME = {
 	content: {
 		body: "content",
 		extra: {
-			tags: []
+			tags: [],
+			idunico: {
+				id: "idunico",
+				color: "idcolor"
+			}
 		}
 	}
 }

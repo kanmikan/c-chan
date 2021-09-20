@@ -8,7 +8,7 @@
 		</div>
 		<div class="createVox-panelcontainer">
 			<div class="createVox-panel1">
-				<select name="cat" id="bcat" style="width: 90%">
+				<select name="cat" id="bcat" style="width: 94%">
 					<option value="" selected="selected" disabled="disabled">Elige una categoría o comunidad</option>
 					<% it.data.cats.forEach(function(categoria){ %>
 						<option value="<%= categoria.content.tid %>"><%= categoria.content.name %></option>
@@ -26,13 +26,17 @@
 				</div>
 				
 				<div class="subtitle pointer" id="toggleanime" data-toggle="modal" data-target="#anime" data-backdrop="false">
-					<span class="subtitleText"><i class="fas fa-film"></i>Anime/Manga</span>
+					<span class="subtitleText"><i class="fas fa-cog"></i>Opciones</span>
 					<span class="subtitleToggle"><i class="fas fa-plus"></i></span>
 				</div>
 				<div class="polls hide" id="anime">
-					<input class="fieldv2" type="text" name="subtitle" maxlength="50" placeholder="Titulo del anime/manga">
+					<div class="boxOptions">
+						<input type="checkbox" name="dados" style="width:auto"><span>Dados</span></input>
+						<input type="checkbox" name="idunico" style="width:auto"><span>ID Unico</span></input>
+					</div>
+
+					<input class="fieldv2" type="text" name="subtitle" maxlength="50" placeholder="Subtitulo">
 				</div>
-				
 			</div>
 			<div class="createVox-panel2">
 			<div class="createVox-panel2a">

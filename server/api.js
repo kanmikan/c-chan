@@ -55,6 +55,9 @@ module.exports = function(app){
 		let vid = req.fields.vid.split(";");
 		let pollOne = req.fields.pollOne;
 		let pollTwo = req.fields.pollTwo;
+		//checkboxes
+		let dados = (req.fields.dados) ? true : false;
+		let idunico = (req.fields.idunico) ? true : false;
 		
 		let time = Date.now();
 		let bid = utils.uuidv4();
@@ -77,6 +80,18 @@ module.exports = function(app){
 		
 		json.content.title = title;
 		json.content.body = parser.htmlSanitize(content);
+		
+		if (subtitle != ""){
+			json.content.extra.title2 = subtitle;
+		}
+		
+		if (dados){
+			json.type.push("dice");
+		}
+		
+		if (idunico){
+			json.type.push("idunico");
+		}
 		
 		if (pollOne != "" && pollTwo != ""){
 			json.type.push("poll");
@@ -132,19 +147,26 @@ module.exports = function(app){
 		let userdata = sesionManager.getUserData();
 		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};}
 		
-		//se envia la respuesta, con el comentario armado, sin importar si esta insertada en la base de datos.
-		res.json({success: true, data: json});
-		//el resto de acciones ocurrer luego de la respuesta al cliente.
-		
-		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
 		let coms = await dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", () => {});
 		await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
 		
 		let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", () => {});
 		if (box[0]){
 			let op = (box[0].user.uid === req.session.uid) ? true : false;
-			live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
+			/* modificador de idunico */
+			if (box[0].type.includes("idunico")){
+				let idu = utils.xmur3(req.session.uid+bid)();
+				let colorid = utils.genColor(req.session.uid+bid);
+				
+				json.type.push("idunico");
+				json.content.extra.idunico = {
+					id: idu,
+					color: colorid
+				}
+			}
 			
+			//enviar comentario via socket
+			live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
 			/* Notificar al dueño del box, si no es el mismo que comenta kjj */
 			if (!op){
 				let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
@@ -164,7 +186,10 @@ module.exports = function(app){
 			}
 			/* fin de notificacion */
 		}
-		live.sendData("new", {kind: "newcom", data: pass.filterProtectedUID(json)});		
+		live.sendData("new", {kind: "newcom", data: pass.filterProtectedUID(json)});
+		
+		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
+		res.json({success: true, data: json});
 	});
 	
 	//MUESTRA: obtener todos los boxs, ordenados por ultimo bump y stickys

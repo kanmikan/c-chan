@@ -26,6 +26,33 @@ function getCatShow(categoria){
 	return categoria.toUpperCase();
 }
 
+//FUNCION: genera un hash de color random basado en un seed.
+function genColor(str) {
+	var hash = 0;
+	for (var i = 0; i < str.length; i++) {
+		hash = str.charCodeAt(i) + ((hash << 5) - hash);
+	}
+	var colour = '#';
+	for (var i = 0; i < 3; i++) {
+		var value = (hash >> (i * 8)) & 0xFF;
+		colour += ('00' + value.toString(16)).substr(-2);
+	}
+	return colour;
+}
+
+//FUNCION: genera un string random basado en un seed.
+//https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
+function xmur3(str) {
+    for(var i = 0, h = 1779033703 ^ str.length; i < str.length; i++)
+        h = Math.imul(h ^ str.charCodeAt(i), 3432918353),
+        h = h << 13 | h >>> 19;
+    return function() {
+        h = Math.imul(h ^ h >>> 16, 2246822507);
+        h = Math.imul(h ^ h >>> 13, 3266489909);
+        return (h ^= h >>> 16) >>> 0;
+    }
+}
+
 function timeSince(timestamp) {
 	var now = new Date(); 
 	var secondsPast = (now.getTime() - timestamp) / 1000;
@@ -102,4 +129,4 @@ function parseCookies(raw){
 	return obj;
 }
 
-module.exports = {isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies};
+module.exports = {isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3};

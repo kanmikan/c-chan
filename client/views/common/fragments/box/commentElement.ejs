@@ -5,7 +5,7 @@
 			<div class="commentsTag unselect">
 			<% if (BOX.user.uid === com.user.uid){ %><span class="commentTag op">OP</span><% } %>
 			<% if (com.type.includes("idunico")){ %>
-				<span class="commentIdUnico" style="background-color: #<%= com.data.idcolor %>"><%= com.data.idu %></span>
+				<span class="commentIdUnico" style="background-color: <%= com.content.extra.idunico.color %>"><%= com.content.extra.idunico.id %></span>
 			<% } else { %>
 				<% if (com.user.jerarquia.nick){ %>
 					<span class="author"><%= com.user.jerarquia.nick %></span>
