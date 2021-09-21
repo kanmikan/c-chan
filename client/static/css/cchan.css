@@ -2461,20 +2461,20 @@ span.attachsVox {
 }
 
 .loadNewVox {
-    z-index: 5;
-    background: #2196f3;
-    width: 200px;
-    padding: 12px;
-    font-size: 13px;
-    text-align: center;
-    cursor: pointer;
-    color: white;
-    position: fixed;
-    top: 65px;
-    left: calc(50% - 112px);
-    border-radius: 8px;
-    box-shadow: 2px 2px 2px 0px rgb(30 44 56 / 55%);
-    border: 2px solid #0973c7;
+	z-index: 5;
+	background: #2196f3;
+	width: 200px;
+	padding: 10px;
+	font-size: 13px;
+	text-align: center;
+	cursor: pointer;
+	color: white;
+	position: fixed;
+	top: 65px;
+	left: calc(50% - 112px);
+	border-radius: 4px;
+	box-shadow: 2px 2px 2px 0px rgb(30 44 56 / 55%);
+	border: 1px solid #0973c7;
 }
 
 .loadNewVox:hover {
@@ -2633,6 +2633,23 @@ input:checked + .slider:before {
 
 .boxOptions span {
 	margin-left: 5px;
+}
+
+.tagNew {
+	background: #12a201;
+	color: white;
+	padding: 2px;
+	font-size: 11px;
+	margin-top: 3px;
+	border-radius: 3px;
+}
+
+.faved {
+	color: #ffff00;
+}
+
+.hided {
+	color: #ff0000;
 }
 
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */

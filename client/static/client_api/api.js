@@ -93,12 +93,32 @@ function resetCommentInputData(){
 	
 }
 
+function getCategoryData(catid){
+	let default_ = {content: {media: {icon: "/assets/logo.png", image: "/assets/logo.png", misc: []}}};
+	if (typeof CATS !== "undefined"){
+		let cdata = CATS.filter( item => item.catid === catid)[0];
+		return (cdata) ? cdata : default_;
+	} else {
+		return default_;
+	}
+}
+
+function getCatShow(categoria){
+	//añadir parametros especiales a las categorias, ejemplo: oficial
+	if (categoria === "oficial"){return "<span>Oficial</span>";}
+	return categoria.toUpperCase();
+}
+
 function boxRender(box){
 	//render de boxs del lado del cliente.
 	let boxThumb = (box.type.includes("video")) ? box.media.preview : box.img.preview;
+	let catdata = getCategoryData(box.cat);
 	
-	let bbody = `<a class="box" id="${box.bid}" href="/tema/${box.bid}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${boxThumb}); text-decoration: none; background-position: top;"><div class="voxHeader"><div class="tagList"><div class="tag categoryTag"><img src="" style="width: 20px;vertical-align: middle;"><span style="margin-left: 4px;margin-right: 5px;align-self: center;">${box.cat.toUpperCase()}</span></img></div>`;
+	let bbody = `<a class="box" id="${box.bid}" href="/tema/${box.bid}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${boxThumb}); text-decoration: none; background-position: top;"><div class="voxHeader"><div class="tagList"><div class="tag categoryTag"><img src="${catdata.content.media.icon}"><span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: middle;">${getCatShow(box.cat)}</span></img></div>`;
 	
+	if (box.state && box.state.includes("new")){
+		bbody +=`<div class="tagInvisible tagNew">TEST</div>`;	
+	}
 	if (box.type && box.type.includes("video")){
 		bbody +=`<div class="tagInvisible ytb"><div class="tagWrapper"></div><i class="fab fa-youtube"></i></div>`;
 	}
@@ -172,8 +192,9 @@ function commentRender(op, com){
 	}
 	cbody +=`<div class="commentContent">${com.content.body}<br></div></div></div></div>`;	
 	$("#commentList").prepend(cbody);
-	//TODO: cambiar todo esto urgente......
-	element("voxComments").innerHTML = $("#commentList").children().length-2;
+	
+	//actualizar lista de comentarios.
+	element("voxComments").innerHTML = $("#commentList").children().length;
 }
 
 function checkBoxFieldLocal(){
@@ -371,6 +392,34 @@ $(document).ready(function() {
 					element("searchButton").click();
 					location.href = `/search/${query}`;	
 				}
+			}
+		});
+	}
+	
+	//evento: click en favorito en box
+	if (element("iconfav")){
+		element("iconfav").addEventListener("click", function(e){
+			let bid = $(e.target).parent().data().bid;
+			if ($(e.target).parent().hasClass("faved")){
+				$(e.target).parent().removeClass("faved");
+				applyConfig("favs_del:" + bid);
+			} else {
+				$(e.target).parent().addClass("faved");
+				applyConfig("favs_add:" + bid);
+			}
+		});
+	}
+	
+	//evento: click en ocultar en box.
+	if (element("iconhide")){
+		element("iconhide").addEventListener("click", function(e){
+			let bid = $(e.target).parent().data().bid;
+			if ($(e.target).parent().hasClass("hided")){
+				$(e.target).parent().removeClass("hided");
+				applyConfig("boxhides_del:" + bid);
+			} else {
+				$(e.target).parent().addClass("hided");
+				applyConfig("boxhides_add:" + bid);
 			}
 		});
 	}

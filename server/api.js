@@ -81,17 +81,9 @@ module.exports = function(app){
 		json.content.title = title;
 		json.content.body = parser.htmlSanitize(content);
 		
-		if (subtitle != ""){
-			json.content.extra.title2 = subtitle;
-		}
-		
-		if (dados){
-			json.type.push("dice");
-		}
-		
-		if (idunico){
-			json.type.push("idunico");
-		}
+		if (subtitle != ""){json.content.extra.title2 = subtitle;}
+		if (dados){json.type.push("dice");}
+		if (idunico){json.type.push("idunico");}
 		
 		if (pollOne != "" && pollTwo != ""){
 			json.type.push("poll");
@@ -335,10 +327,14 @@ module.exports = function(app){
 			if (subopt[1]){
 				switch(subopt[1]){
 					case "add":
-						req.session.config[subopt[0]].push(options[1]);
-						sesiondata.extra.config[subopt[0]].push(options[1]);
+						//calcular si ya existe e ignorar si es asi.
+						if (!req.session.config[subopt[0]].includes(options[1])){
+							req.session.config[subopt[0]].push(options[1]);
+							sesiondata.extra.config[subopt[0]].push(options[1]);
+						}
 						break;
 					case "del":
+						//aca no es necesario calcular si existe, porque si no existe simplemente no afecta al resultado.
 						let tmpconf = req.session.config[subopt[0]];
 						tmpconf = tmpconf.filter(item => item != options[1]);
 						
@@ -358,7 +354,6 @@ module.exports = function(app){
 				sesiondata.extra.config[options[0]] = options[1];
 			}
 			//guardar info en el usuario.
-			//console.log(sesiondata);
 			dbManager.pushDB(req.app.locals.db, mdbScheme.C_ADM, {sid: req.session.id}, {$set: {"extra.config": sesiondata.extra.config}}, function(resp){});
 		}
 		res.send({success: true, data: req.session.config});

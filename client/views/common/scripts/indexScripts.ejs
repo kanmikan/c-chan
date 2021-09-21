@@ -1,5 +1,6 @@
 <script>
 	var B_BUFFER = [];
+	var CATS = <%- JSON.stringify(it.data.cats) %>;
 	$(function () {
 		var socket = io();
 		socket.on('connect', function(){

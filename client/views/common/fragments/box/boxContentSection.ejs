@@ -9,9 +9,21 @@
 
 <div class="voxBarTools">
 	<div class="actions">
-		<div class="voxOption"><i class="fas fa-flag"></i><span class="voxOptionText">Denunciar</span></div>
-		<div class="voxOption" id="iconfav"><i class="fas fa-star"></i><span class="voxOptionText">Favorito</span></div>
-		<div class="voxOption" id="iconhide"><i class="fas fa-lock"></i><span class="voxOptionText">Ocultar</span></div>
+		<div class="voxOption" data-bid="<%= BOX.bid %>" id="iconDenuncia"><i class="fas fa-flag"></i><span class="voxOptionText">Denunciar</span></div>
+		<% if (it.sesion.config.favs.includes(BOX.bid)){ %>
+			<div class="voxOption faved" data-bid="<%= BOX.bid %>" id="iconfav">
+		<% } else { %>
+			<div class="voxOption" data-bid="<%= BOX.bid %>" id="iconfav">
+		<% } %>
+		<i class="fas fa-star"></i><span class="voxOptionText">Favorito</span></div>
+		
+		<% if (it.sesion.config.boxhides.includes(BOX.bid)){ %>
+			<div class="voxOption hided" data-bid="<%= BOX.bid %>" id="iconhide">
+		<% } else { %>
+			<div class="voxOption" data-bid="<%= BOX.bid %>" id="iconhide">
+		<% } %>
+		<i class="fas fa-lock"></i><span class="voxOptionText">Ocultar</span></div>
+		
 	</div>
 	<div class="metadata">
 		<% if (BOX.user.jerarquia.nick && BOX.user.jerarquia.rango){ %>
