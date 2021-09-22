@@ -3,6 +3,7 @@ const dbManager = require('./db/dbmanager.js');
 const mdbScheme = require('./db/models/mdbscheme.js');
 const jsonScheme = require('./db/models/jsonscheme.js');
 const sesionManager = require('./sesion/sesionmanager.js');
+const cfilter = require('./sesion/contentfilter.js');
 
 const utils = require('./utils.js');
 const uploadManager = require('./api/upload.js');
@@ -188,7 +189,8 @@ module.exports = function(app){
 	//TODO: añadir filtro de datos
 	app.get('/api/boxs', pass.check, function(req, res) {
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, function(boxs){
-			if (boxs[0] != undefined){			
+			if (boxs[0] != undefined){
+				boxs = cfilter.filterBoxHides(boxs, req.session.config);
 				res.json({success: true, data: pass.filterProtectedUID(boxs)});
 			} else {
 				res.json({success: false, data: null});
@@ -201,6 +203,7 @@ module.exports = function(app){
 		let cat = req.params.cat;
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {cat: cat}, {"date.sticky": -1, "date.bump": -1}, function(boxs){
 			if (boxs[0]){
+				boxs = cfilter.filterBoxHides(boxs, req.session.config);
 				res.json({success: true, data: pass.filterProtectedUID(boxs)});
 			} else {
 				res.json({success: false, data: null});
@@ -241,7 +244,9 @@ module.exports = function(app){
 				let desde = indice+1;
 				let hasta = 20; //numero de boxs a cargar.
 				dbManager.queryDBSkip(db, mdbScheme.C_BOXS, criterio, orden, desde, hasta, function(limitBoxs){
-					if (limitBoxs[0]){	
+					if (limitBoxs[0]){
+						//filtrar boxs hideados
+						limitBoxs = cfilter.filterBoxHides(limitBoxs, req.session.config);
 						res.json({success: true, data: pass.filterProtectedUID(limitBoxs)});
 					} else {
 						res.json({success: false, data: null});
@@ -315,11 +320,13 @@ module.exports = function(app){
 	});
 	
 	//API: modificar las preferencias del usuario.
-	//todo: filtro de datos.
 	app.post('/api/config', pass.check, function(req, res) {
 		let data = req.fields.data;
 		let options = data.split(":");
 		let sesiondata = sesionManager.getUserData(req.session.id)[0].data;
+		
+		//TODO: sanitizar inputs.
+		
 		
 		//manipular opciones.
 		if (options[0]){
@@ -331,6 +338,8 @@ module.exports = function(app){
 						if (!req.session.config[subopt[0]].includes(options[1])){
 							req.session.config[subopt[0]].push(options[1]);
 							sesiondata.extra.config[subopt[0]].push(options[1]);
+						} else {
+							return res.json({success: false, data: "dato invalido."});
 						}
 						break;
 					case "del":

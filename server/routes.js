@@ -5,6 +5,7 @@ const utils = require('./utils.js');
 const renderConfig = require('./config/renderconfig.js');
 const mdbScheme = require('./db/models/mdbscheme.js');
 const compat = require('./db/compat.js');
+const cfilter = require('./sesion/contentfilter.js');
 
 module.exports = function(app){
 	
@@ -12,6 +13,7 @@ module.exports = function(app){
 	app.get('/', function(req, res) {
 		var uid = req.session.uid;
 		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
+			result[mdbScheme.C_BOXS] = cfilter.filterBoxHides(result[mdbScheme.C_BOXS], req.session.config);
 			res.render("index", {
 				it : {
 					utils: utils,
@@ -146,6 +148,7 @@ module.exports = function(app){
 				//si existe la categoria, cargar los boxs que pertenezcan a ella.
 				//TODO
 				dbManager.mQuery(req.app.locals.db, models.CAT_QUERY(uid, cat), function(result){
+					result[mdbScheme.C_BOXS] = cfilter.filterBoxHides(result[mdbScheme.C_BOXS], req.session.config);
 					res.render("index", {
 						it : {
 							utils: utils,
