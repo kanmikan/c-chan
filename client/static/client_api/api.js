@@ -35,6 +35,9 @@ function post(formdata, url, before, callback){
 	$.ajax({
 		type: 'POST',
 		url: url,
+		headers: {
+			"X-CSRF-Token": element("_csrf_token").value
+		},
 		data: formdata,
 		processData: false,
 		contentType: false,
@@ -54,6 +57,9 @@ function postForm(formdata, url, before, callback){
 	$.ajax({
 		type: 'POST',
 		url: url,
+		headers: {
+			"X-CSRF-Token": element("_csrf_token").value
+		},
 		data: formdata,
 		beforeSend: function() {
 			before();
@@ -242,6 +248,17 @@ function hashScroll(hash){
 		document.documentElement.scrollTo({top: offset, behavior: 'smooth'});
 		elem.classList.add("jump");
 	}
+}
+
+function parseFormData(formdata){
+	console.log(formdata);
+	let fdata = formdata.split("&");
+	let obj = {};
+	for (var i=0; i<fdata.length; i++){
+		let v = fdata[i].split("=");
+		obj[v[0]] = v[1];
+	}
+	return obj;
 }
 
 function isGif(url){

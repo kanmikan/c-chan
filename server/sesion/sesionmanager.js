@@ -5,6 +5,7 @@ const dbManager = require('../db/dbmanager.js');
 const mdbScheme = require('../db/models/mdbscheme.js');
 const jsonScheme = require('../db/models/jsonscheme.js');
 const utils = require('../utils.js');
+const csrf = require('simple-csrf');
 
 var USER_FLAG = [];
 
@@ -19,6 +20,7 @@ function create(app){
 		cookie: {maxAge: expires}
 	});
 	app.use(sesion);
+	app.use(csrf());
 	app.use(createUser);
 	return sesion;
 }

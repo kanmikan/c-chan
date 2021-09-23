@@ -47,7 +47,7 @@ module.exports = function(app){
 	});
 	
 	//RUTA: crea un nuevo box.
-	app.post('/api/new', pass.check, pass.checkBoxFields, async function(req, res) {
+	app.post('/api/new', pass.check, pass.checkBoxFields,  async function(req, res) {
 		let cat = req.fields.cat;
 		let title = req.fields.title;
 		let subtitle = req.fields.subtitle;

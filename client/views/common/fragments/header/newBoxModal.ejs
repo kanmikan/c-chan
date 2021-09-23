@@ -1,6 +1,7 @@
 <form class="modalBox createVox show" id="createVox" enctype="multipart/form-data" action="/api/new" method="POST" aria-modal="true" role="dialog">
 	<input id="bimg" name="img" type="hidden" value="">
 	<input id="bvid" name="vid" type="hidden" value="">
+	<input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= it.sesion.simpleCsrfToken %>">
 	
 	<div class="createVox-container">
 		<div class="createVox-titlebar">
