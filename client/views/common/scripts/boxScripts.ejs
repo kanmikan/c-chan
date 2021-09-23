@@ -5,6 +5,7 @@
 	var COMS = []; //buffer de comentarios.
 	var USERDATA = "<%= (it.data.users[0]) ? it.data.users[0].permisos : [] %>".split(",");
 	var ASYNC_COMMENTS = <%= it.renderConfig.ASYNC_COMMENTS %>;
+	var AUTOLOAD_COMMENTS = false;
 	
 	/* LISTENERS DEL SOCKETIO */
 	$(function () {
@@ -19,7 +20,11 @@
 			
 			if (TOKEN != data.token){
 				//si no es el emisor, mostrar el boton.
-				element("commentLoadMore").classList.remove("hidden");
+				if (!AUTOLOAD_COMMENTS){
+					element("commentLoadMore").classList.remove("hidden");
+				} else {
+					element("commentLoadMore").click();
+				}
 			} else {
 				<% if (it.renderConfig.ASYNC_COMMENTS){ %>
 					//test: no renderizar buffer, y eliminar el push del comentario en cuestion.

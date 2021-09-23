@@ -378,6 +378,16 @@ $(document).ready(function() {
 	}
 	
 	function onScroll(){
+		//evento: calcula si debe mostrar el boton de ir arriba o no
+		if ($("#commentList").children().length > 10){
+			var y = $(this).scrollTop();
+			if (y > Math.round($(document).height() * 15 / 100)) {
+				$('#attach-goup').removeClass("hidden");
+			} else {
+				$('#attach-goup').addClass("hidden");
+			}
+		}
+		
 		//evento: al llegar al final
 		if ($(window).height()+$(window).scrollTop() > (getDocumentHeight() - 100)){
 			if (complete){
@@ -438,6 +448,31 @@ $(document).ready(function() {
 				$(e.target).parent().addClass("hided");
 				applyConfig("boxhides_add:" + bid);
 			}
+		});
+	}
+	
+	//eventos: opciones en los temas.
+	if (element("option-godown")){
+		element("option-godown").addEventListener("click", function(e){
+			document.documentElement.scrollTo({top: document.documentElement.scrollHeight, behavior: 'smooth'});
+		});
+	}
+	if (element("attach-goup")){
+		element("attach-goup").addEventListener("click", function(e){
+			var fistElementPosition = $(".commentList").position().top - 150;
+			document.documentElement.scrollTo({top: fistElementPosition, behavior: 'smooth'});
+		});
+	}
+	if (element("option-imglist")){
+		element("option-imglist").addEventListener("click", function(e){
+			element("attachList").classList.toggle("hidden");
+		});
+	}
+	if (element("option-autoload")){
+		element("option-autoload").addEventListener("click", function(e){
+			//Lloran los gordos anti operadores ternarios kjj
+			AUTOLOAD_COMMENTS = (AUTOLOAD_COMMENTS) ? false : true;
+			(AUTOLOAD_COMMENTS)? element("option-autoload").classList.add("hided") : element("option-autoload").classList.remove("hided");
 		});
 	}
 	

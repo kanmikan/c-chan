@@ -177,8 +177,8 @@ html[data-theme='darkmode']{
     --homebar-tarjeta-background: #ffffff;
     --home-menu-background: white;
     --home-menu-element-hover: #c3c3c3;
-    --goup: #f5f5f5;
-    --goup-hover: #ffffff;
+	--goup: #2a2a2a;
+	--goup-hover: #323232;
     --rawAttach-background: #dcdcdc;
     --op: #3f51b5;
     --poll: #2196f3;
@@ -1754,15 +1754,6 @@ textarea{
     line-height: 1.5;
 }
 
-.gotop {
-	position: fixed;
-    bottom: 0px;
-	right: 15px;
-    background: var(--goup);
-	padding: 10px 13px 10px 13px;
-    margin: 10px 0px 10px 0px;
-}
-
 .gotop:hover {
 	background: var(--goup-hover);
 }
@@ -2036,6 +2027,8 @@ textarea.commentTextarea {
 }
 
 .commentsVoxCount {
+	display: flex;
+	justify-content: center;
     padding: 15px;
     background-color: var(--bar1);
     color: var(--text-voxCount);
@@ -2347,15 +2340,19 @@ span.greentext {
     position: relative;
 }
 
-span.attachsVox {
-    position: absolute;
-    right: 10px;
-    font-size: 18px;
-    display: flex;
-    top: 0;
-    cursor: pointer;
-    height: 100%;
-    align-items: center;
+ul.attachsVox {
+	margin: 0px;
+	padding: 0px;
+	display: flex;
+	list-style: none;
+	position: absolute;
+	right: 15px;
+}
+
+ul.attachsVox i {
+	margin-left: 12px;
+	font-size: 1.3rem;
+	cursor: pointer;
 }
 
 .nimgPreview {
@@ -2650,6 +2647,48 @@ input:checked + .slider:before {
 
 .hided {
 	color: #ff0000;
+}
+
+.attachList {
+    margin: 0 16px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.attachList .attach {
+    flex-basis: 25%;
+    position: relative;
+    display: flex;
+    cursor: pointer;
+}
+
+.attach img {
+    width: 100%;
+	object-fit: cover;
+    border: 1px solid white;
+    filter: brightness(90%);
+}
+
+.attachType {
+    position: absolute;
+    right: 0;
+    margin: 16px;
+    color: white;
+    font-size: 18px;
+    text-shadow: 1px 1px #101010ad;
+}
+
+.attach:hover img {
+    filter: brightness(100%);
+}
+
+.gotop {
+	position: fixed;
+    bottom: 0px;
+	right: 15px;
+    background: var(--goup);
+	padding: 10px 13px 10px 13px;
+    margin: 10px 0px 10px 0px;
 }
 
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */

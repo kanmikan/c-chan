@@ -2,21 +2,22 @@
 <!-- header de lista de comentarios -->
 <div class="commentsVoxCount"> 
 	<span class="commentsVoxText" id="commentsVoxText">Comentarios (<span id="voxComments"><%= it.data.coms.length %></span>)</span>
-	<span class="attachsVox">
-		<i class="fas fa-folder" id="attach-ilist"></i>
-		<i class="fas fa-arrow-down" id="attach-gdown" style="margin-left: 10px;"></i>
-	</span> 
+	<ul class="attachsVox">
+		<li><i class="fas fa-bullseye" id="option-autoload"></i></li> 
+		<li><i class="fas fa-folder" id="option-imglist"></i></li> 
+		<li><i class="fas fa-arrow-down" id="option-godown"></i></li>
+	</ul> 
 </div>
 
 <div class="commentsVoxCount loadmore unselect hidden" id="commentLoadMore">
 	<span class="loadcontent">Cargar <span id="comBufferNumber">x</span></span>
 </div>
 
-<div class="attachList hide" id="attachList">
+<div class="attachList hidden" id="attachList">
 <% it.utils.filterComMedia(it.data.coms).forEach(function(com) { %>
 	<% if (com.img) { %>
-		<a class="attach" target="_BLANK" href="<%= com.img_url %>">
-			<img data-attach="<%= com.cid %>" src="<%= com.img_url %>" alt=""><div class="attachType"><i class="fas fa-image"></i></div>
+		<a class="attach" target="_BLANK" href="<%= com.img.full %>">
+			<img data-attach="<%= com.cid %>" src="<%= com.img.preview %>" alt=""><div class="attachType"><i class="fas fa-image"></i></div>
 		</a>
 	<% } %>
 <% }); %>
@@ -30,4 +31,4 @@
 </div>
 
 <div style="margin: 20px;"></div>
-<div class="commentsVoxCount gotop hidden" id="attach-gup"><span style="width: 100%"><i class="fas fa-arrow-up"></i></span></div>
+<div class="commentsVoxCount gotop hidden" id="attach-goup"><span style="width: 100%"><i class="fas fa-arrow-up"></i></span></div>
