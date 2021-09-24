@@ -39,18 +39,14 @@ function checkUser(req, res, next){
 				req.session.config = user[0].extra.config;
 				next();
 			} else {
-				//si no existe el usuario con el uid, crear usuario.
+				//si no existe el usuario con el uid, crear un usuario efimero.
 				let json = genUser(uid, sid);
-				
-				//insertar el usuario a la base de datos de manera asincronica.
-				//dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){});
-				console.log("[Sesion] Nuevo usuario anonimo efimero generado.");
-				
 				//añadir al uid dentro del flag para que no haga otra query al pedo.
 				cacheUser({sid: sid, data: json});
 				//configurar en el middleware.
 				req.session.uid = uid;
 				req.session.config = json.extra.config;
+				console.log("[Sesion] Nuevo usuario efimero generado.");
 				next();
 			}
 		});
@@ -65,11 +61,13 @@ function genUser(uid, sid){
 	json.sid = sid;
 	json.extra = {
 		config: {
-			darkmode: false, //tema claro/oscuro.
+			darkmode: true, //tema claro/oscuro.
+			autoloadgifs: true, //[placeholder] define si los gifs se van a cargar automaticamente o si se usará el thumbnail estático.
 			boxhides: [], //lista de boxs ocultos
 			cathides: [], //lista de categorias ocultas.
 			favs: [], //lista de favoritos.
-			comus: [] //lista de comunidades suscritas.
+			comus: [], //lista de comunidades suscritas.
+			blacklist: [] //[placeholder] define una lista negra de palabras (o users), (nota: esto podria exponer el uid)
 		}
 	};
 	return json;

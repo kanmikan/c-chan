@@ -6,7 +6,8 @@
     <div class="modalContent">
         <ul class="config">
 			<li>
-                <div class="configTitle">Tema oscuro</div>
+				<div class="optionIcon"><i class="fas fa-moon" aria-hidden="true"></i></div>
+                <div class="optionText">Modo Nocturno</div>
                 <div class="configToggle">
                     <label class="switch">
 					<% if (it.sesion.config && it.sesion.config.darkmode) { %>
@@ -18,12 +19,38 @@
                     </label>
                 </div>
             </li>
+			<li style="padding: 15px 0px;">
+				<div class="optionIcon"><i class="fas fa-user" aria-hidden="true"></i></div>
+				<div class="optionText" style="cursor:pointer">Gestionar Sesion</div>
+            </li>
+			<li style="display:inline">
+				<div class="visibleCategories" id="visibleCategories">
+					<div class="optionIcon"><i class="fas fa-dice-d6" aria-hidden="true"></i></div>
+					<div class="optionText">Categorias visibles</div>
+					<div class="optionToggle"><i class="fas fa-plus"></i></div>
+				</div>
+				
+				<ul class="configCategoriesList hidden" id="configCategoriesList">
+					<% it.data.cats.forEach(function(categoria){ %>
+						<li>
+							<div class="optionText"><%= categoria.content.name %></div>
+							 <div class="configToggle">
+								<label class="switch">
+									<% if (it.sesion.config.cathides.includes(categoria.catid)) { %>
+										<input type="checkbox" class="catlistCheckbox" data-catid="<%= categoria.catid %>">
+									<% } else { %>
+										<input type="checkbox" class="catlistCheckbox" data-catid="<%= categoria.catid %>" checked="true">
+									<% } %>
+									
+									<span class="slider"></span>
+								</label>
+							</div>
+						</li>
+					<% }); %>
+				</ul>
+			</li>
 
 <!--
-			<li style="" data-function="visibleCategories">
-				<div class="optionIcon"><i class="fas fa-dice-d6" aria-hidden="true"></i></div>
-				<div class="optionText">Categorias visibles</div>
-			</li>
 			<li>
 				<div class="configTitle">Home clásica</div>
 				<div class="configToggle">
@@ -46,6 +73,7 @@
 <script>
 	/* EVENTOS */
 	//EVENTO: al cambiar el switch del darkmode.
+	//TODO: cambiar a javascript nativo.
 	$("#dkswitch").on('change', function() {
 		if ($(this).is(':checked')) {
 			darkmode(true);
@@ -53,10 +81,27 @@
 			darkmode(false);
 		}
 	});
-
+	
+	//EVENTO: manipular switch
+	$(".catlistCheckbox").on('change', function() {
+		let catid = $(this).data("catid");
+		if ($(this).is(':checked')) {
+			applyConfig("cathides_del:" + catid);
+		} else {
+			applyConfig("cathides_add:" + catid);
+		}
+		console.log("Configuracion Aplicada.");
+	});
+	
+	//EVENTO: abrir lista de categorias.
+	document.getElementById("visibleCategories").addEventListener("click", function(e){
+		document.getElementById("configCategoriesList").classList.toggle("hidden");
+	});
+	
 	/* FUNCIONES */
 	function darkmode(toggle){
 		applyConfig("darkmode:" + toggle);
 		html.dataset.theme = (toggle) ? "darkmode" : "";
 	}
+	
 </script>
