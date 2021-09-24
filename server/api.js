@@ -17,7 +17,7 @@ const formidable = require('express-formidable');
 module.exports = function(app){
 	
 	//API: subida de imagenes
-	app.post('/api/upload', pass.check, function(req, res) {
+	app.post('/api/upload', pass.check, sesionManager.checkSesion, function(req, res) {
 		let filedata = req.files.fileData;
 		let mimetype = filedata.type.split("/");
 		let size = filedata.size;
@@ -39,7 +39,7 @@ module.exports = function(app){
 	});
 	
 	//API: manipulacion de urls
-	app.post('/api/uplink', pass.check, function(req, res) {
+	app.post('/api/uplink', pass.check, sesionManager.checkSesion, function(req, res) {
 		let link = req.fields.link;
 		uploadManager.uploadLink(link, function(result){
 			res.json(result);
@@ -47,7 +47,7 @@ module.exports = function(app){
 	});
 	
 	//RUTA: crea un nuevo box.
-	app.post('/api/new', pass.check, pass.checkBoxFields,  async function(req, res) {
+	app.post('/api/new', pass.check, pass.checkBoxFields, sesionManager.checkSesion,  async function(req, res) {
 		let cat = req.fields.cat;
 		let title = req.fields.title;
 		let subtitle = req.fields.subtitle;
@@ -110,7 +110,7 @@ module.exports = function(app){
 	});
 	
 	//RUTA: nuevo comentario.
-	app.post('/api/com', pass.check, pass.checkComFields, async function(req, res) {
+	app.post('/api/com', pass.check, pass.checkComFields, sesionManager.checkSesion, async function(req, res) {
 		let bid = req.fields.bid;
 		let content = req.fields.content;
 		let img = req.fields.img.split(";");
@@ -183,6 +183,36 @@ module.exports = function(app){
 		
 		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
 		res.json({success: true, data: json});
+	});
+	
+	//API: login de usuario.
+	//TODO: comprobacion de credenciales.
+	app.post('/api/login', function(req, res) {
+		let userid = req.fields.userid;
+		let password = req.fields.password;
+		
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: userid}, "", async function(user){
+			if (user[0]){
+				//leer y aplicar usuario a la sesion actual.
+				await dbManager.pushDB(req.app.locals.db, mdbScheme.C_ADM, {uid: user[0].uid}, {$set: {sid: req.session.id}});
+				req.session.uid = user[0].uid;
+				req.session.config = user[0].extra.config;
+				sesionManager.disposeUserCache(req.session.id);
+				
+				console.log("[Sesion] Usuario logeado.");
+				res.json({success: true, data: "logueado."});
+			} else {
+				//crear usuario
+				let json = sesionManager.genUser(userid, req.session.id);
+				dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){
+					req.session.uid = json.uid;
+					req.session.config = json.extra.config;
+				});
+				
+				console.log("[Sesion] Usuario creado.");
+				res.json({success: true, data: json});
+			}
+		});
 	});
 	
 	//MUESTRA: obtener todos los boxs, ordenados por ultimo bump y stickys
@@ -320,7 +350,7 @@ module.exports = function(app){
 	});
 	
 	//API: modificar las preferencias del usuario.
-	app.post('/api/config', pass.check, function(req, res) {
+	app.post('/api/config', pass.check, sesionManager.checkSesion, function(req, res) {
 		let data = req.fields.data;
 		let options = data.split(":");
 		let sesiondata = sesionManager.getUserData(req.session.id)[0].data;

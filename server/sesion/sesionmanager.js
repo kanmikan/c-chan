@@ -21,11 +21,11 @@ function create(app){
 	});
 	app.use(sesion);
 	app.use(csrf());
-	app.use(createUser);
+	app.use(checkUser);
 	return sesion;
 }
 
-function createUser(req, res, next){
+function checkUser(req, res, next){
 	//aca se compara el uid del usuario
 	let uid = utils.randomString(32); //id unico generado para el uid.
 	let sid = req.session.id;
@@ -40,21 +40,12 @@ function createUser(req, res, next){
 				next();
 			} else {
 				//si no existe el usuario con el uid, crear usuario.
-				let json = utils.clone(jsonScheme.USER_SCHEME);
-				json.uid = uid;
-				json.sid = sid;
-				json.extra = {
-					config: {
-						darkmode: true, //tema claro/oscuro.
-						boxhides: [], //lista de boxs ocultos
-						cathides: [], //lista de categorias ocultas.
-						favs: [], //lista de favoritos.
-						comus: [] //lista de comunidades suscritas.
-					}
-				};
+				let json = genUser(uid, sid);
+				
 				//insertar el usuario a la base de datos de manera asincronica.
-				dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){});
-				console.log("[Sesion] Nuevo usuario anonimo generado.");
+				//dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){});
+				console.log("[Sesion] Nuevo usuario anonimo efimero generado.");
+				
 				//añadir al uid dentro del flag para que no haga otra query al pedo.
 				cacheUser({sid: sid, data: json});
 				//configurar en el middleware.
@@ -66,6 +57,34 @@ function createUser(req, res, next){
 	} else {
 		next();
 	}
+}
+
+function genUser(uid, sid){
+	let json = utils.clone(jsonScheme.USER_SCHEME);
+	json.uid = uid;
+	json.sid = sid;
+	json.extra = {
+		config: {
+			darkmode: false, //tema claro/oscuro.
+			boxhides: [], //lista de boxs ocultos
+			cathides: [], //lista de categorias ocultas.
+			favs: [], //lista de favoritos.
+			comus: [] //lista de comunidades suscritas.
+		}
+	};
+	return json;
+}
+
+function checkSesion(req, res, next){
+	let sid = req.session.id;
+	dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {sid: sid}, "", function(user){
+		if (!user[0]){
+			console.log("[Sesion] Usuario efimero detectado, redirigir al logeo.");
+			res.json({success: false, data: {redirect: true, to: "/login"}});
+		} else {
+			next();
+		}
+	});
 }
 
 function getUserData(sid){
@@ -83,4 +102,4 @@ function cacheUser(sid){
 	}
 }
 
-module.exports = {create, getUserData, disposeUserCache};
+module.exports = {create, getUserData, disposeUserCache, checkSesion, genUser};

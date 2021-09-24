@@ -25,6 +25,21 @@ module.exports = function(app){
 		});
 	});
 	
+	/* RUTA DE LOGEO */
+	app.get('/login', function(req, res) {
+		var uid = req.session.uid;
+		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
+			res.render("login", {
+				it : {
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session,
+					data: result
+				}
+			});
+		});
+	});
+	
 	/* RUTA DE LOS BOXS */
 	app.get('/tema/:bid', function(req, res) {
 		var uid = req.session.uid;

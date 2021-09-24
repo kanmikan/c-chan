@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	<%- include('./common/head', it); %>
+	</head>
+	<body class="loginContainer">
+	<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
+	<script src="/client_api/api.js" type="text/javascript"></script>
+	<%- include('./common/scripts/admScripts', it); %>
+		<main class="login">
+			<form id="loginForm" action="/api/login" method="POST" enctype="multipart/form-data">
+				<h5>Para usar cchan necesitas generar una sesion, podes escribir un <b>ID</b> y una contraseña o generar un <b>ID</b> automaticamente.</h5>
+				
+				<input type="text" class="modalInput" name="userid" id="userid" placeholder="ID del Usuario" value="<%= it.sesion.uid %>">
+				<input type="text" class="modalInput" name="password" id="password" placeholder="Contraseña">
+				<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">
+	
+				<h5>La contraseña es opcional pero puede servir para que puedas recuperar tu sesion en cualquier dispositivo.</h5>
+				
+				<div class="loginFormButtons">
+					<button class="buttonPress" id="loginButton">
+						<i id="loadingCom" class="fas fa-circle-notch fa-spin hidden"></i>
+						<span id="ctext">Iniciar Sesion</span>
+					</button>
+				</div>
+			</form>
+		</main>
+	</body>
+	<%- include('./common/footer', it); %>
+</html>
+
+<script>
+	if (element("loginButton")){
+		element("loginButton").addEventListener("click", function(e){
+			e.preventDefault();
+			let userid = element("userid").value;
+			let password = element("password").value;
+			let formdata = new FormData();
+			
+			formdata.append("userid", userid);
+			formdata.append("password", password);
+			
+			post(formdata, "/api/login", function(){}, function(result){
+				if (result.success){
+					window.location.replace("/");
+				}
+			});
+			
+		});
+	}
+</script>
+
+<style>
+	form h5 {
+		margin: 10px;
+		font-weight: inherit;
+		font-size: 0.9rem;
+	}
+
+	.loginContainer {
+		position: inherit;
+		display: flex;
+		justify-content: center;
+		margin-top: 20vh;
+	}
+	
+	.login {
+		width: 25rem;
+		height: auto;
+		background: var(--modalbox-background);
+	}
+	
+	.login form {
+		padding: 10px;
+		border: 1px solid var(--modal-border);
+	}
+
+	.login input {
+		width: 94%;
+		padding: 10px;
+		margin-bottom: 10px;
+	}
+	
+	.loginFormButtons {
+		display: flex;
+		justify-content: center;
+	}
+	
+	.loginFormButtons button {
+		margin-right: 10px;
+	}	
+</style>

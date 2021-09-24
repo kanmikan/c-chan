@@ -350,8 +350,10 @@ function applyConfig(query){
 	//opcion_del:valor = eliminar elemento de lista
 	//opcion:valor = actualizar elemento
 	formData.append("data", query);
-	post(formData, "/api/config", function(){}, function(response){
-		console.log(response);
+	post(formData, "/api/config", function(){}, function(result){
+		if (!result.success){
+			(result.data.redirect) ? window.location.replace(result.data.to) : alert(result.data);
+		}
 	});
 }
 
@@ -731,7 +733,7 @@ $(document).ready(function() {
 							//TODO: mostrar mensaje de baneo con toda la info necesaria.
 							alert(JSON.stringify(result.data.bandata));
 						} else {
-							alert(result.data);
+							(result.data.redirect) ? window.location.replace(result.data.to) : alert(result.data);
 						}
 					}
 				});
@@ -755,7 +757,7 @@ $(document).ready(function() {
 						if (result.data.banned){
 							alert(JSON.stringify(result.data.bandata));
 						} else {
-							alert(result.data);
+							(result.data.redirect) ? window.location.replace(result.data.to) : alert(result.data);
 						}
 					}
 				});
@@ -782,7 +784,7 @@ $(document).ready(function() {
 						element("bimg").value = img;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : alert(JSON.stringify(data.data));
+						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? window.location.replace(data.data.to) : alert (data.data));
 					}
 					element("btext").classList.remove("hidden");
 					element("bspin").classList.add("hidden");
@@ -802,7 +804,7 @@ $(document).ready(function() {
 						element("bvid").value = vid;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : alert(JSON.stringify(data.data));
+						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? window.location.replace(data.data.to) : alert (data.data));
 					}
 					element("btext").classList.remove("hidden");
 					element("bspin").classList.add("hidden");
@@ -837,7 +839,7 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : alert(JSON.stringify(data.data));
+						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? window.location.replace(data.data.to) : alert (data.data));
 					}
 					
 					element("loadingCom").classList.add("hidden");
@@ -859,7 +861,7 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : alert(JSON.stringify(data.data));
+						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? window.location.replace(data.data.to) : alert (data.data));
 					}
 					element("loadingCom").classList.add("hidden");
 					element("ctext").classList.remove("hidden");
