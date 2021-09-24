@@ -100,9 +100,8 @@ module.exports = function(app){
 		}
 		
 		let userdata = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.uid}, "", () => {});
-		if (userdata[0]){
-			json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};
-		}
+		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};}
+		
 		dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
 			live.sendData("new", {kind: "newbox", data: pass.filterProtectedUID(json)});
 			res.json({success: true, data: {url: "/tema/" + bid}});
@@ -137,8 +136,8 @@ module.exports = function(app){
 		}
 		json.content.body = parser.parseComInput(DB, cid, req.session.uid, content);
 		
-		let userdata = sesionManager.getUserData();
-		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].nick, rango: userdata[0].rango, color: userdata[0].color};}
+		let userdata = sesionManager.getUserData(req.session.id);
+		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};}
 		
 		let coms = await dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", () => {});
 		await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length, "date.bump": timestamp}});
@@ -180,7 +179,6 @@ module.exports = function(app){
 			/* fin de notificacion */
 		}
 		live.sendData("new", {kind: "newcom", data: pass.filterProtectedUID(json)});
-		
 		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
 		res.json({success: true, data: json});
 	});
