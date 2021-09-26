@@ -198,6 +198,12 @@ html[data-theme='darkmode']{
 /* CODIGO DE VOXEDRIP.CSS ADAPTADO */
 /* RECICLADO COMO ESQUELETO BASE */
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 nav {
 	display: flex;
 	background: var(--navbar-background);
@@ -861,14 +867,13 @@ a.selectedVox.box .over {border-color: #f4a833 !important;background: #fff8f866;
 
 .modalBox.createVox {
     width: 420px;
-    /*padding-top: 10px;*/
 }
 
 .selectAttach {
     flex-basis: 100%;
     display: flex;
-    padding: 4px 16px;
-    margin-left: 4px;
+	padding: 4px 9px;
+	margin-left: 6px;
 }
 
 .selectAttach div{
@@ -947,7 +952,7 @@ a.selectedVox.box .over {border-color: #f4a833 !important;background: #fff8f866;
 .polls input {
     margin: 0 !important;
     margin-bottom: 4px;
-	width: 95%;
+	width: 99%;
 }
 
 .polls input:first-child {
@@ -959,18 +964,18 @@ a.selectedVox.box .over {border-color: #f4a833 !important;background: #fff8f866;
 }
 
 .subtitle {
-	width: 86%;
-    margin: 2px 16px;
-    font-size: 14px;
-    background: var(--button2);
-    font-weight: 600;
-    border-radius: 4px;
-    padding: 8px 12px;
-    color: var(--button2-color);
-    border: 1px solid var(--button2-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+	width: 90%;
+	margin: 2px 16px;
+	font-size: 14px;
+	background: var(--button2);
+	font-weight: 600;
+	border-radius: 4px;
+	padding: 8px 12px;
+	color: var(--button2-color);
+	border: 1px solid var(--button2-border);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 span.subtitleText {
@@ -1748,19 +1753,18 @@ html {
 }
 
 textarea.newVoxContent {
-    height: 120px;
-	width: 86%;
-    max-width: 86%;
-    font-size: 14px;
+	height: 120px;
+	width: 90%;
+	min-width: 90%;
+	font-size: 14px;
 }
 
 .field {
-	width: 86%;
-	max-width: 86%;
+	width: 90%;
 }
 
 textarea{
-    line-height: 1.5;
+	line-height: 1.5;
 }
 
 .gotop:hover {
@@ -2398,7 +2402,7 @@ ul.attachsVox i {
 }
 
 .fieldv2 {
-	height: 15px;
+	/*height: 15px;*/
     font-size: 13px !important;
 }
 
@@ -3032,11 +3036,8 @@ input:checked + .slider:before {
     }
 	
 	.selectAttach {
-		margin-left: 0px;
-		margin-right: 4px;
-	}
-	.polls input {
-		width: 93%;
+		margin: 0px;
+		padding: 5px 15px;
 	}
 }
 

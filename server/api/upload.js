@@ -54,14 +54,41 @@ function uploadLink(url, callback){
 		}
 		callback({success: true, data: {video: true, type: type, raw: url, thumb: youtube.genYoutubeThumb(url, "mq")}});
 	} else if (utils.isImg(url)){
+		
 		//aca manipular la imagen, subir al server de preferencia, etc.
-		link2localStore(url, function(data){
-			if (data.success){
-				callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
-			} else {
-				callback({success: false, data: null});
-			}
-		});
+		switch(sConfig.IMG_SERVER){
+			case 0:
+				//subida local
+				link2localStore(url, function(data){
+					if (data.success){
+						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+					} else {
+						callback({success: false, data: null});
+					}
+				});
+			break;
+			case 1:
+				//imgur
+				imgurURLUpload(url, function(data){
+					if (data.success){
+						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+					} else {
+						callback({success: false, data: null});
+					}
+				});
+			break;
+			case 2:
+				//imgbb
+				callback({success: false, data: "-no implementado-"});
+			break;
+			case 3:
+				//cloudinary
+				cloudy.uploadImg(url, function(data){
+					callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+				});
+			break;
+		}
+		
 	} else if (utils.isVideo(url)){
 		//si es un link directo a un video, linkearlo con un thumbnail genérico.
 		//desactivado por ahora porque algunos links descargan el video en vez de reproducirlo.
@@ -178,6 +205,15 @@ function cloudyUpload(file, callback){
 			callback(data);
 		});
 	}
+}
+
+function imgurURLUpload(url, callback){
+	imgur.uploadUrl(url).then((json) => {
+		let thumb = genImgurThumb(json.link, sConfig.IMGUR_THUMBNAIL_QUALITY);
+		callback({success: true, data: {link: json.link, thumb: thumb}});
+	}).catch((err)=> {
+		callback({success: false, data: err.message});
+	});
 }
 
 function imgurUpload(file, callback){
