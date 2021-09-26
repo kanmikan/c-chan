@@ -55,9 +55,10 @@ function checkUser(req, res, next){
 	}
 }
 
-function genUser(uid, sid){
+function genUser(uid, pass, sid){
 	let json = utils.clone(jsonScheme.USER_SCHEME);
 	json.uid = uid;
+	json.pass = pass;
 	json.sid = sid;
 	json.extra = {
 		config: {

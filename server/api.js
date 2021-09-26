@@ -99,7 +99,7 @@ module.exports = function(app){
 			json.content.extra.poll = {};
 		}
 		
-		let userdata = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.uid}, "", () => {});
+		let userdata = sesionManager.getUserData(req.session.id);
 		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};}
 		
 		dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
@@ -184,31 +184,42 @@ module.exports = function(app){
 	});
 	
 	//API: login de usuario.
-	//TODO: comprobacion de credenciales.
+	//TODO: comprobacion de credenciales, sanitizado
 	app.post('/api/login', function(req, res) {
-		let userid = req.fields.userid;
-		let password = req.fields.password;
+		let userid = req.fields.userid.trim();
+		let password = req.fields.password.trim();
 		
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: userid}, "", async function(user){
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {$or: [{uid: userid}, {nick: new RegExp(userid, "i")}]}, "", async function(user){
 			if (user[0]){
-				//leer y aplicar usuario a la sesion actual.
-				await dbManager.pushDB(req.app.locals.db, mdbScheme.C_ADM, {uid: user[0].uid}, {$set: {sid: req.session.id}});
-				req.session.uid = user[0].uid;
-				req.session.config = user[0].extra.config;
-				sesionManager.disposeUserCache(req.session.id);
-				
-				console.log("[Sesion] Usuario logeado.");
-				res.json({success: true, data: "logueado."});
+				//existe el usuario, comparar contraseña.
+				//TODO: esto tendría que recibir la contraseña encriptada y bla bla bla..
+				if (password !== user[0].pass){
+					res.json({success: false, data: "Contraseña incorrecta."});
+				} else {
+					//aplicar usuario a la sesion actual.
+					//TODO: añadir soporte de multiples sesiones del mismo usuario.
+					await dbManager.pushDB(req.app.locals.db, mdbScheme.C_ADM, {uid: user[0].uid}, {$set: {sid: req.session.id}});
+					req.session.uid = user[0].uid;
+					req.session.config = user[0].extra.config;
+					sesionManager.disposeUserCache(req.session.id);
+					console.log("[Sesion] Usuario logeado.");
+					res.json({success: true, data: "logueado."});
+				}
 			} else {
 				//crear usuario
-				let json = sesionManager.genUser(userid, req.session.id);
-				dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){
-					req.session.uid = json.uid;
-					req.session.config = json.extra.config;
-				});
-				
-				console.log("[Sesion] Usuario creado.");
-				res.json({success: true, data: json});
+				//primero, comprobar que el userid sea un id valido de 32 caracteres.
+				if (userid.trim().length !== 32){
+					res.json({success: false, data: "ID invalido, tiene que tener 32 caracteres."});
+				} else {
+					let json = sesionManager.genUser(userid, password, req.session.id);
+					dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){
+						req.session.uid = json.uid;
+						req.session.config = json.extra.config;
+						sesionManager.disposeUserCache(req.session.id);
+					});
+					console.log("[Sesion] Usuario creado.");
+					res.json({success: true, data: json});
+				}
 			}
 		});
 	});
@@ -402,9 +413,19 @@ module.exports = function(app){
 
 		//TEST: añadir categorias a mikandbv2
 		let defCategories = [
-			["oficial", "oficial", "Oficial", "Temas oficiales", "/assets/cat/icon/oficial.jpg", "/assets/cat/oficial.jpg"],
+			["oficial", "oficial", "Oficial", "Temas oficiales", "/assets/cat/icon/oficial.jpg", "/assets/cat/oficial.jpg", "ADMONLY"],
 			["off", "off", "Off Topic", "Temas Mixtos", "/assets/cat/icon/off.jpg", "/assets/cat/off.jpg"],
-			["anm", "anm", "Anime", "Categoría general sobre animacion", "/assets/cat/icon/anm.jpg", "/assets/cat/anm.jpg"]
+			["anm", "anm", "Anime", "Categoría general sobre animacion", "/assets/cat/icon/anm.jpg", "/assets/cat/anm.jpg"],
+			["man", "man", "Manga", "Categoría general sobre manga", "/assets/cat/icon/man.jpg", "/assets/cat/man.jpg"],
+			["art", "art", "Arte y dibujo", "Categoría general sobre arte, dibujo e imagenes digitales", "/assets/cat/icon/art.jpg", "/assets/cat/art.jpg"],
+			["gmr", "gmr", "Juegos", "Categoria de temática gamer", "/assets/cat/icon/gmr.jpg", "/assets/cat/gmr.jpg"],
+			["mus", "mus", "Música", "Categoría de temáticas musicales, instrumentos, etc.", "/assets/cat/icon/mus.jpg", "/assets/cat/mus.jpg"],
+			["lnk", "lnk", "Links", "Categoría de linkdumps, para compartir informacion variada.", "/assets/cat/icon/lnk.jpg", "/assets/cat/lnk.jpg"],
+			["3dm", "3dm", "Modelado 3D", "Categoría dedicada al diseño, arte y animacion en 3d", "/assets/cat/icon/3dm.jpg", "/assets/cat/3dm.jpg"],
+			["tec", "tec", "Tecnología", "Todo lo relacionado a informática y programación.", "/assets/cat/icon/tec.jpg", "/assets/cat/tec.jpg"],
+			["cnc", "cnc", "Ciencia", "Categoría relacionada al contenido academico/cientifico", "/assets/cat/icon/cnc.jpg", "/assets/cat/cnc.jpg"],
+			["cix", "cix", "Cine y Cultura", "Categoria sobre el material relacionado a lo occidental.", "/assets/cat/icon/cix.jpg", "/assets/cat/cix.jpg"],
+			["lit", "lit", "Literatura", "Categoría sobre libros y contenido literario general.", "/assets/cat/icon/lit.jpg", "/assets/cat/lit.jpg"]
 		];
 		
 		defCategories.forEach(function(category){
@@ -415,6 +436,10 @@ module.exports = function(app){
 			scheme.content.description = category[3];
 			scheme.content.media.icon = category[4];
 			scheme.content.media.image = category[5];
+			
+			if (category[6]){
+				scheme.state.push(category[6]);
+			}
 			
 			dbManager.insertDB(req.app.locals.db, "cats", scheme, function(){});
 			

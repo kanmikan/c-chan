@@ -3,6 +3,7 @@ const dbManager = require('../db/dbmanager.js');
 const mdbScheme = require('../db/models/mdbscheme.js');
 const sConfig = require('../config/serverconfig.js');
 const utils = require('../utils.js');
+const sesionManager = require('../sesion/sesionmanager.js');
 
 /* MIDDLEWARES */
 function check(req, res, next){
@@ -37,11 +38,19 @@ function checkComFields(req, res, next){
 
 /* UTILITARIOS */
 function boxFields(req, res, callback){
-	checkRecursiveRequest(req, res, mdbScheme.C_BOXS, sConfig.BOX_DELAY, function(rreq){
+	checkRecursiveRequest(req, res, mdbScheme.C_BOXS, sConfig.BOX_DELAY, async function(rreq){
 		if (rreq){
 			res.send(rreq);
 		} else {
-			if (!req.fields.cat || req.fields.cat.trim() === ""){
+			//obtener info del usuario y la categoria.
+			let userdata = sesionManager.getUserData(req.session.id)[0].data;
+			let catdata = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_CATS, {catid: req.fields.cat}, "", function(){});
+			
+			if (!userdata.permisos.includes("CREAR_BOX")){
+				callback({success: false, data: "No tienes permitido crear temas"});
+			} else if (catdata[0] && (catdata[0].state.includes("ADMONLY") && !userdata.permisos.includes("ADMIN"))){
+				callback({success: false, data: "Categoría restringida a la administracion."});
+			} else if (!req.fields.cat || req.fields.cat.trim() === ""){
 				callback({success: false, data: "Elige una categoria valida"});
 			} else if (!req.fields.title || req.fields.title.trim() === "") {
 				if (req.fields.title.trim().length < 5){
@@ -54,6 +63,7 @@ function boxFields(req, res, callback){
 			} else {
 				callback(null);
 			}
+			
 		}
 	})
 }
@@ -67,7 +77,10 @@ function comFields(req, res, callback){
 				if (tres){
 					callback(tres);
 				} else {
-					if (req.fields.img.trim() === "" && req.fields.vid.trim() === ""){
+					let userdata = sesionManager.getUserData(req.session.id)[0].data;
+					if (!userdata.permisos.includes("CREAR_COM")){
+						callback({success: false, data: "No tienes permitido comentar"});
+					} else if (req.fields.img.trim() === "" && req.fields.vid.trim() === ""){
 						if (req.fields.content.trim() === ""){
 							callback({success: false, data: "Escribe algo o sube una imagen."});
 						} else {

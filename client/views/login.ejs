@@ -9,13 +9,14 @@
 	<%- include('./common/scripts/admScripts', it); %>
 		<main class="login">
 			<form id="loginForm" action="/api/login" method="POST" enctype="multipart/form-data">
-				<h5>Para usar cchan necesitas generar una sesion, podes escribir un <b>ID</b> y una contraseña o generar un <b>ID</b> automaticamente.</h5>
+				<h5>Para usar cchan necesitas generar una sesion, podes escribir un <b>ID</b> o <b>Usuario</b> y una contraseña, o generar un <b>ID</b> automaticamente.</h5>
 				
 				<input type="text" class="modalInput" name="userid" id="userid" placeholder="ID del Usuario" value="<%= it.sesion.uid %>">
 				<input type="text" class="modalInput" name="password" id="password" placeholder="Contraseña">
 				<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">
 	
 				<h5>La contraseña es opcional pero puede servir para que puedas recuperar tu sesion en cualquier dispositivo.</h5>
+				<h5>La sesion abierta en otro dispositivo se invalidará</h5>
 				
 				<div class="loginFormButtons">
 					<button class="buttonPress" id="loginButton">
@@ -43,6 +44,9 @@
 			post(formdata, "/api/login", function(){}, function(result){
 				if (result.success){
 					window.location.replace("/");
+				} else {
+					console.log(result);
+					alert(result.data);
 				}
 			});
 			
