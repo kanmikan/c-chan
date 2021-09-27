@@ -2,8 +2,24 @@
 
 function genAnon(){
 	//se encarga de elegir que set de anons usar, dependiendo de variables como los dias festivos, etc.
-	return pickDefaultAnon();
+	return pickSVGAnon();
 	
+}
+
+//TODO: soporte de iconos animados.
+function pickSVGAnon(){
+	let anone = [
+		["ico,#FFCC33,#ffffff", 1], //amarillo
+		["ico,#006699,#ffffff", 1], //azul
+		["ico,#009933,#ffffff", 1], //verde
+		["ico,#CA0000,#ffffff", 1], //rojo
+		["/assets/anon/5.gif", 0.1], //multi
+		["/assets/anon/6.gif", 0.1], //invertido
+		["ico,#000000,#ffffff", 0.01], //black
+		["/assets/anon/5.gif", 0.001], //uff
+		["ico,#ffffff,#000000", 0.01] //white
+	];
+	return weightRandom(anone);
 }
 
 function pickDefaultAnon(){
@@ -18,7 +34,7 @@ function pickDefaultAnon(){
 		["/assets/anon/7.png", 0.01], //black
 		["/assets/anon/5.gif", 0.001], //uff
 		["/assets/anon/5.gif", 0.01] //white
-	]
+	];
 	return weightRandom(anone);
 }
 

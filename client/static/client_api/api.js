@@ -158,7 +158,16 @@ function boxRender(box){
 
 function commentRender(op, com){
 	//render de comentarios del lado del cliente.			
-	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar"><img class="avatar" src="${com.icon}" alt=""></div><div class="commentBody"><div class="commentMetadata"><div class="commentsTag unselect">`;
+	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar">`;
+	
+	let icon = com.icon.split(",");
+	if (icon[0] === "ico") {
+		cbody +=`<div class="anonIcon" style="background: ${icon[1]}"><div class="anonText" style="color: ${icon[2]}">ANON</div></div>`;
+	} else {
+		cbody +=`<img class="avatar" src="${com.icon}" alt="">`;
+	}
+	
+	cbody +=`</div><div class="commentBody"><div class="commentMetadata"><div class="commentsTag unselect">`;
 	if (op){
 		cbody += `<span class="commentTag op">OP</span>`;
 	}
