@@ -117,7 +117,7 @@ function getPollPercent(poll1, poll2){
 	var per = (poll1/total) * 100;
 	var per2 = (poll2/total) * 100;
 	return [Math.round(per) + "%", Math.round(per2) + "%"];
-} 
+}
 
 function parseCookies(raw){
 	let cookie = raw.split(";");

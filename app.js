@@ -2,19 +2,24 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const compression = require("compression");
-const formidable = require('express-formidable');
-const dbManager = require('./server/db/dbmanager.js');
-const sConfig = require('./server/config/serverconfig.js');
-const routes = require('./server/routes');
-const sesionManager = require('./server/sesion/sesionmanager.js');
-const live = require('./server/api/live.js');
-const cache = require('./server/db/cache.js');
+const minify = require("express-minify");
+const formidable = require("express-formidable");
+const dbManager = require("./server/db/dbmanager.js");
+const sConfig = require("./server/config/serverconfig.js");
+const routes = require("./server/routes");
+const sesionManager = require("./server/sesion/sesionmanager.js");
+const live = require("./server/api/live.js");
+const cache = require("./server/db/cache.js");
 
 /* SETUP INICIAL */
 var app = express();
 var server = http.createServer(app);
 
 /* MIDDLEWARES */
+//compresion y minificar
+app.use(compression());
+app.use(minify());
+
 //carpeta donde van los archivos estaticos.
 app.use('/', express.static(path.join(__dirname, './client/static'), sConfig.STATIC_CACHE_VALUE));
 //carpeta de subidas locales..
@@ -24,9 +29,6 @@ app.use('/node', express.static(path.join(__dirname, 'node_modules/'))); //TODO:
 
 //formidable para los post request
 app.use(formidable({}, [{event: 'error', action: function (req, res, next, name){console.log("[formidable] Error en el post request.");}}]));
-
-//compresion
-app.use(compression());
 
 /* VIEW ENGINE (EJS) */
 app.set("view engine", "ejs");

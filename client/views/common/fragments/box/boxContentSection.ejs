@@ -43,13 +43,18 @@
 </div>
 <!-- encuestas -->
 <% if (BOX.type.includes("poll")){
-	var pollData = it.utils.getPollPercent(BOX.content.extra.poll.pollOneV, BOX.content.extra.poll.pollTwoV); %>
-	<div class="voxBar pollBar" id="pollBar">
-		<div class="pollOption" data-poll="1" id="pollOne">
+	let votos = BOX.content.extra.poll.pollVotes;
+	let voted = votos.filter(item => item.uid === it.sesion.uid)[0];
+	let pollOneV = votos.filter(item => item.option === "1").length;
+	let pollTwoV = votos.filter(item => item.option === "2").length;
+	let pollData = it.utils.getPollPercent(pollOneV, pollTwoV);
+%>
+	<div class="voxBar pollBar" id="pollBar" data-bid="<%= BOX.bid %>">
+		<div class="pollOption <%= (voted && voted.option === "1") ? "voted" : "" %>" data-poll="1" id="pollOne">
 			<div class="pollOptionText"><%= BOX.content.extra.poll.pollOne %></div>
 			<div class="pollOptionPerent" id="pollOnePorcen"><%= pollData[0] %></div>
 		</div>
-		<div class="pollOption" data-poll="2" id="pollTwo">
+		<div class="pollOption <%= (voted && voted.option === "2") ? "voted" : "" %>" data-poll="2" id="pollTwo">
 			<div class="pollOptionText"><%= BOX.content.extra.poll.pollTwo %></div>
 			<div class="pollOptionPercent" id="pollTwoPorcen"><%= pollData[1] %></div>
 		</div>

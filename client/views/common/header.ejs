@@ -1,15 +1,4 @@
-
-<!-- Aca iran los js de primera carga -->
-<script src="/socket.io/socket.io.js"></script>
-<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
-<script>
-	$(function () {
-		var socket = io();
-		socket.on('notif', function(data){
-			action_newNotification(data);
-		});
-	});
-</script>
+<%- include('./scripts/headerScripts', it); %>
 
 <!-- inicio del navbar -->
 <nav>

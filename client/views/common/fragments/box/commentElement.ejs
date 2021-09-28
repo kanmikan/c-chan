@@ -1,9 +1,13 @@
 <div class="comment" id="<%= com.cid %>">	
-	<div class="commentAvatar">
+	<div class="commentAvatar unselect">
 		<% let icon = com.icon.split(",");
 		if (icon[0] === "ico") { %>
 			<div class="anonIcon" style="background: <%= icon[1] %>">
 				<div class="anonText" style="color: <%= icon[2] %>">ANON</div>	
+			</div>
+		<% } else if (icon[0] === "class") { %>
+			<div class="anonIcon <%= icon[1] %>">
+				<div class="anonText <%= icon[2] %>">ANON</div>	
 			</div>
 		<% } else { %>
 			<img class="avatar" src="<%= com.icon %>" alt="">

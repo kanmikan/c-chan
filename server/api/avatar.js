@@ -2,19 +2,18 @@
 
 function genAnon(){
 	//se encarga de elegir que set de anons usar, dependiendo de variables como los dias festivos, etc.
-	return pickSVGAnon();
+	return pickCSSAnon();
 	
 }
 
-//TODO: soporte de iconos animados.
-function pickSVGAnon(){
+function pickCSSAnon(){
 	let anone = [
 		["ico,#FFcc00,#ffffff", 1], //amarillo
 		["ico,#0579b3,#ffffff", 1], //azul
 		["ico,#02b13c,#ffffff", 1], //verde
 		["ico,#df0202,#ffffff", 1], //rojo
-		["/assets/anon/5.gif", 0.1], //multi
-		["/assets/anon/6.gif", 0.1], //invertido
+		["class,anonMulti, ", 0.1], //multi
+		["class,anonInvertido, ", 0.1], //invertido
 		["ico,#000000,#ffffff", 0.01], //black
 		["/assets/anon/5.gif", 0.001], //uff
 		["ico,#ffffff,#000000", 0.01] //white

@@ -9,6 +9,10 @@ function element(eid){
 	return document.getElementById(eid);
 }
 
+function elementClass(ecl){
+	return document.querySelectorAll(ecl);
+}
+
 function request(url, callback){
 	fetch(url)
 	.then(response => response.json())
@@ -121,7 +125,7 @@ function boxRender(box){
 	let catdata = getCategoryData(box.cat);
 	
 	let bbody = `<a class="box" id="${box.bid}" href="/tema/${box.bid}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${boxThumb}); text-decoration: none; background-position: top;"><div class="voxHeader"><div class="tagList"><div class="tag categoryTag">`;
-	if (it.renderConfig.SHOW_CATEGORY_ICON) {
+	if (SHOW_CATEGORY_ICON) {
 		bbody +=`<img src="${catdata.content.media.icon}"`;			
 	}
 	bbody += `<span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: middle;">${getCatShow(box.cat)}</span>
@@ -163,11 +167,13 @@ function boxRender(box){
 
 function commentRender(op, com){
 	//render de comentarios del lado del cliente.			
-	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar">`;
+	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar unselect">`;
 	
 	let icon = com.icon.split(",");
 	if (icon[0] === "ico") {
 		cbody +=`<div class="anonIcon" style="background: ${icon[1]}"><div class="anonText" style="color: ${icon[2]}">ANON</div></div>`;
+	} else if (icon[0] === "class") {
+		cbody +=`<div class="anonIcon ${icon[1]}"><div class="anonText ${icon[2]}">ANON</div></div>`;
 	} else {
 		cbody +=`<img class="avatar" src="${com.icon}" alt="">`;
 	}
@@ -264,16 +270,17 @@ function hashScroll(hash){
 	}
 }
 
+/*
 function parseFormData(formdata){
-	console.log(formdata);
 	let fdata = formdata.split("&");
 	let obj = {};
 	for (var i=0; i<fdata.length; i++){
-		let v = fdata[i].split("=");
-		obj[v[0]] = v[1];
+		let val = fdata[i].split("=");
+		obj[val[0]] = val[1];
 	}
 	return obj;
 }
+*/
 
 function isGif(url){
 	return url.slice(-4) === ".gif";
@@ -355,6 +362,12 @@ function action_updateBoxList(indexID, callback){
 	});
 }
 
+function action_pollUpdate(data){
+	let pollData = data.pollData;
+	element("pollOne").children[1].innerText = pollData[0];
+	element("pollTwo").children[1].innerText = pollData[1];
+}
+
 //FUNCION: envia la configuracion al server
 //TODO: convertir a emit de socket (si es posible)
 function applyConfig(query){
@@ -369,6 +382,15 @@ function applyConfig(query){
 			(result.data.redirect) ? window.location.replace(result.data.to) : alert(result.data);
 		}
 	});
+}
+
+function getPollPercent(poll1, poll2){
+	var total = poll1+poll2;
+	if (total === 0) return ["",""];
+	//sacar porcentaje de diferencia segun cantidad de votos
+	var per = (poll1/total) * 100;
+	var per2 = (poll2/total) * 100;
+	return [Math.round(per) + "%", Math.round(per2) + "%"];
 }
 
 /* EVENTOS */
@@ -396,8 +418,7 @@ $(document).ready(function() {
 	function onScroll(){
 		//evento: calcula si debe mostrar el boton de ir arriba o no
 		if ($("#commentList").children().length > 10){
-			var y = $(this).scrollTop();
-			if (y > Math.round($(document).height() * 15 / 100)) {
+			if ($(window).scrollTop() > Math.round($(document).height() * 20 / 100)) {
 				$('#attach-goup').removeClass("hidden");
 			} else {
 				$('#attach-goup').addClass("hidden");
@@ -405,25 +426,58 @@ $(document).ready(function() {
 		}
 		
 		//evento: al llegar al final
-		if ($(window).height()+$(window).scrollTop() > (getDocumentHeight() - 100)){
-			if (complete){
-				complete = false;
-				let indexID = $("#boxList").children().last().attr("id");
-				$("#moreload").removeClass("hidden");
-				action_updateBoxList(indexID, function(data){
-					if (data.success){
-						let lboxs = data.data;
-						for (var i=0; i<lboxs.length; i++){
-							$("#boxList").append(boxRender(lboxs[i]));
-							complete = true;
-						}
+		if ($(window).height() + $(window).scrollTop() > (getDocumentHeight() - 100)){
+			if (!complete) return;
+			
+			complete = false;
+			let indexID = $("#boxList").children().last().attr("id");
+			$("#moreload").removeClass("hidden");
+			action_updateBoxList(indexID, function(data){
+				if (data.success){
+					let lboxs = data.data;
+					for (var i=0; i<lboxs.length; i++){
+						$("#boxList").append(boxRender(lboxs[i]));
+						complete = true;
 					}
-					$("#moreload").addClass("hidden");
-				});
-				
-			}
+				}
+				$("#moreload").addClass("hidden");
+			});
 		}
+		
 	}
+	
+	//evento: votar encuesta
+	$(document).on("click", ".pollOption", function(e){
+		let option = $(e.currentTarget).data("poll");
+		let bid = $(e.currentTarget).parent().data("bid");
+		
+		let formData = new FormData();
+		formData.append("vote", option);
+		formData.append("bid", bid);
+		
+		post(formData, "/api/poll", function(){
+			element("pollOne").classList.add("pollLoading");
+			element("pollTwo").classList.add("pollLoading");
+		}, function(result){
+			if (result.success){
+				//actualizar opcion seleccionada.
+				switch(result.data.option){
+					case "1":
+						element("pollOne").classList.add("voted");
+					break;
+					case "2":
+						element("pollTwo").classList.add("voted");
+					break;
+				}
+				action_pollUpdate(result.data);
+			} else {
+				(result.data.redirect) ? window.location.replace(result.data.to) : alert(result.data);
+			}
+			element("pollOne").classList.remove("pollLoading");
+			element("pollTwo").classList.remove("pollLoading");
+		});
+		
+	});
 	
 	//evento: al realizar busqueda
 	if (element("searchInput")){

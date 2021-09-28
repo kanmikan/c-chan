@@ -358,6 +358,39 @@ module.exports = function(app){
 		});
 	});
 	
+	//API: manejo de votos en las encuestas
+	//TODO: placeholder
+	app.post('/api/poll', pass.check, sesionManager.checkSesion, async function(req, res) {
+		let option = req.fields.vote;
+		let bid = req.fields.bid;
+		let timestamp = Date.now();
+		let uid = req.session.uid;
+		//let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+		
+		//leer informacion de la encuesta.
+		let boxs = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, "", function(){});
+		let votos = boxs[0].content.extra.poll.pollVotes;
+		let vfilt = votos.filter(item => item.uid === uid);
+		
+		if (vfilt[0]){
+			res.json({success: false, data: "Ya votaste."});
+		} else {
+			//escribir nueva info en la encuesta.
+			let nuevoVoto = {uid: uid, timestamp: timestamp, option: option};
+			votos.push(nuevoVoto);
+			
+			await dbManager.pushDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, {$push: {"content.extra.poll.pollVotes": nuevoVoto}});
+			
+			//calcular y hacer emit de la nueva info de votos.
+			let pollOneV = votos.filter(item => item.option === "1").length;
+			let pollTwoV = votos.filter(item => item.option === "2").length;
+			let pollData = utils.getPollPercent(pollOneV, pollTwoV);
+			
+			live.sendDataTo(bid, "vote", {option: option, pollData: pollData});
+			res.json({success: true, data: {option: option, pollData: pollData}});
+		}
+	});
+	
 	//API: modificar las preferencias del usuario.
 	app.post('/api/config', pass.check, sesionManager.checkSesion, function(req, res) {
 		let data = req.fields.data;
