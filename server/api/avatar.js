@@ -9,10 +9,10 @@ function genAnon(){
 //TODO: soporte de iconos animados.
 function pickSVGAnon(){
 	let anone = [
-		["ico,#FFCC33,#ffffff", 1], //amarillo
-		["ico,#006699,#ffffff", 1], //azul
-		["ico,#009933,#ffffff", 1], //verde
-		["ico,#CA0000,#ffffff", 1], //rojo
+		["ico,#FFcc00,#ffffff", 1], //amarillo
+		["ico,#0579b3,#ffffff", 1], //azul
+		["ico,#02b13c,#ffffff", 1], //verde
+		["ico,#df0202,#ffffff", 1], //rojo
 		["/assets/anon/5.gif", 0.1], //multi
 		["/assets/anon/6.gif", 0.1], //invertido
 		["ico,#000000,#ffffff", 0.01], //black

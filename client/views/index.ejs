@@ -29,7 +29,10 @@
 		<div class="voxHeader">
 			<div class="tagList">
 				<div class="tag categoryTag">
-					<img src="<%= categoryData.content.media.icon %>"><span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: baseline;"><%- it.utils.getCatShow(box.cat) %></span></img>
+					<% if (it.renderConfig.SHOW_CATEGORY_ICON) { %>
+						<img src="<%= categoryData.content.media.icon %>">
+					<% } %>
+					<span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: baseline;"><%- it.utils.getCatShow(box.cat) %></span></img>
 				</div>
 				<!-- tag video -->
 				<% if (box.type && box.type.includes("video")){ %>

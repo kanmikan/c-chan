@@ -163,7 +163,7 @@ module.exports = function(app){
 				//si existe la categoria, cargar los boxs que pertenezcan a ella.
 				//TODO
 				dbManager.mQuery(req.app.locals.db, models.CAT_QUERY(uid, cat), function(result){
-					result[mdbScheme.C_BOXS] = cfilter.filterBoxHides(result[mdbScheme.C_BOXS], req.session.config);
+					result[mdbScheme.C_BOXS] = cfilter.filterOnlyHides(result[mdbScheme.C_BOXS], req.session.config);
 					res.render("index", {
 						it : {
 							utils: utils,

@@ -120,7 +120,12 @@ function boxRender(box){
 	let boxThumb = (box.type.includes("video")) ? box.media.preview : box.img.preview;
 	let catdata = getCategoryData(box.cat);
 	
-	let bbody = `<a class="box" id="${box.bid}" href="/tema/${box.bid}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${boxThumb}); text-decoration: none; background-position: top;"><div class="voxHeader"><div class="tagList"><div class="tag categoryTag"><img src="${catdata.content.media.icon}"><span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: middle;">${getCatShow(box.cat)}</span></img></div>`;
+	let bbody = `<a class="box" id="${box.bid}" href="/tema/${box.bid}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${boxThumb}); text-decoration: none; background-position: top;"><div class="voxHeader"><div class="tagList"><div class="tag categoryTag">`;
+	if (it.renderConfig.SHOW_CATEGORY_ICON) {
+		bbody +=`<img src="${catdata.content.media.icon}"`;			
+	}
+	bbody += `<span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: middle;">${getCatShow(box.cat)}</span>
+	</img></div>`;
 	
 	if (box.state && box.state.includes("new")){
 		bbody +=`<div class="tagInvisible tagNew">TEST</div>`;	

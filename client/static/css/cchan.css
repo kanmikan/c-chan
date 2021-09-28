@@ -603,13 +603,13 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .box .tagList .tag {
-    color: #fefefe;
-    padding: 1px;
-    border-radius: 3px;
-    font-size: 11px;
-    background: #3f51b5;
-    margin-right: 3px;
-    margin-bottom: 3px;
+	color: #fefefe;
+	padding: 4px;
+	border-radius: 3px;
+	font-size: 0.7rem;
+	background: var(--tag1);
+	margin-right: 3px;
+	margin-bottom: 3px;
 }
 
 .box .tagList .tag img{
@@ -2771,6 +2771,7 @@ input:checked + .slider:before {
 		height: 50%;
 		width: 100%;
 		left: 0;
+		padding: 20px
 	}
 }
 

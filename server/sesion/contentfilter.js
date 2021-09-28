@@ -6,4 +6,8 @@ function filterBoxHides(boxs, userConfig){
 	return boxs.filter(item => (!cathides.includes(item.cat) && !boxhides.includes(item.bid)));
 }
 
-module.exports = {filterBoxHides}
+function filterOnlyHides(boxs, userConfig){
+	return filterBoxHides(boxs, {boxhides: userConfig.boxhides, cathides: []});
+}
+
+module.exports = {filterBoxHides, filterOnlyHides}
