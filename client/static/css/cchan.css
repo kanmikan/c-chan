@@ -32,7 +32,7 @@
 	--text-createdAt: #960000;
 	--text-createdAt2: #00000096;
 	--text-voxCount: #343a40;
-	--tag1: #2196f3;
+	--tag1: #3f51b5;
 	--comment-textArea: #efefef;
 	--comment-textArea-border: #afafaf;
 	--comment-textArea-focus: white;
@@ -1079,7 +1079,7 @@ select {
 }
 
 .commentAttachExpand{
-	max-width: 97% !important;
+	max-width: 100% !important;
 }
 
 .attachExpandIcon{
@@ -1929,6 +1929,7 @@ section.voxCommentList {
 
 article.voxContent {
     padding: 16px;
+	padding-right: 22px;
 }
 
 figure.voxAttach {

@@ -384,15 +384,6 @@ function applyConfig(query){
 	});
 }
 
-function getPollPercent(poll1, poll2){
-	var total = poll1+poll2;
-	if (total === 0) return ["",""];
-	//sacar porcentaje de diferencia segun cantidad de votos
-	var per = (poll1/total) * 100;
-	var per2 = (poll2/total) * 100;
-	return [Math.round(per) + "%", Math.round(per2) + "%"];
-}
-
 /* EVENTOS */
 $(document).ready(function() {
 	

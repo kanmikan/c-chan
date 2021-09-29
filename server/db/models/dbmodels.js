@@ -5,7 +5,7 @@ const mdbScheme = require('./mdbscheme.js');
 function HOME_QUERY(uid){
 	return [
 		[mdbScheme.C_ADM, "", "", 0],
-		[mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, 41], //limite de 41 elementos hardcodeado en el query.
+		[mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, 24], //la primera carga de la home aligerada.
 		[mdbScheme.C_NOTIF, {"receiver.uid": uid}, {"date.created": -1}, 0],
 		[mdbScheme.C_CATS, "", {"date.sticky": -1, "date.order": -1}, 0]
 	];

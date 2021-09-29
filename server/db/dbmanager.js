@@ -21,6 +21,7 @@ function mQuery(DB, qlist, callback){
 		let CACHE = cache.getCache();
 		var output_ = {};
 		let count = 0;
+		
 		qlist.forEach(function(query){
 			if (query[1] === ""){query[1] = {};}
 			if (CACHE[query[0]]){
