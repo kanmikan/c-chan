@@ -78,7 +78,7 @@
 		<div class="over"></div>
 		<div class="voxActions unselect">
 			<div class="voxActionBotton">
-				<div class="actionText" data-act="hide" data-contentid="<%= box.bid %>">Ocultar</div>
+				<div class="actionText" data-act="<%= (it.kind === "/ocultos") ? "unhide" : "hide" %>" data-contentid="<%= box.bid %>"><%= (it.kind === "/ocultos") ? "Mostrar" : "Ocultar" %></div>
 			</div>
 			<div class="voxActionBotton">
 				<div class="actionText" data-act="report" data-contentid="<%= box.bid %>">Reportar</div>

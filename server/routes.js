@@ -16,6 +16,7 @@ module.exports = function(app){
 			result[mdbScheme.C_BOXS] = cfilter.filterBoxHides(result[mdbScheme.C_BOXS], req.session.config);
 			res.render("main", {
 				it : {
+					kind: req.originalUrl,
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session,
@@ -31,6 +32,7 @@ module.exports = function(app){
 		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
 			res.render("login", {
 				it : {
+					kind: req.originalUrl,
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session,
@@ -52,6 +54,7 @@ module.exports = function(app){
 				} else {
 					res.render("box", {
 						it : {
+							kind: req.originalUrl,
 							token: utils.randomString(16),
 							utils: utils,
 							renderConfig: renderConfig,
@@ -85,6 +88,7 @@ module.exports = function(app){
 				result[mdbScheme.C_BOXS] = rboxs;
 				res.render("index", {
 					it : {
+						kind: req.originalUrl,
 						utils: utils,
 						renderConfig: renderConfig,
 						sesion: req.session,
@@ -112,6 +116,7 @@ module.exports = function(app){
 				result[mdbScheme.C_BOXS] = rboxs;
 				res.render("index", {
 					it : {
+						kind: req.originalUrl,
 						utils: utils,
 						renderConfig: renderConfig,
 						sesion: req.session,
@@ -138,6 +143,7 @@ module.exports = function(app){
 				result[mdbScheme.C_BOXS] = rboxs;
 				res.render("index", {
 					it : {
+						kind: req.originalUrl,
 						utils: utils,
 						renderConfig: renderConfig,
 						sesion: req.session,
@@ -166,6 +172,7 @@ module.exports = function(app){
 					result[mdbScheme.C_BOXS] = cfilter.filterOnlyHides(result[mdbScheme.C_BOXS], req.session.config);
 					res.render("main", {
 						it : {
+							kind: req.originalUrl,
 							utils: utils,
 							renderConfig: renderConfig,
 							sesion: req.session,

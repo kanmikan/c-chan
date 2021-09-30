@@ -1,3 +1,4 @@
+require('dotenv').config();
 module.exports = {
 	/* MODULOS DEL RENDER */
 	/* usar la interfaz v1 de mikanchan en vez de la clasica. */

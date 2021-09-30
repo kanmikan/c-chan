@@ -9,7 +9,8 @@ cloudinary.config({
 });
 
 function uploadImg(file, callback){
-	cloudinary.uploader.upload(file.path, function(error, result) {
+	let up = (file.path) ? file.path : file;
+	cloudinary.uploader.upload(up, function(error, result) {
 		if (error){
 			callback({success: false, data: error});
 		} else {
@@ -19,7 +20,8 @@ function uploadImg(file, callback){
 }
 
 function uploadVid(file, callback){
-	cloudinary.uploader.upload_large(file.path, {resource_type: "video"}, function(error, result){
+	let up = (file.path) ? file.path : file;
+	cloudinary.uploader.upload_large(up, {resource_type: "video"}, function(error, result){
 		if (error){
 			callback({success: false, data: error});
 		} else {

@@ -1,3 +1,4 @@
+require('dotenv').config();
 module.exports = {
 	DBNAME: "mikandbv2",
 	DBURL: process.env.MONGOURI || "mongodb://127.0.0.1:27017",

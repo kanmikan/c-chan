@@ -636,7 +636,9 @@ $(document).ready(function() {
 	$(document).on("click",".voxActionBotton", function(e){
 		e.preventDefault();
 		let action = $(e.target).data("act");
+		let contentId = $(e.target).data("contentid");
 		let buttons = $(this).parent().parent();
+		
 		
 		//TODO: llamada al server a la ruta /action/id, el server comprueba los privilegios y realiza la accion, de esta manera sería seguro enviar los botones y rutas de moderacion al cliente, porque aunque tengan acceso a esa data, no tendrian manera de explotarlo.
 		
@@ -649,7 +651,13 @@ $(document).ready(function() {
 				$(buttons).removeClass("actionMode");
 				break;
 			case "hide":
-				console.log("hide box");
+				applyConfig("boxhides_add:" + contentId);
+				$(`#${contentId}`).hide();
+				$(buttons).removeClass("actionMode");
+				break;
+			case "unhide":
+				applyConfig("boxhides_del:" + contentId);
+				$(`#${contentId}`).hide();
 				$(buttons).removeClass("actionMode");
 				break;
 		}
