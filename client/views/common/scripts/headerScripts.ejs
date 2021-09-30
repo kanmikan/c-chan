@@ -1,9 +1,11 @@
 <!-- Aca iran los js de primera carga -->
-<script src="/socket.io/socket.io.js" type="text/javascript"></script>
 <script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
 <script>
 	var SHOW_CATEGORY_ICON = <%= it.renderConfig.SHOW_CATEGORY_ICON %>;
 	$(function () {
+		action_titleAppendCounter(<%= it.data.notifs.length %>);
+		action_loadLastActivity();
+		
 		var socket = io();
 		socket.on('notif', function(data){
 			action_newNotification(data);

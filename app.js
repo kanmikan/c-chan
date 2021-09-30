@@ -16,16 +16,21 @@ var app = express();
 var server = http.createServer(app);
 
 /* MIDDLEWARES */
+
 //compresion y minificar
 app.use(compression());
+
+//carpeta del node.
+//TODO: sacar esto de aca.
+app.use('/node', express.static(path.join(__dirname, 'node_modules/')));
+
+//ignorar la carpeta del node.
 app.use(minify());
 
 //carpeta donde van los archivos estaticos.
 app.use('/', express.static(path.join(__dirname, './client/static'), sConfig.STATIC_CACHE_VALUE));
 //carpeta de subidas locales..
 app.use('/uploads', express.static(path.join(__dirname, './uploads'), sConfig.STATIC_CACHE_VALUE));
-//carpeta del node.
-app.use('/node', express.static(path.join(__dirname, 'node_modules/'))); //TODO: sacar esto de aca.
 
 //formidable para los post request
 app.use(formidable({}, [{event: 'error', action: function (req, res, next, name){console.log("[formidable] Error en el post request.");}}]));

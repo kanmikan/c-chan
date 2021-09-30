@@ -14,7 +14,7 @@ module.exports = function(app){
 		var uid = req.session.uid;
 		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
 			result[mdbScheme.C_BOXS] = cfilter.filterBoxHides(result[mdbScheme.C_BOXS], req.session.config);
-			res.render("index", {
+			res.render("main", {
 				it : {
 					utils: utils,
 					renderConfig: renderConfig,
@@ -164,7 +164,7 @@ module.exports = function(app){
 				//TODO
 				dbManager.mQuery(req.app.locals.db, models.CAT_QUERY(uid, cat), function(result){
 					result[mdbScheme.C_BOXS] = cfilter.filterOnlyHides(result[mdbScheme.C_BOXS], req.session.config);
-					res.render("index", {
+					res.render("main", {
 						it : {
 							utils: utils,
 							renderConfig: renderConfig,

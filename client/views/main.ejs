@@ -1,0 +1,5 @@
+<% if (it.renderConfig.ENABLE_V1){ %>
+	<%- include('./v1/index', it); %>
+<% } else { %>
+	<%- include('index', it); %>
+<% } %>

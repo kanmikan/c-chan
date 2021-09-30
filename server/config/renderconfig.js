@@ -1,5 +1,8 @@
 module.exports = {
 	/* MODULOS DEL RENDER */
+	/* usar la interfaz v1 de mikanchan en vez de la clasica. */
+	ENABLE_V1: true,
+	
 	/* activar botones y accesos de las comunidades */
 	ENABLE_COMMUNITIES: false,
 	

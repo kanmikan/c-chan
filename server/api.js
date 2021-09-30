@@ -346,6 +346,19 @@ module.exports = function(app){
 		});
 	});
 	
+	//API: obtener todos los comentarios en base a la categoria
+	app.get('/api/categorycoms/:cat', pass.check, function(req, res) {
+		let cat = req.params.cat;
+		let filter = (cat === "home") ? "" : {cat: cat};
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, filter, {"date.created": -1}, function(coms){
+			if (coms[0] != undefined){
+				res.json({success: true, data: pass.filterProtectedUID(coms)});
+			} else {
+				res.json({success: false, data: null});
+			}
+		});
+	});
+	
 	//API: obtener comentario especificado con el cid
 	app.get('/api/com/:cid', pass.check, function(req, res) {
 		let cid = req.params.cid;

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	<%- include('../common/head', it); %>
+	
+		<style>
+		.box {
+			width: calc(100% / 5.06); /*8*/
+			height: calc(100vw / 6.08);
+			margin: 1px;
+		}
+		
+		/* Resolucion 1024px */
+		@media only screen and (max-width: 1024px) {
+			.box {
+				width: calc(100% / 3.06);
+				height: calc(100vw / 4.06);
+			}
+			
+			.boxList {
+				width: 73.5vw !important;
+			}
+			.homeBar {
+				margin-left: 73.5vw !important;
+				width: 26vw !important;
+			}
+		}
+
+		/* Tablet */
+
+		@media only screen and (max-width: 900px) {
+			.box {
+				width: calc(100% / 4.06);
+				height: calc(100vw / 4.06);
+			}
+			.boxList {
+				width: 100% !important;
+			}
+			
+			.homeBar {
+				display: none !important;
+			}
+		}
+
+		@media only screen and (max-width: 700px) {
+			.box {
+				width: calc(100% / 3.04);
+				height: calc(100vw / 3.04);
+			} 
+
+			.boxList {
+				width: 100% !important;
+			}
+			
+			.homeBar {
+				display: none !important;
+			}
+
+			.actionBotton {
+				display: flex;
+			}
+		}
+
+
+		/* Celular */
+		@media only screen and (max-width: 600px) {
+			.box {
+				width: calc(100% / 2.03);
+				height: calc(100vw / 2.03);
+			}
+			.modHome{
+				width: 100%;
+			}
+			
+			.boxList {
+				width: 100% !important;
+			}
+			
+			.homeBar {
+				display: none !important;
+			}
+			
+		}.voxWraper {
+			display: flex;
+			height: calc(100vh - 50px);
+		}
+		
+		.boxList {
+		    padding-top: 3px;
+			position: absolute;
+			width: 79.5vw;
+		}
+		.homeBar {
+			flex-grow: 1;
+			position: fixed;
+			overflow-y: hidden;
+			height: 100%;
+			margin-left: 79.5vw;
+			width: 20vw;
+			background: var(--homebar-background);
+		}
+		.activityzone {
+			background: var(--homebar-tarjeta-background);
+			margin: 5px;
+			padding: 5px;
+			border-radius: 5px;
+		}
+		
+		.acttitle-category {
+		    margin-top: auto;
+			margin-bottom: auto;
+			margin-left: 10px;
+			font-size: 14px;
+			width: 100%;
+		}
+		
+		.homebarIcon img{
+			max-height: 50px;
+			display: block;
+			margin: auto;
+			border-radius: 5px;
+		}
+		
+	</style>
+	
+	</head>
+	<!-- ..El navbar se renderiza aca.. -->
+	<%- include('../common/header', it); %>
+	<%- include('../common/scripts/indexScripts', it); %>
+	<body>
+		<div class="bottonContextual" data-toggle="modal" data-target="#createVox" data-backdrop="false"><i class="fas fa-plus"></i></div>
+		<div class="moreContainer">
+			<div class="moreload hidden" id="moreload">
+				<i class="fas fa-circle-notch fa-spin"></i>
+				<span>Cargando mas...</span>
+			</div>
+		</div>
+		<div class="boxList" id="boxList">
+			<% it.data.boxs.forEach(function(box){renderBox(box);}); %>
+		</div>
+		
+		<div class="homeBar" id="homeBar" onclick="showHomebarScroll()">
+			<div class="activityzone">
+				<div class="acttitle">Temas populares</div>
+				<div class="chatlike">
+				
+					<% it.data.boxs.sort((a,b) => b.comments - a.comments)
+					.slice(0, 3).forEach(function(box){ %>
+						<div class="home-temalist" onclick="location.href='/tema/<%= box.bid %>'">
+							<img src="<%= box.img.preview %>"></img><span><%= box.content.title %></span>
+						</div>
+					<% }); %>
+					
+				</div>
+				<div class="chatlike" style="display: flex;display: flex;color: white;justify-content: space-around;" id="temalist">
+					<div href="#"><i class="fas fa-plus">Por comentarios</i></div>
+					<div href="#"><i class="fas fa-plus">Recientes</i></div>
+				</div>
+			</div>
+			
+			<div class="activityzone">
+				<div class="acttitle">Comentarios Recientes</div>
+				<div class="chatlike" id="activityList"></div>
+			</div>
+			<div style="height: 100px"></div>
+		</div>
+	
+	</body>
+	<%- include('../common/footer', it); %>
+</html>
+
+<!-- FUNCIONES DEL RENDER -->
+<% function renderBox(box) { %>
+	<% if (box != undefined) { 
+		let categoryData = it.utils.getCategoryData(it.data.cats, box.cat); %>
+		<a class="box" id="<%= box.bid %>" href="/tema/<%= box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%= (box.type.includes("video")) ? box.media.preview : box.img.preview %>); text-decoration: none; background-position: top;">
+		<div class="voxHeader">
+			<div class="tagList">
+				<div class="tag categoryTag">
+					<% if (it.renderConfig.SHOW_CATEGORY_ICON) { %>
+						<img src="<%= categoryData.content.media.icon %>">
+					<% } %>
+					<span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: baseline;"><%- it.utils.getCatShow(box.cat) %></span></img>
+				</div>
+				<!-- tag video -->
+				<% if (box.type && box.type.includes("video")){ %>
+					<div class="tagInvisible ytb"><div class="tagWrapper"></div><i class="fab fa-youtube"></i></div>
+				<% } %>
+				<!-- tag dados -->
+				<% if (box.type && box.type.includes("dice")){ %>
+					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>
+				<% } %>
+				<!-- tag encuesta -->
+				<% if (box.type && box.type.includes("poll")){ %>
+					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>
+				<% } %>
+				<!-- tag rss -->
+				<% if (box.flag && box.flag.includes("rss")){ %>
+					<div class="tagInvisible rss"><div class="tagWrapperTransparent"></div><i class="fas fa-rss"></i></div>
+				<% } %>
+				<!-- tag sticky local -->
+				<% if (box.date && box.date.csticky > 0){ %>
+					<div class="tagInvisible csticky"><div class="tagWrapperTransparent"></div><i class="fas fa-thumbtack"></i></div>
+				<% } %>
+				<!-- tag sticky global -->
+				<% if (box.date && box.date.sticky > 0){ %>
+					<div class="tag sticky">Sticky</div>
+				<% } %>
+			</div>
+			<div class="voxComments textShadon">
+				<i class="fas fa-comment"></i>
+				<span class="countComments"><%= box.content.comments %></span>
+			</div>
+			<div class="voxAction textShadon">
+				<div class="actionBotton" data-voxaction="<%= box.bid %>">
+					<i class="fas fa-ellipsis-v" data-voxaction="<%= box.bid %>"></i>
+				</div>
+			</div>
+		</div>
+		
+		<% if (box.content.extra != undefined && box.content.extra.title2 != undefined){ %>
+			<h5 class="animetitle textShadon"><%= box.content.extra.title2 %></h5>
+		<% } %>
+		
+		<h4 class="title textShadon"><%= box.content.title %></h4>
+		<div class="over"></div>
+		<div class="voxActions unselect">
+			<div class="voxActionBotton">
+				<div class="actionText" data-act="hide" data-contentid="<%= box.bid %>">Ocultar</div>
+			</div>
+			<div class="voxActionBotton">
+				<div class="actionText" data-act="report" data-contentid="<%= box.bid %>">Reportar</div>
+			</div>
+			<div class="voxActionBotton">
+				<div class="actionText" data-act="close"><i class="fas fa-times"></i></div>
+			</div>
+		</div>
+	</a>
+	<% } %>
+<% } %>

@@ -161,8 +161,25 @@ function boxRender(box){
 	
 	bbody +=`<h4 class="title textShadon">${box.content.title}</h4><div class="over"></div><div class="voxActions unselect"><div class="voxActionBotton"><div class="actionText" data-act="hide" data-contentid="${box.bid}">Ocultar</div></div><div class="voxActionBotton"><div class="actionText" data-act="report" data-contentid="${box.bid}">Reportar</div></div><div class="voxActionBotton"><div class="actionText" data-act="close"><i class="fas fa-times"></i></div></div></div></a>`;
 	
-	//$("#boxList").prepend(bbody);
 	return bbody;
+}
+
+function activityRender(com){
+	let icon = com.icon.split(",");
+	let cbody = `<div class="chatlike-box" onclick="location.href='/tema/${com.bid}#${com.cid}'"><div class="chatlike-img">`;
+	if (icon[0] === "ico") {
+		cbody +=`<div class="anonIcon" style="background: ${icon[1]}; width: 40px; height: 40px"><div class="anonText" style="color: ${icon[2]};font-size: 0.9rem;">ANON</div></div>`;
+	} else if (icon[0] === "class") {
+		cbody +=`<div class="anonIcon ${icon[1]}" style="width: 40px; height: 40px"><div class="anonText ${icon[2]}" style="font-size: 0.9rem;">ANON</div></div>`;
+	} else {
+		cbody +=`<img class="avatar" style="width: 40px; height: 40px" src="${com.icon}" alt="">`;
+	}
+	cbody += `</div><div class="chatlike-data">
+	<div class="chatlike-title">
+	<span class="chatlike-user">${com.user.jerarquia.nick} ha comentado:</span>
+	</div><div class="chatlike-text">${com.content.body}</div></div></div>`;
+	
+	return cbody;
 }
 
 function commentRender(op, com){
@@ -270,18 +287,6 @@ function hashScroll(hash){
 	}
 }
 
-/*
-function parseFormData(formdata){
-	let fdata = formdata.split("&");
-	let obj = {};
-	for (var i=0; i<fdata.length; i++){
-		let val = fdata[i].split("=");
-		obj[val[0]] = val[1];
-	}
-	return obj;
-}
-*/
-
 function isGif(url){
 	return url.slice(-4) === ".gif";
 }
@@ -300,15 +305,41 @@ function getDocumentHeight() {
     );
 }
 
+function action_loadLastActivity(){
+	request("/api/categorycoms/home", function(result){
+		if (result.success){
+			result.data.slice(0, 7).forEach(function(com){
+				$("#activityList").append(activityRender(com));
+			});
+		}
+	});
+}
+
 function action_newNotification(data){
-	//actualizar notificaciones
-	/* TODO: cambiar todo esto, es horrible :c */
-	$('#notif_icon').load(document.URL + ' #notif_icon>*');
+	//actualizar contador.
+	let notifElement = element("notif_icon").children[1];
+	let notifCount = parseInt(notifElement.textContent);
+	notifCount++;
+	notifElement.textContent = notifCount;
+	//cargar la nueva lista de notificaciones
 	$('#notificationsList').load(document.URL + ' #notificationsList>*', function (){
-		//aca se actualiza el titulo de la web...
+		//actualizar el titulo con el numero de notificaciones.
+		action_titleAppendCounter(notifCount);
 	});	
+	
 	//popup de la notificacion
 	action_openPopup(data);
+}
+
+function action_titleAppendCounter(count){
+	if (count > 0) {
+		let oldTitle = document.title;
+		let oldTitleRef = /^\(/s.test(oldTitle);
+		if (oldTitleRef){
+			oldTitle = oldTitle.substr(4);
+		}
+		document.title = `(${count}) ${oldTitle}`;
+	}
 }
 
 //TODO: javascript nativo.
