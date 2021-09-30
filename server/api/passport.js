@@ -148,18 +148,14 @@ function checkBan(req, res, callback){
 function filterProtectedUID(arr){
 	//proteger el uid reemplazandola en el array.
 	if (Array.isArray(arr)){
-		let arcopy = new Array();
-		for(var i=0; i < arr.length; i++){
-			arcopy.push(arr[i]);
-		}
+		let arcopy = JSON.parse(JSON.stringify(arr)); //clonar arrays en javascript be like.......
 		arcopy.forEach(function(elem){
 			if (elem.user){
 				elem.user.uid = "-privado-";
 			} else {
-				elem.sender.uid = "-private-";
-				elem.receiver.uid = "-private-";
+				elem.sender.uid = "-privado-";
+				elem.receiver.uid = "-privado-";
 			}
-			
 		});
 		return arcopy;
 	} else {

@@ -450,7 +450,7 @@ $(document).ready(function() {
 		//evento: al llegar al final
 		if ($(window).height() + $(window).scrollTop() > (getDocumentHeight() - 100)){
 			if (!complete) return;
-			
+			if (KIND.split("/")[1] === "tema") return;
 			complete = false;
 			let indexID = $("#boxList").children().last().attr("id");
 			$("#moreload").removeClass("hidden");

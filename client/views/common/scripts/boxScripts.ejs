@@ -1,6 +1,6 @@
 <script>
 	/* Calculos del lado del server */
-	var OP = <%= (BOX.user.uid === it.sesion.id) ? true : false %>;
+	var OP = <%= (BOX.user.uid === it.sesion.uid) ? true : false %>;
 	var TOKEN = "<%= it.token %>";
 	var COMS = []; //buffer de comentarios.
 	var USERDATA = "<%= (it.data.users[0]) ? it.data.users[0].permisos : [] %>".split(",");
