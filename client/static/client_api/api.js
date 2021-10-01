@@ -317,15 +317,13 @@ function action_loadLastActivity(){
 
 function action_newNotification(data){
 	//actualizar contador.
-	let notifElement = element("notif_icon").children[1];
-	let notifCount = parseInt(notifElement.textContent);
-	notifCount++;
-	notifElement.textContent = notifCount;
-	//cargar la nueva lista de notificaciones
-	$('#notificationsList').load(document.URL + ' #notificationsList>*', function (){
-		//actualizar el titulo con el numero de notificaciones.
+	$("#notif_icon").load(document.URL + " #notif_icon>*", function(){
+		let notifCount = parseInt(element("menuIconCount").textContent);
 		action_titleAppendCounter(notifCount);
-	});	
+	});
+	
+	//cargar la nueva lista de notificaciones
+	$("#notificationsList").load(document.URL + " #notificationsList>*");	
 	
 	//popup de la notificacion
 	action_openPopup(data);

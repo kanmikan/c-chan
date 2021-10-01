@@ -32,7 +32,7 @@ function liveSession(io){
 		
 		socket.on('disconnect', () => {
 			//console.log("[SocketIO] Sesion Terminada.");
-			socket.leave(socket.handshake.session.uid);
+			//socket.leave(socket.handshake.session.uid);
 		});
 		
 		socket.on('room', function(data){
