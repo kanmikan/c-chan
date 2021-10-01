@@ -158,7 +158,11 @@ module.exports = function(app){
 			}
 			
 			//enviar comentario via socket
-			live.sendDataTo(bid, "comment", {token: token, op: op, data: pass.filterProtectedUID(json)});
+			let protectedJSON = pass.filterProtectedUID(json);
+			live.sendDataTo(bid, "comment", {token: token, op: op, data: protectedJSON});
+			//enviar señal de nueva actividad a todos
+			live.sendData("activity", {kind: "comment", data: protectedJSON});
+			
 			/* Notificar al dueño del box, si no es el mismo que comenta kjj */
 			if (!op){
 				let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);

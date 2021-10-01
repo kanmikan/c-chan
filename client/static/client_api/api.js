@@ -176,8 +176,16 @@ function activityRender(com){
 	}
 	cbody += `</div><div class="chatlike-data">
 	<div class="chatlike-title">
-	<span class="chatlike-user">${com.user.jerarquia.nick} ha comentado:</span>
-	</div><div class="chatlike-text">${com.content.body}</div></div></div>`;
+		<span class="chatlike-user">${com.user.jerarquia.nick} ha comentado:</span>
+	</div>`;
+	if (com.type.includes("image")){
+		cbody += `<img class="chatlike-image" src="${com.img.preview}"></img></br>`;
+	} else if (com.type.includes("video")){
+		//TODO: icono de video etc..
+		cbody += `<img class="chatlike-image" src="${com.media.preview}"></img></br>`;
+	}
+	cbody += `<div class="chatlike-text">${com.content.body}</div>
+	</div></div>`;
 	
 	return cbody;
 }
@@ -287,6 +295,10 @@ function hashScroll(hash){
 	}
 }
 
+function showHomebarScroll(){
+	$("#homeBar").css("overflow-y","scroll");
+}
+
 function isGif(url){
 	return url.slice(-4) === ".gif";
 }
@@ -308,11 +320,19 @@ function getDocumentHeight() {
 function action_loadLastActivity(){
 	request("/api/categorycoms/home", function(result){
 		if (result.success){
-			result.data.slice(0, 7).forEach(function(com){
-				$("#activityList").append(activityRender(com));
+			result.data.slice(0, 8).forEach(function(com){
+				let actRender = activityRender(com);
+				$("#activityList").append(actRender);
+				$("#movilActivityList").append(actRender);
 			});
 		}
 	});
+}
+
+function action_appendActivity(data){
+	let actRender = activityRender(data);
+	$("#activityList").prepend(actRender);
+	$("#movilActivityList").prepend(actRender);
 }
 
 function action_newNotification(data){

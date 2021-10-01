@@ -11,5 +11,8 @@
 		socket.on('notif', function(data){
 			action_newNotification(data);
 		});
+		socket.on('activity', function(data){
+			action_appendActivity(data.data);
+		});
 	});
 </script>

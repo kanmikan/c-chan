@@ -3,125 +3,7 @@
 	<head>
 	<%- include('../common/head', it); %>
 	
-		<style>
-		.box {
-			width: calc(100% / 5.06); /*8*/
-			height: calc(100vw / 6.08);
-			margin: 1px;
-		}
-		
-		/* Resolucion 1024px */
-		@media only screen and (max-width: 1024px) {
-			.box {
-				width: calc(100% / 3.06);
-				height: calc(100vw / 4.06);
-			}
-			
-			.boxList {
-				width: 73.5vw !important;
-			}
-			.homeBar {
-				margin-left: 73.5vw !important;
-				width: 26vw !important;
-			}
-		}
-
-		/* Tablet */
-
-		@media only screen and (max-width: 900px) {
-			.box {
-				width: calc(100% / 4.06);
-				height: calc(100vw / 4.06);
-			}
-			.boxList {
-				width: 100% !important;
-			}
-			
-			.homeBar {
-				display: none !important;
-			}
-		}
-
-		@media only screen and (max-width: 700px) {
-			.box {
-				width: calc(100% / 3.04);
-				height: calc(100vw / 3.04);
-			} 
-
-			.boxList {
-				width: 100% !important;
-			}
-			
-			.homeBar {
-				display: none !important;
-			}
-
-			.actionBotton {
-				display: flex;
-			}
-		}
-
-
-		/* Celular */
-		@media only screen and (max-width: 600px) {
-			.box {
-				width: calc(100% / 2.03);
-				height: calc(100vw / 2.03);
-			}
-			.modHome{
-				width: 100%;
-			}
-			
-			.boxList {
-				width: 100% !important;
-			}
-			
-			.homeBar {
-				display: none !important;
-			}
-			
-		}.voxWraper {
-			display: flex;
-			height: calc(100vh - 50px);
-		}
-		
-		.boxList {
-		    padding-top: 3px;
-			position: absolute;
-			width: 79.5vw;
-		}
-		.homeBar {
-			flex-grow: 1;
-			position: fixed;
-			overflow-y: hidden;
-			height: 100%;
-			margin-left: 79.5vw;
-			width: 20vw;
-			background: var(--homebar-background);
-		}
-		.activityzone {
-			background: var(--homebar-tarjeta-background);
-			margin: 5px;
-			padding: 5px;
-			border-radius: 5px;
-		}
-		
-		.acttitle-category {
-		    margin-top: auto;
-			margin-bottom: auto;
-			margin-left: 10px;
-			font-size: 14px;
-			width: 100%;
-		}
-		
-		.homebarIcon img{
-			max-height: 50px;
-			display: block;
-			margin: auto;
-			border-radius: 5px;
-		}
-		
-	</style>
+	<link rel="stylesheet" rel="preload" as="style" href="/css/v1.css">
 	
 	</head>
 	<!-- ..El navbar se renderiza aca.. -->
@@ -136,25 +18,38 @@
 			</div>
 		</div>
 		<div class="boxList" id="boxList">
-			<% it.data.boxs.forEach(function(box){renderBox(box);}); %>
+			<% if (it.kind != "/") { %>
+				<% it.data.boxs.forEach(function(box){renderBox(box)}); %>
+			<% } else { %>
+				<% it.data.cats.forEach(function(category){
+						let catbox = it.data.boxs.filter((box) => box.cat === category.catid); %>
+					<div class="home-category">
+						<div class="home-category-title" data-id="<%= category.catid %>">
+							<img class="home-category-image" src="<%= category.content.media.icon %>"></img>
+							<div class="homelink home-category-title-text" href="/<%= category.catid %>"><%= category.content.name %></div>
+							<i class="home-menu fas fa-ellipsis-v" style="float: right; line-height: inherit; margin-right: 3px"></i>
+						</div>
+						<div class="home-category-boxlist">
+							<% catbox.forEach(function(box){renderBox(box)}); %>
+						</div>
+					</div>
+				<% }); %>
+			<% } %>
 		</div>
 		
 		<div class="homeBar" id="homeBar" onclick="showHomebarScroll()">
 			<div class="activityzone">
 				<div class="acttitle">Temas populares</div>
 				<div class="chatlike">
-				
-					<% it.data.boxs.sort((a,b) => b.comments - a.comments)
-					.slice(0, 3).forEach(function(box){ %>
+					<% it.data.boxs.sort((a,b) => b.content.comments - a.content.comments).slice(0, 3).forEach(function(box){ %>
 						<div class="home-temalist" onclick="location.href='/tema/<%= box.bid %>'">
 							<img src="<%= box.img.preview %>"></img><span><%= box.content.title %></span>
 						</div>
 					<% }); %>
-					
 				</div>
-				<div class="chatlike" style="display: flex;display: flex;color: white;justify-content: space-around;" id="temalist">
-					<div href="#"><i class="fas fa-plus">Por comentarios</i></div>
-					<div href="#"><i class="fas fa-plus">Recientes</i></div>
+				<div class="chatlike" style="display: none!important;display: flex;color: white;justify-content: space-around;    margin-top: 7px;" id="temalist">
+					<div id="comSort"><i class="fas fa-comment"></i> Por comentarios</div>
+					<div id="recSort"><i class="fas fa-arrow-up"></i> Recientes</div>
 				</div>
 			</div>
 			
