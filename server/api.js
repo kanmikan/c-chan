@@ -102,6 +102,9 @@ module.exports = function(app){
 		let userdata = sesionManager.getUserData(req.session.id);
 		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};}
 		
+		//actualizar orden de las categorias asincronicamente
+		dbManager.pushDB(req.app.locals.db, mdbScheme.C_CATS, {catid: cat}, {$set: {"date.order": time}}, function(){});
+		
 		dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
 			live.sendData("new", {kind: "newbox", data: pass.filterProtectedUID(json)});
 			res.json({success: true, data: {url: "/tema/" + bid}});
