@@ -354,10 +354,20 @@ module.exports = function(app){
 	});
 	
 	//API: obtener todos los comentarios en base a la categoria
-	app.get('/api/categorycoms/:cat', pass.check, function(req, res) {
+	app.get('/api/categorycoms/:cat/:limit', pass.check, async function(req, res) {
 		let cat = req.params.cat;
+		let limit = (req.params.limit) ? parseInt(req.params.limit) : 0;
 		let filter = (cat === "home") ? "" : {cat: cat};
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, filter, {"date.created": -1}, function(coms){
+		let comfilter = [];
+		
+		//leer boxs de x categoria
+		let boxs = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, filter, "", function(){});
+		boxs.forEach(function(box){
+			comfilter.push({bid: box.bid});
+		});
+		
+		//filtrar comentarios en base a esos boxs.
+		dbManager.queryDBSkip(req.app.locals.db, mdbScheme.C_COMS, {$or: comfilter}, {"date.created": -1}, 0, limit, function(coms){
 			if (coms[0] != undefined){
 				res.json({success: true, data: pass.filterProtectedUID(coms)});
 			} else {

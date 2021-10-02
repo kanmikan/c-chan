@@ -9,6 +9,7 @@
 	<!-- ..El navbar se renderiza aca.. -->
 	<%- include('../common/header', it); %>
 	<%- include('../common/scripts/indexScripts', it); %>
+	<script>var V1 = true;</script>
 	<body>
 		<div class="bottonContextual" data-toggle="modal" data-target="#createVox" data-backdrop="false"><i class="fas fa-plus"></i></div>
 		<div class="moreContainer">
@@ -22,7 +23,7 @@
 				<% it.data.boxs.forEach(function(box){renderBox(box)}); %>
 			<% } else { %>
 				<% it.data.cats.forEach(function(category){
-						let catbox = it.data.boxs.filter((box) => box.cat === category.catid); %>
+						let catbox = it.data.boxs.filter((box) => box.cat === category.catid).slice(0, 10); %>
 					<div class="home-category">
 						<div class="home-category-title" data-id="<%= category.catid %>">
 							<img class="home-category-image" src="<%= category.content.media.icon %>"></img>

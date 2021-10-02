@@ -317,8 +317,18 @@ function getDocumentHeight() {
     );
 }
 
+function getCategory(){
+	let category = KIND.split("/")[1];
+	
+	if (category === "tema"){
+		return KIND.split("/")[2];
+	} else {
+		return (category === "") ? "home" : category;
+	}
+}
+
 function action_loadLastActivity(){
-	request("/api/categorycoms/home", function(result){
+	request(`/api/categorycoms/${getCategory()}/8`, function(result){
 		if (result.success){
 			result.data.slice(0, 8).forEach(function(com){
 				let actRender = activityRender(com);
@@ -406,7 +416,7 @@ function action_newComEffect(data){
 }
 
 function action_updateBoxList(indexID, callback){
-	request(`/api/box/${indexID}/home`, function(result){
+	request(`/api/box/${indexID}/${getCategory()}`, function(result){
 		callback(result);
 	});
 }
@@ -469,6 +479,8 @@ $(document).ready(function() {
 		if ($(window).height() + $(window).scrollTop() > (getDocumentHeight() - 100)){
 			if (!complete) return;
 			if (KIND.split("/")[1] === "tema") return;
+			if (V1 && KIND === "/") return;
+			
 			complete = false;
 			let indexID = $("#boxList").children().last().attr("id");
 			$("#moreload").removeClass("hidden");
@@ -482,6 +494,7 @@ $(document).ready(function() {
 				}
 				$("#moreload").addClass("hidden");
 			});
+			
 		}
 		
 	}

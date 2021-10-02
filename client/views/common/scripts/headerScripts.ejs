@@ -3,6 +3,7 @@
 <script>
 	var SHOW_CATEGORY_ICON = <%= it.renderConfig.SHOW_CATEGORY_ICON %>;
 	var KIND = "<%= it.kind %>";
+	var V1 = false;
 	$(function () {
 		action_titleAppendCounter(<%= it.data.notifs.length %>);
 		action_loadLastActivity();

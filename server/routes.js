@@ -54,7 +54,7 @@ module.exports = function(app){
 				} else {
 					res.render("box", {
 						it : {
-							kind: req.originalUrl,
+							kind: "/tema/" + result[mdbScheme.C_BOXS][0].cat,
 							token: utils.randomString(16),
 							utils: utils,
 							renderConfig: renderConfig,
