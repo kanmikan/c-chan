@@ -851,7 +851,13 @@ $(document).ready(function() {
 			if (checkComFieldLocal()){
 				postForm(form, "/api/com", function(target){
 					//accion antes de enviar.
+					element("loadingCom").classList.remove("hidden");
+					element("ctext").classList.add("hidden");
+					element("newComment").disabled = true;
 				}, function(result){
+					element("loadingCom").classList.add("hidden");
+					element("ctext").classList.remove("hidden");
+					element("newComment").disabled = false;
 					//accion al terminar.
 					if (result.success){
 						//añadir comentario y limpiar vista.
@@ -878,11 +884,16 @@ $(document).ready(function() {
 			let form = $("#createVox").serialize();
 			//control de campos local
 			if (checkBoxFieldLocal()){
-				postForm(form, "/api/new", function(target){	
+				postForm(form, "/api/new", function(target){
+					//animacion de carga.
+					element("btext").classList.add("hidden");
+					element("bspin").classList.remove("hidden");
+					element("newVox").disabled = true;
 				}, function(result){
 					if (result.success){
 						window.location.href = result.data.url;
 					} else {
+						element("newVox").disabled = false;
 						if (result.data.banned){
 							alert(JSON.stringify(result.data.bandata));
 						} else {
@@ -901,6 +912,7 @@ $(document).ready(function() {
 			let file = element("bfile").files.item(0);
 			if (file && file.type.split("/")[0] === "image"){
 				getDataURL(file, function(target){
+					$("#previewInputVox").attr("style", "display: block !important");
 					element("nimgpreview").setAttribute("src", target);
 					element("btext").classList.add("hidden");
 					element("bspin").classList.remove("hidden");
@@ -908,7 +920,6 @@ $(document).ready(function() {
 				}, function(data){
 					if (data.success){
 						element("nimgpreview").setAttribute("src", data.data.thumb);
-						$("#previewInputVox").attr("style", "display: block !important");
 						let img = data.data.link + ";" + data.data.thumb;
 						element("bimg").value = img;
 					} else {

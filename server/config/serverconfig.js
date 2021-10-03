@@ -26,5 +26,8 @@ module.exports = {
 	/* DELAYS ENTRE OTROS */
 	COMMENT_DELAY: 5, //tiempo de espera en segundos (5 segundos)
 	BOX_DELAY: 30,
-	MAX_TAGS: 5 //maximo numero de tagueos permitidos.
+	MAX_TAGS: 5, //maximo numero de tagueos permitidos.
+	
+	/* LIMITES */
+	CATEGORY_BOX_LIMIT: 41 //maximo de temas en una categoría.
 }

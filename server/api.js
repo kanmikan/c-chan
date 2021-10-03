@@ -12,7 +12,7 @@ const avatar = require('./api/avatar.js');
 const pass = require('./api/passport.js');
 const live = require('./api/live.js');
 const compat = require('./db/compat.js');
-const formidable = require('express-formidable');
+const recycler = require('./api/recyclemanager.js');
 
 module.exports = function(app){
 	
@@ -101,6 +101,9 @@ module.exports = function(app){
 		
 		let userdata = sesionManager.getUserData(req.session.id);
 		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};}
+		
+		//reciclar temas asincronicamente
+		recycler.recycle(req.app.locals.db, cat);
 		
 		//actualizar orden de las categorias asincronicamente
 		dbManager.pushDB(req.app.locals.db, mdbScheme.C_CATS, {catid: cat}, {$set: {"date.order": time}}, function(){});
@@ -474,6 +477,8 @@ module.exports = function(app){
 	//SOLO PARA DEBUG Y TEST, ESTO LO VOY A SACAR
 	app.get('/dev', async function(req, res) {
 
+		res.send("ok");
+	
 		//TEST: añadir categorias a mikandbv2
 		let defCategories = [
 			["oficial", "oficial", "Oficial", "Temas oficiales", "/assets/cat/icon/oficial.jpg", "/assets/cat/oficial.jpg", "ADMONLY"],
@@ -491,6 +496,7 @@ module.exports = function(app){
 			["lit", "lit", "Literatura", "Categoría sobre libros y contenido literario general.", "/assets/cat/icon/lit.jpg", "/assets/cat/lit.jpg"]
 		];
 		
+		/*
 		defCategories.forEach(function(category){
 			let scheme = utils.clone(jsonScheme.CATEGORY_SCHEME);
 			scheme.catid = category[0];
@@ -508,7 +514,7 @@ module.exports = function(app){
 			
 		});
 		res.redirect("/");
-		
+		*/
 	});
 	
 }
