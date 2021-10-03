@@ -12,7 +12,7 @@ async function recycle(DB, catid){
 		let todelBox = boxs[boxs.length-1];
 		console.log(`[Recycler] Eliminando tema ${todelBox.bid} y sus comentarios...`);
 		dbManager.deleteDB(DB, mdbScheme.C_BOXS, {bid: todelBox.bid}, function(){
-			dbManager,deleteDB(DB, mdbScheme.C_COMS, {bid: todelBox.bid}, function(){
+			dbManager.deleteDB(DB, mdbScheme.C_COMS, {bid: todelBox.bid}, function(){
 				return todelBox;
 			});
 		});	
