@@ -116,6 +116,9 @@
     height: 100%;
     margin-top: auto;
     margin-bottom: auto;
+	display: flex;
+	justify-content: space-between;
+	margin-right: 10px;
 }
 
 .joinCommunity{
@@ -161,7 +164,8 @@
 
 .home-category-title-text{
 	align-self: center;
-	font-size: 13px;
+	font-size: 0.8rem;
+	color: inherit;
 }
 
 .home-category-image {
@@ -222,4 +226,12 @@
 	display: block;
 	margin: auto;
 	border-radius: 5px;
+}
+
+.acttitle a {
+	color: inherit;
+	text-decoration: none;
+}
+.acttitle a:hover {
+	color: inherit;
 }

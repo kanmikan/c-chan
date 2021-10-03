@@ -18,16 +18,19 @@
 				<span>Cargando mas...</span>
 			</div>
 		</div>
+		
+		<!-- tarjetas -->
 		<div class="boxList" id="boxList">
 			<% if (it.kind != "/") { %>
 				<% it.data.boxs.forEach(function(box){renderBox(box)}); %>
 			<% } else { %>
 				<% it.data.cats.forEach(function(category){
-						let catbox = it.data.boxs.filter((box) => box.cat === category.catid).slice(0, 10); %>
-					<div class="home-category">
+					let catbox = it.data.boxs.filter((box) => box.cat === category.catid);
+					catbox = catbox.slice(0, ((catbox.length > 5 && catbox.length < 9) ? 5 : 10)); %>
+					<div class="home-category" id="<%= category.catid %>">
 						<div class="home-category-title" data-id="<%= category.catid %>">
 							<img class="home-category-image" src="<%= category.content.media.icon %>"></img>
-							<div class="homelink home-category-title-text" href="/<%= category.catid %>"><%= category.content.name %></div>
+							<a class="homelink home-category-title-text" href="/<%= category.catid %>"><%= category.content.name %></a>
 							<i class="home-menu fas fa-ellipsis-v" style="float: right; line-height: inherit; margin-right: 3px"></i>
 						</div>
 						<div class="home-category-boxlist">
@@ -35,14 +38,17 @@
 						</div>
 					</div>
 				<% }); %>
+				<!-- footer -->
+				<div style="margin: 10px 0px 10px;"></div>
 			<% } %>
 		</div>
 		
+		<!-- barra -->
 		<div class="homeBar" id="homeBar" onclick="showHomebarScroll()">
 			<div class="activityzone">
-				<div class="acttitle">Temas populares</div>
+				<div class="acttitle">Temas populares<i class="fas fa-crown"></i></div>
 				<div class="chatlike">
-					<% it.data.boxs.sort((a,b) => b.content.comments - a.content.comments).slice(0, 3).forEach(function(box){ %>
+					<% it.data.boxs.sort((a,b) => b.content.comments - a.content.comments).slice(0, 3).forEach(function(box, i){ %>
 						<div class="home-temalist" onclick="location.href='/tema/<%= box.bid %>'">
 							<img src="<%= box.img.preview %>"></img><span><%= box.content.title %></span>
 						</div>
@@ -55,10 +61,14 @@
 			</div>
 			
 			<div class="activityzone">
-				<div class="acttitle">Comentarios Recientes</div>
+				<div class="acttitle">Comentarios Recientes<i class="fas fa-comment"></i></div>
 				<div class="chatlike" id="activityList"></div>
 			</div>
-			<div style="height: 100px"></div>
+			<div class="activityzone">
+				<div class="acttitle">Usando el motor Cchan v1.0</div>
+				<div class="acttitle"><a>Reglas</a> - <a>Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
+			</div>
+			<div style="height: 50px"></div>
 		</div>
 	
 	</body>

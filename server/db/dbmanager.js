@@ -61,7 +61,7 @@ function queryDB(DB, cname, query, sort, callback){
 		if (query === ""){query = {};}
 		let CACHE = cache.getCache();
 		if (CACHE[cname]){
-			let cursor = new Query(query).find(CACHE[cname]).sort(sort);	
+			let cursor = new Query(query).find(CACHE[cname]).sort(sort);
 			callback(cursor.all());
 			return cursor.all();
 		}

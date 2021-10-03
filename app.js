@@ -10,6 +10,7 @@ const routes = require("./server/routes");
 const sesionManager = require("./server/sesion/sesionmanager.js");
 const live = require("./server/api/live.js");
 const cache = require("./server/db/cache.js");
+const defaults = require("./server/db/defaults.js");
 
 /* SETUP INICIAL */
 var app = express();
@@ -40,14 +41,17 @@ app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, './client/views'));
 
 /* BASE DE DATOS */
-dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}, function (db){ 
+dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}, async function (db){ 
 	app.locals.db = db;
 	
 	/* SESION */
 	let sesion = sesionManager.create(app);
 	
 	/* CACHE MANAGER */
-	cache.init(db);
+	await cache.init(db);
+	
+	/* CARGAR DEFAULTS */
+	await defaults.init(db);
 	
 	/* WEBSOCKETS (socket.io) */
 	live.init(server, sesion);

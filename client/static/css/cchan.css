@@ -1491,6 +1491,8 @@ h4{
     color: var(--slidemenu-text);
     padding: 4px;
     font-size: 12px;
+	display: flex;
+	justify-content: space-between;
 }
 
 .homebarContainer {
