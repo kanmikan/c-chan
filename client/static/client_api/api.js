@@ -168,11 +168,11 @@ function activityRender(com){
 	let icon = com.icon.split(",");
 	let cbody = `<div class="chatlike-box" onclick="location.href='/tema/${com.bid}#${com.cid}'"><div class="chatlike-img">`;
 	if (icon[0] === "ico") {
-		cbody +=`<div class="anonIcon" style="background: ${icon[1]}; width: 40px; height: 40px"><div class="anonText" style="color: ${icon[2]};font-size: 0.9rem;">ANON</div></div>`;
+		cbody +=`<div class="anonIcon" style="background: ${icon[1]}; width: 30px; height: 30px"><div class="anonText" style="color: ${icon[2]};font-size: 0.7rem;">ANON</div></div>`;
 	} else if (icon[0] === "class") {
-		cbody +=`<div class="anonIcon ${icon[1]}" style="width: 40px; height: 40px"><div class="anonText ${icon[2]}" style="font-size: 0.9rem;">ANON</div></div>`;
+		cbody +=`<div class="anonIcon ${icon[1]}" style="width: 30px; height: 30px"><div class="anonText ${icon[2]}" style="font-size: 0.7rem;">ANON</div></div>`;
 	} else {
-		cbody +=`<img class="avatar" style="width: 40px; height: 40px" src="${com.icon}" alt="">`;
+		cbody +=`<img class="avatar" style="width: 30px; height: 30px" src="${com.icon}" alt="">`;
 	}
 	cbody += `</div><div class="chatlike-data">
 	<div class="chatlike-title">

@@ -67,7 +67,6 @@
 	height: calc(100vh - 50px);
 }
 .boxList {
-	padding-top: 3px;
 	position: absolute;
 	width: 79.5vw;
 }

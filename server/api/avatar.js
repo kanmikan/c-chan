@@ -12,8 +12,8 @@ function pickCSSAnon(){
 		["ico,#0579b3,#ffffff", 1], //azul
 		["ico,#02b13c,#ffffff", 1], //verde
 		["ico,#df0202,#ffffff", 1], //rojo
-		["class,anonMulti, ", 0.1], //multi
-		["class,anonInvertido, ", 0.1], //invertido
+		["class,anonMulti,white", 0.1], //multi
+		["class,anonInvertido,white", 0.1], //invertido
 		["ico,#000000,#ffffff", 0.01], //black
 		["/assets/anon/5.gif", 0.001], //uff
 		["ico,#ffffff,#000000", 0.01] //white
