@@ -168,11 +168,11 @@ function activityRender(com){
 	let icon = com.icon.split(",");
 	let cbody = `<div class="chatlike-box" onclick="location.href='/tema/${com.bid}#${com.cid}'"><div class="chatlike-img">`;
 	if (icon[0] === "ico") {
-		cbody +=`<div class="anonIcon" style="background: ${icon[1]}; width: 30px; height: 30px"><div class="anonText" style="color: ${icon[2]};font-size: 0.7rem;">ANON</div></div>`;
+		cbody +=`<div class="anonIcon" style="background: ${icon[1]}; width: 35px; height: 35px"><div class="anonText" style="color: ${icon[2]};font-size: 0.8rem;">ANON</div></div>`;
 	} else if (icon[0] === "class") {
-		cbody +=`<div class="anonIcon ${icon[1]}" style="width: 30px; height: 30px"><div class="anonText ${icon[2]}" style="font-size: 0.7rem;">ANON</div></div>`;
+		cbody +=`<div class="anonIcon ${icon[1]}" style="width: 35px; height: 35px"><div class="anonText ${icon[2]}" style="font-size: 0.8rem;">ANON</div></div>`;
 	} else {
-		cbody +=`<img class="avatar" style="width: 30px; height: 30px" src="${com.icon}" alt="">`;
+		cbody +=`<img class="avatar" style="width: 35px; height: 35px" src="${com.icon}" alt="">`;
 	}
 	cbody += `</div><div class="chatlike-data">
 	<div class="chatlike-title">
@@ -618,8 +618,48 @@ $(document).ready(function() {
 		});
 	}
 	
+	//evento: al hacer click en menu de categoria.
+	$(document).on("click", ".home-menu", function(e){
+		e.preventDefault();
+		let catkind = $(e.target).parent().data();
+		let menuElement = $(e.target).parent().children().last();
+		menuElement.toggleClass("hidden");
+	});
+	
+	//evento: al hacer click en el titulo de la categoria
+	$(document).on("click", ".home-category-title", function (e) {
+		let blist = $(e.target).parent().children().last();
+		if (blist.hasClass("home-category-boxlist")){
+			blist.toggleClass("hidden");
+		}
+	});
+	
+	$(document).on("click", ".home-menu-dropdown-element", function (e) {
+		let kind = $(e.currentTarget).parent().parent().parent().data("id");
+		let action = $(e.currentTarget).data("action");
+		let spanElement = $(e.currentTarget).find(".home-menu-dropdown-element-text");
+		
+		switch(action){
+			case "pinear":
+				applyConfig("anchors_add:" + kind);
+				$(e.currentTarget).data("action", "despinear");
+				$("#boxList").load(document.URL +  ' #boxList>*');
+				break;
+			case "ocultar":
+				applyConfig("cathides_add:" + kind);
+				$(`#${kind}`).addClass("hidden");
+				break;
+			case "despinear":
+				applyConfig("anchors_del:" + kind);
+				$(e.currentTarget).data("action", "pinear");
+				$("#boxList").load(document.URL +  ' #boxList>*');
+				break;
+		}
+		$(e.currentTarget).parent().parent().addClass("hidden");
+	});
+	
 	//evento: hover de imagenes
-	$(document).on("click", ".attachExpandIcon", function (e) {
+	$(document).on("click", ".attachExpandIcon", function (e){
 		e.preventDefault();
 		$(e.target).parent().parent().toggleClass("commentAttachExpand");
 		let voxImageE = $(e.currentTarget).parent().find(".voxImage");
@@ -890,6 +930,9 @@ $(document).ready(function() {
 					element("bspin").classList.remove("hidden");
 					element("newVox").disabled = true;
 				}, function(result){
+					element("btext").classList.remove("hidden");
+					element("bspin").classList.add("hidden");
+					element("newVox").disabled = false;
 					if (result.success){
 						window.location.href = result.data.url;
 					} else {
@@ -1012,6 +1055,9 @@ $(document).ready(function() {
 			}
 			
 			element("closePreview").addEventListener("click", function(e){
+				element("loadingCom").classList.add("hidden");
+				element("ctext").classList.remove("hidden");
+				element("newComment").disabled = false;
 				element("previewInputComment").classList.add("hide");
 				element("imgpreview").setAttribute("src", "");
 			});

@@ -185,9 +185,10 @@
 	width: 100px;
 	font-size: 14px;
 	background: var(--home-menu-background);
-    position: absolute;
-    right: 0;
-    border-radius: 2px;
+	position: absolute;
+	right: 0;
+	transform: translate(0px, 25px);
+	border-radius: 2px;
 	z-index: 5;
 }
 

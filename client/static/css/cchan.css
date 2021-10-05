@@ -182,8 +182,8 @@ html[data-theme='darkmode']{
 	--tarjeta-border-color: #202020;
 	--homebar-background: #282828;
 	--homebar-tarjeta-background: #363636;
-	--home-menu-background: white;
-	--home-menu-element-hover: #c3c3c3;
+	--home-menu-background: #464646;
+	--home-menu-element-hover: #2196f3;
 	--goup: #2a2a2a;
 	--goup-hover: #323232;
 	--rawAttach-background: #dcdcdc;
@@ -660,12 +660,13 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .title {
-    padding: 12px;
+	padding: 12px;
 	padding-top: 1px !important;
-    color: white;
-    font-weight: 600; 
-    margin: 0;
-    word-break: break-word;
+	color: white;
+	font-weight: 600;
+	font-size: large;
+	margin: 0;
+	word-break: break-word;
 }
 
 .textShadon{
@@ -1402,7 +1403,7 @@ h4{
 }
 
 .chatlike {
-    width: 100%;
+    width: auto;
     color: var(--slidemenu-chat-text);
 	font-size: 13px;
     border-radius: 5px;
@@ -1505,9 +1506,9 @@ h4{
 
 .chatlike-box {
 	background-color: var(--slidemenu-chat);
-	padding: 3px;
+	padding: 4px;
 	padding-right: 10px;
-	border-radius: 3px;
+	border-radius: 4px;
 	margin-bottom: 4px;
 	display: flex;
 	cursor: pointer;
@@ -2964,7 +2965,7 @@ input:checked + .slider:before {
         position: static;
     }
 
-    .navbarCategories .categoryItemIcon img {width: 52px;}
+    .navbarCategories .categoryItemIcon img {width: 42px;}
 
     .navCategoryTitle{ display: none; }
 

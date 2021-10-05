@@ -24,16 +24,48 @@
 			<% if (it.kind != "/") { %>
 				<% it.data.boxs.forEach(function(box){renderBox(box)}); %>
 			<% } else { %>
-				<% it.data.cats.forEach(function(category){
+				<% let anchorSort = it.data.cats.sort(function(a, b){
+						if (a.date.sticky >= 1 || b.date.sticky >= 1) return b.date.sticky - a.date.sticky;
+						let elementA = (it.sesion.config.anchors && it.sesion.config.anchors.includes(a.catid)) ? 1 : 0;
+						let elementB = (it.sesion.config.anchors && !it.sesion.config.anchors.includes(a.catid)) ? 1 : 0;
+						return elementB - elementA;
+					});
+				anchorSort.forEach(function(category){
+					if (it.sesion.config.cathides.includes(category.catid)){return;}
 					let catbox = it.data.boxs.filter((box) => box.cat === category.catid);
 					catbox = catbox.slice(0, ((catbox.length > 5 && catbox.length < 9) ? 5 : 10)); %>
 					<div class="home-category" id="<%= category.catid %>">
 						<div class="home-category-title" data-id="<%= category.catid %>">
 							<img class="home-category-image" src="<%= category.content.media.icon %>"></img>
 							<a class="homelink home-category-title-text" href="/<%= category.catid %>"><%= category.content.name %></a>
+							
+							<% if (category.date.sticky >= 1) { %>
+								<i class="fas fa-thumbtack" style="margin-left: 10px;align-self: center;font-size: small;"></i>
+							<% } %>
+							
+							<% let anchorAction = "Pinear";
+							if (it.sesion.config.anchors && it.sesion.config.anchors.includes(category.catid)) {
+								anchorAction = "Despinear"; %>
+								<i class="fas fa-anchor" style="margin-left: 10px;align-self: center;font-size: small;"></i>
+							<% } %>
+							
 							<i class="home-menu fas fa-ellipsis-v" style="float: right; line-height: inherit; margin-right: 3px"></i>
+							<div class="home-menu-dropdown hidden">
+								<ul style="list-style: none;padding: 0;margin: 0;">
+									<li class="home-menu-dropdown-element" data-action="ocultar">
+										<i class="fas fa-eye-slash" style="margin-right: 5px"></i>
+										<span class="home-menu-dropdown-element-text">Ocultar</span>
+									</li>
+									
+									<li class="home-menu-dropdown-element" data-action="<%= anchorAction.toLowerCase() %>">
+										<i class="fas fa-anchor" style="margin-right: 5px"></i>
+										<span class="home-menu-dropdown-element-text"><%= anchorAction %></span>
+									</li>
+								</ul>
+							</div>
+							
 						</div>
-						<div class="home-category-boxlist">
+						<div class="home-category-boxlist <%= (catbox.length < 4) ? "hidden" : "" %>">
 							<% catbox.forEach(function(box){renderBox(box)}); %>
 						</div>
 					</div>

@@ -68,6 +68,7 @@ function genUser(uid, pass, sid){
 			cathides: [], //lista de categorias ocultas.
 			favs: [], //lista de favoritos.
 			comus: [], //lista de comunidades suscritas.
+			anchors: [], //id de la categoria/comunidad pineada con prioridad en la home (aplica a la v1)
 			blacklist: [] //[placeholder] define una lista negra de palabras (o users), (nota: esto podria exponer el uid)
 		}
 	};
