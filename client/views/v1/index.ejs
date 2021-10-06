@@ -1,10 +1,8 @@
 <!doctype html>
 <html lang="en">
 	<head>
-	<%- include('../common/head', it); %>
-	
-	<link rel="stylesheet" rel="preload" as="style" href="/css/v1.css">
-	
+		<%- include('../common/head', it); %>
+		<link rel="stylesheet" rel="preload" as="style" href="/css/v1.css">
 	</head>
 	<!-- ..El navbar se renderiza aca.. -->
 	<%- include('../common/header', it); %>
@@ -18,22 +16,24 @@
 				<span>Cargando mas...</span>
 			</div>
 		</div>
-		
 		<!-- tarjetas -->
 		<div class="boxList" id="boxList">
-			<% if (it.kind != "/") { %>
+			<% if (it.kind != "/" && it.kind != "/comunidades") { %>
 				<% it.data.boxs.forEach(function(box){renderBox(box)}); %>
-			<% } else { %>
-				<% let anchorSort = it.data.cats.sort(function(a, b){
-						if (a.date.sticky >= 1 || b.date.sticky >= 1) return b.date.sticky - a.date.sticky;
-						let elementA = (it.sesion.config.anchors && it.sesion.config.anchors.includes(a.catid)) ? 1 : 0;
-						let elementB = (it.sesion.config.anchors && !it.sesion.config.anchors.includes(a.catid)) ? 1 : 0;
-						return elementB - elementA;
-					});
-				anchorSort.forEach(function(category){
+			<% } else {
+				let customCats = it.data.cats;
+				if (it.kind === "/comunidades"){
+					customCats = customCats.filter((cat) => cat.type === 1);
+				}
+				customCats.sort(function(a, b){
+					if (a.date.sticky >= 1 || b.date.sticky >= 1) return b.date.sticky - a.date.sticky;
+					return ((it.sesion.config.anchors && !it.sesion.config.anchors.includes(a.catid)) ? 1 : 0) - ((it.sesion.config.anchors && it.sesion.config.anchors.includes(a.catid)) ? 1 : 0);
+				})
+				.forEach(function(category){
 					if (it.sesion.config.cathides.includes(category.catid)){return;}
 					let catbox = it.data.boxs.filter((box) => box.cat === category.catid);
 					catbox = catbox.slice(0, ((catbox.length > 5 && catbox.length < 9) ? 5 : 10)); %>
+					
 					<div class="home-category" id="<%= category.catid %>">
 						<div class="home-category-title" data-id="<%= category.catid %>">
 							<img class="home-category-image" src="<%= category.content.media.icon %>"></img>
@@ -69,6 +69,7 @@
 							<% catbox.forEach(function(box){renderBox(box)}); %>
 						</div>
 					</div>
+					
 				<% }); %>
 				<!-- footer -->
 				<div style="margin: 10px 0px 10px;"></div>

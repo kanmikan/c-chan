@@ -26,6 +26,22 @@ module.exports = function(app){
 		});
 	});
 	
+	/* RUTA DE COMUNIDADES */
+	app.get('/comunidades', function(req, res) {
+		var uid = req.session.uid;
+		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
+			res.render("./v1/index", {
+				it : {
+					kind: req.originalUrl,
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session,
+					data: result
+				}
+			});
+		});
+	});
+	
 	/* RUTA DE LOGEO */
 	app.get('/login', function(req, res) {
 		var uid = req.session.uid;

@@ -10,7 +10,7 @@
 	
 		<% if (it.renderConfig.ENABLE_COMMUNITIES){ %>
 			<li class="navbarCategories pointer">
-				<div class="categorySelected" id="navbarComu">
+				<div class="categorySelected" id="navbarComu" onclick="location.href='/comunidades'">
 					<i class="fas fa-user-friends"></i>
 					<div class="navCategoryTitle">Comunidades</div>
 				</div>
@@ -27,11 +27,11 @@
 		
 		<input id="searchInput" class="searchInput hide" type="text" placeholder="Introduce el criterio a buscar..." maxlength="50">
 		
-		<li id="searchButton" class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#searchInput" data-backdrop="false">
+		<li id="searchButton" class="menuIcon tooltip-bottom mobile" data-toggle="modal" data-target="#searchInput" data-backdrop="false" data-tooltip="Buscar tema">
 			<i class="fas fa-search"></i>
 		</li>
 		
-		<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" id="notif_icon" data-target="#notificationsList" data-backdrop="false">
+		<li class="menuIcon tooltip-bottom mobile" data-toggle="modal" id="notif_icon" data-target="#notificationsList" data-backdrop="false" data-tooltip="Notificaciones">
 			<i class="fas fa-bell"></i>
 			<%- include('../common/fragments/header/notifIconCounter', it); %>
 		</li>

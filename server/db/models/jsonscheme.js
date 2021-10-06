@@ -129,7 +129,7 @@ const NOTIF_SCHEME = {
 const CATEGORY_SCHEME = {
 	version: 2,
 	catid: "off",
-	type: 0,
+	type: 0, //0: categoria, 1: comunidad
 	state: [],
 	date: {
 		created: 0,

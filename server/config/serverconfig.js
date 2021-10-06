@@ -29,5 +29,6 @@ module.exports = {
 	MAX_TAGS: 5, //maximo numero de tagueos permitidos.
 	
 	/* LIMITES */
+	HOME_BOX_LIMIT: 24, //limite de la carga inicial (no aplica a la v1)
 	CATEGORY_BOX_LIMIT: 41 //maximo de temas en una categoría.
 }

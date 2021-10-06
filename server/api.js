@@ -26,6 +26,7 @@ module.exports = function(app){
 		} else {
 			if (mimetype[0] === "image"){
 				uploadManager.upload(filedata, function(result){
+					console.log(result);
 					res.json(result);
 				});
 			} else if (mimetype[0] === "video"){
@@ -370,13 +371,18 @@ module.exports = function(app){
 		});
 		
 		//filtrar comentarios en base a esos boxs.
-		dbManager.queryDBSkip(req.app.locals.db, mdbScheme.C_COMS, {$or: comfilter}, {"date.created": -1}, 0, limit, function(coms){
-			if (coms[0] != undefined){
-				res.json({success: true, data: pass.filterProtectedUID(coms)});
-			} else {
-				res.json({success: false, data: null});
-			}
-		});
+		if (comfilter.length > 0){
+			dbManager.queryDBSkip(req.app.locals.db, mdbScheme.C_COMS, {$or: comfilter}, {"date.created": -1}, 0, limit, function(coms){
+				if (coms[0] != undefined){
+					res.json({success: true, data: pass.filterProtectedUID(coms)});
+				} else {
+					res.json({success: false, data: null});
+				}
+			});
+		} else {
+			//todo: enviar que no hay comentarios y mostrar mensaje.
+			res.json({success: false, data: null});
+		}
 	});
 	
 	//API: obtener comentario especificado con el cid
@@ -473,10 +479,35 @@ module.exports = function(app){
 		res.send({success: true, data: req.session.config});
 	});
 		
-	//DEBUG: MUESTRA DE LA ESTRUCTURA DE LOS TEMAS EN MIKANDBV2
+		
+	//DEBUG: PRUEBAS DE PORTABILIDAD ENTRE MDB Y MDBV2
 	//SOLO PARA DEBUG Y TEST, ESTO LO VOY A SACAR
-	app.get('/dev', async function(req, res) {
-		res.send("ok");
+	app.get('/dev/del/:bid', function(req, res){
+		let bid = req.params.bid;
+		
+		dbManager.deleteDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, function(){
+			dbManager.deleteDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, function(){
+				res.redirect("/");
+			});
+		});
+		
+	});
+	
+	app.get('/dev/:bid', async function(req, res) {
+		let bid = req.params.bid;
+	
+		req.app.locals.db.db("mikanchan").collection("boxs").find({bid: bid}).toArray(function(err, result){
+			var tboxs = compat.checkCompat("BOX", result);
+			dbManager.insertAllDB(req.app.locals.db, mdbScheme.C_BOXS, tboxs, function(res){});
+			
+			req.app.locals.db.db("mikanchan").collection("comentarios").find({bid: bid}).toArray(function(err, result2){
+				var tcoms = compat.checkCompat("COM", result2);
+				dbManager.insertAllDB(req.app.locals.db, mdbScheme.C_COMS, tcoms, function(res){});
+			});
+			
+			res.redirect("/");
+		});
+		
 	});
 	
 }

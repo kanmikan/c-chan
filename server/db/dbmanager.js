@@ -127,6 +127,23 @@ function insertDB(DB, cname, object, callback){
 	});
 }
 
+/* INSERCION DE DATOS A LA DB */
+function insertAllDB(DB, cname, object, callback){
+	return new Promise(function(resolve, reject){
+		DB.db(sConfig.DBNAME).collection(cname).insertMany(object, function(err, result){
+			if (sConfig.DATABASE_CACHE){
+				cache.update(cname, function(){
+					callback(result);
+					resolve(result);
+				});
+			} else {
+				callback(result);
+				resolve(result);
+			}
+		});
+	});
+}
+
 function pushDB(DB, cname, criterio, valor){
 	return new Promise(function(resolve, reject){
 		DB.db(sConfig.DBNAME).collection(cname).updateOne(criterio, valor, function (err, res){
@@ -172,4 +189,4 @@ function deleteDB(DB, cname, criterio, callback){
 	});
 }
 
-module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll, pushDB, queryDBSkip, deleteDB};
+module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll, pushDB, queryDBSkip, deleteDB, insertAllDB};

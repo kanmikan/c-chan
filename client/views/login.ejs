@@ -19,8 +19,8 @@
 				
 				<div class="loginFormButtons">
 					<button class="buttonPress" id="loginButton">
-						<i id="loadingCom" class="fas fa-circle-notch fa-spin hidden"></i>
-						<span id="ctext">Iniciar Sesion</span>
+						<i id="loadingLogin" class="fas fa-circle-notch fa-spin hidden"></i>
+						<span id="loginText">Iniciar Sesion</span>
 					</button>
 				</div>
 			</form>
@@ -40,11 +40,15 @@
 			formdata.append("userid", userid);
 			formdata.append("password", password);
 			
-			post(formdata, "/api/login", function(){}, function(result){
+			post(formdata, "/api/login", function(){
+				element("loadingLogin").classList.remove("hidden");
+				element("loginText").classList.add("hidden");
+			}, function(result){
+				element("loadingLogin").classList.add("hidden");
+				element("loginText").classList.remove("hidden");
 				if (result.success){
 					window.location.replace("/");
 				} else {
-					console.log(result);
 					alert(result.data);
 				}
 			});

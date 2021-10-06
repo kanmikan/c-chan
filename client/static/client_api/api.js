@@ -131,8 +131,8 @@ function boxRender(box){
 	bbody += `<span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: middle;">${getCatShow(box.cat)}</span>
 	</img></div>`;
 	
-	if (box.state && box.state.includes("new")){
-		bbody +=`<div class="tagInvisible tagNew">TEST</div>`;	
+	if (box.flag && box.flag.includes("new")){
+		bbody +=`<div class="tagInvisible tagNew">Nuevo</div>`;	
 	}
 	if (box.type && box.type.includes("video")){
 		bbody +=`<div class="tagInvisible ytb"><div class="tagWrapper"></div><i class="fab fa-youtube"></i></div>`;
@@ -609,8 +609,17 @@ $(document).ready(function() {
 			B_BUFFER.forEach(function(box){
 				box.flag.push("new");
 			});
+			
 			for (var i=0; i<B_BUFFER.length; i++){
-				$("#boxList").prepend(boxRender(B_BUFFER[i]));
+				if (V1) {
+					$(`#${B_BUFFER[i].cat} .home-category-boxlist`).prepend(boxRender(B_BUFFER[i]));
+					//eliminar ultimo elemento de la lista.
+					if ($(`#${B_BUFFER[i].cat} .home-category-boxlist`).children().length > 9){
+						$(`#${B_BUFFER[i].cat} .home-category-boxlist`).children().last().remove();
+					}
+				} else {
+					$("#boxList").prepend(boxRender(B_BUFFER[i]));
+				}
 			}
 			
 			B_BUFFER = [];

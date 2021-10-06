@@ -1,11 +1,14 @@
 const mdbScheme = require('./mdbscheme.js');
+const renderConfig = require('../../config/renderconfig.js');
+const sConfig = require('../../config/serverconfig.js');
 
 /* QUERY DE DATOS NECESARIOS PARA LA HOME DE CCHAN */
 /* PARAMETROS: uid - id del usuario que esta realizando la query, utilizada para obtener los datos de administracion y notificaciones */
 function HOME_QUERY(uid){
+	let PAGELIMIT = (renderConfig.ENABLE_V1) ? 0 : sConfig.HOME_BOX_LIMIT;
 	return [
 		[mdbScheme.C_ADM, "", "", 0],
-		[mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, 24], //la primera carga de la home aligerada.
+		[mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, PAGELIMIT],
 		[mdbScheme.C_NOTIF, {"receiver.uid": uid}, {"date.created": -1}, 0],
 		[mdbScheme.C_CATS, "", {"date.sticky": -1, "date.order": -1}, 0]
 	];
@@ -14,7 +17,7 @@ function HOME_QUERY(uid){
 function CAT_QUERY(uid, cat){
 	return [
 		[mdbScheme.C_ADM, "", "", 0],
-		[mdbScheme.C_BOXS, {cat: cat}, {"date.sticky": -1, "date.bump": -1}, 41],
+		[mdbScheme.C_BOXS, {cat: cat}, {"date.sticky": -1, "date.csticky": -1, "date.bump": -1}, sConfig.CATEGORY_BOX_LIMIT],
 		[mdbScheme.C_NOTIF, {"receiver.uid": uid}, {"date.created": -1}, 0],
 		[mdbScheme.C_CATS, "", {"date.sticky": -1, "date.order": -1}, 0]
 	];

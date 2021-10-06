@@ -37,7 +37,7 @@ function mdbTranscript(type, mdbElement){
 			if (mdbElement.img != "" && !mdbElement.video){
 				json.type.push("image");
 				json.img = {
-					preview: upload.genThumb(mdbElement.img),
+					preview: imgTranscript(mdbElement.img),
 					full: mdbElement.img,
 					raw: ""
 				};
@@ -68,11 +68,11 @@ function mdbTranscript(type, mdbElement){
 			json.user.uid = mdbElement.uid;
 			//jerarquia
 			json.date.created = mdbElement.tiempo;
-			json.icon = "/assets/anon/" + mdbElement.color;
+			json.icon = iconTranscript(mdbElement.color);
 			if (mdbElement.img && !mdbElement.video){
 				json.type.push("image");
 				json.img = {
-					preview: upload.genThumb(mdbElement.img_url),
+					preview: imgTranscript(mdbElement.img_url),
 					full: mdbElement.img_url,
 					raw: ""
 				};
@@ -89,6 +89,53 @@ function mdbTranscript(type, mdbElement){
 		
 			//TODO: mas cosas.
 			return json;
+	}
+	
+}
+
+function imgTranscript(url){
+	return upload.genThumb(url);
+}
+
+function iconTranscript(iconElement){
+	let iconE = iconElement.split(",");
+	if (iconE[1] != undefined){
+		return `ico,${iconE[1]},${iconE[0]}`;
+	} else {
+		//convertir anons del viejo formato al nuevo.
+		let ico = iconElement.split("/");
+		let out = ico[ico.length-1].split(".");
+		switch(out[0]){
+			case "1":
+				//amarillo
+				return "ico,#FFcc00,#ffffff";
+			case "2":
+				//azul
+				return "ico,#0579b3,#ffffff";
+			case "3":
+				//verde
+				return "ico,#02b13c,#ffffff";
+			case "4":
+				//rojo
+				return "ico,#df0202,#ffffff";
+			case "5":
+				//multi
+				return "class,anonMulti,white";
+			case "6":
+				//invertido
+				return "class,anonInvertido,white";
+			case "7":
+				//black
+				return "ico,#000000,#ffffff";
+			case "8":
+				//uff
+				return "/assets/anon/8.png";
+			case "9":
+				//white
+				return "ico,#ffffff,#000000";
+		}
+		
+		return iconElement;
 	}
 	
 }

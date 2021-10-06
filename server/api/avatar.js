@@ -15,7 +15,7 @@ function pickCSSAnon(){
 		["class,anonMulti,white", 0.1], //multi
 		["class,anonInvertido,white", 0.1], //invertido
 		["ico,#000000,#ffffff", 0.01], //black
-		["/assets/anon/5.gif", 0.001], //uff
+		["/assets/anon/8.png", 0.001], //uff
 		["ico,#ffffff,#000000", 0.01] //white
 	];
 	return weightRandom(anone);
@@ -31,8 +31,8 @@ function pickDefaultAnon(){
 		["/assets/anon/5.gif", 0.1], //multi
 		["/assets/anon/6.gif", 0.1], //invertido
 		["/assets/anon/7.png", 0.01], //black
-		["/assets/anon/5.gif", 0.001], //uff
-		["/assets/anon/5.gif", 0.01] //white
+		["/assets/anon/8.png", 0.001], //uff
+		["/assets/anon/9.png", 0.01] //white
 	];
 	return weightRandom(anone);
 }

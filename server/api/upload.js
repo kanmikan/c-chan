@@ -237,6 +237,8 @@ function checkURLType(url){
 		return "youtube-embed";
 	} else if (url.search("youtube.com/watch") != -1 || url.search("youtu.be") != -1){
 		return "youtube-url";
+	} else if (url.search("i.ibb.co") != -1) {
+		return "imgbb";
 	} else {
 		return "generic";
 	}
@@ -253,9 +255,11 @@ function genThumb(url){
 			return url;
 		case "youtube-embed":
 			return youtube.genYoutubeThumb(url, "hq");
+		case "imgbb":
 		case "generic":
 			return url;
 	}
+	return url;
 }
 
 //FUNCION: generar thumbnails de imgur
