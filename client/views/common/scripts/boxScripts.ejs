@@ -1,4 +1,4 @@
-<script src="/node/jquery-lazyload/jquery.lazyload.js" type="text/javascript"></script>
+<script src="/node/vanilla-lazyload/dist/lazyload.min.js" type="text/javascript"></script>
 <script>
 	/* Calculos del lado del server */
 	var OP = <%= (BOX.user.uid === it.sesion.uid) ? true : false %>;
@@ -14,7 +14,7 @@
 	/* LISTENERS DEL SOCKETIO */
 	$(function () {
 		//carga las imagenes de la lista de comentarios de manera asincronica.
-		$("img.lazy").lazyload();
+		let lazy = new LazyLoad({}).update();
 		
 		var socket = io();
 		socket.on('connect', function(){

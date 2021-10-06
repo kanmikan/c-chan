@@ -26,7 +26,6 @@ module.exports = function(app){
 		} else {
 			if (mimetype[0] === "image"){
 				uploadManager.upload(filedata, function(result){
-					console.log(result);
 					res.json(result);
 				});
 			} else if (mimetype[0] === "video"){
