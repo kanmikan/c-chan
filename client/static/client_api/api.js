@@ -443,6 +443,128 @@ function applyConfig(query){
 	});
 }
 
+//FUNCION: maneja el drop/paste de elementos en el cuadro de creacion de temas.
+//TODO: reducir codigo duplicado.
+function action_boxDrop(e){
+	e.preventDefault();
+	e.stopPropagation();
+	let dataTransfer = e.originalEvent.dataTransfer;
+	let dataFile = (dataTransfer) ? dataTransfer.files[0] : null;
+	
+	if (dataFile && dataFile.type.split("/")[0] === "image"){
+		//es un archivo de imagen, subir
+		getDataURL(dataFile, function(target){
+			$("#previewInputVox").attr("style", "display: block !important");
+			element("nimgpreview").setAttribute("src", target);
+			element("btext").classList.add("hidden");
+			element("bspin").classList.remove("hidden");
+			element("newVox").disabled = true;
+		}, function(data){
+			element("bspin").classList.add("hidden");
+			element("btext").classList.remove("hidden");
+			element("newVox").disabled = false;
+			if (data.success){
+				element("nimgpreview").setAttribute("src", data.data.thumb);
+				element("bimg").value = data.data.link + ";" + data.data.thumb;
+			} else {
+				element("nimgpreview").setAttribute("src", "");
+				alert(JSON.stringify(data.data));
+			}
+		});
+	} else {
+		//viene de otra pagina
+		let dataHtml = (dataTransfer) ? dataTransfer.getData("text/html") : null;
+		if (!dataHtml) {dataHtml = e.originalEvent.clipboardData.getData("text/html");}
+		let context = $('<div>').append(dataHtml);
+		let imgURL = $(context).find("img").attr("src");
+		
+		//subir imagen.
+		let formData = new FormData();
+		formData.append("link", imgURL);
+		post(formData, "/api/uplink", function(){
+			$("#previewInputVox").attr("style", "display: block !important");
+			element("nimgpreview").setAttribute("src", imgURL);
+			element("btext").classList.add("hidden");
+			element("bspin").classList.remove("hidden");
+			element("newVox").disabled = true;
+		}, function(data){
+			element("bspin").classList.add("hidden");
+			element("btext").classList.remove("hidden");
+			element("newVox").disabled = false;
+			if (data.success){
+				element("nimgpreview").setAttribute("src", data.data.thumb);
+				element("bimg").value = data.data.raw + ";" + data.data.thumb;
+			} else {
+				element("nimgpreview").setAttribute("src", "");
+				alert(JSON.stringify(data.data));
+			}
+		});	
+	}
+}
+
+//FUNCION: manejo del evento de drop y paste en los comentarios.
+//TODO: reducir codigo duplicado.
+function action_commentDrop(e){
+	e.preventDefault();
+	e.stopPropagation();
+	let dataTransfer = e.originalEvent.dataTransfer;
+	let dataFile = (dataTransfer) ? dataTransfer.files[0] : null;
+	
+	if (dataFile && dataFile.type.split("/")[0] === "image"){
+		//es un archivo de imagen, subir
+		getDataURL(dataFile, function(target){
+			element("imgpreview").setAttribute("src", target);
+			element("previewInputComment").classList.remove("hide");
+			element("loadingCom").classList.remove("hidden");
+			element("ctext").classList.add("hidden");
+			element("newComment").disabled = true;
+		}, function(data){
+			element("loadingCom").classList.add("hidden");
+			element("ctext").classList.remove("hidden");
+			element("newComment").disabled = false;
+			if (data.success){
+				element("imgpreview").setAttribute("src", data.data.thumb);
+				element("cimg").value = data.data.link + ";" + data.data.thumb;
+			} else {
+				element("previewInputComment").classList.add("hide");
+				element("imgpreview").setAttribute("src", "");
+				alert(JSON.stringify(data.data));
+			}
+		});
+	} else {
+		//viene de otra pagina
+		let dataHtml = (dataTransfer) ? dataTransfer.getData("text/html") : null;
+		if (!dataHtml) {dataHtml = e.originalEvent.clipboardData.getData("text/html");}
+		let context = $('<div>').append(dataHtml);
+		let imgURL = $(context).find("img").attr("src");
+		
+		//subir imagen.
+		let formData = new FormData();
+		formData.append("link", imgURL);
+		post(formData, "/api/uplink", function(){
+			element("imgpreview").setAttribute("src", imgURL);
+			element("previewInputComment").classList.remove("hide");
+			element("loadingCom").classList.remove("hidden");
+			element("ctext").classList.add("hidden");
+			element("newComment").disabled = true;
+		}, function(data){
+			console.log(data);
+			element("loadingCom").classList.add("hidden");
+			element("ctext").classList.remove("hidden");
+			element("newComment").disabled = false;
+			if (data.success){
+				element("imgpreview").setAttribute("src", data.data.thumb);
+				element("cimg").value = data.data.raw + ";" + data.data.thumb;
+			} else {
+				element("previewInputComment").classList.add("hide");
+				element("imgpreview").setAttribute("src", "");
+				alert(JSON.stringify(data.data));
+			}
+		});
+		
+	}	
+}
+
 /* EVENTOS */
 $(document).ready(function() {
 	
@@ -455,7 +577,7 @@ $(document).ready(function() {
 	let complete = true;
 	
 	function onScrollDesktop(){
-		if (kind === "/"){
+		if (KIND === "/"){
 			clearTimeout(timer);
 			if (!document.body.classList.contains("disable-hover")){
 				document.body.classList.add("disable-hover");
@@ -628,6 +750,27 @@ $(document).ready(function() {
 			element("newAlert").classList.add("disabled");
 		});
 	}
+	
+	//evento: al mover un archivo a los comentarios
+	$("#createComment").on("drop", function(e) {
+		action_commentDrop(e);
+	});
+	$("#commentTextarea").on("paste", function(e) {
+		action_commentDrop(e);
+	});
+	
+	//evento: al mover un archivo al cuadro de creacion de tema.
+	$("#previewInputVox").on("dragover", function(event) {
+		event.preventDefault();  
+		event.stopPropagation();
+	});
+	$("#previewInputVox").on("dragleave", function(event) {
+		event.preventDefault();  
+		event.stopPropagation();
+	});
+	$("#previewInputVox").on("drop", function(e) {
+		action_boxDrop(e);
+	});
 	
 	//evento: al hacer click en menu de categoria.
 	$(document).on("click", ".home-menu", function(e){
