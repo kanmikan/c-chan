@@ -2507,10 +2507,10 @@ input:checked + .slider:before {
 
 .tagNew {
 	background: #12a201;
-	color: white;
-	padding: 2px;
+	color: #fff;
+	padding: 3px;
 	font-size: 11px;
-	margin-top: 3px;
+	margin-top: 1.5px;
 	border-radius: 3px;
 }
 

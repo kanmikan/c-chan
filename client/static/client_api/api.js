@@ -455,13 +455,15 @@ $(document).ready(function() {
 	let complete = true;
 	
 	function onScrollDesktop(){
-		clearTimeout(timer);
-		if (!document.body.classList.contains("disable-hover")){
-			document.body.classList.add("disable-hover");
-		};
-		timer = setTimeout(function(){
-			document.body.classList.remove("disable-hover");
-		}, 200);
+		if (kind === "/"){
+			clearTimeout(timer);
+			if (!document.body.classList.contains("disable-hover")){
+				document.body.classList.add("disable-hover");
+			};
+			timer = setTimeout(function(){
+				document.body.classList.remove("disable-hover");
+			}, 200);
+		}
 		onScroll();
 	}
 	
