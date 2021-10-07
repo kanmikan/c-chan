@@ -136,6 +136,7 @@
 	background: var(--tarjeta-background);
     border: 1px solid var(--tarjeta-border-color);
     margin: 1px;
+	margin-top: 3px;
 	border-radius: 3px;
 	overflow: hidden;
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 20%);
@@ -153,7 +154,6 @@
 .home-category-title{
 	display: flex;
 	padding: 8px;
-	padding-bottom: 6px;
 	background-color: var(--tarjeta-title-background);
     background-repeat: no-repeat;
     background-position: center;
@@ -176,9 +176,15 @@
 
 .home-menu {
 	align-self: center;
-	margin-left: auto;
 	padding-left: 15px;
-    padding-right: 3px;
+	padding-right: 3px;
+	margin-right: 5px;
+}
+
+.home-title-element {
+	align-self: center;
+	padding-left: 5px;
+	margin-left: 5px;
 }
 
 .home-menu-dropdown {
@@ -190,6 +196,12 @@
 	transform: translate(0px, 25px);
 	border-radius: 2px;
 	z-index: 5;
+}
+
+.home-menu-dropdown ul{
+	list-style: none;
+	padding: 0;
+	margin: 0;
 }
 
 .home-menu-dropdown-element{

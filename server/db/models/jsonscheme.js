@@ -144,6 +144,11 @@ const CATEGORY_SCHEME = {
 			icon: "/assets/cat/icon/off.jpg",
 			image: "/assets/cat/off.jpg",
 			misc: []
+		},
+		extra: {
+			cardtitlestyle: "",
+			cardbgstyle: "",
+			cardmsg: ""
 		}
 	}
 }

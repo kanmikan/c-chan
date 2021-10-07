@@ -34,8 +34,8 @@
 					let catbox = it.data.boxs.filter((box) => box.cat === category.catid);
 					catbox = catbox.slice(0, ((catbox.length > 5 && catbox.length < 9) ? 5 : 10)); %>
 					
-					<div class="home-category" id="<%= category.catid %>">
-						<div class="home-category-title" data-id="<%= category.catid %>">
+					<div class="home-category" id="<%= category.catid %>" style="<%- category.content.extra.cardbgstyle %>">
+						<div class="home-category-title" data-id="<%= category.catid %>" style="<%- category.content.extra.cardtitlestyle %>">
 							<img class="home-category-image" src="<%= category.content.media.icon %>"></img>
 							<a class="homelink home-category-title-text" href="/<%= category.catid %>"><%= category.content.name %></a>
 							
@@ -49,18 +49,16 @@
 								<i class="fas fa-anchor" style="margin-left: 10px;align-self: center;font-size: small;"></i>
 							<% } %>
 							
-							<i class="home-menu fas fa-ellipsis-v" style="float: right; line-height: inherit; margin-right: 3px"></i>
+							<!-- elementos de prueba -->
+							<span class="home-title-element" style="margin-left: auto"><%- category.content.extra.cardmsg %></span>
+							<div style="margin-left: auto"></div>
+							<i class="home-title-element fas fa-circle"></i>
+							
+							<i class="home-menu fas fa-ellipsis-v"></i>
 							<div class="home-menu-dropdown hidden">
-								<ul style="list-style: none;padding: 0;margin: 0;">
-									<li class="home-menu-dropdown-element" data-action="ocultar">
-										<i class="fas fa-eye-slash" style="margin-right: 5px"></i>
-										<span class="home-menu-dropdown-element-text">Ocultar</span>
-									</li>
-									
-									<li class="home-menu-dropdown-element" data-action="<%= anchorAction.toLowerCase() %>">
-										<i class="fas fa-anchor" style="margin-right: 5px"></i>
-										<span class="home-menu-dropdown-element-text"><%= anchorAction %></span>
-									</li>
+								<ul>
+									<li class="home-menu-dropdown-element" data-action="ocultar"><i class="fas fa-eye-slash" style="margin-right: 5px"></i><span class="home-menu-dropdown-element-text">Ocultar</span></li>
+									<li class="home-menu-dropdown-element" data-action="<%= anchorAction.toLowerCase() %>"><i class="fas fa-anchor" style="margin-right: 5px"></i><span class="home-menu-dropdown-element-text"><%= anchorAction %></span></li>
 								</ul>
 							</div>
 							
@@ -115,12 +113,7 @@
 		<a class="box" id="<%= box.bid %>" href="/tema/<%= box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%= (box.type.includes("video")) ? box.media.preview : box.img.preview %>); text-decoration: none; background-position: top;">
 		<div class="voxHeader">
 			<div class="tagList">
-				<div class="tag categoryTag">
-					<% if (it.renderConfig.SHOW_CATEGORY_ICON) { %>
-						<img src="<%= categoryData.content.media.icon %>">
-					<% } %>
-					<span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: baseline;"><%- it.utils.getCatShow(box.cat) %></span></img>
-				</div>
+				
 				<!-- tag video -->
 				<% if (box.type && box.type.includes("video")){ %>
 					<div class="tagInvisible ytb"><div class="tagWrapper"></div><i class="fab fa-youtube"></i></div>
