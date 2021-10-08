@@ -1,0 +1,58 @@
+.pcontainer {
+	border: 2px solid #2196f3;
+	background: var(--modal-background);
+	width: 90%;
+	height: auto;
+	margin-right: auto;
+	margin-left: auto;
+	padding: 20px;
+}
+
+.pcontainer-int {
+	margin-bottom: 10px;
+}
+
+.buttonPress {
+	margin: 3px;
+}
+
+.admActivity {
+	background: #656571;
+	padding: 5px;
+	border-radius: 5px;
+	margin-top:5px;
+	padding-right: 10px;
+}
+
+.admActivity-int {
+	display:flex;
+}
+
+.admActivity-int input {
+	width:100%;
+	margin: 5px;
+}
+
+.consoleResult {
+	background: black;
+	padding: 5px;
+	font-size: small;
+	font-family: console;
+}
+
+.home-temalist {
+	display: block;
+}
+
+.home-temalist div {
+	display: flex;
+}
+
+.home-temalist i {
+	align-self: center;
+}
+
+.home-temalist .act-uid {
+	justify-content: end;
+}
+

@@ -100,6 +100,7 @@
 	--modal-border: #2196f3;
 	--menumodal-notif-title: #03a9f4;
 	--homelink-hover: #3f51b5;
+	--modal-background: white;
 }
 
 html[data-theme='darkmode']{
@@ -195,6 +196,7 @@ html[data-theme='darkmode']{
 	--newBoxButton-background: #3f51b5;
 	--option-icon-color: #00bcd4;
 	--homelink-hover: #3f51b5;
+	--modal-background: #3c3c3c;
 }
 
 /* CODIGO DE VOXEDRIP.CSS ADAPTADO */
@@ -664,7 +666,7 @@ ul.slideMenuOptions li:hover.optionBolt {
 	padding-top: 1px !important;
 	color: white;
 	font-weight: 600;
-	font-size: large;
+	font-size: medium;
 	margin: 0;
 	word-break: break-word;
 }

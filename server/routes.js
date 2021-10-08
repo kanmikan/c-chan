@@ -1,11 +1,13 @@
 const dbManager = require('./db/dbmanager.js');
 const models = require('./db/models/dbmodels.js');
 const api = require('./api.js');
+const adm = require('./adm.js');
 const utils = require('./utils.js');
 const renderConfig = require('./config/renderconfig.js');
 const mdbScheme = require('./db/models/mdbscheme.js');
 const compat = require('./db/compat.js');
 const cfilter = require('./sesion/contentfilter.js');
+const sesion = require('./sesion/sesionmanager.js');
 
 module.exports = function(app){
 	
@@ -56,6 +58,33 @@ module.exports = function(app){
 				}
 			});
 		});
+	});
+	
+	/* RUTA DEL PANEL DE ADMINISTRACION */
+	app.get('/adm', function(req, res) {
+		let uid = req.session.uid;
+		let sid = req.session.id;
+		let userData = sesion.getUserData(sid)[0].data;
+		
+		//comprobar credenciales (token)
+		if (userData.permisos.includes("ADMIN") || userData.permisos.includes("GMOD")){
+			dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
+			res.render("adm", {
+				it : {
+					kind: req.originalUrl,
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session,
+					data: result,
+					userdata: userData
+				}
+			});
+		});
+			
+		} else {
+			res.status(403);
+			res.redirect("/error/2");
+		}
 	});
 	
 	/* RUTA DE LOS BOXS */
@@ -172,6 +201,9 @@ module.exports = function(app){
 	
 	/* RUTAS DEL API */
 	api(app);
+	
+	/* RUTAS DE ADMINISTRACION */
+	adm(app);
 	
 	/* CATEGORIAS */
 	app.get('/:cat', function(req, res) {

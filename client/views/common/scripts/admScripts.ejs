@@ -1,1 +1,24 @@
+<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
+<script src="/client_api/api.js" type="text/javascript"></script>
 
+<script>
+	
+	request("/adm/boxs/5", function(response){	
+		response.data.forEach(function(box){
+			$("#admActView").append(buildActivityBox(box));
+		});
+	});
+	
+	function buildActivityBox(box){
+		let bdata = `<div class="home-temalist" onclick="window.open('/tema/${box.bid}')">
+		<div>
+		<img src="${box.img.preview}">
+		<span>${box.content.title}</span>
+		<span class="act-uid">${box.user.uid}</span>
+		<i class="fas fa-ellipsis-v"></i>
+		</div>`;
+		
+		return bdata;
+	}
+	
+</script>

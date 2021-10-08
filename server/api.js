@@ -196,7 +196,7 @@ module.exports = function(app){
 	//API: login de usuario.
 	//TODO: comprobacion de credenciales, sanitizado
 	app.post('/api/login', function(req, res) {
-		let userid = req.fields.userid.trim();
+		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
 		let password = req.fields.password.trim();
 		
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {$or: [{uid: userid}, {nick: new RegExp(userid, "i")}]}, "", async function(user){

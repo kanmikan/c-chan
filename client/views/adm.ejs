@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include('./common/head', it); %>
+	<link rel="stylesheet" href="/css/fontawesome.css" rel="preload" as="style">
+	<link rel="stylesheet" rel="preload" as="style" href="/css/cchan.css">
+	<link rel="stylesheet" rel="preload" as="style" href="/css/v1.css">
+	<link rel="stylesheet" rel="preload" as="style" href="/css/adm.css">
+</head>
+<body>
+	<%- include('./common/scripts/admScripts', it); %>
+	<div class="pcontainer" id="pcontainer">
+		<div>Resumen</div>
+		<div class="pcontainer-int">
+			<div><span>Usuario: <%= it.userdata.nick %></span><span style="float: right;">Rango: <%= it.userdata.rango %></span></div>
+			<div><span>Color: <span style="color: <%= it.userdata.color %>"><%= it.userdata.color %></span></span><span style="float: right;">Permisos: <%= it.userdata.permisos %></span></div>
+		</div>
+		<div>Acciones Generales</div>
+		<div class="pcontainer-int">
+			<button class="buttonPress" id="action-1" data-state="1" type="submit">
+				<span>Activar Whitelist</span> 
+			</button>
+			<button class="buttonPress" type="submit">
+				<span>Cerrar Comentarios</span> 
+			</button>
+			<button class="buttonPress" type="submit">
+				<span>Cerrar Temas</span> 
+			</button>		
+		</div>
+		<div>Actividad</div>
+		<div class="pcontainer-int">
+			<div class="chatlike" id="admActView"></div>
+		</div>
+		<div class="pcontainer-int admActivity">
+			<span>Consola:</span><div class="consoleResult" id="consoleResult">[Escribe /help para obtener una lista de ordenes]</div>
+			<div class="admActivity-int">
+				<input type="text" id="consoleInput" value="" placeholder="/reload /promote">
+				<button class="buttonPress" id="consoleSend" type="submit"><span>Enviar</span></button>
+			</div>
+		</div>
+		<div style="text-align: center;"><a style="color: inherit;text-decoration: none;" href="/">Volver a cchan</a></div>
+	</div>
+	
+</body>
+</html>
