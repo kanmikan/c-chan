@@ -190,18 +190,24 @@ function activityRender(com){
 	return cbody;
 }
 
+function iconRender(iconData){
+	let icon = iconData.split(",");
+	let ibody = ``;
+	if (icon[0] === "ico") {
+		ibody +=`<div class="anonIcon" style="background: ${icon[1]}"><div class="anonText" style="color: ${icon[2]}">ANON</div></div>`;
+	} else if (icon[0] === "class") {
+		ibody +=`<div class="anonIcon ${icon[1]}"><div class="anonText ${icon[2]}">ANON</div></div>`;
+	} else {
+		ibody +=`<img class="avatar" src="${com.icon}" alt="">`;
+	}
+	return ibody;
+}
+
 function commentRender(op, com){
 	//render de comentarios del lado del cliente.			
 	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar unselect">`;
 	
-	let icon = com.icon.split(",");
-	if (icon[0] === "ico") {
-		cbody +=`<div class="anonIcon" style="background: ${icon[1]}"><div class="anonText" style="color: ${icon[2]}">ANON</div></div>`;
-	} else if (icon[0] === "class") {
-		cbody +=`<div class="anonIcon ${icon[1]}"><div class="anonText ${icon[2]}">ANON</div></div>`;
-	} else {
-		cbody +=`<img class="avatar" src="${com.icon}" alt="">`;
-	}
+	cbody += iconRender(com.icon);
 	
 	cbody +=`</div><div class="commentBody"><div class="commentMetadata"><div class="commentsTag unselect">`;
 	if (op){

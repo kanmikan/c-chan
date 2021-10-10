@@ -1,24 +1,72 @@
 <script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
 <script src="/client_api/api.js" type="text/javascript"></script>
-
+<script src="/socket.io/socket.io.js" type="text/javascript"></script>
 <script>
-	
-	request("/adm/boxs/5", function(response){	
-		response.data.forEach(function(box){
-			$("#admActView").append(buildActivityBox(box));
+	/* EVENTOS */
+	$(document).ready(function() {
+		
+		element("consoleForm").addEventListener("submit", function(e){
+			e.preventDefault();
+			
+			let consoleText = element("consoleInput");
+			let consoleRes = element("consoleResult");
+				
+			let formData = new FormData();
+			formData.append("args", consoleText.value);
+			post(formData, "/adm/command", function(){}, function(result){
+				consoleRes.innerHTML = consoleRes.innerHTML + `<br/><span style="color: yellow">&gt;` + consoleText.value + `</span><br/>` + result.data;
+				consoleText.value = "";
+				$('#consoleResult').animate({
+				  scrollTop: $('#consoleResult')[0].scrollHeight
+				}, 100);
+			});
+			
 		});
+		
 	});
+	/* FUNCIONES */
+	function loadAdmActivity(){
+		updateActivityBox();
+		updateActivityCom();
+	}
+	
+	function updateActivityBox(){
+		request("/adm/boxs/5", function(response){
+			$("#admActBoxsView").empty();
+			response.data.forEach(function(box){
+				$("#admActBoxsView").append(buildActivityBox(box));
+			});
+		});
+	}
+	
+	function updateActivityCom(){
+		request("/adm/coms/5", function(response){
+			$("#admActComsView").empty();			
+			response.data.forEach(function(com){
+				$("#admActComsView").append(buildActivityCom(com));
+			});
+		});
+	}
 	
 	function buildActivityBox(box){
 		let bdata = `<div class="home-temalist" onclick="window.open('/tema/${box.bid}')">
-		<div>
-		<img src="${box.img.preview}">
-		<span>${box.content.title}</span>
-		<span class="act-uid">${box.user.uid}</span>
-		<i class="fas fa-ellipsis-v"></i>
+		<div style="display:flex">
+			<img src="${box.img.preview}">
+			<div class="chatlike-container">
+				<span class="act-title">${box.content.title}</span>
+				<span class="act-uid">UID: ${box.user.uid}</span>
+			</div>
 		</div>`;
-		
 		return bdata;
 	}
 	
+	function buildActivityCom(com){
+		let cdata = `<div class="home-temalist" onclick="window.open('/tema/${com.bid}#${com.cid}')">
+		<div style="display:flex">${iconRender(com.icon)}<div>`;
+		if (com.type.includes("image")){
+			cdata += `<div class="chatlike-container"><img class="act-image" src="${com.img.preview}"></img></div>`;
+		}
+		cdata += `<span>${com.content.body}</span><span class="act-uid">UID: ${com.user.uid}</span></div></div>`;
+		return cdata;
+	}
 </script>

@@ -9,11 +9,35 @@
 </head>
 <body>
 	<%- include('./common/scripts/admScripts', it); %>
+	<script>
+		let KIND = "<%= it.kind %>";
+		let V1 = "<%= it.renderConfig.ENABLE_V1 %>";
+		
+		$(function () {
+			loadAdmActivity();
+			var socket = io();
+			socket.on('activity', function(data){
+				switch(data.kind){
+					case "comment":
+						//append del comentario
+						updateActivityCom(data.data);
+						break;
+					case "box":
+						//append del tema
+						updateActivityBox(data.data);
+						break;
+				}
+			});
+		});
+	</script>
 	<div class="pcontainer" id="pcontainer">
-		<div>Resumen</div>
-		<div class="pcontainer-int">
-			<div><span>Usuario: <%= it.userdata.nick %></span><span style="float: right;">Rango: <%= it.userdata.rango %></span></div>
-			<div><span>Color: <span style="color: <%= it.userdata.color %>"><%= it.userdata.color %></span></span><span style="float: right;">Permisos: <%= it.userdata.permisos %></span></div>
+		<div class="admResume">
+			<div>Resumen</div>
+			<div class="pcontainer-int">
+				<div><span>Usuario: <%= it.userdata.nick %></span><span style="float: right;">Rango: <%= it.userdata.rango %></span></div>
+				<div>Color: <span style="color: <%= it.userdata.color %>"><%= it.userdata.color %></span></div>
+				<div>Permisos: <%= it.userdata.permisos %></div>
+			</div>
 		</div>
 		<div>Acciones Generales</div>
 		<div class="pcontainer-int">
@@ -25,21 +49,27 @@
 			</button>
 			<button class="buttonPress" type="submit">
 				<span>Cerrar Temas</span> 
-			</button>		
+			</button>
+			<button class="buttonPress" type="submit">
+				<span>Sesiones</span>
+			</button>	
 		</div>
-		<div>Actividad</div>
-		<div class="pcontainer-int">
-			<div class="chatlike" id="admActView"></div>
-		</div>
-		<div class="pcontainer-int admActivity">
-			<span>Consola:</span><div class="consoleResult" id="consoleResult">[Escribe /help para obtener una lista de ordenes]</div>
-			<div class="admActivity-int">
-				<input type="text" id="consoleInput" value="" placeholder="/reload /promote">
-				<button class="buttonPress" id="consoleSend" type="submit"><span>Enviar</span></button>
+		<div class="admActivity">
+			<div>Actividad Reciente</div>
+			<div class="pcontainer-int act-int">
+				<div class="chatlike" id="admActBoxsView"></div>
+				<div class="chatlike" id="admActComsView"></div>
 			</div>
+		</div>
+		<div class="pcontainer-int admConsole">
+			<div class="consoleResult" id="consoleResult">[Escribe /help para obtener una lista de ordenes]</div>
+			<form class="admConsole-int" id="consoleForm">
+				<input type="hidden" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">
+				<input type="text" id="consoleInput" value="" placeholder="/reload /promote">
+				<button class="buttonPress" type="submit"><span>Enviar</span></button>
+			</form>
 		</div>
 		<div style="text-align: center;"><a style="color: inherit;text-decoration: none;" href="/">Volver a cchan</a></div>
 	</div>
-	
 </body>
 </html>

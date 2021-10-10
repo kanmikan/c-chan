@@ -16,6 +16,16 @@ function check(req, res, next){
 	});
 }
 
+function onlyADM(req, res, next){
+	let userData = sesionManager.getUserData(req.session.id)[0].data;
+	if (userData.permisos.includes("ADMIN") || userData.permisos.includes("GMOD")){
+		next();
+	} else {
+		res.status(403);
+		res.redirect("/error/2");
+	}
+}
+
 function checkBoxFields(req, res, next){
 	boxFields(req, res, function(data){
 		if (data){
@@ -172,4 +182,4 @@ function filterProtectedUID(arr){
 	}
 }
 
-module.exports = {check, checkBoxFields, checkComFields, filterProtectedUID}
+module.exports = {check, checkBoxFields, checkComFields, filterProtectedUID, onlyADM}

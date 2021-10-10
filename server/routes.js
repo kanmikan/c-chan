@@ -8,6 +8,7 @@ const mdbScheme = require('./db/models/mdbscheme.js');
 const compat = require('./db/compat.js');
 const cfilter = require('./sesion/contentfilter.js');
 const sesion = require('./sesion/sesionmanager.js');
+const pass = require('./api/passport.js');
 
 module.exports = function(app){
 	
@@ -61,14 +62,12 @@ module.exports = function(app){
 	});
 	
 	/* RUTA DEL PANEL DE ADMINISTRACION */
-	app.get('/adm', function(req, res) {
+	app.get('/adm', pass.onlyADM, function(req, res) {
 		let uid = req.session.uid;
 		let sid = req.session.id;
 		let userData = sesion.getUserData(sid)[0].data;
 		
-		//comprobar credenciales (token)
-		if (userData.permisos.includes("ADMIN") || userData.permisos.includes("GMOD")){
-			dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
+		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
 			res.render("adm", {
 				it : {
 					kind: req.originalUrl,
@@ -80,11 +79,7 @@ module.exports = function(app){
 				}
 			});
 		});
-			
-		} else {
-			res.status(403);
-			res.redirect("/error/2");
-		}
+		
 	});
 	
 	/* RUTA DE LOS BOXS */

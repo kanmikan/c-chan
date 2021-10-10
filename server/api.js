@@ -109,8 +109,11 @@ module.exports = function(app){
 		dbManager.pushDB(req.app.locals.db, mdbScheme.C_CATS, {catid: cat}, {$set: {"date.order": time}}, function(){});
 		
 		dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
-			live.sendData("new", {kind: "newbox", data: pass.filterProtectedUID(json)});
+			let protectedJSON = pass.filterProtectedUID(json);
+			live.sendData("new", {kind: "newbox", data: protectedJSON});
 			res.json({success: true, data: {url: "/tema/" + bid}});
+			//informar nueva actividad.
+			live.sendData("activity", {kind: "box", data: protectedJSON});
 		});
 	});
 	
