@@ -95,6 +95,10 @@ function disposeUserCache(sid){
 	USER_FLAG = USER_FLAG.filter(item => item.sid != sid);
 }
 
+function disposeAll(){
+	USER_FLAG = [];
+}
+
 function cacheUser(sid){
 	USER_FLAG.push(sid);
 	if (USER_FLAG.length > 50){
@@ -102,4 +106,4 @@ function cacheUser(sid){
 	}
 }
 
-module.exports = {create, getUserData, disposeUserCache, checkSesion, genUser};
+module.exports = {create, getUserData, disposeUserCache, disposeAll, checkSesion, genUser};

@@ -15,11 +15,7 @@ var db;
 function init(DB){
 	db = DB;
 	//obtener todo en cache.
-	collectionList.forEach(function(collection){
-		query(DB, collection, function(res){
-			CACHE[collection] = res;
-		});
-	});
+	updateAll();
 	
 }
 
@@ -27,6 +23,14 @@ function update(cname, callback){
 	query(db, cname, function(res){
 		CACHE[cname] = res;
 		callback(res);
+	});
+}
+
+function updateAll(){
+	collectionList.forEach(function(collection){
+		query(db, collection, function(res){
+			CACHE[collection] = res;
+		});
 	});
 }
 
@@ -50,4 +54,4 @@ function query(DB, cname, callback){
 	});
 }
 
-module.exports = {init, getCache, setCache, update}
+module.exports = {init, getCache, setCache, update, updateAll}

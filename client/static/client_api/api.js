@@ -444,7 +444,7 @@ function applyConfig(query){
 	formData.append("data", query);
 	post(formData, "/api/config", function(){}, function(result){
 		if (!result.success){
-			(result.data.redirect) ? window.location.replace(result.data.to) : alert(result.data);
+			(result.data.redirect) ? action_login(result.data) : alert(result.data);
 		}
 	});
 }
@@ -571,6 +571,10 @@ function action_commentDrop(e){
 	}	
 }
 
+function action_login(data){
+	$("#loginForm").css("display", "block");
+}
+
 /* EVENTOS */
 $(document).ready(function() {
 	
@@ -654,13 +658,50 @@ $(document).ready(function() {
 				}
 				action_pollUpdate(result.data);
 			} else {
-				(result.data.redirect) ? window.location.replace(result.data.to) : alert(result.data);
+				(result.data.redirect) ? action_login(result.data) : alert(result.data);
 			}
 			element("pollOne").classList.remove("pollLoading");
 			element("pollTwo").classList.remove("pollLoading");
 		});
 		
 	});
+	
+	//evento: accion de login.
+	if (element("loginButton")){
+		element("loginButton").addEventListener("click", function(e){
+			e.preventDefault();
+			let userid = element("userid").value;
+			let password = element("password").value;
+			let formdata = new FormData();
+			
+			formdata.append("userid", userid);
+			formdata.append("password", password);
+			
+			post(formdata, "/api/login", function(){
+				element("loadingLogin").classList.remove("hidden");
+				element("loginText").classList.add("hidden");
+			}, function(result){
+				element("loadingLogin").classList.add("hidden");
+				element("loginText").classList.remove("hidden");
+				if (result.success){
+					alert("logueado."); //TODO mensaje de login.
+					$("#loginForm").css("display", "none");
+				} else {
+					alert(result.data);
+				}
+			});
+			
+		});
+		element("loginClose").addEventListener("click", function(e){
+			$("#loginForm").css("display", "none");
+		});
+	}
+	
+	if (element("changeSesion")){
+		element("changeSesion").addEventListener("click", function(e){
+			action_login();
+		});
+	}
 	
 	//evento: al realizar busqueda
 	if (element("searchInput")){
@@ -1068,7 +1109,7 @@ $(document).ready(function() {
 							//TODO: mostrar mensaje de baneo con toda la info necesaria.
 							alert(JSON.stringify(result.data.bandata));
 						} else {
-							(result.data.redirect) ? window.location.replace(result.data.to) : alert(result.data);
+							(result.data.redirect) ? action_login(result.data) : alert(result.data);
 						}
 					}
 				});
@@ -1100,7 +1141,7 @@ $(document).ready(function() {
 						if (result.data.banned){
 							alert(JSON.stringify(result.data.bandata));
 						} else {
-							(result.data.redirect) ? window.location.replace(result.data.to) : alert(result.data);
+							(result.data.redirect) ? action_login(result.data) : alert(result.data);
 						}
 					}
 				});
@@ -1127,7 +1168,7 @@ $(document).ready(function() {
 						element("bimg").value = img;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? window.location.replace(data.data.to) : alert (data.data));
+						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
 					}
 					element("btext").classList.remove("hidden");
 					element("bspin").classList.add("hidden");
@@ -1147,7 +1188,7 @@ $(document).ready(function() {
 						element("bvid").value = vid;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? window.location.replace(data.data.to) : alert (data.data));
+						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
 					}
 					element("btext").classList.remove("hidden");
 					element("bspin").classList.add("hidden");
@@ -1182,7 +1223,7 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? window.location.replace(data.data.to) : alert (data.data));
+						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
 					}
 					
 					element("loadingCom").classList.add("hidden");
@@ -1204,7 +1245,7 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? window.location.replace(data.data.to) : alert (data.data));
+						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
 					}
 					element("loadingCom").classList.add("hidden");
 					element("ctext").classList.remove("hidden");

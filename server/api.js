@@ -480,36 +480,5 @@ module.exports = function(app){
 		}
 		res.send({success: true, data: req.session.config});
 	});
-		
-		
-	//DEBUG: PRUEBAS DE PORTABILIDAD ENTRE MDB Y MDBV2
-	//SOLO PARA DEBUG Y TEST, ESTO LO VOY A SACAR
-	app.get('/dev/del/:bid', function(req, res){
-		let bid = req.params.bid;
-		
-		dbManager.deleteDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, function(){
-			dbManager.deleteDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, function(){
-				res.redirect("/");
-			});
-		});
-		
-	});
-	
-	app.get('/dev/:bid', async function(req, res) {
-		let bid = req.params.bid;
-	
-		req.app.locals.db.db("mikanchan").collection("boxs").find({bid: bid}).toArray(function(err, result){
-			var tboxs = compat.checkCompat("BOX", result);
-			dbManager.insertAllDB(req.app.locals.db, mdbScheme.C_BOXS, tboxs, function(res){});
-			
-			req.app.locals.db.db("mikanchan").collection("comentarios").find({bid: bid}).toArray(function(err, result2){
-				var tcoms = compat.checkCompat("COM", result2);
-				dbManager.insertAllDB(req.app.locals.db, mdbScheme.C_COMS, tcoms, function(res){});
-			});
-			
-			res.redirect("/");
-		});
-		
-	});
 	
 }

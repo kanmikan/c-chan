@@ -1,0 +1,46 @@
+<form class="modalBox login" id="loginForm" action="/api/login" method="POST" enctype="multipart/form-data" aria-modal="true" role="dialog">
+	<div class="createVox-titlebar">
+		<button type="button" id="loginClose" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+	</div>
+	</br>
+	<h5>Para usar cchan necesitas generar o iniciar una sesion, podes escribir un <b>ID</b> o <b>Usuario</b> existente y una contraseña, o generar un <b>ID</b> automaticamente.</h5>
+	<input type="text" class="modalInput" name="userid" id="userid" placeholder="ID del Usuario" value="<%= it.sesion.uid %>">
+	<input type="text" class="modalInput" name="password" id="password" placeholder="Contraseña">
+	<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">	
+	<h5>La contraseña es opcional pero puede servir para que puedas recuperar tu sesion en cualquier dispositivo.</h5>
+	<h5>La sesion abierta en otro dispositivo se invalidará</h5>	
+	<div class="loginFormButtons">
+		<button class="buttonPress" id="loginButton">
+			<i id="loadingLogin" class="fas fa-circle-notch fa-spin hidden"></i>
+			<span id="loginText">Iniciar Sesion</span>
+		</button>
+	</div>
+</form>
+<style>		
+	form h5 {
+		align-self: center;
+		font-weight: inherit;
+		font-size: 0.9rem;
+		margin: 5px 20px;
+	}
+	
+	.login {
+		overflow: hidden;
+		max-width: 400px;
+	}
+	
+	.login input {
+		width: 94%;
+		padding: 10px;
+		margin-bottom: 10px;
+	}
+	
+	.loginFormButtons {
+		display: flex;
+		justify-content: center;
+	}
+	
+	.loginFormButtons button {
+		margin-right: 10px;
+	}	
+</style>

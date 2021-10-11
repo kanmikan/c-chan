@@ -227,6 +227,19 @@ module.exports = function(app){
 		});
 	});
 	
+	//RUTA: pagina de info, bienvenida, faqs, reglas, etc.
+	app.get('/info/:id', function(req, res) {
+		var id = req.params.id;
+		res.render("info", {
+			it : {
+					kind: req.originalUrl,
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session
+				}
+		});
+	});
+	
 	/* RUTAS DE ERROR */
 	app.get('/error/:id', function(req, res) {
 		var id = req.params.id;

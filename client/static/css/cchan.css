@@ -2634,6 +2634,14 @@ input:checked + .slider:before {
 	width: 100%;
 }
 
+.info {
+	width: 90%;
+	background: var(--homebar-tarjeta-background);
+	margin-right: auto;
+	margin-left: auto;
+	padding: 10px;
+}
+
 .anonMulti {
 	background: linear-gradient(#df0202 25%, #FFcc00 25%, #FFcc00 50%, #0579b3 50%, #0579b3 75%, #02b13c 75%, #02b13c 100%);
 	animation: anonMulti 0.25s infinite;
