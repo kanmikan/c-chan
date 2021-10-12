@@ -5,7 +5,7 @@ module.exports = {
 	SSL: (process.env.SSL && process.env.SSL === "true") ? true : false,
 	PORT: process.env.PORT || 3000,
 	SESSION_SECRET: process.env.SESSION_SECRET || "test",
-	DATABASE_CACHE: (process.env.DATABASE_CACHE && process.env.DATABASE_CACHE === "true") ? true : false,
+	DATABASE_CACHE: (process.env.DATABASE_CACHE && process.env.DATABASE_CACHE === "false") ? false : true,
 	STATIC_CACHE_VALUE: {}, //{maxAge: 3600000*12}
 	
 	/* APIS EXTERNAS */

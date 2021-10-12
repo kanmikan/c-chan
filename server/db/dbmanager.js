@@ -152,6 +152,8 @@ function pushDB(DB, cname, criterio, valor){
 				cache.update(cname, function(){
 					resolve(res);
 				});
+			} else {
+				resolve(res);
 			}
 		});
 	});
