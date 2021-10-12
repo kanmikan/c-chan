@@ -2,10 +2,10 @@ require('dotenv').config();
 module.exports = {
 	DBNAME: "mikandbv2",
 	DBURL: process.env.MONGOURI || "mongodb://127.0.0.1:27017",
-	SSL: ((process.env.SSL === "true") ? true : false) || false,
+	SSL: (process.env.SSL && process.env.SSL === "true") ? true : false,
 	PORT: process.env.PORT || 3000,
 	SESSION_SECRET: process.env.SESSION_SECRET || "test",
-	DATABASE_CACHE: ((process.env.DATABASE_CACHE === "true") ? true : false) || true,
+	DATABASE_CACHE: (process.env.DATABASE_CACHE && process.env.DATABASE_CACHE === "true") ? true : false,
 	STATIC_CACHE_VALUE: {}, //{maxAge: 3600000*12}
 	
 	/* APIS EXTERNAS */
