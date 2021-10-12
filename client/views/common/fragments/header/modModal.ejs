@@ -15,8 +15,8 @@
 			<button style="margin-right: 10px;height: 40px;" id="actionMoveBox" type="button" class="buttonPress buttonPressv2">Mover</button>
 		</div>
 		<div style="padding: 0px 15px;">
-			<button type="button" class="buttonPress buttonPressv2 actionModBoxOption" data-dismiss="modal" data-action="box_delete" data-bid="<%= it.data.boxs[0].bid %>">Borrar Tema</button>
-			<button type="button" class="buttonPress buttonPressv2 actionModBoxOption" data-dismiss="modal" data-action="box_ban" data-bid="<%= it.data.boxs[0].bid %>">Banear Usuario</button>
+			<button type="button" class="buttonPress buttonPressv2 actionModBoxOption" data-dismiss="modal" data-action="box_delete" data-bid="<%= (it.data.boxs) ? it.data.boxs[0].bid : "" %>">Borrar Tema</button>
+			<button type="button" class="buttonPress buttonPressv2 actionModBoxOption" data-dismiss="modal" data-action="box_ban" data-bid="<%= (it.data.boxs) ? it.data.boxs[0].bid : "" %>">Banear Usuario</button>
 		</div>
 	</div>
 </div>
