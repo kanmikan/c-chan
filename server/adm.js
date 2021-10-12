@@ -8,6 +8,7 @@ const sesionManager = require('./sesion/sesionmanager.js');
 const cfilter = require('./sesion/contentfilter.js');
 const utils = require('./utils.js');
 const pass = require('./api/passport.js');
+const moderation = require('./api/moderation.js');
 
 module.exports = function(app){
 	
@@ -64,9 +65,10 @@ module.exports = function(app){
 		}
 	});
 	
+	//ADMIN API: devuelve una lista de temas sin filtrar datos.
 	app.get('/adm/boxs/:num', pass.onlyADM, function(req, res) {
 		let num = req.params.num;
-		dbManager.queryDBSkip(req.app.locals.db, mdbScheme.C_BOXS, "", {"date.bump": -1}, 0, parseInt(num), function(boxs){
+		dbManager.queryDBSkip(req.app.locals.db, mdbScheme.C_BOXS, "", {"date.created": -1}, 0, parseInt(num), function(boxs){
 			if (boxs[0] != undefined){
 				res.json({success: true, data: boxs});
 			} else {
@@ -75,6 +77,7 @@ module.exports = function(app){
 		});
 	});
 	
+	//ADMIN API: devuelve una lista de comentarios sin filtrar datos.
 	app.get('/adm/coms/:num', pass.onlyADM, function(req, res) {
 		let num = req.params.num;
 		dbManager.queryDBSkip(req.app.locals.db, mdbScheme.C_COMS, "", {"date.created": -1}, 0, parseInt(num), function(boxs){
@@ -84,6 +87,40 @@ module.exports = function(app){
 				res.json({success: false, data: null});
 			}
 		});
+	});
+	
+	//ADMIN API: realizar acciones de moderacion.
+	app.post('/adm/action', pass.onlyADM, function(req, res) {
+		let action = req.fields.action;
+		let data = req.fields.data;
+		
+		switch(action){
+			case "com_adv":
+				//moderation.advUserByCID(req.app.locals.db, data);
+				res.json({success: false, data: action});
+				break;
+			case "com_delete":
+				moderation.deleteComment(req.app.locals.db, data, function(response){
+					res.json(response);
+				});
+				break;
+			case "com_ban":
+				moderation.banUserByCID(req.app.locals.db, data, "-razon-", 1000, function(response){
+					res.json(response);
+				});
+				break;
+			case "box_ban":
+				moderation.banUserByBID(req.app.locals.db, data, "-razon-", 1000, function(response){
+					res.json(response);
+				});
+				break;
+			case "box_delete":
+				moderation.deleteBox(req.app.locals.db, data, function(response){
+					res.json(response);
+				});
+				break;
+		}
+		
 	});
 	
 	//DEBUG: PRUEBAS DE PORTABILIDAD ENTRE MDB Y MDBV2

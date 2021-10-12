@@ -10,19 +10,17 @@
 <div class="voxBarTools">
 	<div class="actions">
 		<div class="voxOption" data-bid="<%= BOX.bid %>" id="iconDenuncia"><i class="fas fa-flag"></i><span class="voxOptionText">Denunciar</span></div>
-		<% if (it.sesion.config.favs.includes(BOX.bid)){ %>
-			<div class="voxOption faved" data-bid="<%= BOX.bid %>" id="iconfav">
-		<% } else { %>
-			<div class="voxOption" data-bid="<%= BOX.bid %>" id="iconfav">
-		<% } %>
+		
+		<div class="voxOption <%= (it.sesion.config.favs.includes(BOX.bid)) ? "faved" : "" %>" data-bid="<%= BOX.bid %>" id="iconfav">
 		<i class="fas fa-star"></i><span class="voxOptionText">Favorito</span></div>
 		
-		<% if (it.sesion.config.boxhides.includes(BOX.bid)){ %>
-			<div class="voxOption hided" data-bid="<%= BOX.bid %>" id="iconhide">
-		<% } else { %>
-			<div class="voxOption" data-bid="<%= BOX.bid %>" id="iconhide">
-		<% } %>
+		<div class="voxOption <%= (it.sesion.config.boxhides.includes(BOX.bid)) ? "hided" : "" %>" data-bid="<%= BOX.bid %>" id="iconhide">
 		<i class="fas fa-lock"></i><span class="voxOptionText">Ocultar</span></div>
+		
+		<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))){ %>
+			<div class="voxOption" data-bid="<%= BOX.bid %>" data-toggle="modal" data-target="#admModal" data-backdrop="false">
+			<i class="fas fa-circle"></i><span class="voxOptionText">Moderar</span></div>
+		<% } %>
 		
 	</div>
 	<div class="metadata">

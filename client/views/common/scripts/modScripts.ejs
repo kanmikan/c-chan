@@ -1,0 +1,36 @@
+<script>
+	$(document).ready(function() {
+		
+		$(document).on("click", ".actionMod", function(e){
+			$(e.currentTarget).children()[1].classList.toggle("hidden");
+		});
+		
+		$(document).on("click", ".actionModOption", function(e){
+			let target = $(e.currentTarget);
+			let data = target.data();
+			modAction(data.action, data.cid, function(result){
+				console.log(result);
+				target.parent().parent().addClass("hidden");
+			});
+		});
+		
+		$(document).on("click", ".actionModBoxOption", function(e){
+			let target = $(e.currentTarget);
+			let data = target.data();
+			modAction(data.action, data.bid, function(result){
+				console.log(result);
+			});
+		});
+		
+	});
+	
+	function modAction(action, data, callback){
+		let formData = new FormData();
+		formData.append("action", action);
+		formData.append("data", data);
+		post(formData, "/adm/action", function(){}, function(result){
+			callback(result);
+		});
+	}
+	
+</script>

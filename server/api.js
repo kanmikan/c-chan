@@ -481,4 +481,18 @@ module.exports = function(app){
 		res.send({success: true, data: req.session.config});
 	});
 	
+	//API: denuncias
+	app.post('/api/report', pass.check, sesionManager.checkSesion, function(req, res) {
+		let kind = req.fields.kind;
+		switch (kind){
+			case "comment":
+				//reportar comentario
+				break;
+			case "box":
+				//reportar box
+				break;
+		}
+		res.send({success: false, data: req.fields});
+	});
+	
 }

@@ -229,13 +229,20 @@ function commentRender(op, com){
 	}
 	cbody +=`<span class="commentTag pointer" data-tag="${com.cid}" onclick="tag('>>${com.cid}')">${com.cid}</span>`;			
 		
-	//aca irían los botones de moderacion..
-	if (USERDATA && (USERDATA.includes("ADMIN") || USERDATA.includes("GMOD"))){
-		cbody +=`<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span><span class="commentTag pointer"><i class="fas fa-flag"></i></span><span class="commentTag pointer"><i class="fas fa-trash"></i></span>`;
-	} else {
-		cbody +=`<span class="commentTag pointer"><i class="fas fa-flag"></i></span>`;
-
-	}	
+	cbody +=`<span class="commentTag pointer actionFlag" data-cid="${com.cid}"><i class="fas fa-flag"></i></span>`;
+	
+	if (USERDATA && (USERDATA.includes("ADMIN") || USERDATA.includes("GMOD") || USERDATA.includes("MOD"))){
+		cbody +=`<span class="commentTag pointer actionMod" data-cid="${com.cid}"><i class="fas fa-ellipsis-v"></i>
+		<div class="home-menu-dropdown hidden" style="right: inherit;transform: inherit;"><ul>
+			<li class="home-menu-dropdown-element actionModOption" data-cid="${com.cid}" data-action="adv">
+			<i class="fas fa-exclamation-triangle"></i><span class="home-menu-dropdown-element-text"> Advertir</span></li>
+			<li class="home-menu-dropdown-element actionModOption" data-cid="${com.cid}" data-action="ban">
+			<i class="fas fa-eye-slash"></i><span class="home-menu-dropdown-element-text"> Banear</span></li>
+			<li class="home-menu-dropdown-element actionModOption" data-cid="${com.cid}" data-action="delete">
+			<i class="fas fa-trash"></i><span class="home-menu-dropdown-element-text"> Borrar</span></li>
+		</ul></div></span>`;
+	}
+	
 	cbody +=`</div><div class="commentCreatedAt">${timeSince(com.date.created)}</div></div><div class="commentReply">`;
 	com.content.extra.tags.forEach(function(tag){
 		cbody +=`<a href="#${tag}" class="tag" data-tag="${tag}">>>${tag}</a>`;
@@ -575,6 +582,25 @@ function action_login(data){
 	$("#loginForm").css("display", "block");
 }
 
+//enviar reporte.
+function action_flag(data){
+	let formData = new FormData();
+	formData.append("kind", data.kind);
+	
+	switch (data.kind){
+		case "comment":
+			formData.append("cid", data.cid);
+			break;
+		case "box":
+			formData.append("bid", data.bid);
+			break;
+	}
+	
+	post(formData, "/api/report", function(){}, function(data){
+		console.log(data);
+	});
+}
+
 /* EVENTOS */
 $(document).ready(function() {
 	
@@ -684,7 +710,7 @@ $(document).ready(function() {
 				element("loadingLogin").classList.add("hidden");
 				element("loginText").classList.remove("hidden");
 				if (result.success){
-					alert("logueado."); //TODO mensaje de login.
+					//alert("logueado."); //TODO mensaje de login.
 					$("#loginForm").css("display", "none");
 				} else {
 					alert(result.data);
@@ -910,16 +936,14 @@ $(document).ready(function() {
 		let action = $(e.target).data("act");
 		let contentId = $(e.target).data("contentid");
 		let buttons = $(this).parent().parent();
-		
-		
-		//TODO: llamada al server a la ruta /action/id, el server comprueba los privilegios y realiza la accion, de esta manera sería seguro enviar los botones y rutas de moderacion al cliente, porque aunque tengan acceso a esa data, no tendrian manera de explotarlo.
-		
 		switch(action){
 			case "close":
 				$(buttons).removeClass("actionMode");
 				break;
 			case "report":
 				console.log("report box");
+				console.log(contentId);
+				//action_flag({kind: "box", bid: ""});
 				$(buttons).removeClass("actionMode");
 				break;
 			case "hide":
@@ -933,6 +957,18 @@ $(document).ready(function() {
 				$(buttons).removeClass("actionMode");
 				break;
 		}
+	});
+	
+	//evento: al denunciar un comentario.
+	$(document).on("click", ".actionFlag", function(e){
+		let cid = $(e.currentTarget).data("cid");
+		action_flag({kind: "comment", cid: cid});
+	});
+	
+	//evento: al denunciar un tema.
+	$(document).on("click", "#iconDenuncia", function(e){
+		let bid = $(e.currentTarget).data("bid");
+		action_flag({kind: "box", bid: bid});
 	});
 	
 	//evento: al hacer click en cargar mas comentarios.
@@ -1076,7 +1112,7 @@ $(document).ready(function() {
 	
 	//evento: comprobar hash al hacer click en una clase tag
 	//TODO: lo mismo de arriba.
-	$(document).on("click","a",function(event){
+	$(document).on("click","a", function(event){
 		if (this.hash != "") {
 			event.preventDefault();
 			hashScroll(this.hash);

@@ -31,14 +31,25 @@
 			<% } else { %>
 				<span class="commentTag">anon</span>
 			<% } %>		
-			<span class="commentTag pointer" data-tag="<%= com.cid %>" onclick="tag('>><%= com.cid %>')"><%= com.cid %></span>			
-			<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))){ %>
-				<span class="commentTag pointer"><i class="fas fa-exclamation-triangle"></i></span>
-				<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
-				<span class="commentTag pointer"><i class="fas fa-trash"></i></span>
-			<% } else { %>
-				<span class="commentTag pointer"><i class="fas fa-flag"></i></span>
+			<span class="commentTag pointer" data-tag="<%= com.cid %>" onclick="tag('>><%= com.cid %>')"><%= com.cid %></span>	
+			
+			<span class="commentTag pointer actionFlag" data-cid="<%= com.cid %>"><i class="fas fa-flag"></i></span>
+			
+			<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))){ %>
+				<span class="commentTag pointer actionMod"><i class="fas fa-ellipsis-v"></i>
+					<div class="home-menu-dropdown hidden" style="right: inherit;transform: inherit;">
+						<ul>
+							<li class="home-menu-dropdown-element actionModOption" data-cid="<%= com.cid %>" data-action="com_adv">
+							<i class="fas fa-exclamation-triangle"></i><span class="home-menu-dropdown-element-text"> Advertir</span></li>
+							<li class="home-menu-dropdown-element actionModOption" data-cid="<%= com.cid %>" data-action="com_ban">
+							<i class="fas fa-eye-slash"></i><span class="home-menu-dropdown-element-text"> Banear</span></li>
+							<li class="home-menu-dropdown-element actionModOption" data-cid="<%= com.cid %>" data-action="com_delete">
+							<i class="fas fa-trash"></i><span class="home-menu-dropdown-element-text"> Borrar</span></li>
+						</ul>
+					</div>
+				</span>
 			<% } %>
+			
 			</div>
 			<div class="commentCreatedAt"><%= it.utils.timeSince(com.date.created) %></div>
 		</div>

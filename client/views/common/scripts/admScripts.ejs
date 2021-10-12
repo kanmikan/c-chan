@@ -7,10 +7,8 @@
 		
 		element("consoleForm").addEventListener("submit", function(e){
 			e.preventDefault();
-			
 			let consoleText = element("consoleInput");
 			let consoleRes = element("consoleResult");
-				
 			let formData = new FormData();
 			formData.append("args", consoleText.value);
 			post(formData, "/adm/command", function(){}, function(result){
@@ -19,10 +17,8 @@
 				$('#consoleResult').animate({
 				  scrollTop: $('#consoleResult')[0].scrollHeight
 				}, 100);
-			});
-			
+			});	
 		});
-		
 	});
 	/* FUNCIONES */
 	function loadAdmActivity(){
@@ -66,7 +62,7 @@
 		if (com.type.includes("image")){
 			cdata += `<div class="chatlike-container"><img class="act-image" src="${com.img.preview}"></img></div>`;
 		}
-		cdata += `<span>${com.content.body}</span><span class="act-uid">UID: ${com.user.uid}</span></div></div>`;
+		cdata += `<span style="display:block">${com.content.body}</span><span class="act-uid">UID: ${com.user.uid}</span></div></div>`;
 		return cdata;
 	}
 </script>

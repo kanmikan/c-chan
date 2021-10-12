@@ -147,7 +147,7 @@ function checkRecursiveRequest(req, res, cname, delay, callback){
 
 function checkBan(req, res, callback){
 	dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: req.session.uid}, "", function(userdata){
-		if (userdata[0] && userdata[0].state.includes("banned")){
+		if (userdata[0] && userdata[0].state.includes("BANNED")){
 			callback({success: false, data: {banned: true, bandata: userdata[0].extra.bandata}});
 		} else {
 			callback(null);
