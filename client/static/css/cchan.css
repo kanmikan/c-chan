@@ -2678,6 +2678,14 @@ input:checked + .slider:before {
 	background: var(--home-menu-element-hover);
 }
 
+.actionModContainer {
+	background: inherit;
+}
+
+.actionModComOption:hover {
+	color: #2196f3;
+}
+
 .anonMulti {
 	background: linear-gradient(#df0202 25%, #FFcc00 25%, #FFcc00 50%, #0579b3 50%, #0579b3 75%, #02b13c 75%, #02b13c 100%);
 	animation: anonMulti 0.25s infinite;
@@ -2800,6 +2808,10 @@ input:checked + .slider:before {
 
 /* Celulares */
 @media only screen and (max-width: 600px) {
+	.actionModContainer {
+		margin-top: 5px;
+	}
+	
 	figure.voxAttach {
         max-width: 100%;
         margin: 0;

@@ -2,15 +2,16 @@
 	$(document).ready(function() {
 		
 		$(document).on("click", ".actionMod", function(e){
-			$(e.currentTarget).children()[1].classList.toggle("hidden");
+			let actionContainer = $(e.currentTarget).parent().children().filter(".actionModContainer");
+			actionContainer.toggleClass("hidden");
 		});
 		
-		$(document).on("click", ".actionModOption", function(e){
+		$(document).on("click", ".actionModComOption", function(e){
 			let target = $(e.currentTarget);
 			let data = target.data();
 			modAction(data.action, data.cid, function(result){
 				console.log(result);
-				target.parent().parent().addClass("hidden");
+				target.parent().addClass("hidden");
 			});
 		});
 		

@@ -639,7 +639,7 @@ $(document).ready(function() {
 		if ($(window).height() + $(window).scrollTop() > (getDocumentHeight() - 100)){
 			if (!complete) return;
 			if (KIND.split("/")[1] === "tema") return;
-			if (V1 && KIND === "/") return;
+			if (V1 && V1_CARDS && KIND === "/") return;
 			
 			complete = false;
 			let indexID = $("#boxList").children().last().attr("id");
@@ -808,14 +808,20 @@ $(document).ready(function() {
 			});
 			
 			for (var i=0; i<B_BUFFER.length; i++){
-				if (V1) {
+				if (V1 && V1_CARDS) {
 					$(`#${B_BUFFER[i].cat} .home-category-boxlist`).prepend(boxRender(B_BUFFER[i]));
 					//eliminar ultimo elemento de la lista.
 					if ($(`#${B_BUFFER[i].cat} .home-category-boxlist`).children().length > 9){
 						$(`#${B_BUFFER[i].cat} .home-category-boxlist`).children().last().remove();
 					}
 				} else {
-					$("#boxList").prepend(boxRender(B_BUFFER[i]));
+					//ordenar temas sticky
+					$("#boxList").prepend(boxRender(B_BUFFER[i]))
+					.children().sort(function(a, b){
+						let obj1 = (($(a).find(".tag.sticky").length > 0) || (KIND != "/" && ($(a).find(".csticky").length > 0)));
+						let obj2 = (($(b).find(".tag.sticky").length > 0) || (KIND != "/" && ($(b).find(".csticky").length > 0)));
+						return obj2 - obj1;
+					}).appendTo("#boxList");
 				}
 			}
 			

@@ -18,13 +18,10 @@
 		</div>
 		<!-- tarjetas -->
 		<div class="boxList" id="boxList">
-			<% if (it.kind != "/" && it.kind != "/comunidades") { %>
+			<% if (!it.renderConfig.V1_CARDS || (it.kind != "/" && it.kind != "/comunidades")) { %>
 				<% it.data.boxs.forEach(function(box){renderBox(box)}); %>
 			<% } else {
-				let customCats = it.data.cats;
-				if (it.kind === "/comunidades"){
-					customCats = customCats.filter((cat) => cat.type === 1);
-				}
+				let customCats = (it.kind === "/comunidades") ? it.data.cats.filter((cat) => cat.type === 1) : it.data.cats;
 				customCats.sort(function(a, b){
 					if (a.date.sticky >= 1 || b.date.sticky >= 1) return b.date.sticky - a.date.sticky;
 					return ((it.sesion.config.anchors && !it.sesion.config.anchors.includes(a.catid)) ? 1 : 0) - ((it.sesion.config.anchors && it.sesion.config.anchors.includes(a.catid)) ? 1 : 0);
@@ -76,6 +73,17 @@
 		
 		<!-- barra -->
 		<div class="homeBar" id="homeBar" onclick="showHomebarScroll()">
+			<% if (it.kind != "/") { 
+				let catdata = it.data.cats.filter((cat) => cat.catid === it.kind.split("/")[1]);
+			%>
+				<div class="activityzone" id="categoryPanel">
+					<div class="homebarContainer">
+						<div class="homebarIcon"><img src="<%= catdata[0].content.media.icon %>"></img></div>
+						<div class="acttitle-category"><%= catdata[0].content.name %></div>
+					</div>
+					<div class="chatlike"><%= catdata[0].content.description %></div>
+				</div>
+			<% } %>
 			<div class="activityzone">
 				<div class="acttitle">Temas populares<i class="fas fa-crown"></i></div>
 				<div class="chatlike">
@@ -113,7 +121,14 @@
 		<a class="box" id="<%= box.bid %>" href="/tema/<%= box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%= (box.type.includes("video")) ? box.media.preview : box.img.preview %>); text-decoration: none; background-position: top;">
 		<div class="voxHeader">
 			<div class="tagList">
-				
+				<% if (!it.renderConfig.V1_CARDS) { %>
+					<div class="tag categoryTag">
+						<% if (it.renderConfig.SHOW_CATEGORY_ICON) { %>
+							<img src="<%= categoryData.content.media.icon %>">
+						<% } %>
+						<span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: baseline;"><%- it.utils.getCatShow(box.cat) %></span></img>
+					</div>
+				<% } %>
 				<!-- tag video -->
 				<% if (box.type && box.type.includes("video")){ %>
 					<div class="tagInvisible ytb"><div class="tagWrapper"></div><i class="fab fa-youtube"></i></div>

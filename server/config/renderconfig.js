@@ -4,6 +4,9 @@ module.exports = {
 	/* usar la interfaz v1 de mikanchan en vez de la clasica. */
 	ENABLE_V1: ((process.env.V1 === "true") ? true : false) || false,
 	
+	/* activar o desactivar las tarjetas separadoras de categorias */
+	V1_CARDS: ((process.env.V1_CARDS === "true") ? true : false) || true,
+	
 	/* activar botones y accesos de las comunidades */
 	ENABLE_COMMUNITIES: false,
 	
