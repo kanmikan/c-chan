@@ -30,9 +30,17 @@
 			<div class="optionIcon"><i class="fas fa-cog" aria-hidden="true"></i></div>
 			<div class="optionText">Configuracion</div>
 		</li>
+		
+		<% if (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD")) { %>
+			<li onclick="location.href='/adm'">
+				<div class="optionIcon"><i class="fas fa-cog" aria-hidden="true"></i></div>
+				<div class="optionText">Administrar</div>
+			</li>
+		<% } %>
+		
 		<div style="margin: 8px 12px 8px 8px">
-		<div class="acttitle">Comentarios Recientes<i class="fas fa-comment"></i></div>
-		<div class="chatlike" id="movilActivityList"></div>
+			<div class="acttitle">Comentarios Recientes<i class="fas fa-comment"></i></div>
+			<div class="chatlike" id="movilActivityList"></div>
 		</div>
 	</ul>
 	<div style="height: 100px"></div>

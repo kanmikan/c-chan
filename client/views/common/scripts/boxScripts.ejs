@@ -1,4 +1,9 @@
 <script src="/node/vanilla-lazyload/dist/lazyload.min.js" type="text/javascript"></script>
+
+<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD") )) { %>
+	<%- include('../fragments/box/boxModModal', it); %>
+<% } %>
+
 <script>
 	/* Calculos del lado del server */
 	var OP = <%= (BOX.user.uid === it.sesion.uid) ? true : false %>;

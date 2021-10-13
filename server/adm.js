@@ -96,28 +96,38 @@ module.exports = function(app){
 		
 		switch(action){
 			case "com_adv":
+				//TODO: sistema de advertencias.
 				//moderation.advUserByCID(req.app.locals.db, data);
-				res.json({success: false, data: action});
+				res.json({success: false, data: {action: action, response: "-no implementado-"}});
 				break;
 			case "com_delete":
 				moderation.deleteComment(req.app.locals.db, data, function(response){
-					res.json(response);
+					res.json({success: response.success, data: {action: action, response: response.data}});
 				});
 				break;
 			case "com_ban":
 				moderation.banUserByCID(req.app.locals.db, data, "-razon-", 1000, function(response){
-					res.json(response);
+					res.json({success: response.success, data: {action: action, response: response.data}});
 				});
 				break;
 			case "box_ban":
 				moderation.banUserByBID(req.app.locals.db, data, "-razon-", 1000, function(response){
-					res.json(response);
+					res.json({success: response.success, data: {action: action, response: response.data}});
 				});
 				break;
 			case "box_delete":
 				moderation.deleteBox(req.app.locals.db, data, function(response){
-					res.json(response);
+					res.json({success: response.success, data: {action: action, response: response.data}});
 				});
+				break;
+			case "box_move":
+				data = data.split(":");
+				moderation.moveBox(req.app.locals.db, data[0], data[1], function(response){
+					res.json({success: response.success, data: {action: action, response: response.data}});
+				});
+				break;
+			default:
+				res.json({success: false, data: "accion no definida"});
 				break;
 		}
 		

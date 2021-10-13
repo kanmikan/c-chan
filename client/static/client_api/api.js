@@ -232,15 +232,14 @@ function commentRender(op, com){
 	cbody +=`<span class="commentTag pointer actionFlag" data-cid="${com.cid}"><i class="fas fa-flag"></i></span>`;
 	
 	if (USERDATA && (USERDATA.includes("ADMIN") || USERDATA.includes("GMOD") || USERDATA.includes("MOD"))){
-		cbody +=`<span class="commentTag pointer actionMod" data-cid="${com.cid}"><i class="fas fa-ellipsis-v"></i>
-		<div class="home-menu-dropdown hidden" style="right: inherit;transform: inherit;"><ul>
-			<li class="home-menu-dropdown-element actionModOption" data-cid="${com.cid}" data-action="adv">
-			<i class="fas fa-exclamation-triangle"></i><span class="home-menu-dropdown-element-text"> Advertir</span></li>
-			<li class="home-menu-dropdown-element actionModOption" data-cid="${com.cid}" data-action="ban">
-			<i class="fas fa-eye-slash"></i><span class="home-menu-dropdown-element-text"> Banear</span></li>
-			<li class="home-menu-dropdown-element actionModOption" data-cid="${com.cid}" data-action="delete">
-			<i class="fas fa-trash"></i><span class="home-menu-dropdown-element-text"> Borrar</span></li>
-		</ul></div></span>`;
+		cbody +=`<span class="commentTag pointer actionMod"><i class="fas fa-ellipsis-v" style="padding: 0px 3px;"></i></span>
+		<div class="commentTag actionModContainer hidden">
+		<span class="pointer actionModComOption" data-cid="${com.cid}" data-action="com_adv"><i class="fas fa-exclamation-triangle"></i>
+		<span> Advertir</span></span>
+		<span class="pointer actionModComOption" data-cid="${com.cid}" data-action="com_ban"><i class="fas fa-eye-slash"></i>
+		<span> Banear</span></span>
+		<span class="pointer actionModComOption" data-cid="${com.cid}" data-action="com_delete"><i class="fas fa-trash"></i>
+		<span> Borrar</span></span></div>`;
 	}
 	
 	cbody +=`</div><div class="commentCreatedAt">${timeSince(com.date.created)}</div></div><div class="commentReply">`;
@@ -613,15 +612,17 @@ $(document).ready(function() {
 	let complete = true;
 	
 	function onScrollDesktop(){
-		if (KIND === "/"){
-			clearTimeout(timer);
-			if (!document.body.classList.contains("disable-hover")){
-				document.body.classList.add("disable-hover");
-			};
-			timer = setTimeout(function(){
+		
+		//evento: anti hover para evitar lag
+		if (!document.body.classList.contains("disable-hover")){
+			document.body.classList.add("disable-hover");
+		} else {
+			window.addEventListener("mousemove", function(e){
 				document.body.classList.remove("disable-hover");
-			}, 200);
+				window.removeEventListener("mousemove", this, false);
+			}, {once: true});
 		}
+		
 		onScroll();
 	}
 	

@@ -22,6 +22,10 @@ async function banUserByBID(DB, bid, razon, time, callback){
 	banUser(DB, box[0].user.uid, razon, time, callback);
 }
 
+async function moveBox(DB, bid, newcat, callback){
+	await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {cat: newcat}}, () => {});
+	callback({success: true, data: "movido."});
+}
 
 async function banUser(DB, uid, razon, time, callback){
 	let bandata = {
@@ -46,4 +50,4 @@ function deleteComment(DB, cid, callback){
 	})
 }
 
-module.exports = {advUserByCID, banUserByCID, banUserByBID, banUser, deleteComment, deleteBox}
+module.exports = {advUserByCID, banUserByCID, banUserByBID, banUser, deleteComment, deleteBox, moveBox}
