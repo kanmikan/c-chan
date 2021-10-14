@@ -31,11 +31,15 @@
 					<span class="subtitleToggle"><i class="fas fa-plus"></i></span>
 				</div>
 				<div class="polls hide" id="anime">
+					<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))) { %>
+						<div style="padding:5px">
+							<input type="checkbox" name="modAnon" style="width:auto" checked="true"><span> Publicar Anonimamente</span>
+						</div>
+					<% } %>
 					<div class="boxOptions">
 						<input type="checkbox" name="dados" style="width:auto"><span>Dados</span></input>
 						<input type="checkbox" name="idunico" style="width:auto"><span>ID Unico</span></input>
 					</div>
-
 					<input class="fieldv2" type="text" name="subtitle" maxlength="50" placeholder="Subtitulo">
 				</div>
 			</div>

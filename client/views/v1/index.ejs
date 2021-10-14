@@ -141,6 +141,10 @@
 				<% if (box.type && box.type.includes("poll")){ %>
 					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>
 				<% } %>
+				<!-- tag idunico -->
+				<% if (box.type && box.type.includes("idunico")){ %>
+					<div class="tag iduTag"><i class="fas fa-id-card"></i></div>
+				<% } %>
 				<!-- tag rss -->
 				<% if (box.flag && box.flag.includes("rss")){ %>
 					<div class="tagInvisible rss"><div class="tagWrapperTransparent"></div><i class="fas fa-rss"></i></div>

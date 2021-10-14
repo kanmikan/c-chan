@@ -143,6 +143,9 @@ function boxRender(box){
 	if (box.type && box.type.includes("poll")){
 		bbody +=`<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>`;
 	}
+	if (box.type && box.type.includes("idunico")){
+		bbody +=`<div class="tag iduTag"><i class="fas fa-id-card"></i></div>`;
+	}
 	if (box.type && box.type.includes("rss")){
 		bbody +=`<div class="tagInvisible rss"><div class="tagWrapperTransparent"></div><i class="fas fa-rss"></i></div>`;
 	}

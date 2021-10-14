@@ -5,6 +5,19 @@
 			<div class="categoryTitle"><%= categoryData.content.name %></div>
 		</div>
 	</a>
+	<div class="voxCategory" style="justify-content: flex-end">
+	
+		<% if (BOX.type.includes("poll")){ %>
+			<div class="categoryAvatar"><i class="fas fa-poll"></i></div>
+		<% } %>
+		<% if (BOX.type.includes("dice")){ %>
+			<div class="categoryAvatar"><i class="fas fa-dice"></i></div>
+		<% } %>
+		<% if (BOX.type.includes("idunico")){ %>
+			<div class="categoryAvatar"><i class="fas fa-id-card"></i></div>
+		<% } %>
+		
+	</div>
 </div>
 
 <div class="voxBarTools">

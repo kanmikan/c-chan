@@ -101,6 +101,7 @@
 	--menumodal-notif-title: #03a9f4;
 	--homelink-hover: #3f51b5;
 	--modal-background: white;
+	--tag1-sticky: #2196f3;
 }
 
 html[data-theme='darkmode']{
@@ -197,6 +198,7 @@ html[data-theme='darkmode']{
 	--option-icon-color: #00bcd4;
 	--homelink-hover: #3f51b5;
 	--modal-background: #3c3c3c;
+	--tag1-sticky: #2196f3;
 }
 
 /* CODIGO DE VOXEDRIP.CSS ADAPTADO */
@@ -641,7 +643,7 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .box .tagList .tag.sticky {
-	background-color: #ffc107;
+	background-color: var(--tag1-sticky);
     margin-top: 0.5px;
     margin-left: 3px;
     padding: 3px;
@@ -755,11 +757,26 @@ span.countComments {
 
 .tagInvisible.pollTag .tagWrapper {
 	width: 14px;
-    height: 13px;
-    margin-top: 6px;
-    margin-left: 1px;
+	height: 13px;
+	margin-left: 1px;
 }
 
+.iduTag {
+	padding: 3px !important;
+    margin-top: 1px;
+}
+
+.tagInvisible.iduTag i {
+	color: var(--tag1);
+    font-size: 21px;
+    margin-right: 3px;
+}
+
+.tagInvisible.iduTag .tagWrapper {
+	width: 14px;
+	height: 13px;
+	margin-left: 1px;
+}
 
 .voxAction {
     color: white;
@@ -1681,6 +1698,7 @@ textarea{
     color: var(--box-links);
     cursor: pointer;
 	text-decoration: none;
+	flex: none;
 }
 
 .voxImage{

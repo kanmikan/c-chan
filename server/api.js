@@ -57,6 +57,7 @@ module.exports = function(app){
 		let pollOne = req.fields.pollOne;
 		let pollTwo = req.fields.pollTwo;
 		//checkboxes
+		let modAnonimo = (req.fields.modAnon) ? true : false;
 		let dados = (req.fields.dados) ? true : false;
 		let idunico = (req.fields.idunico) ? true : false;
 		
@@ -100,7 +101,9 @@ module.exports = function(app){
 		}
 		
 		let userdata = sesionManager.getUserData(req.session.id);
-		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};}
+		if (userdata[0] && !modAnonimo){
+			json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};
+		}
 		
 		//reciclar temas asincronicamente
 		recycler.recycle(req.app.locals.db, cat);
@@ -127,6 +130,7 @@ module.exports = function(app){
 		let timestamp = Date.now();
 		let DB = req.app.locals.db;
 		let token = req.fields.token;
+		let modAnonimo = (req.fields.modAnon) ? true : false;
 		
 		let json = utils.clone(jsonScheme.COMMENT_SCHEME);
 		json.cid = cid;
@@ -146,7 +150,9 @@ module.exports = function(app){
 		json.content.body = parser.parseComInput(DB, cid, req.session.uid, content);
 		
 		let userdata = sesionManager.getUserData(req.session.id);
-		if (userdata[0]){json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};}
+		if (userdata[0] && !modAnonimo){
+			json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};
+		}
 		
 		let coms = await dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", () => {});
 		await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length+1, "date.bump": timestamp}});

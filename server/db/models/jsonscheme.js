@@ -5,7 +5,9 @@ const COMMENT_SCHEME = {
 	user: {
 		uid: "uid",
 		jerarquia: {
-			
+			nick: "Anonimo",
+			rango: "anon",
+			color: ""
 		}
 	},
 	type: [],

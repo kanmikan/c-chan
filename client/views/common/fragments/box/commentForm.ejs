@@ -28,7 +28,6 @@
 					<i class="fas fa-greater-than"></i>
 				</div>
 			</div>
-			
 		</div>
 		<button class="buttonPress newComment" id="newComment">
 			<i id="loadingCom" class="fas fa-circle-notch fa-spin hidden"></i>
@@ -36,6 +35,13 @@
 			<span id="ctext">Comentar</span>
 		</button>
 	</div>
+	
+	<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))) { %>
+		<div style="padding:5px">
+			<input type="checkbox" name="modAnon" style="width:auto" checked="true"><span>Comentario Anonimo</span>
+		</div>
+	<% } %>
+	
 	<div class="preview hide" id="previewInputComment">
 		<div class="closePreview" id="closePreview"><i class="fas fa-times"></i></div> 
 		<i class="fas fa-circle-notch fa-spin loading-elem hidden" id="loadingElem"></i>
