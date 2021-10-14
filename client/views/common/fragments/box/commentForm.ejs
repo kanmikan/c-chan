@@ -10,26 +10,35 @@
 				
 	<div class="commentBoxButtons">
 		<div class="attachs" id="commentAttachs">
-			<div id="uploadButton" onclick="openFileSelector('cfile')" class="attachButton tooltip-bottom" data-tooltip="Subir Archivo">
+			<div id="uploadButton" onclick="openFileSelector('cfile')" class="attachButton tooltip-bottom">
 				<i class="fas fa-upload"></i> 
 			</div>
 			<input name="file" type="file" id="cfile" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput">
 			
 			<input type="text" class="modalInput hidden" name="url" id="curl" placeholder="Pega un link de youtube, video o imagen...">
-			<div id="linkButton" class="attachButton tooltip-bottom" data-tooltip="Usar link">
+			<div id="linkButton" class="attachButton tooltip-bottom">
 				<i class="fas fa-link"></i> 
-			</div>	
-			
-			<div class="preview hide" id="previewInputComment">
-				<div class="closePreview" id="closePreview"><i class="fas fa-times"></i></div> 
-				<i class="fas fa-circle-notch fa-spin loading-elem hidden" id="loadingElem"></i>
-				<img id="imgpreview" src="/" alt="">
 			</div>
-		</div>			
+			
+			<div id="toolsButton" class="attachButton tooltip-bottom">
+				<i class="fas fa-ellipsis-v"></i>
+			</div>
+			<div id="toolsList" class="toolsList hidden">
+				<div class="toolButton attachButton tooltip-bottom" data-tool="tag">
+					<i class="fas fa-greater-than"></i>
+				</div>
+			</div>
+			
+		</div>
 		<button class="buttonPress newComment" id="newComment">
 			<i id="loadingCom" class="fas fa-circle-notch fa-spin hidden"></i>
 			<b id="upp"></b>
 			<span id="ctext">Comentar</span>
 		</button>
+	</div>
+	<div class="preview hide" id="previewInputComment">
+		<div class="closePreview" id="closePreview"><i class="fas fa-times"></i></div> 
+		<i class="fas fa-circle-notch fa-spin loading-elem hidden" id="loadingElem"></i>
+		<img id="imgpreview" src="/" alt="">
 	</div>
 </form>

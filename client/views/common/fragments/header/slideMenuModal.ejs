@@ -31,7 +31,7 @@
 			<div class="optionText">Configuracion</div>
 		</li>
 		
-		<% if (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD")) { %>
+		<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))) { %>
 			<li onclick="location.href='/adm'">
 				<div class="optionIcon"><i class="fas fa-cog" aria-hidden="true"></i></div>
 				<div class="optionText">Administrar</div>

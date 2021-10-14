@@ -2032,10 +2032,10 @@ textarea.commentTextarea:focus {
 }
 
 .commentBox .preview {
-	height: auto;
+	height: 110px;
+	max-height: 110px;
 	max-width: 110px;
 	min-width: 100px;
-	max-height: 110px;
 }
 
 .commentBox .preview img {
