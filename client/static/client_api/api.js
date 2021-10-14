@@ -586,21 +586,20 @@ $(document).ready(function() {
 	$(window).on("scroll", onScrollDesktop);
 	let complete = true;
 	
+	//anti hover para evitar lag
 	function onScrollDesktop(){
-		
-		//evento: anti hover para evitar lag
 		if (!isMobileDevice()){
 			if (!document.body.classList.contains("disable-hover")){
 				document.body.classList.add("disable-hover");
-			} else {
-				window.addEventListener("mousemove", function(e){
-					document.body.classList.remove("disable-hover");
-					window.removeEventListener("mousemove", this, false);
-				});	
 			}
 		}
 		onScroll();
 	}
+	window.addEventListener("mousemove", function(e){
+		if (document.body.classList.contains("disable-hover")){
+			document.body.classList.remove("disable-hover");
+		}
+	});	
 	
 	function onScroll(){
 		//evento: calcula si debe mostrar el boton de ir arriba o no
@@ -846,7 +845,6 @@ $(document).ready(function() {
 				element("ctext").classList.add("hidden");
 				element("newComment").disabled = true;
 			}, function(data){
-				console.log(data);
 				element("loadingCom").classList.add("hidden");
 				element("ctext").classList.remove("hidden");
 				element("newComment").disabled = false;

@@ -57,6 +57,13 @@
 				actdata = data.bid + ":" + newcat;
 			}
 			
+			//parametros especiales para la accion de modificar atributos del tema.
+			if (data.action === "box_change"){
+				let sticky = $("#bsticky").is(":checked");
+				let csticky = $("#bcsticky").is(":checked");
+				actdata = data.bid + ":" + sticky + ":" + csticky; 
+			}
+			
 			//pide confirmacion antes de enviar la solicitud.
 			if (data.action === "box_delete" || data.action === "box_ban" || data.action === "box_adv"){
 				if (!bconfirmer) {
@@ -72,6 +79,7 @@
 			modAction(data.action, actdata, function(result){
 				if (result.success){
 					switch (result.data.action) {
+						case "box_change":
 						case "box_delete":
 						case "box_move":
 							window.location.href = "/";

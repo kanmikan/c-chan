@@ -126,6 +126,15 @@ module.exports = function(app){
 					res.json({success: response.success, data: {action: action, response: response.data}});
 				});
 				break;
+			case "box_change":
+				data = data.split(":");
+				let sticky = ((data[1] === "true") ? 1 : 0);
+				let csticky = ((data[2] === "true") ? 1 : 0);
+				
+				moderation.updateBoxParams(req.app.locals.db, data[0], {"date.sticky": sticky, "date.csticky": csticky}, function(response){
+					res.json({success: response.success, data: {action: action, response: response.data}});
+				});
+				break;
 			default:
 				res.json({success: false, data: "accion no definida"});
 				break;

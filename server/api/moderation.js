@@ -38,6 +38,11 @@ async function banUser(DB, uid, razon, time, callback){
 	callback({success: true, data: bandata});
 }
 
+async function updateBoxParams(DB, bid, params, callback){
+	await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: params}, () => {});
+	callback({success: true, data: "modificado."});
+}
+
 function deleteBox(DB, bid, callback){
 	dbManager.deleteDB(DB, mdbScheme.C_BOXS, {bid: bid}, function(){
 		callback({success: true, data: `tema ${bid} eliminado.`});
@@ -50,4 +55,4 @@ function deleteComment(DB, cid, callback){
 	})
 }
 
-module.exports = {advUserByCID, banUserByCID, banUserByBID, banUser, deleteComment, deleteBox, moveBox}
+module.exports = {advUserByCID, banUserByCID, banUserByBID, banUser, deleteComment, deleteBox, moveBox, updateBoxParams}
