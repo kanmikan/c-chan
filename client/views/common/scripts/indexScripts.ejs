@@ -10,7 +10,10 @@
 		socket.on('new', function(data){
 			switch(data.kind){
 				case "newbox":
-					action_newBoxPopup(data);
+					//solo mostrar notificacion si la categoria es igual o si es la home.
+					if (KIND === "/" || (data.data.cat === KIND.substr(1))){
+						action_newBoxPopup(data);
+					}
 				break;
 				case "newcom":
 					action_newComEffect(data);

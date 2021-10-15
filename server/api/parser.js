@@ -20,6 +20,7 @@ function htmlSanitize(rawtext){
 		/>>{1}([^\r\n\s]{7})/gi, //tags
 		/>(([https?|ftp]+:\/\/)([^\s/?\.#]+\.?)+(\/[^\s]*)?)/gi, //link externo
 		/^(>(?!\>).+)/gim, //greentext
+		/\$([0-9A-Fa-f]{3})([^]*?)\$/g, //deteccion de color rgb
 		/\n/g //salto de linea.
 	];
 	let pattern_replace = [
@@ -28,6 +29,7 @@ function htmlSanitize(rawtext){
 		'<a href="#$1" class="tag" data-tag="$1">&gt;&gt;$1</a>',
 		'<a href="$1" target="_blank" class="link">&gt;$1</a>',
 		'<span class="greentext">$1</span>',
+		'<span style="color: #$1">$2</span>',
 		'<br>'
 	]
 	let output = rawtext.replace(/[\r\n]+$/, ''); //limpiar espacios innecesarios.

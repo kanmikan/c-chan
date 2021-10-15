@@ -714,6 +714,9 @@ $(document).ready(function() {
 			case "tag":
 				element("commentTextarea").value += ">";
 				break;
+			case "colortag":
+				element("commentTextarea").value += "$FF0texto$";
+				break;
 			
 		}
 	});

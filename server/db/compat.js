@@ -3,6 +3,7 @@ const utils = require('../utils');
 const jsonScheme = require('./models/jsonscheme.js');
 const upload = require('../api/upload.js');
 const youtube = require('../api/youtube.js');
+const cloudy = require('../api/cloudinary.js');
 
 //FUNCION: comprueba la version de la coleccion y transcribe los elementos mdb a mdbv2.
 function checkCompat(type, collection){
@@ -45,14 +46,11 @@ function mdbTranscript(type, mdbElement){
 			if (mdbElement.video_url != "" && mdbElement.video){
 				json.type.push("video");
 				if (upload.checkURLType(mdbElement.video_url) === "youtube-embed"){
-					json.img.preview = youtube.genYoutubeThumb(mdbElement.video_url, "mq");
+					json.media.preview = youtube.genYoutubeThumb(mdbElement.video_url, "mq");
 				} else {
-					json.img.preview = upload.genThumb(mdbElement.video_url);
+					json.media.preview = (upload.checkURLType(mdbElement.video_url) === "cloudinary") ? cloudy.genCloudyThumb(mdbElement.video_url, true) : upload.genThumb(mdbElement.video_url);
 				}
-				json.media = {
-					preview: upload.genThumb(mdbElement.video_url),
-					raw: mdbElement.video_url
-				};
+				json.media.raw = mdbElement.video_url;
 			}
 			json.content.title = mdbElement.title;
 			json.content.body = mdbElement.content;
@@ -79,10 +77,12 @@ function mdbTranscript(type, mdbElement){
 			}
 			if (mdbElement.video && !mdbElement.img){
 				json.type.push("video");
-				json.media = {
-					preview: upload.genThumb(mdbElement.video_url),
-					raw: mdbElement.video_url
-				};
+				if (upload.checkURLType(mdbElement.video_url) === "youtube-embed"){
+					json.media.preview = youtube.genYoutubeThumb(mdbElement.video_url, "mq");
+				} else {
+					json.media.preview = (upload.checkURLType(mdbElement.video_url) === "cloudinary") ? cloudy.genCloudyThumb(mdbElement.video_url, true) : upload.genThumb(mdbElement.video_url);
+				}
+				json.media.raw = mdbElement.video_url;
 			}
 			json.content.body = mdbElement.texto;
 			json.content.extra.tags = mdbElement.tags;

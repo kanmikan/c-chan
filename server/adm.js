@@ -9,6 +9,7 @@ const cfilter = require('./sesion/contentfilter.js');
 const utils = require('./utils.js');
 const pass = require('./api/passport.js');
 const moderation = require('./api/moderation.js');
+const compat = require('./db/compat.js');
 
 module.exports = function(app){
 	
