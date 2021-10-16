@@ -91,8 +91,12 @@ function uploadLink(url, callback){
 		
 	} else if (utils.isVideo(url)){
 		//si es un link directo a un video, linkearlo con un thumbnail genérico.
-		//desactivado por ahora porque algunos links descargan el video en vez de reproducirlo.
-		callback({success: false, data: {video: true, type: type, raw: url, thumb: "/assets/thumb.jpg"}});
+		//solo permitir links de cloudinary por ahora.
+		if (checkURLType(url) === "cloudinary"){
+			callback({success: true, data: {video: true, type: type, raw: url, thumb: cloudy.genCloudyThumb(url, true)}});
+		} else {
+			callback({success: false, data: {video: true, type: type, raw: url, thumb: "/assets/thumb.jpg"}});
+		}
 	} else {
 		callback({success: false, data: null});
 	}
