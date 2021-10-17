@@ -6,6 +6,19 @@
 <meta name="description" content="Cchan es un imageboard basado en voxed">
 <meta name="keywords" content="voxed,social,imageboard">
 <title>CChan</title>
+
+<% if ((it.sesion.config) ? it.sesion.config.darkmode : false) { %>
+	<meta name="theme-color" content="#0a0a0a">
+	<meta name="msapplication-TileColor" content="#0a0a0a">
+	<meta name="msapplication-navbutton-color" content="#0a0a0a">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#0a0a0a">
+<% } else { %>
+	<meta name="theme-color" content="#fbfbfb">
+	<meta name="msapplication-TileColor" content="#fbfbfb">
+	<meta name="msapplication-navbutton-color" content="#fbfbfb">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#fbfbfb">
+<% } %>
+
 <link rel="shortcut icon" href="/favicon.ico">
 
 <!-- Aca iran los estilos css cargados en el header -->

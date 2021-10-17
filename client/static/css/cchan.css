@@ -102,6 +102,9 @@
 	--homelink-hover: #3f51b5;
 	--modal-background: white;
 	--tag1-sticky: #2196f3;
+	--hometag1: #e5400c;
+	--categoryTitle: black;
+	--categoryTitle-hover: #4eacf7;
 }
 
 html[data-theme='darkmode']{
@@ -199,6 +202,9 @@ html[data-theme='darkmode']{
 	--homelink-hover: #3f51b5;
 	--modal-background: #3c3c3c;
 	--tag1-sticky: #2196f3;
+	--hometag1: #2196f3;
+	--categoryTitle: white;
+	--categoryTitle-hover: #4eacf7;
 }
 
 /* CODIGO DE VOXEDRIP.CSS ADAPTADO */
@@ -611,12 +617,13 @@ ul.slideMenuOptions li:hover.optionBolt {
 
 .box .tagList .tag {
 	color: #fefefe;
-	padding: 4px;
-	border-radius: 3px;
-	font-size: 0.7rem;
-	background: var(--tag1);
-	margin-right: 3px;
-	margin-bottom: 3px;
+    padding: 3.1px;
+    border-radius: 3px;
+    font-size: .7rem;
+    background: var(--hometag1);
+    margin-right: 3px;
+    margin-bottom: 3px;
+    margin-top: 1.3px;
 }
 
 .box .tagList .tag img{
@@ -642,6 +649,10 @@ ul.slideMenuOptions li:hover.optionBolt {
 	font-size: 21px;
 }
 
+.box .tagList .tag.ytb {
+	padding: 3px 4px 3px 5px;
+}
+
 .box .tagList .tag.sticky {
 	background-color: var(--tag1-sticky);
     margin-top: 0.5px;
@@ -655,7 +666,7 @@ ul.slideMenuOptions li:hover.optionBolt {
 
 .tagInvisible.csticky i {
 	color: #ffffff;
-    background-color: #3f51b5;
+	background-color: var(--hometag1);
     padding: 3.5px 4px;
     border-radius: 3px;
     font-size: 11px;
@@ -750,7 +761,7 @@ span.countComments {
 }
 
 .tagInvisible.pollTag i {
-	color: var(--tag1);
+	color: var(--hometag1);
     font-size: 21px;
     margin-right: 3px;
 }
@@ -767,7 +778,7 @@ span.countComments {
 }
 
 .tagInvisible.iduTag i {
-	color: var(--tag1);
+	color: var(--hometag1);
     font-size: 21px;
     margin-right: 3px;
 }
@@ -1447,7 +1458,7 @@ h4{
 	margin-bottom: 5px;
 	width: auto;
 	height: auto;
-	background: #3f51b5;
+	background: #ff5722;
 	color: white;
 	align-self: center;
 	margin-right: auto;
@@ -1681,13 +1692,13 @@ textarea{
 }
 
 .voxBarTools {
-    background: var(--bar1);
-    border-radius: 5px;
-    margin: 4px 8px;
-    margin-right: 15px;
-    padding: 7px 10px;
-    color: var(--bar1-text);
-    display: flex;
+	background: var(--bar1);
+	border-radius: 3px;
+	margin: 4px 8px;
+	margin-right: 15px;
+	padding: 10px 10px;
+	color: var(--bar1-text);
+	display: flex;
 }
 
 .hide {
@@ -1736,17 +1747,17 @@ section.voxCommentList {
 
 .voxBar {
     background: var(--bar1);
-    border-radius: 5px;
+    border-radius: 3px;
     margin: 4px 8px;
     margin-right: 15px;
     padding: 10px;
     color: var(--bar1-text);
     display: flex;
-	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 20%);
+	box-shadow: 0 1px 1px 0 rgb(0 0 0 / 25%);
 }
 
 .voxBarTools {
-	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 20%);
+	box-shadow: 0 1px 1px 0 rgb(0 0 0 / 25%);
 }
 
 .voxCategory {
@@ -1762,8 +1773,13 @@ section.voxCommentList {
 }
 
 .categoryTitle {
+	color: var(--categoryTitle);
     font-weight: 600;
     font-size: 14px;
+}
+
+.categoryTitle:hover {
+	color: var(--categoryTitle-hover);
 }
 
 .voxOption {
@@ -2014,8 +2030,7 @@ span.op {
 }
 
 .commentTag {
-    /*background: #da4f1a*/
-	background: var(--tag1);
+	background: var(--hometag1);
     color: #fefefe;
     border-radius: 3px;
     font-size: 12px; 
@@ -2350,27 +2365,27 @@ ul.attachsVox i {
 
 .loadNewVox {
 	z-index: 5;
-	background: #2196f3;
+	background: #ff5722;
 	width: 200px;
 	padding: 10px;
 	font-size: 13px;
 	text-align: center;
 	cursor: pointer;
-	color: white;
+	color: #fff;
 	position: fixed;
 	top: 65px;
 	left: calc(50% - 112px);
 	border-radius: 4px;
-	box-shadow: 2px 2px 2px 0px rgb(30 44 56 / 55%);
-	border: 1px solid #0973c7;
+	box-shadow: 2px 2px 2px 0 rgb(30 44 56 / 55%);
+	border: 1px solid #ff5722;
 }
 
 .loadNewVox:hover {
-    background: #03a9f4;
+    background: #ff450a;
 }
 
 .loadNewVox:active {
-    background: #03a9f4;
+    background: #ff450a;
 }
 
 .searchInput{

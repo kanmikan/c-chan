@@ -7,6 +7,7 @@ module.exports = {
 	SESSION_SECRET: process.env.SESSION_SECRET || "test",
 	DATABASE_CACHE: (process.env.DATABASE_CACHE && process.env.DATABASE_CACHE === "false") ? false : true,
 	STATIC_CACHE_VALUE: {}, //{maxAge: 3600000*12}
+	CRON_THREADS: (process.env.CRON_THREADS && process.env.CRON_THREADS === "true") ? true : ,
 	
 	/* APIS EXTERNAS */
 	YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,
@@ -27,7 +28,6 @@ module.exports = {
 	COMMENT_DELAY: 5, //tiempo de espera en segundos (5 segundos)
 	BOX_DELAY: 30,
 	MAX_TAGS: 5, //maximo numero de tagueos permitidos.
-	
 	/* LIMITES */
 	HOME_BOX_LIMIT: 24, //limite de la carga inicial (no aplica a la v1)
 	CATEGORY_BOX_LIMIT: 41 //maximo de temas en una categoría.

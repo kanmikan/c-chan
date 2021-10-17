@@ -19,6 +19,12 @@ function request(url, callback){
 	.then(data => callback(data));
 }
 
+function htmlParse(data) {
+    let d = document.createElement('div');
+    d.innerHTML = data;
+    return d.innerText;
+}
+
 function getDataURL(file, before, callback) {
 	var reader = new FileReader();
 	reader.onload = function(event) {		
@@ -135,7 +141,7 @@ function boxRender(box){
 		bbody +=`<div class="tagInvisible tagNew">Nuevo</div>`;	
 	}
 	if (box.type && box.type.includes("video")){
-		bbody +=`<div class="tagInvisible ytb"><div class="tagWrapper"></div><i class="fab fa-youtube"></i></div>`;
+		bbody +=`<div class="tag ytb"><i class="fas fa-play"></i></div>`;
 	}
 	if (box.type && box.type.includes("dice")){
 		bbody +=`<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>`;
@@ -375,6 +381,7 @@ function action_newNotification(data){
 }
 
 function action_titleAppendCounter(count){
+	document.title = htmlParse(document.title);
 	if (count > 0) {
 		let oldTitle = document.title;
 		let oldTitleRef = /^\(/s.test(oldTitle);

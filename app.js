@@ -11,6 +11,7 @@ const sesionManager = require("./server/sesion/sesionmanager.js");
 const live = require("./server/api/live.js");
 const cache = require("./server/db/cache.js");
 const defaults = require("./server/db/defaults.js");
+const threads = require("./server/extra/threads.js");
 
 /* SETUP INICIAL */
 var app = express();
@@ -58,6 +59,9 @@ dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: tru
 	
 	/* RUTAS */
 	routes(app);
+	
+	/* THREADS ASINCRONICOS */
+	threads.init(db);
 	
 });
 
