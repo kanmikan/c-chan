@@ -19,12 +19,6 @@ function request(url, callback){
 	.then(data => callback(data));
 }
 
-function htmlParse(data) {
-    let d = document.createElement('div');
-    d.innerHTML = data;
-    return d.innerText;
-}
-
 function getDataURL(file, before, callback) {
 	var reader = new FileReader();
 	reader.onload = function(event) {		
@@ -134,17 +128,20 @@ function boxRender(box){
 	if (SHOW_CATEGORY_ICON) {
 		bbody +=`<img src="${catdata.content.media.icon}"`;			
 	}
-	bbody += `<span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: middle;">${getCatShow(box.cat)}</span>
+	bbody += `<span style="margin-left: 4px;margin-right: 5px;align-self: center;">${getCatShow(box.cat)}</span>
 	</img></div>`;
 	
-	if (box.flag && box.flag.includes("new")){
-		bbody +=`<div class="tagInvisible tagNew">Nuevo</div>`;	
+	if (box.date && box.date.sticky > 0){
+		bbody +=`<div class="tag sticky">Sticky</div>`;
+	}
+	if (box.date && box.date.csticky > 0){
+		bbody +=`<div class="tag csticky"><i class="fas fa-thumbtack"></i></div>`;
 	}
 	if (box.type && box.type.includes("video")){
 		bbody +=`<div class="tag ytb"><i class="fas fa-play"></i></div>`;
 	}
 	if (box.type && box.type.includes("dice")){
-		bbody +=`<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>`;
+		bbody +=`<div class="tagInvisible diceTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>`;
 	}
 	if (box.type && box.type.includes("poll")){
 		bbody +=`<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>`;
@@ -153,13 +150,10 @@ function boxRender(box){
 		bbody +=`<div class="tag iduTag"><i class="fas fa-id-card"></i></div>`;
 	}
 	if (box.type && box.type.includes("rss")){
-		bbody +=`<div class="tagInvisible rss"><div class="tagWrapperTransparent"></div><i class="fas fa-rss"></i></div>`;
+		bbody +=`<div class="tagInvisible rss"><i class="fas fa-rss"></i></div>`;
 	}
-	if (box.date && box.date.csticky > 0){
-		bbody +=`<div class="tagInvisible csticky"><div class="tagWrapperTransparent"></div><i class="fas fa-thumbtack"></i></div>`;
-	}
-	if (box.date && box.date.sticky > 0){
-		bbody +=`<div class="tag sticky">Sticky</div>`;
+	if (box.flag && box.flag.includes("new")){
+		bbody +=`<div class="tagInvisible tagNew">Nuevo</div>`;	
 	}
 	
 	bbody +=`</div><div class="voxComments textShadon"><i class="fas fa-comment"></i><span class="countComments">${box.content.comments}</span></div><div class="voxAction textShadon"><div class="actionBotton" data-voxaction="${box.bid}"><i class="fas fa-ellipsis-v" data-voxaction="${box.bid}"></i></div></div></div>`;
@@ -390,6 +384,12 @@ function action_titleAppendCounter(count){
 		}
 		document.title = `(${count}) ${oldTitle}`;
 	}
+}
+
+function htmlParse(data) {
+    let d = document.createElement('div');
+    d.innerHTML = data;
+    return d.innerText;
 }
 
 //TODO: javascript nativo.

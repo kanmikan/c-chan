@@ -90,7 +90,7 @@ module.exports = function(app){
 			dbManager.mQuery(req.app.locals.db, models.BOX_QUERY(uid, bid), function(result){
 				//si existe el box, el C_BOXS tendrá datos, de lo contrario se asume que el tema no existe.
 				if (!result[mdbScheme.C_BOXS][0]){
-					res.redirect("/error/1");
+					res.redirect("/error/3");
 				} else {
 					res.render("box", {
 						it : {
@@ -243,8 +243,45 @@ module.exports = function(app){
 	/* RUTAS DE ERROR */
 	app.get('/error/:id', function(req, res) {
 		var id = req.params.id;
-		//placeholder del control de errores.
-		res.send("ERROR: " + id);
+		let errordata = {};
+		
+		//control de errores
+		switch(id){
+			case "1":
+				errordata = {
+					code: "404",
+					message: "El recurso no se ha encontrado"
+				}
+				break;
+			case "2":
+				errordata = {
+					code: "403",
+					message: "Acceso restringido"
+				}
+				break;
+			case "3":
+				errordata = {
+					code: "404",
+					message: "El tema no existe o ha sido borrado"
+				}
+				break;
+			default:
+				errordata = {
+					code: "404",
+					message: "Error desconocido"
+				}
+				break;
+		}
+		
+		res.render("error", {
+			it : {
+					error: errordata,
+					kind: req.originalUrl,
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session
+				}
+		});
 	});
 	
 	app.get('*', function(req, res) {

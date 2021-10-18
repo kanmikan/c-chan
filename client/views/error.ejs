@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	<%- include('./common/head', it); %>
+	</head>
+	<body class="loginContainer">
+	<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
+	<style>
+	
+		.image {
+			display: flex;
+			width: 100%;
+			justify-content: center;
+		}
+		
+		.code {
+			text-align-last: center;
+			font-size: 6rem;
+			margin: 0px;
+		}
+		.message {
+			text-align-last: center;
+			text-align: center;
+		}
+		
+		.info {
+			width: 50%;
+			position: fixed;
+			padding: 30px;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			box-shadow: 0 3px 3px 0 rgb(0 0 0 / 64%);
+		}
+		
+		.bottomlink {
+			display: flex;
+			width: 100%;
+			justify-content: center;
+		}
+		
+		.content {
+			width: 100%;
+		}
+		
+		.generalcontainer {
+			display: flex;
+		}
+	</style>
+		<main class="info">
+			<div class="generalcontainer">
+				<div class="image">
+					<img src="/assets/logo.png"/>
+				</div>
+				<div class="content">
+					<h1 class="code"><%= it.error.code %></h1>
+					<h2 class="message"><%= it.error.message %></h2>
+				</div>
+			</div>
+			<div class="bottomlink">
+				<a href="/" style="color: white;">Volver al Inicio</a>
+			</div>
+		</main>
+	</body>
+	<%- include('./common/footer', it); %>
+</html>

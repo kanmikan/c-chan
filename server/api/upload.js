@@ -63,7 +63,7 @@ function uploadLink(url, callback){
 					if (data.success){
 						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
 					} else {
-						callback({success: false, data: null});
+						callback({success: false, data: data.data});
 					}
 				});
 			break;
@@ -73,7 +73,7 @@ function uploadLink(url, callback){
 					if (data.success){
 						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
 					} else {
-						callback({success: false, data: null});
+						callback({success: false, data: data.data});
 					}
 				});
 			break;
@@ -104,13 +104,18 @@ function uploadLink(url, callback){
 
 function link2localStore(url, callback){
 	let namesplit = url.split(".");
+	
+	//soporte para links que no terminan en un formato.
+	if (namesplit[namesplit.length-1].search("/?") != -1){
+		namesplit[namesplit.length-1] = namesplit[namesplit.length-1].split("?")[0];
+	}
+	
 	let filename = utils.randomString(16) + "." + namesplit[namesplit.length-1];
 	let path = process.cwd() + "/uploads/" + filename;
 	let external_path = "/uploads/" + filename;
 	
 	axios.get(url, {responseType: 'arraybuffer'})
 	.then(function(response){
-		//console.log(response.data);
 		writeFile(path, response.data, function(err){
 			if (err){
 				callback({success: false, data: err});

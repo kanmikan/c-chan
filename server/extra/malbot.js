@@ -4,6 +4,8 @@ const mdbScheme = require('../db/models/mdbscheme.js');
 const jsonScheme = require('../db/models/jsonscheme.js');
 const cparser = require('../api/parser.js');
 const utils = require('../utils.js');
+const live = require('../api/live.js');
+const pass = require('../api/passport.js');
 const Parser = require('rss-parser');
 
 let parser = new Parser({
@@ -61,6 +63,10 @@ function createBox(DB, data, callback){
 	//crear box.
 	dbManager.insertDB(DB, mdbScheme.C_BOXS, mbox, function(result){
 		callback(result);
+		//live
+		let protectedJSON = pass.filterProtectedUID(mbox);
+		live.sendData("new", {kind: "newbox", data: protectedJSON});
+		live.sendData("activity", {kind: "box", data: protectedJSON});
 	});
 }
 

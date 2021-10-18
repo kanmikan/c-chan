@@ -126,8 +126,16 @@
 						<% if (it.renderConfig.SHOW_CATEGORY_ICON) { %>
 							<img src="<%= categoryData.content.media.icon %>">
 						<% } %>
-						<span style="margin-left: 4px;margin-right: 5px;align-self: center;vertical-align: baseline;"><%- it.utils.getCatShow(box.cat) %></span></img>
+						<span style="margin-left: 4px;margin-right: 5px;align-self: center;"><%- it.utils.getCatShow(box.cat) %></span></img>
 					</div>
+				<% } %>
+				<!-- tag sticky global -->
+				<% if (box.date && box.date.sticky > 0){ %>
+					<div class="tag sticky">Sticky</div>
+				<% } %>
+				<!-- tag sticky local -->
+				<% if (box.date && box.date.csticky > 0){ %>
+					<div class="tag csticky"><i class="fas fa-thumbtack"></i></div>
 				<% } %>
 				<!-- tag video -->
 				<% if (box.type && box.type.includes("video")){ %>
@@ -135,7 +143,7 @@
 				<% } %>
 				<!-- tag dados -->
 				<% if (box.type && box.type.includes("dice")){ %>
-					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>
+					<div class="tagInvisible diceTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>
 				<% } %>
 				<!-- tag encuesta -->
 				<% if (box.type && box.type.includes("poll")){ %>
@@ -147,15 +155,7 @@
 				<% } %>
 				<!-- tag rss -->
 				<% if (box.flag && box.flag.includes("rss")){ %>
-					<div class="tagInvisible rss"><div class="tagWrapperTransparent"></div><i class="fas fa-rss"></i></div>
-				<% } %>
-				<!-- tag sticky local -->
-				<% if (box.date && box.date.csticky > 0){ %>
-					<div class="tagInvisible csticky"><div class="tagWrapperTransparent"></div><i class="fas fa-thumbtack"></i></div>
-				<% } %>
-				<!-- tag sticky global -->
-				<% if (box.date && box.date.sticky > 0){ %>
-					<div class="tag sticky">Sticky</div>
+					<div class="tagInvisible rss"><i class="fas fa-rss"></i></div>
 				<% } %>
 			</div>
 			<div class="voxComments textShadon">

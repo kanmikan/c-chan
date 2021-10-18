@@ -622,8 +622,6 @@ ul.slideMenuOptions li:hover.optionBolt {
     font-size: .7rem;
     background: var(--hometag1);
     margin-right: 3px;
-    margin-bottom: 3px;
-    margin-top: 1.3px;
 }
 
 .box .tagList .tag img{
@@ -634,12 +632,11 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .tagInvisible.rss i {
-    background-color: orange;
+    background-color: #ff8100;
     border-radius: 3px;
     padding: 2px;
     color: white;
     font-size: 14px;
-    margin-top: 0.5px;
 }
 
 .tagInvisible.ytb i {
@@ -655,19 +652,13 @@ ul.slideMenuOptions li:hover.optionBolt {
 
 .box .tagList .tag.sticky {
 	background-color: var(--tag1-sticky);
-    margin-top: 0.5px;
-    margin-left: 3px;
     padding: 3px;
-}
-
-.box .tagList .tag.csticky{
-    background-color: #f36d2d;
 }
 
 .tagInvisible.csticky i {
 	color: #ffffff;
 	background-color: var(--hometag1);
-    padding: 3.5px 4px;
+    padding: 3.4px 4px;
     border-radius: 3px;
     font-size: 11px;
     margin-top: 1px;
@@ -726,19 +717,9 @@ span.countComments {
 }
 
 .tagInvisible {
+	height: 18px;
     display: flex;
     position: relative;
-    /*font-size: 25px;*/
-    /*margin-top: -3px;*/
-    /*margin-right: 4px;*/
-}
-
-.tagInvisible.videoWebm {
-    margin-top: -3px;
-}
-
-.tagInvisible.videoWebmYtb {
-    margin-top: -3px;
 }
 
 .tagWrapper {
@@ -756,14 +737,11 @@ span.countComments {
     z-index: 2;
 }
 
-.tagInvisible.videoWebm i {
-	color: #2f2f2f;
-}
-
 .tagInvisible.pollTag i {
 	color: var(--hometag1);
     font-size: 21px;
     margin-right: 3px;
+	margin-top: -1px;
 }
 
 .tagInvisible.pollTag .tagWrapper {
@@ -772,15 +750,18 @@ span.countComments {
 	margin-left: 1px;
 }
 
-.iduTag {
-	padding: 3px !important;
-    margin-top: 1px;
-}
-
 .tagInvisible.iduTag i {
 	color: var(--hometag1);
     font-size: 21px;
     margin-right: 3px;
+	padding: 3px !important;
+}
+
+.tagInvisible.diceTag i {
+	color: var(--hometag1);
+    font-size: 21px;
+    margin-right: 3px;
+	margin-top: -1px;
 }
 
 .tagInvisible.iduTag .tagWrapper {
@@ -2545,7 +2526,6 @@ input:checked + .slider:before {
 	color: #fff;
 	padding: 3px;
 	font-size: 11px;
-	margin-top: 1.5px;
 	border-radius: 3px;
 }
 
