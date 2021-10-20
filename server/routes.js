@@ -18,15 +18,17 @@ module.exports = function(app){
 		var uid = req.session.uid;
 		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
 			result[mdbScheme.C_BOXS] = cfilter.filterBoxHides(result[mdbScheme.C_BOXS], req.session.config);
-			//limitar despues del filtro
+			
+			//limite despues del filtro
 			let PAGELIMIT = (renderConfig.ENABLE_V1 && renderConfig.V1_CARDS) ? 0 : sConfig.HOME_BOX_LIMIT;
+			result[mdbScheme.C_BOXS] = result[mdbScheme.C_BOXS].slice(0, PAGELIMIT);
 			res.render("main", {
 				it : {
 					kind: req.originalUrl,
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session,
-					data: result[mdbScheme.C_BOXS].slice(0, PAGELIMIT)
+					data: result
 				}
 			});
 		});
