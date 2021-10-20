@@ -5,10 +5,9 @@ const sConfig = require('../../config/serverconfig.js');
 /* QUERY DE DATOS NECESARIOS PARA LA HOME DE CCHAN */
 /* PARAMETROS: uid - id del usuario que esta realizando la query, utilizada para obtener los datos de administracion y notificaciones */
 function HOME_QUERY(uid){
-	let PAGELIMIT = (renderConfig.ENABLE_V1 && renderConfig.V1_CARDS) ? 0 : sConfig.HOME_BOX_LIMIT;
 	return [
 		[mdbScheme.C_ADM, {uid: uid}, "", 0],
-		[mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, PAGELIMIT],
+		[mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, 0],
 		[mdbScheme.C_NOTIF, {"receiver.uid": uid}, {"date.created": -1}, 0],
 		[mdbScheme.C_CATS, "", {"date.sticky": -1, "date.order": -1}, 0]
 	];

@@ -4,6 +4,7 @@ const api = require('./api.js');
 const adm = require('./adm.js');
 const utils = require('./utils.js');
 const renderConfig = require('./config/renderconfig.js');
+const sConfig = require('./config/serverconfig.js');
 const mdbScheme = require('./db/models/mdbscheme.js');
 const compat = require('./db/compat.js');
 const cfilter = require('./sesion/contentfilter.js');
@@ -17,13 +18,15 @@ module.exports = function(app){
 		var uid = req.session.uid;
 		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
 			result[mdbScheme.C_BOXS] = cfilter.filterBoxHides(result[mdbScheme.C_BOXS], req.session.config);
+			//limitar despues del filtro
+			let PAGELIMIT = (renderConfig.ENABLE_V1 && renderConfig.V1_CARDS) ? 0 : sConfig.HOME_BOX_LIMIT;
 			res.render("main", {
 				it : {
 					kind: req.originalUrl,
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session,
-					data: result
+					data: result[mdbScheme.C_BOXS].slice(0, PAGELIMIT)
 				}
 			});
 		});
