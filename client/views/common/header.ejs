@@ -52,6 +52,7 @@
 <%- include('../common/fragments/header/newBoxModal', it); %>
 <%- include('../common/fragments/header/configModal', it); %>
 <%- include('../common/fragments/header/loginModal', it); %>
+<%- include('../common/fragments/header/idModal', it); %>
 
 <% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD") )) { %>
 	<%- include('./scripts/modScripts', it); %>

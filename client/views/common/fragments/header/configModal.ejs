@@ -19,10 +19,6 @@
                     </label>
                 </div>
             </li>
-			<li id="changeSesion" style="padding: 15px 0px;">
-				<div class="optionIcon"><i class="fas fa-user" aria-hidden="true"></i></div>
-				<div class="optionText" style="cursor:pointer">Cambiar sesion</div>
-            </li>
 			<li style="display:inline">
 				<div class="visibleCategories" id="visibleCategories">
 					<div class="optionIcon"><i class="fas fa-dice-d6" aria-hidden="true"></i></div>
@@ -48,7 +44,10 @@
 					<% }); %>
 				</ul>
 			</li>
-
+			<li style="padding: 15px 0px;" onclick="location.href='/login'">
+				<div class="optionIcon"><i class="fas fa-user" aria-hidden="true"></i></div>
+				<div class="optionText" style="cursor:pointer">Iniciar Sesion</div>
+            </li>
 <!--
 			<li>
 				<div class="configTitle">Home clásica</div>
@@ -65,7 +64,6 @@
 				<div class="optionText">Palabras ocultas </div>
 			</li>
 -->
-			
         </ul>
     </div>
 </div>
