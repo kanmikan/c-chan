@@ -41,8 +41,10 @@
 		</div>
 		<div>Acciones Generales</div>
 		<div class="pcontainer-int">
-			<button class="buttonPress" id="action-1" data-state="1" type="submit">
-				<span>Activar Whitelist</span> 
+			<% let whitelist = it.data.server[0].whitelist; %>
+			
+			<button class="buttonPress" id="action-1" data-state="<%= (whitelist) ? "1" : "0" %>" style="<%= (whitelist) ? "background: red" : "" %>" type="submit">
+				<span><%= (whitelist) ? "Desactivar" : "Activar" %> Whitelist</span> 
 			</button>
 			<button class="buttonPress" type="submit">
 				<span>Cerrar Comentarios</span> 

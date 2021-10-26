@@ -6,5 +6,6 @@ module.exports = {
 	C_ADM: "users",
 	C_NOTIF: "notifs",
 	C_CATS : "cats",
-	C_ENC : "encuestas"
+	C_ENC : "encuestas",
+	C_SVR : "server"
 }

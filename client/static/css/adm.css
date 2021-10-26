@@ -1,5 +1,5 @@
 .pcontainer {
-	border: 2px solid #2196f3;
+	border: 2px solid var(--modal-border);
 	background: var(--modal-background);
 	width: 90%;
 	height: auto;

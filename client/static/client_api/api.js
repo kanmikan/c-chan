@@ -74,10 +74,10 @@ function postForm(formdata, url, before, callback){
 }
 
 function timeSince(timestamp) {
-	var now = new Date(); 
+	var now = new Date();
 	var secondsPast = (now.getTime() - timestamp) / 1000;
 	if (secondsPast < 60) {
-		return parseInt(secondsPast) + 's';
+		return ((parseInt(secondsPast) < 0) ? 0 : parseInt(secondsPast)) + 's';
 	} else if (secondsPast < 3600) {
 		return parseInt(secondsPast / 60) + 'm';
 	} else if (secondsPast < 86400) {
@@ -88,7 +88,7 @@ function timeSince(timestamp) {
 		return parseInt(secondsPast / 2678400) + 'ms';
 	} else if (secondsPast > 32140800) {
 		return parseInt(secondsPast / 32140800) + 'a';
-	}	
+	}
 }
 
 function resetCommentInputData(){
@@ -187,7 +187,12 @@ function activityRender(com){
 		//TODO: icono de video etc..
 		cbody += `<img class="chatlike-image" src="${com.media.preview}"></img></br>`;
 	}
-	cbody += `<div class="chatlike-text">${com.content.body}</div>
+	
+	let textcontent = com.content.body;
+	if (textcontent.length > 100){
+		textcontent = textcontent.substr(0, 100) + "...";
+	}
+	cbody += `<div class="chatlike-text">${textcontent}</div>
 	</div></div>`;
 	
 	return cbody;
@@ -203,6 +208,7 @@ function iconRender(iconData){
 	} else {
 		ibody +=`<img class="avatar" src="${com.icon}" alt="">`;
 	}
+	ibody +=`<div class="anonIcon anonAccesory ${icon[3]}"></div>`;
 	return ibody;
 }
 
@@ -295,17 +301,19 @@ function tag(cid){
 
 function hashScroll(hash){
 	if (hash != ""){
-		window.location.hash = hash;
+		//window.location.hash = hash;
+		window.history.replaceState(null, null, hash);
+		
 		let elem = element(hash.substring(1));
 		let offset = elem.offsetTop;
 		let h = elem.clientHeight - 32;
 		let wh = window.innerHeight;
 		if (h < wh) {offset = offset - ((wh/2)-(h/2));}
 		
-		[].forEach.call(document.querySelectorAll(".jump"), function(e) {
-			e.classList.remove("jump");
-		});
-		document.documentElement.scrollTo({top: offset, behavior: 'smooth'});
+		[].forEach.call(document.querySelectorAll(".jump"), function(e) {e.classList.remove("jump");});
+		
+		//document.documentElement.scrollTo({top: offset, behavior: 'smooth'});
+		window.scrollTo({top: offset, behavior: 'smooth'});
 		elem.classList.add("jump");
 	}
 }
@@ -651,18 +659,16 @@ $(document).ready(function() {
 		element("idButton").addEventListener("click", function(e){
 			e.preventDefault();
 			let userid = element("userid").value;
-			let password = element("password").value;
 			let formdata = new FormData();
 			
 			formdata.append("userid", userid);
-			formdata.append("password", password);
 			
-			post(formdata, "/api/login", function(){
+			post(formdata, "/api/idlogin", function(){
 				element("loadingLogin").classList.remove("hidden");
-				element("loginText").classList.add("hidden");
+				element("idText").classList.add("hidden");
 			}, function(result){
 				element("loadingLogin").classList.add("hidden");
-				element("loginText").classList.remove("hidden");
+				element("idText").classList.remove("hidden");
 				if (result.success){
 					console.log("logueado."); //TODO mensaje de login.
 					$("#idForm").css("display", "none");

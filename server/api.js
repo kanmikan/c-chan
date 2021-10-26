@@ -203,9 +203,10 @@ module.exports = function(app){
 	});
 	
 	//API: login de ID
-	app.post('/api/idlogin', function(req, res){
+	app.post('/api/idlogin', async function(req, res){
 		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
 		
+		let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: userid}, "", async function(user){
 			if (user[0]){
 				//comprobar si el userid tiene contraseña, en cuyo caso redirigir al modal de login.
@@ -226,10 +227,12 @@ module.exports = function(app){
 			} else {
 				//no existe, generar uno nuevo.
 				//primero, comprobar que el userid sea un id valido de 32 caracteres.
-				if (userid.trim().length !== 32){
+				if (!svrconfig[0].login){
+					res.json({success: false, data: "La generacion de ID se encuentra cerrada."});
+				} else if (userid.trim().length !== 32){
 					res.json({success: false, data: "ID invalido, tiene que tener 32 caracteres."});
 				} else {
-					let json = sesionManager.genUser(userid, password, req.session.id);
+					let json = sesionManager.genUser(userid, "", req.session.id);
 					dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){
 						req.session.uid = json.uid;
 						req.session.config = json.extra.config;
@@ -245,10 +248,11 @@ module.exports = function(app){
 	
 	//API: login de usuario.
 	//TODO: comprobacion de credenciales, sanitizado
-	app.post('/api/login', function(req, res) {
+	app.post('/api/login', async function(req, res) {
 		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
 		let password = req.fields.password.trim();
 		
+		let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {$or: [{uid: userid}, {nick: new RegExp(userid, "i")}]}, "", async function(user){
 			if (user[0]){
 				//existe el usuario, comparar contraseña.
@@ -268,7 +272,9 @@ module.exports = function(app){
 			} else {
 				//crear usuario
 				//primero, comprobar que el userid sea un id valido de 32 caracteres.
-				if (userid.trim().length !== 32){
+				if (!svrconfig[0].login){
+					res.json({success: false, data: "La generacion de ID se encuentra cerrada."});
+				} else if (userid.trim().length !== 32){
 					res.json({success: false, data: "ID invalido, tiene que tener 32 caracteres."});
 				} else {
 					let json = sesionManager.genUser(userid, password, req.session.id);

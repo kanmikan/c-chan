@@ -19,11 +19,42 @@
 				}, 100);
 			});	
 		});
+		
+		//whitelist
+		element("action-1").addEventListener("click", function(e){
+			let target = $(e.currentTarget);
+			admActionSend("adm_whitelist", target.attr("data-state"), function(){}, function(result){
+				if (result.success){
+					if (result.data.whitelist){
+						target.attr("data-state", "1");
+						$("#action-1").css({background: "red"});
+						$("#action-1").text("Desactivar Whitelist");
+					} else {
+						target.attr("data-state", "0");
+						$("#action-1").css({background: ""});
+						$("#action-1").text("Activar Whitelist");
+					}					
+				}
+			});
+		});
+		
+		
 	});
 	/* FUNCIONES */
 	function loadAdmActivity(){
 		updateActivityBox();
 		updateActivityCom();
+	}
+	
+	function admActionSend(action, data, precallback, callback){
+		let formData = new FormData();
+		formData.append("action", action);
+		formData.append("data", data);
+		post(formData, "/adm/server", function(){
+			precallback();
+		}, function(result){
+			callback(result);
+		});
 	}
 	
 	function updateActivityBox(){

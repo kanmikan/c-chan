@@ -90,8 +90,35 @@ module.exports = function(app){
 		});
 	});
 	
+	//ADMIN API: acciones criticas de alta jerarquia
+	app.post('/adm/server', pass.onlyADM, function(req, res) {
+		let action = req.fields.action;
+		let data = req.fields.data;
+		
+		switch(action){
+			case "adm_whitelist":
+				let state = (data === "1") ? false : true;
+				dbManager.updateDBAll(req.app.locals.db, mdbScheme.C_SVR, {}, {whitelist: state}, () => {});
+				res.json({success: true, data: {whitelist: state}});
+				break;
+			case "adm_login":
+				res.json({success: false, data: "-no implementado-"});
+				break;
+			case "adm_coms":
+				res.json({success: false, data: "-no implementado-"});
+				break;
+			case "adm_boxs":
+				res.json({success: false, data: "-no implementado-"});
+				break;
+			default:
+				res.json({success: false, data: "accion no definida"});
+				break;
+		}
+		
+	});
+	
 	//ADMIN API: realizar acciones de moderacion.
-	app.post('/adm/action', pass.onlyADM, function(req, res) {
+	app.post('/adm/action', pass.onlyMOD, function(req, res) {
 		let action = req.fields.action;
 		let data = req.fields.data;
 		

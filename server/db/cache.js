@@ -8,7 +8,8 @@ let collectionList = [
 	mdbScheme.C_COMS,
 	mdbScheme.C_ADM,
 	mdbScheme.C_NOTIF,
-	mdbScheme.C_CATS
+	mdbScheme.C_CATS,
+	mdbScheme.C_SVR
 ];
 var db;
 

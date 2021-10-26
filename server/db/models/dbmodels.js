@@ -7,6 +7,7 @@ const sConfig = require('../../config/serverconfig.js');
 function HOME_QUERY(uid){
 	return [
 		[mdbScheme.C_ADM, {uid: uid}, "", 0],
+		[mdbScheme.C_SVR, "", "", 0],
 		[mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, 0],
 		[mdbScheme.C_NOTIF, {"receiver.uid": uid}, {"date.created": -1}, 0],
 		[mdbScheme.C_CATS, "", {"date.sticky": -1, "date.order": -1}, 0]

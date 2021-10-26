@@ -21,6 +21,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "imgur": "^1.0.2",
     "jquery": "^3.6.0",
+    "jquery-lazyload": "^1.9.7",
     "mingo": "^4.1.4",
     "mongodb": "^3.6.4",
     "node-cron": "^3.0.0",

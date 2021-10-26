@@ -34,7 +34,7 @@ async function banUser(DB, uid, razon, time, callback){
 		duracion: time,
 		razon: razon
 	};
-	await dbManager.pushDB(DB, mdbScheme.C_ADM, {uid: uid}, [{$set: {"extra.bandata": bandata}}, {$push: {state: "BANNED"}}], () => {});
+	await dbManager.pushDB(DB, mdbScheme.C_ADM, {uid: uid}, {$push: {state: "BANNED"}, $set: {"extra.bandata": bandata}}, () => {});
 	callback({success: true, data: bandata});
 }
 

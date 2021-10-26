@@ -3,7 +3,7 @@
 		<button type="button" id="idClose" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 	</div>
 	</br>
-	<h4>Bienvenido a Cchan</h4>
+	<h3>Bienvenido a Cchan</h3>
 	<h5>Para poder usar la página necesitas generar un <b>ID</b> de sesion:</h5>
 	<input type="text" class="modalInput" name="userid" id="userid" placeholder="ID del Usuario" value="<%= it.sesion.uid %>">
 	<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">	
@@ -21,7 +21,7 @@
 	<div style="margin: 5px 20px;font-size: 11px;"><a href="/login">Iniciar Sesion con una cuenta</a></div>	
 </form>
 <style>
-	.login h4 {
+	.login h3 {
 		text-align: center;
 		margin-top: 0;
 	}

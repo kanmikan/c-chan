@@ -1153,9 +1153,23 @@ figure.commentAttachVideo {
     padding: 8px;
     border-radius: 4px;
     background: var(--box-attach-background);
-    display: flex;
+    /*display: flex;*/
     align-items: flex-start;
     box-sizing: border-box;
+}
+
+figure.commentAttachVideo .video-link {
+	word-break: break-all;
+	margin-top: 4px;
+	font-size: 0.7rem;
+}
+
+figure.commentAttachVideo .video-link a {
+	color: white;
+}
+
+figure.commentAttachVideo .video-link a:hover {
+	color: var(--box-test-hover);
 }
 
 figure.voxAttachVideo {
@@ -1584,6 +1598,10 @@ h4 {
 }
 
 .chatlike-text span {
+    word-break: break-word;
+}
+
+.chatlike-text a {
     word-break: break-word;
 }
 
@@ -2638,6 +2656,11 @@ input:checked+.slider:before {
     width: 50px;
     height: 50px;
     border-radius: 5px;
+}
+
+.anonAccesory {
+	position: absolute;
+    transform: translate(0px, -50px);
 }
 
 .anonText {

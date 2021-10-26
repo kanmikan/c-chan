@@ -75,14 +75,20 @@ function genUser(uid, pass, sid){
 	return json;
 }
 
-function checkSesion(req, res, next){
+async function checkSesion(req, res, next){
 	let sid = req.session.id;
+	
+	let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
 	dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {sid: sid}, "", function(user){
 		if (!user[0]){
 			console.log("[Sesion] Usuario efimero detectado, redirigir al logeo.");
 			res.json({success: false, data: {redirect: true, to: "/login"}});
 		} else {
-			next();
+			if (svrconfig[0].whitelist && !(user[0].permisos.includes("WHITELIST") || user[0].permisos.includes("ADMIN") || user[0].permisos.includes("GMOD") || user[0].permisos.includes("MOD"))) {
+				res.json({success: false, data: "Whitelist Activada - Solo los usuarios permitidos pueden realizar esa accion."});
+			} else {
+				next();
+			}
 		}
 	});
 }
