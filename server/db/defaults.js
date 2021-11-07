@@ -17,6 +17,15 @@ function init(DB){
 			cache.update(mdbScheme.C_CATS, function(){});
 		}
 	});
+	//configuraciones por defecto
+	DB.db(sConfig.DBNAME).collection(mdbScheme.C_SVR).find({}).toArray(function(err, server){
+		if (server.length === 0) {
+			console.log("[Defaults] Generando configuracion de estado del server por defecto.");
+			genDefConfig(DB);
+			//actualizar cache
+			cache.update(mdbScheme.C_SVR, function(){});
+		}
+	});
 }
 
 function genDefCategories(DB){
@@ -34,8 +43,13 @@ function genDefCategories(DB){
 		if (category[7]){
 			scheme.date.sticky = parseInt(category[7]);
 		}
-		dbManager.insertDB(DB, "cats", scheme, function(){});
+		dbManager.insertDB(DB, mdbScheme.C_CATS, scheme, function(){});
 	});
+}
+
+function genDefConfig(DB){
+	let scheme = utils.clone(jsonScheme.SVRCONFIG_SCHEME);
+	dbManager.insertDB(DB, mdbScheme.C_SVR, scheme, function(){});
 }
 
 module.exports = {init};

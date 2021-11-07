@@ -155,4 +155,13 @@ const CATEGORY_SCHEME = {
 	}
 }
 
-module.exports = {COMMENT_SCHEME, BOX_SCHEME, USER_SCHEME, NOTIF_SCHEME, CATEGORY_SCHEME}
+const SVRCONFIG_SCHEME = {
+	version: 2,
+	whitelist: false, //permitir el uso solo a los usuarios con whitelist o con rango.
+	login: true, //permitir logeos
+	coms: true, //permitir comentarios
+	boxs: true, //permitir creacion de temas
+	blacklist: [] //[placeholder] blacklist de acceso general.
+}
+
+module.exports = {COMMENT_SCHEME, BOX_SCHEME, USER_SCHEME, NOTIF_SCHEME, CATEGORY_SCHEME, SVRCONFIG_SCHEME}
