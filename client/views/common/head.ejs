@@ -1,11 +1,21 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="title" content="CChan">
-<meta name="image" content="/icon.png">
+<title>Cchan</title>
+
+<!-- metadatos para el buscador -->
+<% if (it.kind.search("tema") === -1) { %>
+<meta property="og:image"  content="/icon.png">
 <meta name="description" content="Cchan es un imageboard basado en voxed">
 <meta name="keywords" content="voxed,social,imageboard">
-<title>CChan</title>
+<meta name="title" content="Cchan">
+<% } else { 
+let BOX = it.data.boxs[0]; %>
+<meta property="og:image"  content="<%= BOX.img.preview %>">
+<meta name="description" content="<%= BOX.content.body.substr(0,200) %>">
+<meta name="keywords" content="voxed,social,imageboard">
+<meta name="title" content="<%= BOX.content.title %>">
+<% } %>
 
 <% if ((it.sesion.config) ? it.sesion.config.darkmode : false) { %>
 	<meta name="theme-color" content="#0a0a0a">

@@ -102,7 +102,7 @@ function isGif(url) {
 }
 
 function isImg(url) {
-    let match = url.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i)
+    let match = url.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)/i)
     return (match) ? true : false;
 }
 

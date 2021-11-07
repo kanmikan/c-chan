@@ -609,8 +609,8 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .box {
-    width: calc(100% / 6.08);
-    height: calc(100vw / 6.08);
+	width: calc(100% / 6.06);
+    height: calc(100vw / 6.06);
     flex-direction: column;
     display: flex;
     cursor: pointer;
@@ -2383,28 +2383,28 @@ ul.attachsVox i {
 }
 
 .loadNewVox {
-    z-index: 5;
-    background: #ff5722;
-    width: 200px;
-    padding: 10px;
-    font-size: 13px;
-    text-align: center;
-    cursor: pointer;
-    color: #fff;
-    position: fixed;
-    top: 65px;
-    left: calc(50% - 112px);
-    border-radius: 4px;
-    box-shadow: 2px 2px 2px 0 rgb(30 44 56 / 55%);
-    border: 1px solid #ff5722;
+	z-index: 5;
+	background: var(--modal-border);
+	width: 200px;
+	padding: 10px;
+	font-size: 13px;
+	text-align: center;
+	cursor: pointer;
+	color: #fff;
+	position: fixed;
+	top: 65px;
+	left: calc(50% - 112px);
+	border-radius: 4px;
+	box-shadow: 2px 2px 2px 0 rgb(30 44 56 / 55%);
+	border: 1px solid var(--modal-border);
 }
 
 .loadNewVox:hover {
-    background: #ff450a;
+	background: var(--categoryTitle-hover);
 }
 
 .loadNewVox:active {
-    background: #ff450a;
+	background: var(--categoryTitle-hover);
 }
 
 .searchInput {
@@ -2818,11 +2818,17 @@ input:checked+.slider:before {
 
 
 /* Resolucion 1024px */
+@media only screen and (max-width: 1280px) {
+    .box {
+        width: calc(100% / 5.05);
+        height: calc(100vw / 5.05);
+    }
+}
 
 @media only screen and (max-width: 1024px) {
     .box {
-        width: calc(100% / 5.06);
-        height: calc(100vw / 5.06);
+        width: calc(100% / 4.04);
+        height: calc(100vw / 4.04);
     }
 }
 
@@ -2832,20 +2838,18 @@ input:checked+.slider:before {
     }
 }
 
-
 /* Tablet */
-
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 800px) {
     .box {
-        width: calc(100% / 4.06);
-        height: calc(100vw / 4.06);
+        width: calc(100% / 3.03);
+        height: calc(100vw / 3.03);
     }
 }
 
 @media only screen and (max-width: 700px) {
     .box {
-        width: calc(100% / 3.04);
-        height: calc(100vw / 3.04);
+        width: calc(100% / 3.03);
+        height: calc(100vw / 3.03);
     }
     .actionBotton {
         display: flex;

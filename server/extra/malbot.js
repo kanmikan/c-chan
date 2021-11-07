@@ -21,22 +21,40 @@ async function check(DB, id, callback){
 	
 	//comprobar si el tema ya fue creado
 	dbManager.queryDB(DB, mdbScheme.C_BOXS, {"user.uid": "malbot"}, {"date.created": -1}, function(box){
-		if (box[0] && (element.pubDate === box[0].content.extra.botdata.created) && (element.title === box[0].content.title)){
-			callback({success: false, data: "[MalBot] Publicacion igual."});
+		
+		if (box[0]){
+			let cexit = false;
+			box.forEach(function(ybox){
+				if (element.pubDate === ybox.content.extra.botdata.created || element.title === ybox.content.title){
+					cexit = true;
+				}
+			});
+			if (cexit){
+				callback({success: false, data: "[MalBot] Publicacion igual."});
+				return;
+			} else {
+				createBox(DB, element, function(response){
+					callback({success: true, data: "[MalBot] La publicacion es distinta: Nuevo tema creado."});
+				});
+			}
 		} else {
-			createBox(DB, element, function(){
+			createBox(DB, element, function(response){
 				callback({success: true, data: "[MalBot] La publicacion es distinta: Nuevo tema creado."});
 			});
 		}
+		
 	});
 }
 
 function createBox(DB, data, callback){
 	let time = Date.now();
-	let bid = utils.uuidv4();
+	
+	//let bid = utils.uuidv4();
+	let bid = data.title.toLowerCase().replace(/[^a-z0-9]+/gi, "-").substr(0,80) + utils.uuidv4().split("-")[0];
+	
 	let mbox = utils.clone(jsonScheme.BOX_SCHEME);
 	mbox.bid = bid;
-	mbox.cat = "anm";
+	mbox.cat = "rss";
 	mbox.user.uid = "malbot";
 	mbox.user.jerarquia = {
 		nick: "MalBot",

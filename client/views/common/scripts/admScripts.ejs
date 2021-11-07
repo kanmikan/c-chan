@@ -89,7 +89,7 @@
 	
 	function buildActivityCom(com){
 		let cdata = `<div class="home-temalist" onclick="window.open('/tema/${com.bid}#${com.cid}')">
-		<div style="display:flex">${iconRender(com.icon)}<div>`;
+		<div style="display:flex">${iconRender(com.icon, false)}<div>`;
 		if (com.type.includes("image")){
 			cdata += `<div class="chatlike-container"><img class="act-image" src="${com.img.preview}"></img></div>`;
 		}

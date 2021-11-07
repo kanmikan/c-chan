@@ -87,33 +87,6 @@ module.exports = function(app){
 		
 	});
 	
-	/* RUTA DE LOS BOXS */
-	app.get('/tema/:bid', function(req, res) {
-		var uid = req.session.uid;
-		var bid = req.params.bid;
-		if (bid){
-			dbManager.mQuery(req.app.locals.db, models.BOX_QUERY(uid, bid), function(result){
-				//si existe el box, el C_BOXS tendrá datos, de lo contrario se asume que el tema no existe.
-				if (!result[mdbScheme.C_BOXS][0]){
-					res.redirect("/error/3");
-				} else {
-					res.render("box", {
-						it : {
-							kind: "/tema/" + result[mdbScheme.C_BOXS][0].cat,
-							token: utils.randomString(16),
-							utils: utils,
-							renderConfig: renderConfig,
-							sesion: req.session,
-							data: result
-						}
-					});
-				}
-			});
-		} else {
-			res.redirect("/error/1");
-		}
-	});
-	
 	//RUTA: lista de favoritos.
 	//llamada para añadir elemento: applyConfig("favs_add:bid"), donde bid es el id del box a añadir a favoritos.
 	app.get('/favoritos', function(req, res) {
@@ -232,7 +205,7 @@ module.exports = function(app){
 		});
 	});
 	
-	//RUTA: pagina de info, bienvenida, faqs, reglas, etc.
+		//RUTA: pagina de info, bienvenida, faqs, reglas, etc.
 	app.get('/info/:id', function(req, res) {
 		var id = req.params.id;
 		res.render("info", {
@@ -289,10 +262,53 @@ module.exports = function(app){
 		});
 	});
 	
+	/* FALLBACK DE COMPATIBILIDAD CON LINKS VIEJOS */
+	//TODO: buscar otra manera mas optima.
+	app.get('/tema/:bid', function(req, res) {
+		let bid = req.params.bid;
+		//buscar la categoria del tema? mameta
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, "", function(boxs){
+			if (boxs[0]){
+				res.redirect("/" + boxs[0].cat + "/" + bid);
+			} else {
+				res.redirect("/old/" + bid);
+			}
+		});
+	});
+	
+	/* RUTA DE LOS BOXS */
+	app.get('/:cat/:bid', function(req, res) {
+		var uid = req.session.uid;
+		var bid = req.params.bid;
+		let cat = req.params.cat;
+		
+		if (bid){
+			dbManager.mQuery(req.app.locals.db, models.BOX_QUERY(uid, bid), function(result){
+				//si existe el box, el C_BOXS tendrá datos, de lo contrario se asume que el tema no existe.
+				if (!result[mdbScheme.C_BOXS][0]){
+					res.redirect("/error/3");
+				} else {
+					res.render("box", {
+						it : {
+							kind: "/tema/" + result[mdbScheme.C_BOXS][0].cat,
+							token: utils.randomString(16),
+							utils: utils,
+							renderConfig: renderConfig,
+							sesion: req.session,
+							data: result
+						}
+					});
+				}
+			});
+		} else {
+			res.redirect("/error/1");
+		}
+	});
+	
 	app.get('*', function(req, res) {
 		//placeholder del control de errores.
 		res.status(404);
-		res.send("PAGINA NO ENCONTRADA");
+		res.redirect("/error/1");
 	});
 	
 }

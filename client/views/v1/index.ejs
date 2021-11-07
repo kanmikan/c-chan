@@ -118,7 +118,7 @@
 <% function renderBox(box) { %>
 	<% if (box != undefined) { 
 		let categoryData = it.utils.getCategoryData(it.data.cats, box.cat); %>
-		<a class="box" id="<%= box.bid %>" href="/tema/<%= box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%= it.utils.seclink((box.type.includes("video")) ? box.media.preview : box.img.preview) %>); text-decoration: none; background-position: top;">
+		<a class="box" id="<%= box.bid %>" href="/<%= box.cat %>/<%= box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%= it.utils.seclink((box.type.includes("video")) ? box.media.preview : box.img.preview) %>); text-decoration: none; background-position: top;">
 		<div class="voxHeader">
 			<div class="tagList">
 				<% if (!it.renderConfig.V1_CARDS) { %>

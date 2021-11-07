@@ -124,7 +124,7 @@ function boxRender(box){
 	let boxThumb = (box.type.includes("video")) ? box.media.preview : box.img.preview;
 	let catdata = getCategoryData(box.cat);
 	
-	let bbody = `<a class="box" id="${box.bid}" href="/tema/${box.bid}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${boxThumb}); text-decoration: none; background-position: top;"><div class="voxHeader"><div class="tagList"><div class="tag categoryTag">`;
+	let bbody = `<a class="box" id="${box.bid}" href="/${box.cat}/${box.bid}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${boxThumb}); text-decoration: none; background-position: top;"><div class="voxHeader"><div class="tagList"><div class="tag categoryTag">`;
 	if (SHOW_CATEGORY_ICON) {
 		bbody +=`<img src="${catdata.content.media.icon}"`;			
 	}
@@ -189,8 +189,8 @@ function activityRender(com){
 	}
 	
 	let textcontent = com.content.body;
-	if (textcontent.length > 100){
-		textcontent = textcontent.substr(0, 100) + "...";
+	if (textcontent.length > 150){
+		textcontent = textcontent.substr(0, 150) + "...";
 	}
 	cbody += `<div class="chatlike-text">${textcontent}</div>
 	</div></div>`;
@@ -198,7 +198,7 @@ function activityRender(com){
 	return cbody;
 }
 
-function iconRender(iconData){
+function iconRender(iconData, acc=true){
 	let icon = iconData.split(",");
 	let ibody = ``;
 	if (icon[0] === "ico") {
@@ -208,7 +208,9 @@ function iconRender(iconData){
 	} else {
 		ibody +=`<img class="avatar" src="${com.icon}" alt="">`;
 	}
-	ibody +=`<div class="anonIcon anonAccesory ${icon[3]}"></div>`;
+	if (acc){
+		ibody +=`<div class="anonIcon anonAccesory ${icon[3]}"></div>`;
+	}
 	return ibody;
 }
 
@@ -1151,8 +1153,12 @@ $(document).ready(function() {
 		var targetElement = $(document).find(id);
 		quote.removeClass("hidden");
 		quote.addClass("popupw");
-		quote.css({left:  e.pageX - 40, top:   e.pageY - 100});	
-		$(document).find('#floatQuote').html(targetElement.html());		
+		quote.css({left:  e.pageX - 40, top:   e.pageY - 100});
+		let obj = targetElement.find("img")[0];
+		if (obj){
+			LazyLoad.load(obj);
+		}
+		$(document).find('#floatQuote').html(targetElement.html());
 	});
 	$(document).on("mouseleave", ".tag", function (e) {
 		quote.addClass("hidden");

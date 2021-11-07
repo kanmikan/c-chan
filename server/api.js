@@ -60,9 +60,11 @@ module.exports = function(app){
 		let modAnonimo = (req.fields.modAnon) ? true : false;
 		let dados = (req.fields.dados) ? true : false;
 		let idunico = (req.fields.idunico) ? true : false;
-		
 		let time = Date.now();
-		let bid = utils.uuidv4();
+		
+		//let bid = utils.uuidv4();
+		let bid = title.toLowerCase().replace(/[^a-z0-9]+/gi, "-").substr(0,80) + utils.uuidv4().split("-")[0];
+	
 		let json = utils.clone(jsonScheme.BOX_SCHEME);
 		json.bid = bid;
 		json.cat = (cat != "") ? cat : "off";
@@ -114,7 +116,7 @@ module.exports = function(app){
 		dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
 			let protectedJSON = pass.filterProtectedUID(json);
 			live.sendData("new", {kind: "newbox", data: protectedJSON});
-			res.json({success: true, data: {url: "/tema/" + bid}});
+			res.json({success: true, data: {url: "/" + cat + "/" + bid}});
 			//informar nueva actividad.
 			live.sendData("activity", {kind: "box", data: protectedJSON});
 		});
