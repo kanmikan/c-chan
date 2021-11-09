@@ -63,8 +63,8 @@
 
 @media only screen and (max-width: 600px) {
 	.box {
-		width: calc(100% / 2.02);
-		height: calc(100vw / 2.02);
+		width: calc(100% / 2.03);
+		height: calc(100vw / 2.03);
 	}
 	.modHome{
 		width: 100%;

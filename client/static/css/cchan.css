@@ -2891,7 +2891,11 @@ input:checked+.slider:before {
 /* Celulares */
 
 @media only screen and (max-width: 600px) {
-    .actionModContainer {
+	.box {
+        width: calc(100% / 2.04);
+        height: calc(100vw / 2.04);
+    }
+	.actionModContainer {
         margin-top: 5px;
     }
     figure.voxAttach {
@@ -3015,10 +3019,6 @@ input:checked+.slider:before {
     }
     .homeBar {
         display: none !important;
-    }
-    .box {
-        width: calc(100% / 2.03);
-        height: calc(100vw / 2.03);
     }
     .modHome {
         width: 100%;
