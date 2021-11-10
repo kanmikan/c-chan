@@ -407,6 +407,9 @@ function action_openPopup(data){
 	let img = data.content.preview.thumb;
 	let title = data.content.preview.title;
 	let cpreview = data.content.preview.desc;
+	if (cpreview.length > 150) {
+		cpreview = cpreview.substr(0, 150) + "...";
+	}
 	let msgHtml = "";
 	let type = (data.content.tag) ? "Te respondieron en:" : "Comentaron en tu tema:";
 	
@@ -1066,6 +1069,8 @@ $(document).ready(function() {
 							let mediaData = data.data;
 							if (mediaData.video){
 								element("bvid").value = mediaData.raw + ";" + mediaData.thumb;
+								//mostrar opcion de sincronizacion
+								element("vidsync").classList.remove("hidden");
 							} else {
 								element("bimg").value = mediaData.raw + ";" + mediaData.thumb;
 							}

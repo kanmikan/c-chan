@@ -1,0 +1,53 @@
+<script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+<script>
+function onYouTubeIframeAPIReady() {
+	var socket = io();
+	console.log("SYNC SCRIPT CARGADO");
+	
+	//TODO: esto tiene que ejecutarse una vez que le doy al boton de play y no directamente.
+	player = new YT.Player('mainPlayer', {
+		events: {
+			'onReady': function(e){
+				console.log("ready.");
+				startInterval();
+			},
+			'onStateChange': function(e){
+				console.log("changed.");
+			}
+		}
+	});
+	
+	socket.on('sync', function(data){
+		switch (data.key){
+			case "ytb_play":
+				if (!OP && player.getPlayerState() === YT.PlayerState.PLAYING){
+					player.seekTo(data.value);
+				}
+			break;
+			case "ytb_pause":
+				if (!OP){
+					if (data.value){
+						player.pauseVideo();
+					} else {
+						player.playVideo();
+					}
+				}
+			break;
+		}
+	});
+	
+	function startInterval(){
+		setInterval(function(){
+			if (OP && player.getPlayerState() === YT.PlayerState.PLAYING){
+				//accion al estar reproduciendo.
+				socket.emit("sync", {key: "ytb_play", value: player.getCurrentTime()});
+				socket.emit("sync", {key: "ytb_pause", value: false});
+			}
+			if (OP && player.getPlayerState() === YT.PlayerState.PAUSED){
+				socket.emit("sync", {key: "ytb_pause", value: true});
+			}
+		}, 1000);
+	}
+}
+
+</script>

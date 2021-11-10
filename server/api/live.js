@@ -45,7 +45,9 @@ function liveSession(io){
 		socket.on('test', function(data){
 			console.log(data);
 		});
-		
+		socket.on('sync', function(data){
+			sendData('sync', {key: data.key, value: data.value});
+		});
 	});
 	return io;
 }

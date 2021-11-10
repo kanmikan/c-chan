@@ -4,6 +4,10 @@
 	<%- include('../fragments/box/boxModModal', it); %>
 <% } %>
 
+<% if (BOX.type.includes("video") && BOX.flag.includes("sync")) { %>
+	<%- include('./syncScripts', it); %>
+<% } %>
+
 <script>
 	/* Calculos del lado del server */
 	var OP = <%= (BOX.user.uid === it.sesion.uid) ? true : false %>;

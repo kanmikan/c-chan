@@ -1,20 +1,23 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Cchan</title>
 
 <!-- metadatos para el buscador -->
 <% if (it.kind.search("tema") === -1) { %>
-<meta property="og:image"  content="/icon.png">
-<meta name="description" content="Cchan es un imageboard basado en voxed">
-<meta name="keywords" content="voxed,social,imageboard">
-<meta name="title" content="Cchan">
+<title>Cchan</title>
+<meta property="og:title" content="Cchan">
+<meta property="og:image"  content="/assets/logo.png">
+<meta name="description" content="Bienvenido a Cchan, un imageboard anónimo">
+<meta name="keywords" content="Voxed, Social, Imageboard">
 <% } else { 
-let BOX = it.data.boxs[0]; %>
+let BOX = it.data.boxs[0]; 
+let keywords = BOX.content.title.split(" ").join(", ");
+%>
+<title>Cchan - <%= BOX.content.title %></title>
+<meta property="og:title" content="<%= BOX.content.title %>">
 <meta property="og:image"  content="<%= BOX.img.preview %>">
 <meta name="description" content="<%= BOX.content.body.substr(0,200) %>">
-<meta name="keywords" content="voxed,social,imageboard">
-<meta name="title" content="<%= BOX.content.title %>">
+<meta name="keywords" content="<%= keywords %>, Voxed, Social, Imageboard">
 <% } %>
 
 <% if ((it.sesion.config) ? it.sesion.config.darkmode : false) { %>

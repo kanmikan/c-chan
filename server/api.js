@@ -60,6 +60,8 @@ module.exports = function(app){
 		let modAnonimo = (req.fields.modAnon) ? true : false;
 		let dados = (req.fields.dados) ? true : false;
 		let idunico = (req.fields.idunico) ? true : false;
+		let vidsync = (req.fields.vidsync) ? true : false;
+		
 		let time = Date.now();
 		
 		//let bid = utils.uuidv4();
@@ -80,6 +82,10 @@ module.exports = function(app){
 			json.type.push("video");
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
+		}
+		
+		if (vidsync) {
+			json.flag.push("sync");
 		}
 		
 		json.content.title = title;

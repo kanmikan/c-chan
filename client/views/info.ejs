@@ -5,95 +5,81 @@
 	</head>
 	<body class="loginContainer">
 	<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
-		<main class="info">
-		
-			<div class="infoContainer">
-				<div class="infomenu">
-					<div>MENU</div>
-					<ul class="menulist">
-						<li class="menuElement">Bienvenido a Cchan</li>
-						<li class="menuElement">Caracteristicas</li>
-						<li class="menuElement">Reglas</li>
-						<li class="menuElement">Sobre el proyecto</li>
-						<li class="menuElement" onclick="location.href='/'">Volver a la home</li>
-					</ul>
-				</div>
-				<div class="infocontent">
-					<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
-					<div class="contentElement" id="welcome">
-						<h3>Bienvenido a Cchan!</h3>
-						Cchan es un imageboard basado en voxed y derivado de mikanchan
-					</div>
-					<div class="contentElement" id="caracteristicas">
-						<h3>Caracteristicas de Cchan</h3>
-						<ul>
-						<li>cchan tiene 2 interfaces y una subinterfaz, la interfaz basada en voxed es la mas simplificada de todas y la que viene por defecto. Tambien estan la interfaz v1 basada en tarjetas que subdivide y agrupa las categorias en la home en base a la actividad; y la interfaz que mezcla la v1 con la clasica de voxed. Las tres son configurables en el servidor usando variables de entorno.</li>
-						<li>cchan tiene integrado un bot rss que recolecta la ultima informacion de myanimelist, el MALBOT, puede ser activado usando variables de entorno.</li>
-						<li>tiene un sistema de busqueda mas efectivo usando el contenido del tema ademas del titulo y subtitulo</li>
-						<li>se puede añadir formato basico al texto de los temas y comentarios.</li>
-						<li>la pagina fue diseñada para que sea liviana en la carga, para que las conexiones inestables o lentas puedan navegar sin mayores problemas.</li>
-						<li>cchan hace una copia de la base de datos en memoria y lee datos de manera local, lo que hace que se ahorre una gran cantidad de conexiones a la base de datos. Esto puede ser desactivado usando variables de entorno, en situaciones donde sea inútil, por ejemplo, si la base de datos está alojada de manera local.</li>
-						</ul>
-						<h4>Tags disponibles en los comentarios y/o temas</h4>
-						<ul>
-						<li>&gt es el greentext de toda la vida</li>
-						<li>&gt&gt se utiliza para taguear el comentario de un usuario</li>
-						<li>:: se usa para colocar un link interno en la página o un link externo sin abrir una nueva pestaña</li>
-						<li>&gthttps:// se usa para añadir un link externo que abre una nueva pestaña.</li>
-						<li>$RGB -texto- $ colorea el -texto- usando el valor RGB en hexadecimal, (busca color picker en google)</li>
-						</ul>
-					</div>
-					<div class="contentElement" id="reglas">
-						<h3>Reglas de Cchan</h3>
-						<span>Queda prohibido cualquier accion o incitacion a:</span>
-						<ul>
-						<li>Todo lo que sea ilegal por sentido común, nada de gore ni cp etc.</li>
-						<li>Flood o temas repetitivos y molestos</li>
-						</ul>
-						<div>Al romper estas reglas, y dependiendo de la gravedad, el usuario puede ser baneado parcial o totalmente o advertido a criterio de la administracion.</div>
-						</br>
-						<b>Los usuarios advertidos y baneados podrian ser indexados en una blacklist para la proteccion del sitio.</b>
-					</div>
-					<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
-				</div>
+	
+	<div class="infomenu">
+		<div>MENU</div>
+		<ul class="menulist">
+			<li class="menuElement">Bienvenido a Cchan</li>
+			<li class="menuElement">Caracteristicas</li>
+			<li class="menuElement">Reglas</li>
+			<li class="menuElement">Sobre el proyecto</li>
+			<li class="menuElement" onclick="location.href='/'">Volver a la home</li>
+		</ul>
+	</div>
+	
+	<div class="infoContainer">
+		<div class="infocontent">
+			<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
+			<div class="contentElement" id="welcome">
+				<h3>Bienvenido a Cchan!</h3>
+				Cchan es un imageboard anonimo y ligero basado en el diseño de voxed.net
 			</div>
-		
-		</main>
+			<div class="contentElement" id="caracteristicas">
+				<h3>Caracteristicas de Cchan</h3>
+				<ul>
+				<li>cchan tiene 2 interfaces y una subinterfaz, la interfaz basada en voxed es la mas simplificada de todas y la que viene por defecto. Tambien estan la interfaz v1 basada en tarjetas que subdivide y agrupa las categorias en la home en base a la actividad; y la interfaz que mezcla la v1 con la clasica de voxed. Las tres son configurables en el servidor usando variables de entorno.</li>
+				<li>cchan tiene integrado un bot rss que recolecta la ultima informacion de myanimelist, el MALBOT, puede ser activado usando variables de entorno.</li>
+				<li>tiene un sistema de busqueda mas efectivo usando el contenido del tema ademas del titulo y subtitulo</li>
+				<li>se puede añadir formato basico al texto de los temas y comentarios.</li>
+				<li>la pagina fue diseñada para que sea liviana en la carga, para que las conexiones inestables o lentas puedan navegar sin mayores problemas.</li>
+				<li>cchan hace una copia de la base de datos en memoria y lee datos de manera local, lo que hace que se ahorre una gran cantidad de conexiones a la base de datos. Esto puede ser desactivado usando variables de entorno, en situaciones donde sea inútil, por ejemplo, si la base de datos está alojada de manera local.</li>
+				</ul>
+				<h4>Tags disponibles en los comentarios y/o temas</h4>
+				<ul>
+				<li>&gt es el greentext de toda la vida</li>
+				<li>&gt&gt se utiliza para taguear el comentario de un usuario</li>
+				<li>:: se usa para colocar un link interno en la página o un link externo sin abrir una nueva pestaña</li>
+				<li>&gthttps:// se usa para añadir un link externo que abre una nueva pestaña.</li>
+				<li>$RGB -texto- $ colorea el -texto- usando el valor RGB en hexadecimal, (busca color picker en google)</li>
+				</ul>
+			</div>
+			<div class="contentElement" id="reglas">
+				<h3>Reglas de Cchan</h3>
+				<span>Queda prohibido cualquier accion o incitacion a:</span>
+				<ul>
+				<li>Todo lo que sea ilegal por sentido común, nada de gore ni cp etc.</li>
+				<li>Flood o temas repetitivos y molestos</li>
+				</ul>
+				<div>Al romper estas reglas, y dependiendo de la gravedad, el usuario puede ser baneado parcial o totalmente o advertido a criterio de la administracion.</div>
+				</br>
+				<b>Los usuarios advertidos y baneados podrian ser indexados en una blacklist para la proteccion del sitio.</b>
+			</div>
+			<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
+		</div>
+	</div>
+	
 	</body>
 	<%- include('./common/footer', it); %>
 </html>
 <style>
 	body {
+		display: flex;
 		height: 100vh;
 		padding: 0px;
 	}
-	.info {
-		margin: 0px;
-		width: 100%;
+
+	.infomenu {
+		position: fixed;
 		height: 100%;
+		width: 14rem;
+		background: var(--base-background1);
+		padding: 20px;
 	}
 	
 	.infoContainer {
-		display: flex;
-		height: 100%;
-		border-radius: 3px;
-		border: 2px solid var(--modal-border);
-		background: var(--preview-background);
-	}
-	
-	.infomenu {
-		height: 100%;
-		width: 300px;
-		background: var(--base-background2);
+		width: auto;
 		padding: 20px;
-	}
-	
-	.infocontent {
-		width: 100%;
-		margin-left: 10px;
-		padding: 20px;
-		overflow-y: scroll;
-		overflow-x: hidden;
+		margin-left: 14.5rem;
 	}
 	
 	.menulist {
@@ -119,10 +105,15 @@
 	.buttonElement {
 		display: none;
 		text-align: center;
-		color: cyan;
 	}
 	
 	@media only screen and (max-width: 600px) {
+		.infoContainer {
+			margin-left: 0px;
+		}
+		.info {
+			padding: 0px;
+		}
 		.infomenu {
 			display: none;
 		}
