@@ -25,7 +25,7 @@ module.exports = function(app){
 			res.render("main", {
 				it : {
 					kind: req.originalUrl,
-					host: req.protocol + '://' + req.get('host'),
+					host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session,
@@ -42,7 +42,7 @@ module.exports = function(app){
 			res.render("./v1/index", {
 				it : {
 					kind: req.originalUrl,
-					host: req.protocol + '://' + req.get('host'),
+					host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session,
@@ -59,7 +59,7 @@ module.exports = function(app){
 			res.render("login", {
 				it : {
 					kind: req.originalUrl,
-					host: req.protocol + '://' + req.get('host'),
+					host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session,
@@ -79,7 +79,7 @@ module.exports = function(app){
 			res.render("adm", {
 				it : {
 					kind: req.originalUrl,
-					host: req.protocol + '://' + req.get('host'),
+					host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session,
@@ -111,7 +111,7 @@ module.exports = function(app){
 				res.render("index", {
 					it : {
 						kind: req.originalUrl,
-						host: req.protocol + '://' + req.get('host'),
+						host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 						utils: utils,
 						renderConfig: renderConfig,
 						sesion: req.session,
@@ -140,7 +140,7 @@ module.exports = function(app){
 				res.render("index", {
 					it : {
 						kind: req.originalUrl,
-						host: req.protocol + '://' + req.get('host'),
+						host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 						utils: utils,
 						renderConfig: renderConfig,
 						sesion: req.session,
@@ -168,7 +168,7 @@ module.exports = function(app){
 				res.render("index", {
 					it : {
 						kind: req.originalUrl,
-						host: req.protocol + '://' + req.get('host'),
+						host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 						utils: utils,
 						renderConfig: renderConfig,
 						sesion: req.session,
@@ -201,7 +201,7 @@ module.exports = function(app){
 					res.render("main", {
 						it : {
 							kind: req.originalUrl,
-							host: req.protocol + '://' + req.get('host'),
+							host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 							utils: utils,
 							renderConfig: renderConfig,
 							sesion: req.session,
@@ -219,7 +219,7 @@ module.exports = function(app){
 		res.render("info", {
 			it : {
 					kind: req.originalUrl,
-					host: req.protocol + '://' + req.get('host'),
+					host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session
@@ -264,7 +264,7 @@ module.exports = function(app){
 			it : {
 					error: errordata,
 					kind: req.originalUrl,
-					host: req.protocol + '://' + req.get('host'),
+					host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 					utils: utils,
 					renderConfig: renderConfig,
 					sesion: req.session
@@ -301,7 +301,7 @@ module.exports = function(app){
 					res.render("box", {
 						it : {
 							kind: "/tema/" + result[mdbScheme.C_BOXS][0].cat,
-							host: req.protocol + '://' + req.get('host'),
+							host: ((req.secure) ? "https://" : "http://") + req.get('host'),
 							token: utils.randomString(16),
 							utils: utils,
 							renderConfig: renderConfig,
