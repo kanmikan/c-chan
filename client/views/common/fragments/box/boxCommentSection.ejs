@@ -16,8 +16,8 @@
 <div class="attachList hidden" id="attachList">
 <% it.utils.filterComMedia(it.data.coms).forEach(function(com) { %>
 	<% if (com.img) { %>
-		<a class="attach" target="_BLANK" href="<%= com.img.full %>">
-			<img data-attach="<%= com.cid %>" src="<%= com.img.preview %>" alt=""><div class="attachType"><i class="fas fa-image"></i></div>
+		<a class="attach" target="_BLANK" href="<%= it.utils.seclink(com.img.full) %>">
+			<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.img.preview) %>" alt=""><div class="attachType"><i class="fas fa-image"></i></div>
 		</a>
 	<% } %>
 <% }); %>

@@ -16,7 +16,9 @@
 		<% if (BOX.type.includes("idunico")){ %>
 			<div class="categoryAvatar"><i class="fas fa-id-card"></i></div>
 		<% } %>
-		
+		<% if (BOX.flag.includes("sync")){ %>
+			<div class="categoryAvatar"><span style="margin: 0px 5px;font-weight: 600;font-size: small;">Live</span><i class="fas fa-sync"></i></div>
+		<% } %>
 	</div>
 </div>
 
@@ -74,7 +76,11 @@
 <!-- cuerpo del box -->
 <article class="voxContent" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
 	<!-- multimedia del box, imagen, video, etc. -->
-	<% if (!BOX.type.includes("video")) {%>
+	<% if (BOX.type.includes("video") && BOX.flag.includes("sync")) { %>
+		<figure class="voxAttachVideo">
+			<iframe class="objectContainer" id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>?enablejsapi=1&origin=https://<%= it.host %>&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</figure>
+	<% } else if (!BOX.type.includes("video")) {%>
 		<figure class="voxAttach">
 			<div style="position: relative;width: 100%;height: 100%;">
 				<i class="fa fa-search-plus attachExpandIcon hidden"></i>
@@ -86,7 +92,7 @@
 		<% if (BOX.type.includes("object")){ %>
 			<object class="objectContainer" data="<%= BOX.media.raw %>" width="100%" height="100%"></object>
 		<% } else { %>
-			<iframe class="objectContainer" id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= BOX.media.raw %>?enablejsapi=1&origin=https://<%= it.host %>&autoplay=1><img src=<%= BOX.media.preview %>><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			<iframe class="objectContainer" id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= BOX.media.raw %>?enablejsapi=1&origin=https://<%= it.host %>&autoplay=1><img src=<%= BOX.media.preview %>><span id='playYT'>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 		<% } %>
 		</figure>
 	<% } %>

@@ -149,11 +149,14 @@ function boxRender(box){
 	if (box.type && box.type.includes("idunico")){
 		bbody +=`<div class="tag iduTag"><i class="fas fa-id-card"></i></div>`;
 	}
-	if (box.type && box.type.includes("rss")){
+	if (box.type && box.flag.includes("rss")){
 		bbody +=`<div class="tagInvisible rss"><i class="fas fa-rss"></i></div>`;
 	}
 	if (box.flag && box.flag.includes("new")){
 		bbody +=`<div class="tagInvisible tagNew">Nuevo</div>`;	
+	}
+	if (box.type && box.flag.includes("sync")){
+		bbody +=`<div class="tag sync"><i class="fas fa-sync"></i></div>`;
 	}
 	
 	bbody +=`</div><div class="voxComments textShadon"><i class="fas fa-comment"></i><span class="countComments">${box.content.comments}</span></div><div class="voxAction textShadon"><div class="actionBotton" data-voxaction="${box.bid}"><i class="fas fa-ellipsis-v" data-voxaction="${box.bid}"></i></div></div></div>`;
@@ -177,6 +180,10 @@ function activityRender(com){
 	} else {
 		cbody +=`<img class="avatar" style="width: 35px; height: 35px" src="${com.icon}" alt="">`;
 	}
+	
+	//accesorio test
+	cbody +=`<div class="act anonIcon anonAccesory ${icon[3]}"></div>`;
+	
 	cbody += `</div><div class="chatlike-data">
 	<div class="chatlike-title">
 		<span class="chatlike-user">${com.user.jerarquia.nick} ha comentado:</span>
@@ -303,7 +310,6 @@ function tag(cid){
 
 function hashScroll(hash){
 	if (hash != ""){
-		//window.location.hash = hash;
 		window.history.replaceState(null, null, hash);
 		
 		let elem = element(hash.substring(1));
@@ -1069,8 +1075,6 @@ $(document).ready(function() {
 							let mediaData = data.data;
 							if (mediaData.video){
 								element("bvid").value = mediaData.raw + ";" + mediaData.thumb;
-								//mostrar opcion de sincronizacion
-								element("vidsync").classList.remove("hidden");
 							} else {
 								element("bimg").value = mediaData.raw + ";" + mediaData.thumb;
 							}
