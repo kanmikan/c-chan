@@ -262,8 +262,11 @@ function commentRender(op, com){
 	
 	cbody +=`</div><div class="commentCreatedAt">${timeSince(com.date.created)}</div></div><div class="commentReply">`;
 	com.content.extra.tags.forEach(function(tag){
-		cbody +=`<a href="#${tag}" class="tag" data-tag="${tag}">>>${tag}</a>`;
+		cbody +=`<a href="#${tag}" class="tag" data-tag="${tag}">&gt;&gt;${tag}</a>`;
 	});
+	
+	//TODO: render de encuestas del lado del cliente
+	
 	cbody +=`</div><div class="commentData">`;
 	if (com.type.includes("image")){
 		cbody +=`<figure class="commentAttach"><div style="position: relative;width: 100%;height: 100%;"><i class="fa fa-search-plus attachExpandIcon hidden"></i><a class="voxImage" data-pics="${com.img.full}|${com.img.preview}" target="_BLANK" href="${com.img.full}"><img src="${(isGif(com.img.preview)) ? com.img.full : com.img.preview}"></img></a></div></figure>`;
@@ -1084,7 +1087,8 @@ $(document).ready(function() {
 							element("nimgpreview").setAttribute("src", mediaData.thumb);
 							$("#previewInputVox").attr("style", "display: block !important");
 						} else {
-							alert(JSON.stringify(data.data));
+							element("nimgpreview").setAttribute("src", "");
+							(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (JSON.stringify(data.data)));
 						}
 						element("btext").classList.remove("hidden");
 						element("bspin").classList.add("hidden");

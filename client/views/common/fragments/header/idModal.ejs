@@ -3,31 +3,35 @@
 		<button type="button" id="idClose" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 	</div>
 	</br>
-	<h3>Bienvenido a Cchan</h3>
-	<h5>Para poder usar la página necesitas generar un <b>ID</b> de sesion:</h5>
+	<h3>Bienvenido a CChan</h3>
+	<div class="text">Para poder usar la página necesitas generar un <b>ID</b> de sesion:</div>
 	<input type="text" class="modalInput" name="userid" id="userid" placeholder="ID del Usuario" value="<%= it.sesion.uid %>">
 	<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">	
-	<h5>Podes pegar un <b>ID</b> existente para recuperar tu sesion, si no tenes uno se te asignará al azar</h5>	
+	<div class="text">Podes pegar un <b>ID</b> existente para recuperar tu sesion, si no tenes uno se te asignará al azar.</div>	
 	
-	<!-- <h5>-captcha aca-</h5> -->
+	<!-- <div>-captcha aca-</div> -->
 	
-	<h5>Al presionar <b>continuar</b> aceptas las <a href="/info/reglas">reglas del sitio</a>.</h5>	
+	<div class="text">Al presionar <b>continuar</b> aceptas las <a href="/info/reglas">reglas del sitio</a>.</div>	
 	<div class="loginFormButtons">
 		<button class="buttonPress" id="idButton">
 			<i id="loadingLogin" class="fas fa-circle-notch fa-spin hidden"></i>
 			<span id="idText">Continuar</span>
 		</button>
 	</div>
-	<div style="margin: 5px 20px;font-size: 11px;"><a href="/login">Iniciar Sesion con una cuenta</a></div>	
 </form>
 <style>
 	.login h3 {
 		text-align: center;
 		margin-top: 0;
 	}
+	
+	.login .text {
+		padding: 5px 25px;
+		font-size: 0.95rem;
+	}
 
 	.login a {
-		color: cyan;
+		color: var(--link-color);
 	}
 	
 	.login a:hover {
@@ -60,5 +64,5 @@
 	.loginFormButtons button {
 		margin-right: 10px;
 		margin-top: 5px;
-	}	
+	}		
 </style>

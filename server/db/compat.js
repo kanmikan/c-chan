@@ -151,11 +151,6 @@ function iconTranscript(iconElement){
 				return "ico,#ffffff,#000000";
 		}
 		
-		//iconos especiales de chika
-		if (out[0].search("chika") != -1){
-			return "/assets/anon/mikan/" + out[0] + "." + out[1];
-		}
-		
 		return iconElement;
 	}
 	
