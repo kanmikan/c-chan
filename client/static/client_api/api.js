@@ -1075,6 +1075,8 @@ $(document).ready(function() {
 							let mediaData = data.data;
 							if (mediaData.video){
 								element("bvid").value = mediaData.raw + ";" + mediaData.thumb;
+								//mostrar opcion de sincronizacion
+								element("vidsync").classList.remove("hidden");
 							} else {
 								element("bimg").value = mediaData.raw + ";" + mediaData.thumb;
 							}

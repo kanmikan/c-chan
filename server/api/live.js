@@ -26,6 +26,7 @@ function sendData(key, data){
 }
 
 function liveSession(io){
+	let LIVEDATA = {};
 	io.on('connection', function(socket){
 		//console.log("[SocketIO] Sesion Iniciada.");
 		socket.join(socket.handshake.session.uid);
@@ -43,10 +44,14 @@ function liveSession(io){
 			socket.join(socket.handshake.session.uid);
 		});
 		socket.on('test', function(data){
-			console.log(data);
+			console.log(LIVEDATA);
 		});
 		socket.on('sync', function(data){
+			LIVEDATA[data.key] = data.value;
 			sendData('sync', {key: data.key, value: data.value});
+		});
+		socket.on('syncme', function(data){
+			sendDataTo(socket.handshake.session.uid, 'sync', {key: "ytb_change", value: LIVEDATA.ytb_url});
 		});
 	});
 	return io;

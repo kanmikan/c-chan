@@ -54,7 +54,6 @@ function uploadLink(url, callback){
 		}
 		callback({success: true, data: {video: true, type: type, raw: url, thumb: youtube.genYoutubeThumb(url, "mq")}});
 	} else if (utils.isImg(url)){
-		
 		//aca manipular la imagen, subir al server de preferencia, etc.
 		switch(sConfig.IMG_SERVER){
 			case 0:

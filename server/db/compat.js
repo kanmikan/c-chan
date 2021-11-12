@@ -5,6 +5,9 @@ const upload = require('../api/upload.js');
 const youtube = require('../api/youtube.js');
 const cloudy = require('../api/cloudinary.js');
 
+const dbManager = require('./dbmanager.js');
+const mdbScheme = require('./models/mdbscheme.js');
+
 //FUNCION: comprueba la version de la coleccion y transcribe los elementos mdb a mdbv2.
 function checkCompat(type, collection){
 	let ncollection = new Array();
@@ -74,6 +77,8 @@ function mdbTranscript(type, mdbElement){
 					full: mdbElement.img_url,
 					raw: ""
 				};
+				//resube la imagen a cloudinary y actualiza la info en la base de datos local.
+				imgbbimageTranscrypt(mdbElement, mdbElement.img_url);
 			}
 			if (mdbElement.video && !mdbElement.img){
 				json.type.push("video");
@@ -95,6 +100,17 @@ function mdbTranscript(type, mdbElement){
 
 function imgTranscript(url){
 	return upload.genThumb(url);
+}
+
+//TODO: soporte de resubida al server local.
+function imgbbimageTranscrypt(mdbElement, url){
+	if (upload.checkURLType(url) === "imgbb"){
+		console.log(mdbElement);
+		//subir a cloudinary
+		//el resultado aplicarlo en la base de datos local.
+		
+	}
+	
 }
 
 function iconTranscript(iconElement){
@@ -133,6 +149,11 @@ function iconTranscript(iconElement){
 			case "9":
 				//white
 				return "ico,#ffffff,#000000";
+		}
+		
+		//iconos especiales de chika
+		if (out[0].search("chika") != -1){
+			return "/assets/anon/mikan/" + out[0] + "." + out[1];
 		}
 		
 		return iconElement;
