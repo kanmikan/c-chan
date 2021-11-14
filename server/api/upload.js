@@ -53,7 +53,7 @@ function uploadLink(url, callback){
 			url = "https://www.youtube.com/embed/" + youtube.youtubeParser(url);
 		}
 		callback({success: true, data: {video: true, type: type, raw: url, thumb: youtube.genYoutubeThumb(url, "mq")}});
-	} else if (utils.isImg(url)){
+	} else if (utils.isVideo(url)){
 		//aca manipular la imagen, subir al server de preferencia, etc.
 		switch(sConfig.IMG_SERVER){
 			case 0:
@@ -96,9 +96,43 @@ function uploadLink(url, callback){
 		} else {
 			callback({success: false, data: {video: true, type: type, raw: url, thumb: "/assets/thumb.jpg"}});
 		}
+	} else if (utils.isDataImage(url)) {
+		dataimg2localStore(url, function(data){
+			if (data.success){
+				callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+			} else {
+				callback({success: false, data: null});
+			}
+		});
 	} else {
 		callback({success: false, data: null});
 	}
+}
+
+//TODO: no funciona por ahora.
+function dataimg2localStore(url, callback){
+	
+	let filename = utils.randomString(16) + ".jpg";
+	let path = process.cwd() + "/uploads/" + filename;
+	let external_path = "/uploads/" + filename;
+	
+	let data = url.split(":")[1].split(";");
+	let buffer = new Buffer(data[1], 'base64');
+	console.log(buffer);
+	
+	writeFile(path, buffer, function(err){
+		if (err){
+			callback({success: false, data: err});
+		} else {
+			genLocalThumb(path, filename, function(resthumb){
+				if (resthumb){
+					callback({success: true, data: {link: external_path, thumb: resthumb}});
+				} else {
+					callback({success: false, data: "Hubo un error al subir la imagen."});
+				}
+			});
+		}
+	});
 }
 
 function link2localStore(url, callback){

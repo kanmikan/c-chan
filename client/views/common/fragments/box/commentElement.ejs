@@ -53,13 +53,11 @@
 		<% }); %>
 		</div>
 		
-		<% if (BOX.type.includes("poll")) { %>
+		<% if (com.type.includes("poll")) { 
+			let poll = com.content.extra.poll; %>
 			<div class="commentPoll">
-				<% 
-				let poll = BOX.content.extra.poll;
-				let voted = BOX.content.extra.poll.pollVotes.filter(item => item.uid === com.user.uid)[0];
-				if (voted) { %>
-					<div class="option"><%= (voted.option === "1") ? poll.pollOne : poll.pollTwo %></div>
+				<% if (poll && poll.voted) { %>
+					<div class="option"><%= poll.optionText %></div>
 				<% } %>
 			</div>
 		<% } %>

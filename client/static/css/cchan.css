@@ -101,7 +101,7 @@
     --menumodal-notif-title: #03a9f4;
     --homelink-hover: #3f51b5;
     --modal-background: white;
-    --tag1-sticky: #2196f3;
+    --tag1-sticky: #4caf50;
     --hometag1: #0579b3;
     --categoryTitle: black;
     --categoryTitle-hover: #4eacf7;
@@ -202,8 +202,8 @@ html[data-theme='darkmode'] {
     --option-icon-color: #00bcd4;
     --homelink-hover: #3f51b5;
     --modal-background: #3c3c3c;
-    --tag1-sticky: #2196f3;
-    --hometag1: #0579b3;
+    --tag1-sticky: #4caf50;
+    --hometag1: #3f51b5; /* #0579b3 */
     --categoryTitle: white;
     --categoryTitle-hover: #4eacf7;
     --moreload-background: #3f51b5;
@@ -669,6 +669,7 @@ ul.slideMenuOptions li:hover.optionBolt {
     background-color: #ff8100;
     border-radius: 3px;
     padding: 2px;
+	margin-right: 3px;
     color: white;
     font-size: 14px;
 }

@@ -121,6 +121,10 @@
 		<a class="box" id="<%= box.bid %>" href="/<%= box.cat %>/<%= box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%= it.utils.seclink((box.type.includes("video")) ? box.media.preview : box.img.preview) %>); text-decoration: none; background-position: top;">
 		<div class="voxHeader">
 			<div class="tagList">
+				<!-- tag sticky global -->
+				<% if (box.date && box.date.sticky > 0){ %>
+					<div class="tag sticky">Sticky</div>
+				<% } %>
 				<% if (!it.renderConfig.V1_CARDS) { %>
 					<div class="tag categoryTag">
 						<% if (it.renderConfig.SHOW_CATEGORY_ICON) { %>
@@ -128,10 +132,6 @@
 						<% } %>
 						<span style="margin-left: 4px;margin-right: 5px;align-self: center;"><%- it.utils.getCatShow(box.cat) %></span></img>
 					</div>
-				<% } %>
-				<!-- tag sticky global -->
-				<% if (box.date && box.date.sticky > 0){ %>
-					<div class="tag sticky">Sticky</div>
 				<% } %>
 				<!-- tag sticky local -->
 				<% if (box.date && box.date.csticky > 0){ %>

@@ -40,6 +40,11 @@ function genColor(str) {
     return colour;
 }
 
+function isDataImage(url) {
+	let tst = url.split(":");
+	return (tst[0] === "data") ? true : false;
+}
+
 //FUNCION: genera un string random basado en un seed.
 //https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
 function xmur3(str) {
@@ -135,4 +140,4 @@ function seclink(url) {
     return url.replace("http://", "https://");
 }
 
-module.exports = { seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3 };
+module.exports = {isDataImage, seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3 };

@@ -96,6 +96,7 @@ function resetCommentInputData(){
 	element("commentTextarea").value = "";
 	element("cimg").value = "";
 	element("cvid").value = "";
+	if (element("pollc")) element("pollc").value = "0";
 	
 	//cerrar mini vista previa, si es que esta abierta..
 	element("previewInputComment").classList.add("hide");
@@ -264,10 +265,18 @@ function commentRender(op, com){
 	com.content.extra.tags.forEach(function(tag){
 		cbody +=`<a href="#${tag}" class="tag" data-tag="${tag}">&gt;&gt;${tag}</a>`;
 	});
+	cbody +=`</div>`;
+	//render de encuestas del lado del cliente
+	if (com.type.includes("poll")){
+		let poll = com.content.extra.poll;
+		cbody +=`<div class="commentPoll">`;
+		if (poll && poll.voted){
+			cbody +=`<div class="option">${poll.optionText}</div>`;
+		}
+		cbody +=`</div>`;
+	}
 	
-	//TODO: render de encuestas del lado del cliente
-	
-	cbody +=`</div><div class="commentData">`;
+	cbody +=`<div class="commentData">`;
 	if (com.type.includes("image")){
 		cbody +=`<figure class="commentAttach"><div style="position: relative;width: 100%;height: 100%;"><i class="fa fa-search-plus attachExpandIcon hidden"></i><a class="voxImage" data-pics="${com.img.full}|${com.img.preview}" target="_BLANK" href="${com.img.full}"><img src="${(isGif(com.img.preview)) ? com.img.full : com.img.preview}"></img></a></div></figure>`;
 	}
@@ -586,9 +595,11 @@ function action_flag(data){
 	switch (data.kind){
 		case "comment":
 			formData.append("cid", data.cid);
+			formData.append("razon", data.razon);
 			break;
 		case "box":
 			formData.append("bid", data.bid);
+			formData.append("razon", data.razon);
 			break;
 	}
 	
@@ -720,6 +731,8 @@ $(document).ready(function() {
 						element("pollTwo").classList.add("voted");
 					break;
 				}
+				//activar señal de voto
+				element("pollc").value = "1";
 				action_pollUpdate(result.data);
 			} else {
 				(result.data.redirect) ? action_login(result.data) : alert(result.data);
@@ -1004,9 +1017,22 @@ $(document).ready(function() {
 				break;
 			case "report":
 				console.log("report box");
-				console.log(contentId);
-				//action_flag({kind: "box", bid: ""});
-				$(buttons).removeClass("actionMode");
+				//console.log(contentId);
+				
+				Swal.fire({
+					title: "Denunciar comentario",
+					text: "Motivo de la denuncia:",
+					input: 'text',
+					showCancelButton: true,
+					confirmButtonText: 'Denunciar',
+					cancelButtonText: 'Cancelar'
+				}).then((result) => {
+					if (result.value) {
+						action_flag({kind: "box", bid: contentId, razon: result.value});
+					}
+					$(buttons).removeClass("actionMode");
+				});
+				
 				break;
 			case "hide":
 				applyConfig("boxhides_add:" + contentId);
@@ -1024,13 +1050,39 @@ $(document).ready(function() {
 	//evento: al denunciar un comentario.
 	$(document).on("click", ".actionFlag", function(e){
 		let cid = $(e.currentTarget).data("cid");
-		action_flag({kind: "comment", cid: cid});
+		
+		Swal.fire({
+			title: "Denunciar comentario",
+			text: "Motivo de la denuncia:",
+			input: 'text',
+			showCancelButton: true,
+			confirmButtonText: 'Denunciar',
+			cancelButtonText: 'Cancelar'
+		}).then((result) => {
+			if (result.value) {
+				action_flag({kind: "comment", cid: cid, razon: result.value});
+			}
+		});
+		
 	});
 	
 	//evento: al denunciar un tema.
 	$(document).on("click", "#iconDenuncia", function(e){
 		let bid = $(e.currentTarget).data("bid");
-		action_flag({kind: "box", bid: bid});
+		
+		Swal.fire({
+			title: "Denunciar tema",
+			text: "Motivo de la denuncia:",
+			input: 'text',
+			showCancelButton: true,
+			confirmButtonText: 'Denunciar',
+			cancelButtonText: 'Cancelar'
+		}).then((result) => {
+			if (result.value) {
+				action_flag({kind: "box", bid: bid, razon: result.value});
+			}
+		});
+		
 	});
 	
 	//evento: al hacer click en cargar mas comentarios.
@@ -1088,7 +1140,8 @@ $(document).ready(function() {
 							$("#previewInputVox").attr("style", "display: block !important");
 						} else {
 							element("nimgpreview").setAttribute("src", "");
-							(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (JSON.stringify(data.data)));
+							(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (JSON.stringify(data.data)));
+							
 						}
 						element("btext").classList.remove("hidden");
 						element("bspin").classList.add("hidden");
@@ -1142,7 +1195,7 @@ $(document).ready(function() {
 							element("imgpreview").setAttribute("src", mediaData.thumb);
 							element("previewInputComment").classList.remove("hide");
 						} else {
-							alert(JSON.stringify(data.data));
+							(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (JSON.stringify(data.data)));
 						}
 						element("loadingCom").classList.add("hidden");
 						element("ctext").classList.remove("hidden");
@@ -1273,7 +1326,7 @@ $(document).ready(function() {
 						element("bimg").value = img;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
+						(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
 					}
 					element("btext").classList.remove("hidden");
 					element("bspin").classList.add("hidden");
@@ -1293,7 +1346,7 @@ $(document).ready(function() {
 						element("bvid").value = vid;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
+						(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
 					}
 					element("btext").classList.remove("hidden");
 					element("bspin").classList.add("hidden");

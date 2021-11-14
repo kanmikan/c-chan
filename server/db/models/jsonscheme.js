@@ -32,6 +32,11 @@ const COMMENT_SCHEME = {
 			idunico: {
 				id: "idunico",
 				color: "idcolor"
+			},
+			poll: {
+				voted: false,
+				optionId: 0,
+				optionText: ""
 			}
 		}
 	}

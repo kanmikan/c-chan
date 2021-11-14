@@ -139,6 +139,7 @@ module.exports = function(app){
 		let DB = req.app.locals.db;
 		let token = req.fields.token;
 		let modAnonimo = (req.fields.modAnon) ? true : false;
+		let pollc = (req.fields.pollc === "1") ? true : false;
 		
 		let json = utils.clone(jsonScheme.COMMENT_SCHEME);
 		json.cid = cid;
@@ -168,6 +169,7 @@ module.exports = function(app){
 		let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", () => {});
 		if (box[0]){
 			let op = (box[0].user.uid === req.session.uid) ? true : false;
+			
 			/* modificador de idunico */
 			if (box[0].type.includes("idunico")){
 				let idu = utils.xmur3(req.session.uid+bid)();
@@ -177,6 +179,20 @@ module.exports = function(app){
 				json.content.extra.idunico = {
 					id: idu,
 					color: colorid
+				}
+			}
+			
+			/* modificador de encuesta */
+			if (pollc){
+				json.type.push("poll");
+				let poll = box[0].content.extra.poll;
+				let voted = poll.pollVotes.filter(item => item.uid === req.session.uid)[0];
+				if (voted){
+					json.content.extra.poll = {
+						voted: true,
+						optionId: parseInt(voted.option),
+						optionText: (voted.option === "1") ? poll.pollOne : poll.pollTwo
+					}
 				}
 			}
 			
@@ -545,6 +561,8 @@ module.exports = function(app){
 	//API: denuncias
 	app.post('/api/report', pass.check, sesionManager.checkSesion, function(req, res) {
 		let kind = req.fields.kind;
+		let razon = req.fields.razon;
+		
 		switch (kind){
 			case "comment":
 				//reportar comentario

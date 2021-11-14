@@ -13,7 +13,7 @@
 				<div class="innerText">Si tenés una cuenta de Cchan, introducí las credenciales a continuacion:</div>
 				<div class="inputs">
 					<input type="text" class="modalInput" name="userid" id="userid" placeholder="ID o Nick del Usuario" value="<%= it.sesion.uid %>">
-					<input type="text" class="modalInput" name="password" id="password" placeholder="Contraseña">
+					<input type="password" class="modalInput" name="password" id="password" placeholder="Contraseña">
 					<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">
 				</div>
 				<div class="innerText">La sesion abierta en otro dispositivo se invalidará</div>
