@@ -5,11 +5,48 @@ const jsonScheme = require('../db/models/jsonscheme.js');
 const utils = require('../utils.js');
 const pass = require('./passport.js');
 const live = require('./live.js');
+const malbot = require('../extra/malbot.js');
 
-function parseComInput(DB, cid, uid, rawtext){
+function parseComInput(DB, bid, cid, uid, rawtext){
 	parseTags(DB, cid, uid, rawtext); //obligatoriamente, se invoca el parser de tags aunque no se utilize la informacion de retorno.
 	
+	//detecta los comandos especiales.
+	parseCommands(DB, bid, cid, uid, rawtext);
+	
 	return htmlSanitize(rawtext);
+}
+
+function parseCommands(DB, bid, cid, uid, rawtext){
+	//[malbot] malsearch
+	let malsearch = new RegExp(/\$malsearch[^.](.+)/gi).exec(rawtext);
+	let malview = new RegExp(/\$malinfo[^.](.+)/gi).exec(rawtext);
+	let malcheck = new RegExp(/\$malcheck[^.](.+)/gi).exec(rawtext);
+	let malsimil = new RegExp(/\$malsimil[^.](.+)/gi).exec(rawtext);
+	
+	if (malsearch != null){
+		malbot.searchAnime(DB, bid, malsearch[1], function(result){
+			//console.log(result);
+		});
+	}
+	
+	if (malview != null){
+		malbot.previewAnime(DB, bid, malview[1], function(result){
+			//console.log(result);
+		});
+	}
+	
+	if (malcheck != null){
+		malbot.listAnimes(DB, bid, malcheck[1], function(result){
+			//console.log(result);
+		});
+	}
+	
+	if (malsimil != null){
+		malbot.similarAnimes(DB, bid, malsimil[1], function(result){
+			
+		});
+	}
+	
 }
 
 //detecta tags html y comandos dentro del input.

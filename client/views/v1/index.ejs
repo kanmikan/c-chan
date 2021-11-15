@@ -25,8 +25,7 @@
 				customCats.sort(function(a, b){
 					if (a.date.sticky >= 1 || b.date.sticky >= 1) return b.date.sticky - a.date.sticky;
 					return ((it.sesion.config.anchors && !it.sesion.config.anchors.includes(a.catid)) ? 1 : 0) - ((it.sesion.config.anchors && it.sesion.config.anchors.includes(a.catid)) ? 1 : 0);
-				})
-				.forEach(function(category){
+				}).forEach(function(category){
 					if (it.sesion.config.cathides.includes(category.catid)){return;}
 					let catbox = it.data.boxs.filter((box) => box.cat === category.catid);
 					catbox = catbox.slice(0, ((catbox.length > 5 && catbox.length < 9) ? 5 : 10)); %>
@@ -88,8 +87,8 @@
 				<div class="acttitle">Temas populares<i class="fas fa-crown"></i></div>
 				<div class="chatlike">
 					<% it.data.boxs.sort((a,b) => b.content.comments - a.content.comments).slice(0, 3).forEach(function(box, i){ %>
-						<div class="home-temalist" onclick="location.href='/tema/<%= box.bid %>'">
-							<img src="<%= box.img.preview %>"></img><span><%= box.content.title %></span>
+						<div class="home-temalist" onclick="location.href='/<%= box.cat %>/<%= box.bid %>'">
+							<img src="<%= (box.type.includes("video")) ? box.media.preview : box.img.preview %>"></img><span><%= box.content.title %></span>
 						</div>
 					<% }); %>
 				</div>
@@ -177,7 +176,7 @@
 			<h5 class="animetitle textShadon"><%= box.content.extra.title2 %></h5>
 		<% } %>
 		
-		<h4 class="title textShadon"><%= box.content.title %></h4>
+		<h1 class="title textShadon"><%= box.content.title %></h1>
 		<div class="over"></div>
 		<div class="voxActions unselect">
 			<div class="voxActionBotton">

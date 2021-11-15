@@ -156,7 +156,7 @@ module.exports = function(app){
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
 		}
-		json.content.body = parser.parseComInput(DB, cid, req.session.uid, content);
+		json.content.body = parser.parseComInput(DB, bid, cid, req.session.uid, content);
 		
 		let userdata = sesionManager.getUserData(req.session.id);
 		if (userdata[0] && !modAnonimo){
