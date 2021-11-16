@@ -581,8 +581,8 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .box {
-    width: calc(100% / 6.08);
-    height: calc(100vw / 6.08);
+    width: calc(100% / 6);
+    height: calc(100vw / 6);
     flex-direction: column;
     display: flex;
     cursor: pointer;
@@ -593,7 +593,6 @@ ul.slideMenuOptions li:hover.optionBolt {
     position: relative;
     background-size: cover !important;
 	border-radius: 3px;
-	margin: 1px;
 }
 
 .box:hover { 
@@ -2860,14 +2859,19 @@ input:checked + .slider:before {
 }
 
 /* Resolucion 1024px */
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1124px) {
     .box {
-        width: calc(100% / 5.06);
-        height: calc(100vw / 5.06);
+        width: calc(100% / 5);
+        height: calc(100vw / 5);
     }
 }
 
 @media only screen and (max-width: 1000px) {
+	.box {
+        width: calc(100% / 4);
+        height: calc(100vw / 4);
+    }
+	
     .slideMenu{
         width: 40vw;
     }
@@ -2876,14 +2880,14 @@ input:checked + .slider:before {
 /* Tablet */
 @media only screen and (max-width: 900px) {
     .box {
-        width: calc(100% / 4.06);
-        height: calc(100vw / 4.06);
+        width: calc(100% / 4);
+        height: calc(100vw / 4);
     }
 }
 @media only screen and (max-width: 700px) {
     .box {
-        width: calc(100% / 3.04);
-        height: calc(100vw / 3.04);
+        width: calc(100% / 3);
+        height: calc(100vw / 3);
     } 
     .actionBotton {
         display: flex;
@@ -3096,8 +3100,8 @@ input:checked + .slider:before {
 	}
 	
 	.box {
-        width: calc(100% / 2.03);
-		height: calc(100vw / 2.03);
+        width: calc(100% / 2);
+		height: calc(100vw / 2);
     }
     .modHome{
         width: 100%;

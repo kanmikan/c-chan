@@ -1,13 +1,12 @@
 .box {
-	width: calc(100% / 5.06); /*8*/
-	height: calc(100vw / 6.06);
-	margin: 1px;
+	width: calc(100% / 5);
+	height: calc(100vw / 6);
 }
 
 @media only screen and (max-width: 1280px) {
 	.box {
-		width: calc(100% / 4.05);
-		height: calc(100vw / 5.05);
+		width: calc(100% / 4);
+		height: calc(100vw / 5);
 	}
 	.boxList {
 		width: 76.5vw !important;
@@ -20,8 +19,8 @@
 
 @media only screen and (max-width: 1024px) {
 	.box {
-		width: calc(100% / 3.03);
-		height: calc(100vw / 4.03);
+		width: calc(100% / 3);
+		height: calc(100vw / 4);
 	}
 	.boxList {
 		width: 73.5vw !important;
@@ -34,8 +33,8 @@
 
 @media only screen and (max-width: 900px) {
 	.box {
-		width: calc(100% / 4.05);
-		height: calc(100vw / 4.05);
+		width: calc(100% / 4);
+		height: calc(100vw / 4);
 	}
 	.boxList {
 		width: 100% !important;
@@ -47,8 +46,8 @@
 
 @media only screen and (max-width: 800px) {
 	.box {
-		width: calc(100% / 3.03);
-		height: calc(100vw / 3.03);
+		width: calc(100% / 3);
+		height: calc(100vw / 3);
 	} 
 	.boxList {
 		width: 100% !important;
@@ -63,8 +62,8 @@
 
 @media only screen and (max-width: 600px) {
 	.box {
-		width: calc(100% / 2.03);
-		height: calc(100vw / 2.03);
+		width: calc(100% / 2);
+		height: calc(100vw / 2);
 	}
 	.modHome{
 		width: 100%;

@@ -12,7 +12,7 @@ function genAnon(type){
 
 function pickDadosAnon(){
 	let randomNumber = Math.floor(Math.random() * 9);
-		let anone = [
+	let anone = [
 		["ico,#FFcc00,#ffffff, ," + randomNumber + ",dados", 1],
 		["ico,#0579b3,#ffffff, ," + randomNumber + ",dados", 1],
 		["ico,#02b13c,#ffffff, ," + randomNumber + ",dados", 1],
