@@ -3,11 +3,11 @@
 		<% let icon = com.icon.split(",");
 		if (icon[0] === "ico") { %>
 			<div class="anonIcon" style="background: <%= icon[1] %>">
-				<div class="anonText" style="color: <%= icon[2] %>">ANON</div>	
+				<div class="anonText <%= icon[5] %>" style="color: <%= icon[2] %>"><%= (icon[4]) ? icon[4] : "ANON" %></div>	
 			</div>
 		<% } else if (icon[0] === "class") { %>
 			<div class="anonIcon <%= icon[1] %>">
-				<div class="anonText <%= icon[2] %>">ANON</div>	
+				<div class="anonText <%= icon[2] %>"><%= (icon[4]) ? icon[4] : "ANON" %></div>	
 			</div>
 		<% } else { %>
 			<img class="avatar" src="<%= com.icon %>" alt="">

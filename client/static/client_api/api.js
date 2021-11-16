@@ -174,10 +174,11 @@ function boxRender(box){
 function activityRender(com){
 	let icon = com.icon.split(",");
 	let cbody = `<div class="chatlike-box" onclick="location.href='/tema/${com.bid}#${com.cid}'"><div class="chatlike-img">`;
+	let iconText = (icon[4]) ? icon[4] : "ANON";
 	if (icon[0] === "ico") {
-		cbody +=`<div class="anonIcon" style="background: ${icon[1]}; width: 35px; height: 35px"><div class="anonText" style="color: ${icon[2]};font-size: 0.8rem;">ANON</div></div>`;
+		cbody +=`<div class="anonIcon" style="background: ${icon[1]}; width: 35px; height: 35px"><div class="anonText actAnonText ${icon[5]}" style="color: ${icon[2]};">${iconText}</div></div>`;
 	} else if (icon[0] === "class") {
-		cbody +=`<div class="anonIcon ${icon[1]}" style="width: 35px; height: 35px"><div class="anonText ${icon[2]}" style="font-size: 0.8rem;">ANON</div></div>`;
+		cbody +=`<div class="anonIcon ${icon[1]}" style="width: 35px; height: 35px"><div class="anonText actAnonText ${icon[2]}">${iconText}</div></div>`;
 	} else {
 		cbody +=`<img class="avatar" style="width: 35px; height: 35px" src="${com.icon}" alt="">`;
 	}
@@ -208,11 +209,12 @@ function activityRender(com){
 
 function iconRender(iconData, acc=true){
 	let icon = iconData.split(",");
+	let iconText = (icon[4]) ? icon[4] : "ANON";
 	let ibody = ``;
 	if (icon[0] === "ico") {
-		ibody +=`<div class="anonIcon" style="background: ${icon[1]}"><div class="anonText" style="color: ${icon[2]}">ANON</div></div>`;
+		ibody +=`<div class="anonIcon" style="background: ${icon[1]}"><div class="anonText ${icon[5]}" style="color: ${icon[2]}">${iconText}</div></div>`;
 	} else if (icon[0] === "class") {
-		ibody +=`<div class="anonIcon ${icon[1]}"><div class="anonText ${icon[2]}">ANON</div></div>`;
+		ibody +=`<div class="anonIcon ${icon[1]}"><div class="anonText ${icon[2]}">${iconText}</div></div>`;
 	} else {
 		ibody +=`<img class="avatar" src="${com.icon}" alt="">`;
 	}

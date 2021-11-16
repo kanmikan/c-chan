@@ -146,7 +146,7 @@ module.exports = function(app){
 		json.bid = bid;
 		json.user.uid = req.session.uid;
 		json.date.created = timestamp;
-		json.icon = avatar.genAnon();
+		
 		if (img[0] != ""){
 			json.type.push("image");
 			json.img.full = img[0];
@@ -170,11 +170,13 @@ module.exports = function(app){
 		if (box[0]){
 			let op = (box[0].user.uid === req.session.uid) ? true : false;
 			
+			/* modificador de anons */
+			json.icon = avatar.genAnon(box[0].type);
+			
 			/* modificador de idunico */
 			if (box[0].type.includes("idunico")){
 				let idu = utils.xmur3(req.session.uid+bid)();
 				let colorid = utils.genColor(req.session.uid+bid);
-				
 				json.type.push("idunico");
 				json.content.extra.idunico = {
 					id: idu,
