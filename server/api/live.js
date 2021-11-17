@@ -47,17 +47,16 @@ function liveSession(io){
 			//console.log(LIVEDATA);
 		});
 		socket.on('sync', function(data){
-			//formato: {uid: "uid", data: {key: "tal", value: "tal"}}
 			if (!LIVEDATA[data.bid]) {
 				LIVEDATA[data.bid] = {};
 				LIVEDATA[data.bid][data.key] = data.value;
 			} else {
 				LIVEDATA[data.bid][data.key] = data.value;
 			}
-			sendData('sync', {key: data.key, value: data.value});
+			sendData('sync', {bid: data.bid, key: data.key, value: data.value});
 		});
 		socket.on('syncme', function(data){
-			sendDataTo(socket.handshake.session.uid, 'sync', {bid: data.bid, key: data.key, value: LIVEDATA.ytb_url});
+			sendDataTo(socket.handshake.session.uid, 'sync', {bid: data.bid, key: "ytb_change", value: LIVEDATA[data.bid].ytb_url});
 		});
 	});
 	return io;

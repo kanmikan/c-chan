@@ -28,10 +28,12 @@ function onYouTubeIframeAPIReady() {
 		socket.on('sync', function(data){
 			switch (data.key){
 				case "ytb_play":
-					if (!OP && player.getPlayerState() === YT.PlayerState.PLAYING){
-						//tolerancia de tiempo desincronizado
-						if (player.getCurrentTime() < (data.value - DESYNC_RANGE) || player.getCurrentTime() > (data.value + DESYNC_RANGE)){
-							player.seekTo(data.value);
+					if (player) {
+						if (!OP && player.getPlayerState() === YT.PlayerState.PLAYING){
+							//tolerancia de tiempo desincronizado
+							if (player.getCurrentTime() < (data.value - DESYNC_RANGE) || player.getCurrentTime() > (data.value + DESYNC_RANGE)){
+								player.seekTo(data.value);
+							}
 						}
 					}
 				break;
@@ -88,13 +90,13 @@ function startInterval(){
 		if (OP){
 			socket.emit("sync", {bid: BID, key: "ytb_live", value: true});
 		}
-		if (OP && player.getPlayerState() === YT.PlayerState.PLAYING){
+		if (OP && player && player.getPlayerState() === YT.PlayerState.PLAYING){
 			//accion al estar reproduciendo.
 			socket.emit("sync", {bid: BID, key: "ytb_play", value: player.getCurrentTime()});
 			socket.emit("sync", {bid: BID, key: "ytb_pause", value: false});
 			
 		}
-		if (OP && player.getPlayerState() === YT.PlayerState.PAUSED){
+		if (OP && player && player.getPlayerState() === YT.PlayerState.PAUSED){
 			socket.emit("sync", {bid: BID, key: "ytb_pause", value: true});
 		}
 	}, 1000);
