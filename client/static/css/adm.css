@@ -76,7 +76,7 @@
 }
 
 .act-title {
-	color: #2196f3;
+	color: var(--adm-box-title);
 }
 
 .act-image {

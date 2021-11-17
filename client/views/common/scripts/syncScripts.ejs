@@ -3,10 +3,12 @@
 var player;
 var socket;
 var DESYNC_RANGE = 1;
+var BID = "<%= BOX.bid %>";
 
 function onYouTubeIframeAPIReady() {
 	$(function () {
 		socket = io();
+		let timer;
 		console.log("SYNC SCRIPT CARGADO");
 	
 		//TODO: esto tiene que ejecutarse una vez que le doy al boton de play y no directamente.
@@ -44,6 +46,17 @@ function onYouTubeIframeAPIReady() {
 				break;
 				case "ytb_change":
 					player.loadVideoById(data.value);
+				break;
+				case "ytb_live":
+					//si el op esta conectado, mantener señal.
+					$("#livesync").css("color", "red");
+					clearTimeout(timer);
+					
+					//si no se reciben nuevas señales, el timeout continúa y se desactiva despues de 5 segundos.
+					timer = setInterval(function(){
+						$("#livesync").css("color", "inherit");
+					}, 5000);
+				break;
 			}
 		});
 		
@@ -55,20 +68,16 @@ function onYouTubeIframeAPIReady() {
 	});
 }
 
-function synctst(){
-	socket.emit("test", "tst");
-}
-
 function syncUser(){
 	//enviar señal de que esta conectado
-	socket.emit("syncme", {key: "ytb_change"});
+	socket.emit("syncme", {bid: BID, key: "ytb_change"});
 }
 
 //TODO: hacer que esta opcion solo le funcione al op (check del lado del server.)
 function changeVideo(id){
 	if (OP) {
-		socket.emit("sync", {key: "ytb_change", value: id});
-		socket.emit("sync", {key: "ytb_url", value: id});
+		socket.emit("sync", {bid: BID, key: "ytb_change", value: id});
+		socket.emit("sync", {bid: BID, key: "ytb_url", value: id});
 		player.loadVideoById(id);
 	}
 }
@@ -77,16 +86,16 @@ function changeVideo(id){
 function startInterval(){
 	setInterval(function(){
 		if (OP){
-			//socket.emit("sync", {key: "ytb_url", value: youtubeParser(player.getVideoUrl())});
+			socket.emit("sync", {bid: BID, key: "ytb_live", value: true});
 		}
 		if (OP && player.getPlayerState() === YT.PlayerState.PLAYING){
 			//accion al estar reproduciendo.
-			socket.emit("sync", {key: "ytb_play", value: player.getCurrentTime()});
-			socket.emit("sync", {key: "ytb_pause", value: false});
+			socket.emit("sync", {bid: BID, key: "ytb_play", value: player.getCurrentTime()});
+			socket.emit("sync", {bid: BID, key: "ytb_pause", value: false});
 			
 		}
 		if (OP && player.getPlayerState() === YT.PlayerState.PAUSED){
-			socket.emit("sync", {key: "ytb_pause", value: true});
+			socket.emit("sync", {bid: BID, key: "ytb_pause", value: true});
 		}
 	}, 1000);
 }

@@ -78,7 +78,7 @@
 	function buildActivityBox(box){
 		let bdata = `<div class="home-temalist" onclick="window.open('/tema/${box.bid}')">
 		<div style="display:flex">
-			<img src="${box.img.preview}">
+			<img src="${(box.type.includes("video")) ? box.media.preview : box.img.preview}">
 			<div class="chatlike-container">
 				<span class="act-title">${box.content.title}</span>
 				<span class="act-uid">UID: ${box.user.uid}</span>

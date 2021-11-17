@@ -44,14 +44,20 @@ function liveSession(io){
 			socket.join(socket.handshake.session.uid);
 		});
 		socket.on('test', function(data){
-			console.log(LIVEDATA);
+			//console.log(LIVEDATA);
 		});
 		socket.on('sync', function(data){
-			LIVEDATA[data.key] = data.value;
+			//formato: {uid: "uid", data: {key: "tal", value: "tal"}}
+			if (!LIVEDATA[data.bid]) {
+				LIVEDATA[data.bid] = {};
+				LIVEDATA[data.bid][data.key] = data.value;
+			} else {
+				LIVEDATA[data.bid][data.key] = data.value;
+			}
 			sendData('sync', {key: data.key, value: data.value});
 		});
 		socket.on('syncme', function(data){
-			sendDataTo(socket.handshake.session.uid, 'sync', {key: "ytb_change", value: LIVEDATA.ytb_url});
+			sendDataTo(socket.handshake.session.uid, 'sync', {bid: data.bid, key: data.key, value: LIVEDATA.ytb_url});
 		});
 	});
 	return io;

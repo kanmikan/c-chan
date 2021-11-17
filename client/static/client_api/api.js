@@ -207,14 +207,16 @@ function activityRender(com){
 	return cbody;
 }
 
-function iconRender(iconData, acc=true){
+function iconRender(iconData, acc=true, act=false){
 	let icon = iconData.split(",");
 	let iconText = (icon[4]) ? icon[4] : "ANON";
 	let ibody = ``;
+	let textmode = (act) ? "actAnonText" : "";
+	
 	if (icon[0] === "ico") {
-		ibody +=`<div class="anonIcon" style="background: ${icon[1]}"><div class="anonText ${icon[5]}" style="color: ${icon[2]}">${iconText}</div></div>`;
+		ibody +=`<div class="anonIcon" style="background: ${icon[1]}"><div class="anonText ${textmode} ${icon[5]}" style="color: ${icon[2]}">${iconText}</div></div>`;
 	} else if (icon[0] === "class") {
-		ibody +=`<div class="anonIcon ${icon[1]}"><div class="anonText ${icon[2]}">${iconText}</div></div>`;
+		ibody +=`<div class="anonIcon ${icon[1]}"><div class="anonText ${textmode} ${icon[2]}">${iconText}</div></div>`;
 	} else {
 		ibody +=`<img class="avatar" src="${com.icon}" alt="">`;
 	}

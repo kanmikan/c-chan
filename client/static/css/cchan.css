@@ -106,6 +106,7 @@
     --categoryTitle: black;
     --categoryTitle-hover: #4eacf7;
     --moreload-background: #3f51b5;
+	--adm-box-title: #2196f3;
 }
 
 html[data-theme='darkmode'] {
@@ -203,15 +204,13 @@ html[data-theme='darkmode'] {
     --homelink-hover: #3f51b5;
     --modal-background: #3c3c3c;
     --tag1-sticky: #4caf50;
-    --hometag1: #3f51b5; /* #0579b3 */
+    --hometag1: #3f51b5;
     --categoryTitle: white;
     --categoryTitle-hover: #4eacf7;
     --moreload-background: #3f51b5;
+	--adm-box-title: #2196f3;
 }
 
-
-/* CODIGO DE VOXEDRIP.CSS ADAPTADO */
-/* RECICLADO COMO ESQUELETO BASE */
 
 /* CODIGO DE VOXEDRIP.CSS ADAPTADO */
 /* RECICLADO COMO ESQUELETO BASE */
