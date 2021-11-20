@@ -828,7 +828,17 @@ $(document).ready(function() {
 	}
 	if (element("option-imglist")){
 		element("option-imglist").addEventListener("click", function(e){
-			element("attachList").classList.toggle("hidden");
+			if (element("attachList").classList.contains("hidden")){
+				element("attachList").classList.remove("hidden");
+				element("commentList").classList.add("hidden");
+				element("commentsTitle").innerText = "Archivos";
+				element("voxComments").innerText = element("attachList").childElementCount;
+			} else {
+				element("attachList").classList.add("hidden");
+				element("commentList").classList.remove("hidden");
+				element("commentsTitle").innerText = "Comentarios";
+				element("voxComments").innerText = element("commentList").childElementCount;
+			}
 		});
 	}
 	if (element("option-autoload")){

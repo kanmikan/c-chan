@@ -1,7 +1,7 @@
 <%- include('./commentForm', it); %>
 <!-- header de lista de comentarios -->
 <div class="commentsVoxCount"> 
-	<span class="commentsVoxText" id="commentsVoxText">Comentarios (<span id="voxComments"><%= it.data.coms.length %></span>)</span>
+	<span class="commentsVoxText" id="commentsVoxText"><span id="commentsTitle">Comentarios</span> (<span id="voxComments"><%= it.data.coms.length %></span>)</span>
 	<ul class="attachsVox">
 		<li data-tooltip="Modo live"><i class="fas fa-bullseye" id="option-autoload"></i></li> 
 		<li data-tooltip="Archivos"><i class="fas fa-folder" id="option-imglist"></i></li> 

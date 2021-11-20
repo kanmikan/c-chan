@@ -52,11 +52,13 @@ function onYouTubeIframeAPIReady() {
 				case "ytb_live":
 					//si el op esta conectado, mantener señal.
 					$("#livesync").css("color", "red");
+					$("#livesync").text("Live");
 					clearTimeout(timer);
 					
 					//si no se reciben nuevas señales, el timeout continúa y se desactiva despues de 5 segundos.
 					timer = setInterval(function(){
 						$("#livesync").css("color", "inherit");
+						$("#livesync").text("Offline");
 					}, 5000);
 				break;
 			}
