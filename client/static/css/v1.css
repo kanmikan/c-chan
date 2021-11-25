@@ -104,7 +104,7 @@
 	display: flex;
 	background: var(--slidemenu-chat);
     border-radius: 5px;
-    margin: 1px;
+	margin: 1px 3px;
 	margin-bottom: 5px;
 	cursor: pointer;
 }

@@ -96,12 +96,15 @@ function resetCommentInputData(){
 	element("commentTextarea").value = "";
 	element("cimg").value = "";
 	element("cvid").value = "";
-	if (element("pollc")) element("pollc").value = "0";
+	if (element("pollc")) {
+		element("pollc").value = "0";
+		element("pollcOpt1").classList.add("hidden");
+		element("pollcOpt2").classList.add("hidden");
+	}
 	
 	//cerrar mini vista previa, si es que esta abierta..
 	element("previewInputComment").classList.add("hide");
-	element("imgpreview").setAttribute("src", "");
-	
+	element("imgpreview").setAttribute("src", "");	
 }
 
 function getCategoryData(catid){
@@ -737,6 +740,7 @@ $(document).ready(function() {
 				}
 				//activar señal de voto
 				element("pollc").value = "1";
+				element("pollcOpt" + result.data.option).classList.remove("hidden");
 				action_pollUpdate(result.data);
 			} else {
 				(result.data.redirect) ? action_login(result.data) : alert(result.data);

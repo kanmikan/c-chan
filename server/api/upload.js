@@ -12,35 +12,45 @@ const cloudy = require('./cloudinary.js');
 
 //FUNCION: subida de imagenes, esto se encargaría de seleccionar el servidor configurado por el host, etc.
 function upload(file, callback){
-	switch(sConfig.IMG_SERVER){
-		case 0:
-			//subida local
-			localStore(file, callback);
-			break;
-		case 1:
-			//imgur
-			imgurUpload(file, callback);
-			break;
-		case 2:
-			//imgbb
-			callback({success: false, data: "-no implementado-"});
-			break;
-		case 3:
-			//cloudinary
-			cloudyUpload(file, callback);
-			break;
+	//comprobar restricciones de subida
+	if (file.size > sConfig.UPLOAD_MAX_SIZE){
+		callback({success: false, data: `Imagen muy grande, máximo ${utils.formatBytes(sConfig.UPLOAD_MAX_SIZE)}`});
+	} else {
+		//seleccionar server y subir archivo.
+		switch(sConfig.IMG_SERVER){
+			case 0:
+				//subida local
+				localStore(file, callback);
+				break;
+			case 1:
+				//imgur
+				imgurUpload(file, callback);
+				break;
+			case 2:
+				//imgbb
+				callback({success: false, data: "-no implementado-"});
+				break;
+			case 3:
+				//cloudinary
+				cloudyUpload(file, callback);
+				break;
+		}
 	}
 }
 
 //FUNCION: subida de videos
 function uploadVid(file, callback){
-	switch(sConfig.VIDEO_SERVER){
-		case 0:
-			localStore(file, callback);
-			break;
-		case 1:
-			cloudyUpload(file, callback);
-			break;
+	if (file.size > sConfig.UPLOAD_MAX_SIZE){
+		callback({success: false, data: `Tamaño del video muy grande, máximo ${utils.formatBytes(sConfig.UPLOAD_MAX_SIZE)}`});
+	} else {
+		switch(sConfig.VIDEO_SERVER){
+			case 0:
+				localStore(file, callback);
+				break;
+			case 1:
+				cloudyUpload(file, callback);
+				break;
+		}
 	}	
 }
 

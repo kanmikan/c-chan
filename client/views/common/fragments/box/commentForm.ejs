@@ -5,8 +5,11 @@
 	<input type="hidden" name="vid" id="cvid" value="">
 	<input type="hidden" name="token" id="token" value="<%= it.token %>">
 	<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">
+	
 	<% if (it.data.boxs[0].type.includes("poll")) { %>
 		<input type="hidden" name="pollc" id="pollc" value="0">
+		<div class="pollOption commentBoxPoll hidden" id="pollcOpt1"><div class="pollOptionText"><%= it.data.boxs[0].content.extra.poll.pollOne %></div></div>
+		<div class="pollOption commentBoxPoll hidden" id="pollcOpt2"><div class="pollOptionText"><%= it.data.boxs[0].content.extra.poll.pollTwo %></div></div>
 	<% } %>
 	
 	<textarea name="content" class="commentTextarea" id="commentTextarea" maxlength="3000" placeholder="Escribe un comentario o pega una imagen..."></textarea>

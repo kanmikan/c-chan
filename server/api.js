@@ -20,22 +20,19 @@ module.exports = function(app){
 	app.post('/api/upload', pass.check, sesionManager.checkSesion, function(req, res) {
 		let filedata = req.files.fileData;
 		let mimetype = filedata.type.split("/");
-		let size = filedata.size;
-		if (size > sConfig.UPLOAD_MAX_SIZE){
-			res.json({success: false, data: `Archivo muy grande, máximo ${utils.formatBytes(sConfig.UPLOAD_MAX_SIZE)}`});
+	
+		if (mimetype[0] === "image"){
+			uploadManager.upload(filedata, function(result){
+				res.json(result);
+			});
+		} else if (mimetype[0] === "video"){
+			uploadManager.uploadVid(filedata, function(result){
+				res.json(result);
+			});
 		} else {
-			if (mimetype[0] === "image"){
-				uploadManager.upload(filedata, function(result){
-					res.json(result);
-				});
-			} else if (mimetype[0] === "video"){
-				uploadManager.uploadVid(filedata, function(result){
-					res.json(result);
-				});
-			} else {
-				res.json({success: false, data: "formato no admitido."});
-			}
+			res.json({success: false, data: "formato no admitido."});
 		}
+		
 	});
 	
 	//API: manipulacion de urls
@@ -56,24 +53,27 @@ module.exports = function(app){
 		let vid = req.fields.vid.split(";");
 		let pollOne = req.fields.pollOne;
 		let pollTwo = req.fields.pollTwo;
-		//checkboxes
+		
+		//checkboxes de las opciones.
 		let modAnonimo = (req.fields.modAnon) ? true : false;
 		let dados = (req.fields.dados) ? true : false;
 		let idunico = (req.fields.idunico) ? true : false;
 		let vidsync = (req.fields.vidsync) ? true : false;
 		
 		let time = Date.now();
-		
-		//let bid = utils.uuidv4();
 		let bid = title.toLowerCase().replace(/[^a-z0-9]+/gi, "-").substr(0,80) + utils.uuidv4().split("-")[0];
 	
+		//clonar el esquema json de un box.
 		let json = utils.clone(jsonScheme.BOX_SCHEME);
+		
+		//asignar datos del nuevo box.
 		json.bid = bid;
 		json.cat = (cat != "") ? cat : "off";
 		json.user.uid = req.session.uid;
 		json.date.created = time;
 		json.date.bump = time;
 		
+		//detecta y configura si es un box con imagen o con un video
 		if (img[0] != ""){
 			json.type.push("image");
 			json.img.full = img[0];
@@ -84,6 +84,7 @@ module.exports = function(app){
 			json.media.preview = vid[1];
 		}
 		
+		//tipo especial de box de videos sincronizados
 		if (vidsync) {
 			json.flag.push("sync");
 		}
@@ -95,6 +96,7 @@ module.exports = function(app){
 		if (dados){json.type.push("dice");}
 		if (idunico){json.type.push("idunico");}
 		
+		//deteccion y configuracion de box de encuestas.
 		if (pollOne != "" && pollTwo != ""){
 			json.type.push("poll");
 			json.content.extra.poll = {
@@ -108,24 +110,29 @@ module.exports = function(app){
 			json.content.extra.poll = {};
 		}
 		
+		//detectar opcion de anonimato para los usuarios con rango.
 		let userdata = sesionManager.getUserData(req.session.id);
 		if (userdata[0] && !modAnonimo){
 			json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};
 		}
 		
-		//reciclar temas asincronicamente
+		//reciclar ultimo tema sin bump de la categoria asincronicamente
 		recycler.recycle(req.app.locals.db, cat);
 		
 		//actualizar orden de las categorias asincronicamente
 		dbManager.pushDB(req.app.locals.db, mdbScheme.C_CATS, {catid: cat}, {$set: {"date.order": time}}, function(){});
 		
+		//insertar nuevo tema en la base de datos y actualizar
 		dbManager.insertDB(req.app.locals.db, "boxs", json, function(){
+			//informar nueva actividad.
 			let protectedJSON = pass.filterProtectedUID(json);
 			live.sendData("new", {kind: "newbox", data: protectedJSON});
-			res.json({success: true, data: {url: "/" + cat + "/" + bid}});
-			//informar nueva actividad.
 			live.sendData("activity", {kind: "box", data: protectedJSON});
+			
+			//devolver la url del nuevo tema creado.
+			res.json({success: true, data: {url: "/" + cat + "/" + bid}});
 		});
+		
 	});
 	
 	//RUTA: nuevo comentario.
@@ -141,7 +148,10 @@ module.exports = function(app){
 		let modAnonimo = (req.fields.modAnon) ? true : false;
 		let pollc = (req.fields.pollc === "1") ? true : false;
 		
+		//clonar el esquema json de los comentarios.
 		let json = utils.clone(jsonScheme.COMMENT_SCHEME);
+		
+		//asignar datos del nuevo comentario, el procedimiento es similar al de los temas.
 		json.cid = cid;
 		json.bid = bid;
 		json.user.uid = req.session.uid;
@@ -163,11 +173,14 @@ module.exports = function(app){
 			json.user.jerarquia = {nick: userdata[0].data.nick, rango: userdata[0].data.rango, color: userdata[0].data.color};
 		}
 		
+		//se actualiza el contador de la cantidad de comentarios en el tema.
 		let coms = await dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", () => {});
 		await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: {"content.comments": coms.length+1, "date.bump": timestamp}});
 		
+		//se lee el box al que pertenece el comentario
 		let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", () => {});
 		if (box[0]){
+			//deteccion del op, en base a la uid del solicitante.
 			let op = (box[0].user.uid === req.session.uid) ? true : false;
 			
 			/* modificador de anons */
@@ -201,11 +214,13 @@ module.exports = function(app){
 			//enviar comentario via socket
 			let protectedJSON = pass.filterProtectedUID(json);
 			live.sendDataTo(bid, "comment", {token: token, op: op, data: protectedJSON});
+			
 			//enviar señal de nueva actividad a todos
 			live.sendData("activity", {kind: "comment", data: protectedJSON});
 			
-			/* Notificar al dueño del box, si no es el mismo que comenta kjj */
+			/* Notificar al dueño del box, si no es el solicitante */
 			if (!op){
+				//construir notificacion clonando el esquema json
 				let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
 				notifdata.sender.uid = req.session.uid;
 				notifdata.receiver.uid = box[0].user.uid;
@@ -213,26 +228,35 @@ module.exports = function(app){
 				notifdata.state.push("new");
 				notifdata.content.cid = cid;
 				notifdata.content.bid = bid;
+				
+				//metadatos incrustados dentro de la notificación.
 				notifdata.content.preview = {
 					title: box[0].content.title,
 					desc: json.content.body,
 					thumb: box[0].img.preview
 				}
+				
+				//escribe la notificacion en la base de datos.
 				await dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
+				//envia la notificacion push, suponiendo que el receptor esté online.
 				live.sendDataTo(box[0].user.uid, "notif", pass.filterProtectedUID(notifdata));
 			}
 			/* fin de notificacion */
 		}
+		
+		//guarda el comentario en la base de datos y envia una notificacion de nueva actividad.
 		live.sendData("new", {kind: "newcom", data: pass.filterProtectedUID(json)});
 		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
 		res.json({success: true, data: json});
 	});
 	
 	//API: login de ID
+	//TODO añadir middleware de passport para comprobar la validez de los campos.
 	app.post('/api/idlogin', async function(req, res){
 		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
-		
 		let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
+		
+		//leer la base de datos de IDs filtrando al uid en cuestion
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: userid}, "", async function(user){
 			if (user[0]){
 				//comprobar si el userid tiene contraseña, en cuyo caso redirigir al modal de login.
@@ -241,23 +265,25 @@ module.exports = function(app){
 					res.json({success: false, data: "UID protegido, dirijase al login."});
 				} else {
 					//aplicar usuario a la sesion actual.
-					//TODO: añadir soporte de multiples sesiones del mismo usuario.
 					await dbManager.pushDB(req.app.locals.db, mdbScheme.C_ADM, {uid: user[0].uid}, {$set: {sid: req.session.id}});
 					req.session.uid = user[0].uid;
 					req.session.config = user[0].extra.config;
+					
+					//invalidar caché local del usuario para actualizar sus datos.
 					sesionManager.disposeUserCache(req.session.id);
 					console.log("[Sesion] Usuario logeado.");
 					res.json({success: true, data: "logueado."});
-					
 				}
 			} else {
-				//no existe, generar uno nuevo.
-				//primero, comprobar que el userid sea un id valido de 32 caracteres.
+				//si el usuario no existe, generar uno nuevo.
+				//comprobar que el userid sea un id valido de 32 caracteres.
+				//TODO: añadir middleware de acceso (svrConfig)
 				if (!svrconfig[0].login){
 					res.json({success: false, data: "La generacion de ID se encuentra cerrada."});
 				} else if (userid.trim().length !== 32){
 					res.json({success: false, data: "ID invalido, tiene que tener 32 caracteres."});
 				} else {
+					//generar nuevo usuario.
 					let json = sesionManager.genUser(userid, "", req.session.id);
 					dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){
 						req.session.uid = json.uid;
