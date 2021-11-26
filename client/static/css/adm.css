@@ -19,6 +19,15 @@
 	overflow: hidden;
 }
 
+.act-uid {
+	color: #9e9e9e;
+}
+
+.act-uid:hover {
+	color: yellow;
+	cursor: pointer;
+}
+
 .buttonPress {
 	margin: 3px;
 }
@@ -76,6 +85,7 @@
 }
 
 .act-title {
+	word-break: break-word;
 	color: var(--adm-box-title);
 }
 

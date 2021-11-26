@@ -102,7 +102,7 @@ function parseTags(DB, cid, uid, rawtext){
 				notifdata.content.preview = {
 					title: box[0].content.title,
 					desc: htmlSanitize(rawtext),
-					thumb: box[0].img.preview
+					thumb: (box[0].type.includes("video")) ? box[0].media.preview : box[0].img.preview
 				}
 				await dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
 				live.sendDataTo(c_receiver[0].user.uid, "notif", pass.filterProtectedUID(notifdata));

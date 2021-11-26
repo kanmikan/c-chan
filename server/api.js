@@ -233,7 +233,7 @@ module.exports = function(app){
 				notifdata.content.preview = {
 					title: box[0].content.title,
 					desc: json.content.body,
-					thumb: box[0].img.preview
+					thumb: (box[0].type.includes("video")) ? box[0].media.preview : box[0].img.preview
 				}
 				
 				//escribe la notificacion en la base de datos.

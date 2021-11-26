@@ -38,6 +38,25 @@
 			});
 		});
 		
+		//abrir tema
+		$(document).on("click", ".adm-temalist", function(e){
+			let data = $(e.currentTarget).data();
+			window.open(data.url);
+		});
+		
+		//seleccion de uid
+		$(document).on("click", ".act-uid", function(e){
+			e.preventDefault();
+			e.stopPropagation();
+			let data = $(e.currentTarget).data();
+			
+			//añadir uid en la consola
+			element("consoleInput").value += data.uid;
+			//añadir al clipboard because why not
+			navigator.clipboard.writeText(data.uid);
+			
+		});
+		
 	});
 	
 	/* FUNCIONES */
@@ -58,7 +77,7 @@
 	}
 	
 	function updateActivityBox(){
-		request("/adm/boxs/5", function(response){
+		request("/adm/boxs/10", function(response){
 			$("#admActBoxsView").empty();
 			response.data.forEach(function(box){
 				$("#admActBoxsView").append(buildActivityBox(box));
@@ -67,7 +86,7 @@
 	}
 	
 	function updateActivityCom(){
-		request("/adm/coms/5", function(response){
+		request("/adm/coms/8", function(response){
 			$("#admActComsView").empty();			
 			response.data.forEach(function(com){
 				$("#admActComsView").append(buildActivityCom(com));
@@ -76,24 +95,25 @@
 	}
 	
 	function buildActivityBox(box){
-		let bdata = `<div class="home-temalist" onclick="window.open('/tema/${box.bid}')">
+		let bdata = `<div class="adm-temalist home-temalist" data-url="/${box.cat}/${box.bid}">
 		<div style="display:flex">
 			<img src="${(box.type.includes("video")) ? box.media.preview : box.img.preview}">
 			<div class="chatlike-container">
-				<span class="act-title">${box.content.title}</span>
-				<span class="act-uid">UID: ${box.user.uid}</span>
+				<span class="act-title">${box.content.title.substr(0,70)}</span>
+				<span class="act-uid" data-uid="${box.user.uid}">UID: ${box.user.uid}</span>
 			</div>
 		</div>`;
 		return bdata;
 	}
 	
 	function buildActivityCom(com){
-		let cdata = `<div class="home-temalist" onclick="window.open('/tema/${com.bid}#${com.cid}')">
+		let cdata = `<div class="adm-temalist home-temalist" data-url="/tema/${com.bid}#${com.cid}">
 		<div style="display:flex">${iconRender(com.icon, false)}<div>`;
 		if (com.type.includes("image")){
 			cdata += `<div class="chatlike-container"><img class="act-image" src="${com.img.preview}"></img></div>`;
 		}
-		cdata += `<span style="display:block">${com.content.body}</span><span class="act-uid">UID: ${com.user.uid}</span></div></div>`;
+		let textbody = (com.content.body.length > 100) ? com.content.body.substr(0,100) + "..." : com.content.body;
+		cdata += `<span style="display:block">${textbody}</span><span class="act-uid" data-uid="${com.user.uid}">UID: ${com.user.uid}</span></div></div>`;
 		return cdata;
 	}
 </script>
