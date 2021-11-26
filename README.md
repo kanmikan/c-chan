@@ -2,6 +2,7 @@
 Cchan es un imageboard simple basado en la interfaz de la difunta web "voxed.net", hecho en nodejs usando express y el template renderer ejs.
 
 ![home](https://i.ibb.co/SNRK7CR/kaosdkaodkoaskdos.png)
+
 ![temas](https://i.ibb.co/wCXYB7V/owdqodaos.png)
 
 ## Setup
