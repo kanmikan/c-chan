@@ -1,8 +1,8 @@
 # Cchan
 Cchan es un imageboard simple basado en la interfaz de la difunta web "voxed.net", hecho en nodejs usando express y el template renderer ejs.
 
-![home](https://i.ibb.co/hF5NCH6/sdaksodaksodk.png)
-![temas](https://i.ibb.co/yF1LFyk/asdasdas.png)
+![home](https://i.ibb.co/SNRK7CR/kaosdkaodkoaskdos.png)
+![temas](https://i.ibb.co/wCXYB7V/owdqodaos.png)
 
 ## Setup
 Esto sigue siendo un proyecto en desarrollo, pero es posible montar la web de manera simple, usando servicios PaaS como [heroku](https://www.heroku.com), [glitch](https://glitch.com/), [railway](https://railway.app/), etc que soporten la plataforma nodejs y adicionalmente una conexión a una base de datos de mongodb sea local o remota, junto con un medio de almacenamiento local, o en servicios como [cloudinary](https://cloudinary.com/), [imgbb](https://imgbb.com/) e [imgur](http://imgur.com/).
