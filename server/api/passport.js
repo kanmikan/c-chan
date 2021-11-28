@@ -6,6 +6,8 @@ const utils = require('../utils.js');
 const sesionManager = require('../sesion/sesionmanager.js');
 
 /* MIDDLEWARES */
+
+//MIDDLEWARE: comprobacion de uso generalizado.
 function check(req, res, next){
 	checkBan(req, res, function(ban){
 		if (ban){
@@ -16,6 +18,7 @@ function check(req, res, next){
 	});
 }
 
+//MIDDLEWARE: permite el acceso solo a usuarios con rangos de alta jerarquia.
 function onlyADM(req, res, next){
 	let userData = sesionManager.getUserData(req.session.id)[0].data;
 	if (userData.permisos.includes("ADMIN") || userData.permisos.includes("GMOD")){
@@ -26,6 +29,7 @@ function onlyADM(req, res, next){
 	}
 }
 
+//MIDDLEWARE: permite el acceso solo a usuarios con rangos de baja y alta jerarquia.
 function onlyMOD(req, res, next){
 	let userData = sesionManager.getUserData(req.session.id)[0].data;
 	if (userData.permisos.includes("ADMIN") || userData.permisos.includes("GMOD") || userData.permisos.includes("MOD")){
@@ -36,6 +40,7 @@ function onlyMOD(req, res, next){
 	}
 }
 
+//MIDDLEWARE: comprueba los campos de entrada de creacion de temas.
 function checkBoxFields(req, res, next){
 	boxFields(req, res, function(data){
 		if (data){
@@ -46,6 +51,7 @@ function checkBoxFields(req, res, next){
 	});
 }
 
+//MIDDLEWARE: comprueba los campos de entrada de creacion de comentarios.
 function checkComFields(req, res, next){
 	comFields(req, res, function(data){
 		if (data){

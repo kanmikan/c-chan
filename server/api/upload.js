@@ -11,6 +11,7 @@ const youtube = require('./youtube.js');
 const cloudy = require('./cloudinary.js');
 
 //FUNCION: subida de imagenes, esto se encargaría de seleccionar el servidor configurado por el host, etc.
+//TODO: implementar compatibilidad con imgbb
 function upload(file, callback){
 	//comprobar restricciones de subida
 	if (file.size > sConfig.UPLOAD_MAX_SIZE){
@@ -58,7 +59,7 @@ function uploadVid(file, callback){
 function uploadLink(url, callback){
 	let type = checkURLType(url);
 	if (type === "youtube-embed" || type === "youtube-url"){
-		//TODO: manipular videos de youtube si es necesario.		
+		//TODO: manipular videos de youtube si es necesario.	
 		if (type === "youtube-url"){
 			url = "https://www.youtube.com/embed/" + youtube.youtubeParser(url);
 		}
@@ -119,9 +120,9 @@ function uploadLink(url, callback){
 	}
 }
 
-//TODO: no funciona por ahora.
+//FUNCION: subida de base64-data image al localStore
+//TODO: no funciona por ahora y no tengo idea porqué..
 function dataimg2localStore(url, callback){
-	
 	let filename = utils.randomString(16) + ".jpg";
 	let path = process.cwd() + "/uploads/" + filename;
 	let external_path = "/uploads/" + filename;
@@ -145,6 +146,8 @@ function dataimg2localStore(url, callback){
 	});
 }
 
+//FUNCION: subida de url de imagen a localStore.
+//TODO: funcionarán los links directos a videos?
 function link2localStore(url, callback){
 	let namesplit = url.split(".");
 	
@@ -175,7 +178,7 @@ function link2localStore(url, callback){
 	});
 }
 
-//FUNCION: subida de archivos al server local
+//FUNCION: subida de archivos al localStore
 function localStore(file, callback){
 	let buffer = fs.readFileSync(file.path);
 	let filename = utils.randomString(16) + "." + file.type.split("/")[1];
@@ -212,7 +215,7 @@ function localStore(file, callback){
 	});
 }
 
-//FUNCION: escribe un buffer en un archivo
+//FUNCION: escribe un buffer de datos en un archivo en el localStore
 function writeFile(path, buffer, callback){
 	fs.writeFile(path, buffer, function(err){
 		if (err){
@@ -223,7 +226,7 @@ function writeFile(path, buffer, callback){
 	});
 }
 
-//FUNCION: genera thumbnails de imagenes locales.
+//FUNCION: genera thumbnails de imagenes en el localStore.
 function genLocalThumb(path, filename, callback){
 	let name = filename.split(".");
 	//pasar formato a webp
@@ -247,6 +250,7 @@ function genLocalThumb(path, filename, callback){
 		
 }
 
+//FUNCION: subida de archivos a cloudinary
 function cloudyUpload(file, callback){
 	if (file.type.split("/")[0] === "video"){
 		cloudy.uploadVid(file, function(data){
@@ -259,6 +263,7 @@ function cloudyUpload(file, callback){
 	}
 }
 
+//FUNCION: subida de imagenes via link a imgur.
 function imgurURLUpload(url, callback){
 	imgur.uploadUrl(url).then((json) => {
 		let thumb = genImgurThumb(json.link, sConfig.IMGUR_THUMBNAIL_QUALITY);
@@ -268,6 +273,8 @@ function imgurURLUpload(url, callback){
 	});
 }
 
+//FUNCION: subida de imagenes a imgur.
+//TODO: comprobar si sube videos cortos
 function imgurUpload(file, callback){
 	imgur.uploadFile(file.path).then((json) => {
 		let thumb = genImgurThumb(json.link, sConfig.IMGUR_THUMBNAIL_QUALITY);

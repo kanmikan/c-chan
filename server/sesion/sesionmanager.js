@@ -9,6 +9,7 @@ const csrf = require('simple-csrf');
 
 var USER_FLAG = [];
 
+//FUNCION: inicializa el gestor de sesiones.
 function create(app){
 	var expires = new Date(Number(new Date()) + 315360000000); //si, caduca dentro de 10 años... kjj
 	let sesion = session({
@@ -55,6 +56,8 @@ function checkUser(req, res, next){
 	}
 }
 
+//FUNCION: genera un usuario nuevo, y lo retorna
+//TODO: mover parte de esto a defaults.js
 function genUser(uid, pass, sid){
 	let json = utils.clone(jsonScheme.USER_SCHEME);
 	json.uid = uid;
@@ -67,7 +70,7 @@ function genUser(uid, pass, sid){
 			boxhides: [], //lista de boxs ocultos
 			cathides: [], //lista de categorias ocultas.
 			favs: [], //lista de favoritos.
-			comus: [], //lista de comunidades suscritas.
+			comus: [], //lista de comunidades suscritas. (aplica a la v1)
 			anchors: [], //id de la categoria/comunidad pineada con prioridad en la home (aplica a la v1)
 			blacklist: [] //[placeholder] define una lista negra de palabras (o users), (nota: esto podria exponer el uid)
 		}
@@ -75,6 +78,7 @@ function genUser(uid, pass, sid){
 	return json;
 }
 
+//MIDDLEWARE: detecta si el usuario esta "logueado" y redirige al modal de bienvenida si no lo está
 async function checkSesion(req, res, next){
 	let sid = req.session.id;
 	
@@ -84,6 +88,8 @@ async function checkSesion(req, res, next){
 			console.log("[Sesion] Usuario efimero detectado, redirigir al logeo.");
 			res.json({success: false, data: {redirect: true, to: "/login"}});
 		} else {
+			//comprueba la whitelist.
+			//TODO: mover esto a un middleware aparte.
 			if (svrconfig[0].whitelist && !(user[0].permisos.includes("WHITELIST") || user[0].permisos.includes("ADMIN") || user[0].permisos.includes("GMOD") || user[0].permisos.includes("MOD"))) {
 				res.json({success: false, data: "Whitelist Activada - Solo los usuarios permitidos pueden realizar esa accion."});
 			} else {

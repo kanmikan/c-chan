@@ -1,3 +1,4 @@
+//DEPRECATED: no utilizado e incompleto.
 /* WEBSOCKETS EXPERIMENTAL */
 const WebSocketServer = require("ws").WebSocketServer;
 const WebSocket = require("ws").WebSocket;

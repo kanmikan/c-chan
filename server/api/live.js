@@ -56,7 +56,9 @@ function liveSession(io){
 			sendData('sync', {bid: data.bid, key: data.key, value: data.value});
 		});
 		socket.on('syncme', function(data){
-			sendDataTo(socket.handshake.session.uid, 'sync', {bid: data.bid, key: "ytb_change", value: LIVEDATA[data.bid].ytb_url});
+			if (LIVEDATA[data.bid] && LIVEDATA[data.bid].ytb_url){
+				sendDataTo(socket.handshake.session.uid, 'sync', {bid: data.bid, key: "ytb_change", value: LIVEDATA[data.bid].ytb_url});
+			}
 		});
 	});
 	return io;

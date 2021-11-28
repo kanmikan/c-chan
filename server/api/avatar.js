@@ -1,13 +1,10 @@
 /* MANEJA LOS ICONOS DE COMENTARIOS, SU FRECUENCIA, ETC */
 
-function genAnon(type){
-	//se encarga de elegir que set de anons usar, dependiendo de variables como los dias festivos, etc.
-	
-	if (type.includes("dice")){
-		return pickDadosAnon();
-	} else {
-		return pickCSSAnon();
-	}
+
+//FUNCION: se encarga de elegir que set de anons usar, dependiendo de variables como los dias festivos, etc.
+//TODO: detector de fechas festivos, navidad, etc.
+function genAnon(type){	
+	return (type.includes("dice")) ? pickDadosAnon() : pickCSSAnon();
 }
 
 function pickDadosAnon(){
