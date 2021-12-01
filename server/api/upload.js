@@ -35,6 +35,9 @@ function upload(file, callback){
 				//cloudinary
 				cloudyUpload(file, callback);
 				break;
+			case 9:
+				//flag que desactiva la subida de imagenes.
+				callback({success: false, data: "Subida de imagenes no permitida"});
 		}
 	}
 }
@@ -50,6 +53,9 @@ function uploadVid(file, callback){
 				break;
 			case 1:
 				cloudyUpload(file, callback);
+				break;
+			case 9:
+				callback({success: false, data: "Subida de videos no permitida."});
 				break;
 		}
 	}	
@@ -97,13 +103,20 @@ function uploadLink(url, callback){
 					callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
 				});
 			break;
+			case 9:
+				callback({success: false, data: "Subida via links no permitido."});
+			break;
 		}
 		
 	} else if (utils.isVideo(url)){
 		//si es un link directo a un video, linkearlo con un thumbnail genérico.
 		//solo permitir links de cloudinary por ahora.
 		if (checkURLType(url) === "cloudinary"){
-			callback({success: true, data: {video: true, type: type, raw: url, thumb: cloudy.genCloudyThumb(url, true)}});
+			if (sConfig.VIDEO_SERVER != 9){
+				callback({success: true, data: {video: true, type: type, raw: url, thumb: cloudy.genCloudyThumb(url, true)}});
+			} else {
+				callback({success: false, data: "Subida via links no permitido."});
+			}
 		} else {
 			callback({success: false, data: {video: true, type: type, raw: url, thumb: "/assets/thumb.jpg"}});
 		}
