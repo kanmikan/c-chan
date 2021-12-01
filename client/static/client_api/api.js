@@ -13,6 +13,16 @@ function elementClass(ecl){
 	return document.querySelectorAll(ecl);
 }
 
+function swalert(data, callback){
+	Swal.fire(
+		data.title,
+		data.text,
+		data.icon
+	).then((result) => {
+		callback(result);
+	});
+}
+
 function request(url, callback){
 	fetch(url)
 	.then(response => response.json())
@@ -300,13 +310,16 @@ function commentRender(op, com){
 function checkBoxFieldLocal(){
 	//Este es un simple control de campos local, su funcion es simplemente ahorrarse una request al pedo.
 	if (element("bcat").value === ""){
-		alert("Elige una categoria valida");
+		//alert("Elige una categoria valida");
+		swalert({title: "Error", text: "Elige una categoria valida", icon: "error"}, function(){});
 		return false;
 	} else if (element("btitle").value === ""){
-		alert("Falta un titulo");
+		//alert("Falta un titulo");
+		swalert({title: "Error", text: "Falta un titulo", icon: "error"}, function(){});
 		return false;
 	} else if ((element("bimg").value === "" && element("bvid").value === "")){
-		alert("Añade una imagen o video");
+		//alert("Añade una imagen o video");
+		swalert({title: "Error", text: "Añade una imagen o video", icon: "error"}, function(){});
 		return false;
 	} else {
 		return true;
@@ -316,7 +329,8 @@ function checkBoxFieldLocal(){
 function checkComFieldLocal(){
 	if (element("cimg").value === "" && element("cvid").value === ""){
 		if (element("commentTextarea").value === ""){
-			alert("Escribe algo o sube una imagen.");
+			//alert("Escribe algo o sube una imagen.");
+			swalert({title: "Error", text: "Escribe algo o sube una imagen", icon: "error"}, function(){});
 			return false;
 		}
 	}
@@ -498,7 +512,7 @@ function applyConfig(query){
 	formData.append("data", query);
 	post(formData, "/api/config", function(){}, function(result){
 		if (!result.success){
-			(result.data.redirect) ? action_login(result.data) : alert(result.data);
+			(result.data.redirect) ? action_login(result.data) : swalert({title: "Error", text: result.data, icon: "error"}, function(){});
 		}
 	});
 }
@@ -528,7 +542,8 @@ function action_boxDrop(e){
 				element("bimg").value = data.data.link + ";" + data.data.thumb;
 			} else {
 				element("nimgpreview").setAttribute("src", "");
-				alert(JSON.stringify(data.data));
+				//alert(JSON.stringify(data.data));
+				swalert({title: "Error", text: data.data, icon: "error"}, function(){});
 			}
 		});
 	} else {
@@ -556,7 +571,8 @@ function action_boxDrop(e){
 				element("bimg").value = data.data.raw + ";" + data.data.thumb;
 			} else {
 				element("nimgpreview").setAttribute("src", "");
-				alert(JSON.stringify(data.data));
+				//alert(JSON.stringify(data.data));
+				swalert({title: "Error", text: data.data, icon: "error"}, function(){});
 			}
 		});	
 	}
@@ -588,7 +604,8 @@ function action_commentDrop(e){
 			} else {
 				element("previewInputComment").classList.add("hide");
 				element("imgpreview").setAttribute("src", "");
-				alert(JSON.stringify(data.data));
+				//alert(JSON.stringify(data.data));
+				swalert({title: "Error", text: data.data, icon: "error"}, function(){});
 			}
 		});
 	}
@@ -705,7 +722,8 @@ $(document).ready(function() {
 					console.log("logueado."); //TODO mensaje de login.
 					$("#idForm").css("display", "none");
 				} else {
-					alert(result.data);
+					//alert(result.data);
+					swalert({title: "Error", text: result.data, icon: "error"}, function(){});
 				}
 			});
 			
@@ -743,7 +761,7 @@ $(document).ready(function() {
 				element("pollcOpt" + result.data.option).classList.remove("hidden");
 				action_pollUpdate(result.data);
 			} else {
-				(result.data.redirect) ? action_login(result.data) : alert(result.data);
+				(result.data.redirect) ? action_login(result.data) : swalert({title: "Error", text: result.data, icon: "error"}, function(){});
 			}
 			element("pollOne").classList.remove("pollLoading");
 			element("pollTwo").classList.remove("pollLoading");
@@ -919,7 +937,8 @@ $(document).ready(function() {
 				} else {
 					element("previewInputComment").classList.add("hide");
 					element("imgpreview").setAttribute("src", "");
-					alert(JSON.stringify(data.data));
+					//alert(JSON.stringify(data.data));
+					swalert({title: "Error", text: data.data, icon: "error"}, function(){});
 				}
 			});
 		}
@@ -1158,7 +1177,13 @@ $(document).ready(function() {
 							$("#previewInputVox").attr("style", "display: block !important");
 						} else {
 							element("nimgpreview").setAttribute("src", "");
-							(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (JSON.stringify(data.data)));
+							//(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (JSON.stringify(data.data)));
+							
+							if (data.data && data.data.banned) {
+								swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
+							} else {
+								(data.data && data.data.redirect) ? action_login(data.data) : swalert({title: "Error", text: data.data, icon: "error"}, function(){});
+							}
 							
 						}
 						element("btext").classList.remove("hidden");
@@ -1213,7 +1238,14 @@ $(document).ready(function() {
 							element("imgpreview").setAttribute("src", mediaData.thumb);
 							element("previewInputComment").classList.remove("hide");
 						} else {
-							(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (JSON.stringify(data.data)));
+							//(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (JSON.stringify(data.data)));
+							
+							if (data.data && data.data.banned) {
+								swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
+							} else {
+								(data.data && data.data.redirect) ? action_login(data.data) : swalert({title: "Error", text: data.data, icon: "error"}, function(){});
+							}
+							
 						}
 						element("loadingCom").classList.add("hidden");
 						element("ctext").classList.remove("hidden");
@@ -1283,9 +1315,10 @@ $(document).ready(function() {
 					} else {
 						if (result.data.banned){
 							//TODO: mostrar mensaje de baneo con toda la info necesaria.
-							alert(JSON.stringify(result.data.bandata));
+							//alert(JSON.stringify(result.data.bandata));
+							swalert({title: "Has sido baneado", text: result.data.bandata.razon, icon: "error"}, function(){});
 						} else {
-							(result.data.redirect) ? action_login(result.data) : alert(result.data);
+							(result.data.redirect) ? action_login(result.data) : swalert({title: "Error", text: result.data, icon: "error"}, function(){});
 						}
 					}
 				});
@@ -1315,9 +1348,10 @@ $(document).ready(function() {
 					} else {
 						element("newVox").disabled = false;
 						if (result.data.banned){
-							alert(JSON.stringify(result.data.bandata));
+							//alert(JSON.stringify(result.data.bandata));
+							swalert({title: "Has sido baneado", text: result.data.bandata.razon, icon: "error"}, function(){});
 						} else {
-							(result.data.redirect) ? action_login(result.data) : alert(result.data);
+							(result.data.redirect) ? action_login(result.data) : swalert({title: "Error", text: result.data, icon: "error"}, function(){});
 						}
 					}
 				});
@@ -1344,7 +1378,14 @@ $(document).ready(function() {
 						element("bimg").value = img;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
+						//(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
+						
+						if (data.data && data.data.banned) {
+								swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
+						} else {
+							(data.data && data.data.redirect) ? action_login(data.data) : swalert({title: "Error", text: data.data, icon: "error"}, function(){});
+						}
+						
 					}
 					element("btext").classList.remove("hidden");
 					element("bspin").classList.add("hidden");
@@ -1364,7 +1405,14 @@ $(document).ready(function() {
 						element("bvid").value = vid;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
+						//(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
+						
+						if (data.data && data.data.banned) {
+							swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
+						} else {
+							(data.data && data.data.redirect) ? action_login(data.data) : swalert({title: "Error", text: data.data, icon: "error"}, function(){});
+						}
+						
 					}
 					element("btext").classList.remove("hidden");
 					element("bspin").classList.add("hidden");
@@ -1399,7 +1447,14 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
+						//(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
+						
+						if (data.data && data.data.banned) {
+							swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
+						} else {
+							(data.data && data.data.redirect) ? action_login(data.data) : swalert({title: "Error", text: data.data, icon: "error"}, function(){});
+						}
+						
 					}
 					
 					element("loadingCom").classList.add("hidden");
@@ -1421,14 +1476,22 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
-						(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
+						//(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
+						
+						if (data.data && data.data.banned) {
+							swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
+						} else {
+							(data.data && data.data.redirect) ? action_login(data.data) : swalert({title: "Error", text: data.data, icon: "error"}, function(){});
+						}
+						
 					}
 					element("loadingCom").classList.add("hidden");
 					element("ctext").classList.remove("hidden");
 					element("newComment").disabled = false;
 				});
 			} else {
-				alert("Formato no admitido");
+				//alert("Formato no admitido");
+				swalert({title: "Error", text: "Formato no admitido", icon: "error"}, function(){});
 			}
 			
 			element("closePreview").addEventListener("click", function(e){

@@ -51,7 +51,8 @@
 				if (result.success){
 					window.location.replace("/");
 				} else {
-					alert(result.data);
+					//alert(result.data);
+					swalert({title: "Error", text: result.data, icon: "error"}, function(){});
 				}
 			});
 			
