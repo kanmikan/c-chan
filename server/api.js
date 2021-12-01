@@ -74,11 +74,11 @@ module.exports = function(app){
 		json.date.bump = time;
 		
 		//detecta y configura si es un box con imagen o con un video
-		if (img[0] != ""){
+		if (img[0] != "" && (sConfig.IMG_SERVER != 9)){
 			json.type.push("image");
 			json.img.full = img[0];
 			json.img.preview = img[1];
-		} else if (vid[0] != ""){
+		} else if (vid[0] != "" && (sConfig.VIDEO_SERVER != 9)){
 			json.type.push("video");
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
@@ -157,11 +157,11 @@ module.exports = function(app){
 		json.user.uid = req.session.uid;
 		json.date.created = timestamp;
 		
-		if (img[0] != ""){
+		if (img[0] != "" && (sConfig.IMG_SERVER != 9)){
 			json.type.push("image");
 			json.img.full = img[0];
 			json.img.preview = img[1];
-		} else if (vid[0] != ""){
+		} else if (vid[0] != "" && (sConfig.VIDEO_SERVER != 9)){
 			json.type.push("video");
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
