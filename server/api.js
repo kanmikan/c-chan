@@ -78,7 +78,7 @@ module.exports = function(app){
 			json.type.push("image");
 			json.img.full = img[0];
 			json.img.preview = img[1];
-		} else if (vid[0] != "" && (sConfig.VIDEO_SERVER != 9)){
+		} else if (vid[0] != "" && (sConfig.VIDEO_SERVER != 9 || vid[0].search("youtube") != -1)){
 			json.type.push("video");
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];
@@ -161,7 +161,7 @@ module.exports = function(app){
 			json.type.push("image");
 			json.img.full = img[0];
 			json.img.preview = img[1];
-		} else if (vid[0] != "" && (sConfig.VIDEO_SERVER != 9)){
+		} else if (vid[0] != "" && (sConfig.VIDEO_SERVER != 9 || vid[0].search("youtube") != -1)){
 			json.type.push("video");
 			json.media.raw = vid[0];
 			json.media.preview = vid[1];

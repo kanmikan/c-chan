@@ -11,7 +11,7 @@ function pickDadosAnon(){
 	let randomNumber = Math.floor(Math.random() * 9);
 	let anone = [
 		["ico,#FFcc00,#ffffff, ," + randomNumber + ",dados", 1],
-		["ico,#0579b3,#ffffff, ," + randomNumber + ",dados", 1],
+		["ico,#1545e6,#ffffff, ," + randomNumber + ",dados", 1],
 		["ico,#02b13c,#ffffff, ," + randomNumber + ",dados", 1],
 		["ico,#df0202,#ffffff, ," + randomNumber + ",dados", 1],
 		["class,anonMulti,dados white, ," + randomNumber + ", ", 0.1],
@@ -25,7 +25,7 @@ function pickDadosAnon(){
 function pickCSSAnon(){
 	let anone = [
 		["ico,#FFcc00,#ffffff, ,ANON, ", 1], //amarillo
-		["ico,#0579b3,#ffffff, ,ANON, ", 1], //azul
+		["ico,#1545e6,#ffffff, ,ANON, ", 1], //azul
 		["ico,#02b13c,#ffffff, ,ANON, ", 1], //verde
 		["ico,#df0202,#ffffff, ,ANON, ", 1], //rojo
 		["class,anonMulti,white, ,ANON, ", 0.1], //multi
