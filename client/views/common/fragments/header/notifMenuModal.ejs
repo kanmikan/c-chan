@@ -3,18 +3,48 @@
 		<% if (!it.data.notifs || it.data.notifs.length === 0){ %>
 			<li class="noNotification ">No hay notificaciones</li>
 		<% } else { %>
-			<% it.data.notifs.forEach(function(noti) { %>
-				<li class="Notification" onclick="location.href='/api/ntf/<%= noti.content.bid %>/<%= noti.content.cid %>'">
-					<div class="avatar"><img src="<%= noti.content.preview.thumb %>"></div>
-					<div class="report">
-					<% 
-					let msgTitle = (noti.content.tag) ? "Te respondieron en: " : "Comentaron en tu tema: ";
-					if (noti.type.includes("alert")) {msgTitle = "";}
-					%>
-					<span class="report-title"><%= msgTitle %></span></br><span><%= noti.content.preview.title %></span>	
-					</div>
-				</li>
-			<% }); %>
-		<% }%>			
+			<% 
+			let notiComments = it.data.notifs.filter(item => !item.content.tag);
+		
+			//agrupa las notificaciones en base al bid
+			let result = notiComments.reduce(function (res, item) {
+				res[item.content.bid] = res[item.content.bid] || [];
+				res[item.content.bid].push(item);
+				return res;
+			}, Object.create(null));
+			var notifGroup = Object.keys(result).map(function (key) {
+				return result[key];
+			});
+			
+			//crea un item para cada grupo de notificaciones.
+			notifGroup.forEach(function(ngroup){
+				if (ngroup[0]){
+					console.log(ngroup.length);
+					notiRender(ngroup[0], ngroup.length);
+				}
+			});
+			
+			//crea el resto de notificaciones comunes.
+			it.data.notifs.forEach(function(noti) {
+				if (noti.content.tag){
+					notiRender(noti);
+				}
+			});
+			%>
+			
+		<% } %>			
 	</ul>
 </div>
+
+<% function notiRender(noti, count=0){ %>
+		<li class="Notification" onclick="location.href='/api/ntf/<%= noti.content.bid %>/<%= noti.content.cid %>'">
+			<div class="avatar"><img src="<%= noti.content.preview.thumb %>"></div>
+			<div class="report">
+			<% 
+			let msgTitle = (noti.content.tag) ? `Te respondieron en:` : `Comentaron en tu tema ${(count === 0 ? ":" : "x" + count + ":")}`;
+			if (noti.type.includes("alert")) {msgTitle = "";}
+			%>
+			<span class="report-title"><%= msgTitle %></span></br><span><%= noti.content.preview.title %></span>	
+			</div>
+		</li>
+<% } %>
