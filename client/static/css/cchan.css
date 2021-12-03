@@ -2810,7 +2810,39 @@ input:checked + .slider:before {
 	content: url(/assets/anon/extras/bat.png);
 }
 /********************/
+/* Items de Navidad */
+.navidadhat1 {
+	content: url(/assets/anon/extras/nhat.png);
+}
+.navidadhat2 {
+	content: url(/assets/anon/extras/nhat2.png);
+}
+.navidadhat3 {
+	content: url(/assets/anon/extras/nhat3.png);
+}
 
+.navidadbadge1 {
+	content: url(/assets/anon/extras/nitem1.png);
+}
+.navidadbadge2 {
+	content: url(/assets/anon/extras/nitem2.png);
+}
+.navidadbadge3 {
+	content: url(/assets/anon/extras/nitem3.png);
+}
+.anonMultiNavidad {
+	background: linear-gradient(#df0202 25%,#4caf50 25%,#4caf50 50%,#df0202 50%,#df0202 75%,#4caf50 75%,#4caf50 100%);
+	animation: anonMultiNavidad 0.5s infinite;
+}
+
+@keyframes anonMultiNavidad {
+	20% {background: linear-gradient(#df0202 25%,#4caf50 25%,#4caf50 50%,#df0202 50%,#df0202 75%,#4caf50 75%,#4caf50 100%)}
+	60%  {background: linear-gradient(#4caf50 25%,#df0202 25%,#df0202 50%,#4caf50 50%,#4caf50 75%,#df0202 75%,#df0202 100%)}
+	80%  {background: linear-gradient(#df0202 25%,#4caf50 25%,#4caf50 50%,#df0202 50%,#df0202 75%,#4caf50 75%,#4caf50 100%)}
+	100% {background: linear-gradient(#4caf50 25%,#df0202 25%,#df0202 50%,#4caf50 50%,#4caf50 75%,#df0202 75%,#df0202 100%)}
+}
+
+/*******************/
 .anonMulti {
 	background: linear-gradient(#df0202 25%, #FFcc00 25%, #FFcc00 50%, #0579b3 50%, #0579b3 75%, #02b13c 75%, #02b13c 100%);
 	animation: anonMulti 0.25s infinite;

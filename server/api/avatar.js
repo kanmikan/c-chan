@@ -4,7 +4,29 @@
 //FUNCION: se encarga de elegir que set de anons usar, dependiendo de variables como los dias festivos, etc.
 //TODO: detector de fechas festivos, navidad, etc.
 function genAnon(type){	
-	return (type.includes("dice")) ? pickDadosAnon() : pickCSSAnon();
+	if (type.includes("dice")){
+		return pickDadosAnon();
+	} else {
+		return pickFiestasAnon();
+	}
+}
+
+function pickFiestasAnon(){
+	let pickColor = Math.floor(Math.random() * 4);
+	pickColor = (pickColor != 0) ? pickColor : 1;
+	let itemType = (Math.floor(Math.random() * 2) === 0) ? "hhat navidadhat" : "hitem navidadbadge";
+	
+	let anone = [
+		["ico,#ff5722,#ffffff," + itemType + pickColor, 1],
+		["ico,#FFcc00,#ffffff," + itemType + pickColor, 1], //amarillo
+		["ico,#0579b3,#ffffff," + itemType + pickColor, 1], //azul
+		["ico,#02b13c,#ffffff," + itemType + pickColor, 1], //verde
+		["ico,#df0202,#ffffff," + itemType + pickColor, 1], //rojo
+		["class,anonMulti,white," + itemType + pickColor, 0.1], //multi
+		["class,anonInvertido,white," + itemType + pickColor, 0.1], //invertido
+		["ico,#000000,#ffffff," + itemType + pickColor, 0.5], //black
+	];
+	return weightRandom(anone);
 }
 
 function pickDadosAnon(){
