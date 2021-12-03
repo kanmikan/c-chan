@@ -19,7 +19,7 @@ function pickFiestasAnon(){
 	let anone = [
 		["ico,#ff5722,#ffffff," + itemType + pickColor, 1],
 		["ico,#FFcc00,#ffffff," + itemType + pickColor, 1], //amarillo
-		["ico,#0579b3,#ffffff," + itemType + pickColor, 1], //azul
+		["ico,#1545e6,#ffffff," + itemType + pickColor, 1], //azul
 		["ico,#02b13c,#ffffff," + itemType + pickColor, 1], //verde
 		["ico,#df0202,#ffffff," + itemType + pickColor, 1], //rojo
 		["class,anonMulti,white," + itemType + pickColor, 0.1], //multi
