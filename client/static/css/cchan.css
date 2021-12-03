@@ -124,7 +124,7 @@ html[data-theme='darkmode'] {
     --comment-background: #403f3f;
     --comment-background-hover: #444444;
     --comment-background-jump: #313131;
-    --box-links: #f7f7f7;
+    --box-links: #03a9f4;
     --box-links-hover: #00bcd4;
     --bar1: #403f3f;
     --bar1-text: #f7f7f7;
@@ -1542,6 +1542,10 @@ h4{
 	margin-bottom: 4px;
 	display: flex;
 	cursor: pointer;
+}
+
+.chatlike-text {
+	word-break: break-word;
 }
 
 .chatlike-image {
