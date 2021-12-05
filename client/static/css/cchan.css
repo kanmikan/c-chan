@@ -107,6 +107,7 @@
     --categoryTitle-hover: #4eacf7;
     --moreload-background: #3f51b5;
 	--adm-box-title: #2196f3;
+	--text-author-self: #3f51b5;
 }
 
 html[data-theme='darkmode'] {
@@ -209,6 +210,7 @@ html[data-theme='darkmode'] {
     --categoryTitle-hover: #4eacf7;
     --moreload-background: #3f51b5;
 	--adm-box-title: #2196f3;
+	--text-author-self: #fbfbfb;
 }
 
 
@@ -2055,6 +2057,9 @@ span.author {
     margin-right: 8px;
 }
 
+span.author.self {
+	color: var(--text-author-self);
+}
 
 .commentAttach img {
 	width: 100%;

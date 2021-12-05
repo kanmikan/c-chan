@@ -21,7 +21,7 @@
 			<% if (com.type.includes("idunico")){ %>
 				<span class="commentIdUnico" style="background-color: <%= com.content.extra.idunico.color %>"><%= com.content.extra.idunico.id %></span>
 			<% } else { %>
-				<span class="author"><%= (com.user.jerarquia.nick) ? com.user.jerarquia.nick : "Anonimo" %></span>
+				<span class="<%= (it.sesion.uid === com.user.uid) ? "author self" : "author" %>"><%= (com.user.jerarquia.nick) ? com.user.jerarquia.nick : "Anonimo" %></span>
 			<% } %>
 			<% if (com.user.jerarquia.rango || com.user.jerarquia.color){ %>
 				<span class="commentTag" style="background-color: <%= com.user.jerarquia.color %>"><%= com.user.jerarquia.rango %></span>
