@@ -124,14 +124,12 @@
 				<% if (box.date && box.date.sticky > 0){ %>
 					<div class="tag sticky">Sticky</div>
 				<% } %>
-				<% if (!it.renderConfig.V1_CARDS) { %>
-					<div class="tag categoryTag">
-						<% if (it.renderConfig.SHOW_CATEGORY_ICON) { %>
-							<img src="<%= categoryData.content.media.icon %>">
-						<% } %>
-						<span style="margin-left: 4px;margin-right: 5px;align-self: center;"><%- it.utils.getCatShow(box.cat) %></span></img>
-					</div>
-				<% } %>
+				<div class="tag categoryTag">
+					<% if (it.renderConfig.SHOW_CATEGORY_ICON) { %>
+						<img src="<%= categoryData.content.media.icon %>">
+					<% } %>
+					<span style="margin-left: 4px;margin-right: 5px;align-self: center;"><%- it.utils.getCatShow(box.cat) %></span></img>
+				</div>
 				<!-- tag sticky local -->
 				<% if (box.date && box.date.csticky > 0){ %>
 					<div class="tag csticky"><i class="fas fa-thumbtack"></i></div>
@@ -142,11 +140,11 @@
 				<% } %>
 				<!-- tag dados -->
 				<% if (box.type && box.type.includes("dice")){ %>
-					<div class="tagInvisible diceTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>
+					<div class="tag diceTag"><i class="fas fa-dice-three"></i></div>
 				<% } %>
 				<!-- tag encuesta -->
 				<% if (box.type && box.type.includes("poll")){ %>
-					<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>
+					<div class="tag pollTag"><i class="fas fa-poll"></i></div>
 				<% } %>
 				<!-- tag idunico -->
 				<% if (box.type && box.type.includes("idunico")){ %>

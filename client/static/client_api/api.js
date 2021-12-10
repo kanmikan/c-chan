@@ -155,10 +155,10 @@ function boxRender(box){
 		bbody +=`<div class="tag ytb"><i class="fas fa-play"></i></div>`;
 	}
 	if (box.type && box.type.includes("dice")){
-		bbody +=`<div class="tagInvisible diceTag"><div class="tagWrapper"></div><i class="fas fa-dice-three"></i></div>`;
+		bbody +=`<div class="tag diceTag"><i class="fas fa-dice-three"></i></div>`;
 	}
 	if (box.type && box.type.includes("poll")){
-		bbody +=`<div class="tagInvisible pollTag"><div class="tagWrapper"></div><i class="fas fa-poll"></i></div>`;
+		bbody +=`<div class="tag pollTag"><i class="fas fa-poll"></i></div>`;
 	}
 	if (box.type && box.type.includes("idunico")){
 		bbody +=`<div class="tag iduTag"><i class="fas fa-id-card"></i></div>`;

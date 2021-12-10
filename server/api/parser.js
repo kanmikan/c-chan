@@ -36,7 +36,7 @@ function htmlSanitize(rawtext){
 		'<a href="#$1" class="tag" data-tag="$1">&gt;&gt;$1</a>',
 		'<a href="$1" target="_blank" class="link">&gt;$1</a>',
 		'<span class="greentext">$1</span>',
-		'<span style="color: #$1">$2</span>',
+		'<span style="color: #$1;text-shadow: 1px 1px black;">$2</span>',
 		'<br>'
 	]
 	let output = rawtext.replace(/[\r\n]+$/, ''); //limpiar espacios innecesarios.
