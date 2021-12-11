@@ -151,7 +151,7 @@ html[data-theme='darkmode']{
 	--navbar-icon-color: #f7f7f7;
 	--navbar-icon-hover: #3f51b5;
 	--menumodal-notif-background: #333333;
-	--menumodal-notif-hover: #515252;
+	--menumodal-notif-hover: #3f51b5;
 	--menumodal-notif-text: #f7f7f7;
 	--menumodal-notif-text-hover: #ffffff;
 	--menumodal-bordertop-color: #252525;
@@ -630,7 +630,7 @@ ul.slideMenuOptions li:hover.optionBolt {
     font-size: .73rem;
     background: var(--hometag1);
     margin-right: 3px;
-	box-shadow: 0 1px 2px 0 rgb(0 0 0 / 90%);
+	box-shadow: 0 1px 1px 0 rgb(0 0 0 / 60%);
 }
 
 .box .tagList .tag img{

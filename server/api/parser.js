@@ -22,7 +22,7 @@ function parseComInput(DB, bid, cid, uid, rawtext){
 //FUNCION: detecta comandos y tags y los modifica para ser guardado en la base de datos.
 function htmlSanitize(rawtext){
 	let patterns = [
-		/<(.*?)>/g, //tags html en general.
+		/(<(.*?)>|<(.*?)+)/g, //tags html en general.
 		/::{1}([^\r\n\s]+)/gi, //link interno
 		/>>{1}([^\r\n\s]{7})/gi, //tags
 		/>(([https?|ftp]+:\/\/)([^\s/?\.#]+\.?)+(\/[^\s]*)?)/gi, //link externo

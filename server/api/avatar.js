@@ -17,14 +17,14 @@ function pickFiestasAnon(){
 	let itemType = (Math.floor(Math.random() * 2) === 0) ? "hhat navidadhat" : "hitem navidadbadge";
 	
 	let anone = [
-		["ico,#ff5722,#ffffff," + itemType + pickColor, 1],
 		["ico,#FFcc00,#ffffff," + itemType + pickColor, 1], //amarillo
 		["ico,#1545e6,#ffffff," + itemType + pickColor, 1], //azul
 		["ico,#02b13c,#ffffff," + itemType + pickColor, 1], //verde
 		["ico,#df0202,#ffffff," + itemType + pickColor, 1], //rojo
 		["class,anonMulti,white," + itemType + pickColor, 0.1], //multi
 		["class,anonInvertido,white," + itemType + pickColor, 0.1], //invertido
-		["ico,#000000,#ffffff," + itemType + pickColor, 0.5], //black
+		["ico,#000000,#ffffff," + itemType + pickColor, 0.01], //black
+		["ico,#ffffff,#000000," + itemType + pickColor, 0.01] //white
 	];
 	return weightRandom(anone);
 }
