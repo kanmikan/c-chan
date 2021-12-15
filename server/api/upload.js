@@ -3,6 +3,7 @@ const fs = require('fs');
 const axios = require('axios');
 const sharp = require('sharp');
 const imgur = require('imgur');
+const imgbb = require('imgbb-uploader');
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpeg_static = require('ffmpeg-static');
 const sConfig = require('../config/serverconfig.js');
@@ -29,7 +30,8 @@ function upload(file, callback){
 				break;
 			case 2:
 				//imgbb
-				callback({success: false, data: "-no implementado-"});
+				//callback({success: false, data: "-no implementado-"});
+				imgbbUpload(file, callback);
 				break;
 			case 3:
 				//cloudinary
@@ -95,7 +97,13 @@ function uploadLink(url, callback){
 			break;
 			case 2:
 				//imgbb
-				callback({success: false, data: "-no implementado-"});
+				imgbbURLUpload(url, function(data){
+					if (data.success){
+						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+					} else {
+						callback({success: false, data: data.data});
+					}
+				});
 			break;
 			case 3:
 				//cloudinary
@@ -261,6 +269,32 @@ function genLocalThumb(path, filename, callback){
 		callback(null);
 	});
 		
+}
+
+//FUNCION: subida de archivos a imgbb
+function imgbbUpload(file, callback){
+	imgbb(sConfig.IMGBB_API_KEY, file.path)
+	.then(function(response){
+		callback({success: true, data: {link: response.image.url, thumb: response.thumb.url}});
+	})
+	.catch(function(error){
+		callback({success: false, data: error});
+	});
+}
+
+//FUNCION: subida via link a imgbb
+function imgbbURLUpload(url, callback){
+	let options = {
+		apiKey: sConfig.IMGBB_API_KEY,
+		imageUrl: url
+	}
+	imgbb(options)
+	.then(function(response){
+		callback({success: true, data: {link: response.image.url, thumb: response.thumb.url}});
+	})
+	.catch(function(error){
+		callback({success: false, data: error});
+	});
 }
 
 //FUNCION: subida de archivos a cloudinary

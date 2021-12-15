@@ -23,6 +23,8 @@ module.exports = {
 	CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
 	CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 	CLOUDINARY_THUMBNAIL_CONFIG: "/c_scale,pg_1,w_300,f_auto/",
+	/* IMGBB */
+	IMGBB_API_KEY: process.env.IMGBB_API_KEY,
 	
 	/* DELAYS ENTRE OTROS */
 	COMMENT_DELAY: 5, //tiempo de espera en segundos (5 segundos)
