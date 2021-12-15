@@ -628,7 +628,11 @@ function action_flag(data){
 	}
 	
 	post(formData, "/api/report", function(){}, function(data){
-		console.log(data);
+		if (data.success){
+			swalert({title: "Hecho", text: data.data, icon: "success"}, function(){});
+		} else {
+			swalert({title: "Error", text: data.data, icon: "error"}, function(){});
+		}
 	});
 }
 

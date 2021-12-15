@@ -13,6 +13,7 @@ const pass = require('./api/passport.js');
 const live = require('./api/live.js');
 const compat = require('./db/compat.js');
 const recycler = require('./api/recyclemanager.js');
+const moderation = require('./api/moderation.js');
 
 module.exports = function(app){
 	
@@ -594,12 +595,36 @@ module.exports = function(app){
 		switch (kind){
 			case "comment":
 				//reportar comentario
+				let cid = req.fields.cid;
+				let creport = {
+					suid: req.session.uid,
+					cid: cid,
+					bid: "",
+					isBox: false,
+					razon: razon
+				};
+				moderation.sendADMFlag(req.app.locals.db, creport, function(resp){
+					res.send(resp);
+				});
 				break;
 			case "box":
 				//reportar box
+				let bid = req.fields.bid;
+				let breport = {
+					suid: req.session.uid,
+					cid: "0",
+					bid: bid,
+					isBox: true,
+					razon: razon
+				};
+				moderation.sendADMFlag(req.app.locals.db, breport, function(resp){
+					res.send(resp);
+				});
+				break;
+			default:
+				res.send({success: false, data: "Reporte invalido."});
 				break;
 		}
-		res.send({success: false, data: req.fields});
 	});
 	
 }

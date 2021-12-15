@@ -183,7 +183,7 @@ html[data-theme='darkmode']{
 	--alert-background: #333333;
 	--alert-border: #2196f3;
 	--alert-color: #f1f1f1;
-	--link-color: #4c5fcb;
+	--link-color: #2196f3;
 	--activity-user: #c1c1c1;
 	--tarjeta-title-background: #3c3c3c;
 	--tarjeta-background: #3c3c3c;
@@ -1164,6 +1164,7 @@ figure.voxAttachVideo {
 
 .report-title {
 	color: var(--menumodal-notif-title);
+	word-break: break-word;
 }
 
 .modal-backdrop {
