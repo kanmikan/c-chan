@@ -14,7 +14,7 @@ module.exports = {
 	
 	/* CONFIGURACION DE SERVIDORES DE IMAGEN/VIDEO */
 	UPLOAD_MAX_SIZE: 53000000, //tamaño maximo de subidas (en bytes)
-	IMG_SERVER: parseInt(process.env.IMG_SERVER) || 0, //0: local, 1: imgur, 2: imgbb, 3: cloudinary
+	IMG_SERVER: parseInt(process.env.IMG_SERVER) || 0, //0: local, 1: imgur, 2: imgbb, 3: cloudinary, 4: imgbox
 	VIDEO_SERVER: parseInt(process.env.VIDEO_SERVER) || 0, //0: local, 1: cloudinary
 	IMG_LOCAL_THUMBNAIL_SIZE: 300, //300px
 	IMGUR_THUMBNAIL_QUALITY: "m", //l: large m: medium, etc.
@@ -25,6 +25,8 @@ module.exports = {
 	CLOUDINARY_THUMBNAIL_CONFIG: "/c_scale,pg_1,w_300,f_auto/",
 	/* IMGBB */
 	IMGBB_API_KEY: process.env.IMGBB_API_KEY,
+	/* IMGBOX */
+	IMGBOX_THUMBNAIL_CONFIG: "350r",
 	
 	/* DELAYS ENTRE OTROS */
 	COMMENT_DELAY: 5, //tiempo de espera en segundos (5 segundos)

@@ -14,7 +14,8 @@ function genAnon(type){
 function pickFiestasAnon(){
 	let pickColor = Math.floor(Math.random() * 4);
 	pickColor = (pickColor != 0) ? pickColor : 1;
-	let itemType = (Math.floor(Math.random() * 2) === 0) ? "hhat navidadhat" : "hitem navidadbadge";
+	//let itemType = (Math.floor(Math.random() * 2) === 0) ? "hhat navidadhat" : "hitem navidadbadge";
+	let itemType = "hhat navidadhat";
 	
 	let anone = [
 		["ico,#FFcc00,#ffffff," + itemType + pickColor, 1], //amarillo

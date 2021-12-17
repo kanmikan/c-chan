@@ -208,8 +208,8 @@ html[data-theme='darkmode']{
 	--menumodal-notif-title: #2196f3;
 	--homelink-hover: #3f51b5;
 	--modal-background: #3c3c3c;
-	--tag1-sticky: #2c6c2f;
-	--hometag1: #384799;
+	--tag1-sticky: #f44336;
+	--hometag1: #303f9f;
 	--categoryTitle: white;
 	--categoryTitle-hover: #3f51b5;
 	--moreload-background: #3f51b5;
@@ -627,7 +627,7 @@ ul.slideMenuOptions li:hover.optionBolt {
 	color: #fefefe;
     padding: 4.1px;
     border-radius: 3px;
-    font-size: .73rem;
+    font-size: .7rem;
     background: var(--hometag1);
     margin-right: 3px;
 	box-shadow: 0 1px 1px 0 rgb(0 0 0 / 60%);
@@ -741,30 +741,37 @@ span.countComments {
     margin-top: 4px;
 }
 
+.tag.categoryTag {
+	padding: 4.1px 1px;
+	margin-bottom: 2px;
+}
+
 .tagInvisible i {
     color: red;
     z-index: 2;
 }
-
-.tag.pollTag {
-	padding: 2px 4px !important;
-	font-size: 0.95rem !important;
-}
-
 .tagInvisible.pollTag .tagWrapper {
 	width: 18px;
 	height: 13px;
 	margin-left: 1px;
 }
 
-.tag.diceTag {
-	padding: 2px 4px !important;
+.tag.pollTag {
+	padding: 1.7px 4px !important;
 	font-size: 0.95rem !important;
+	margin-bottom: 2px;
+}
+
+.tag.diceTag {
+	padding: 1.7px 4px !important;
+	font-size: 0.95rem !important;
+	margin-bottom: 2px;
 }
 
 .tag.iduTag {
-	padding: 2px 4px !important;
+	padding: 1.7px 4px !important;
 	font-size: 0.95rem !important;
+	margin-bottom: 2px;
 }
 
 .voxAction {

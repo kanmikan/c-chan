@@ -4,6 +4,7 @@ const axios = require('axios');
 const sharp = require('sharp');
 const imgur = require('imgur');
 const imgbb = require('imgbb-uploader');
+const imgbox = require('imgbox-js');
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpeg_static = require('ffmpeg-static');
 const sConfig = require('../config/serverconfig.js');
@@ -36,6 +37,10 @@ function upload(file, callback){
 			case 3:
 				//cloudinary
 				cloudyUpload(file, callback);
+				break;
+			case 4:
+				//imgbox
+				imgboxUpload(file.path, callback);
 				break;
 			case 9:
 				//flag que desactiva la subida de imagenes.
@@ -109,6 +114,16 @@ function uploadLink(url, callback){
 				//cloudinary
 				cloudy.uploadImg(url, function(data){
 					callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+				});
+			break;
+			case 4:
+				//imgbox
+				imgboxUpload(url, function(data){
+					if (data.success){
+						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+					} else {
+						callback({success: false, data: data.data});
+					}
 				});
 			break;
 			case 9:
@@ -269,6 +284,20 @@ function genLocalThumb(path, filename, callback){
 		callback(null);
 	});
 		
+}
+
+//FUNCION: subida de archivos a imgbox
+function imgboxUpload(file, callback){
+	let options = {
+		content_type: "adult",
+		thumbnail_size: sConfig.IMGBOX_THUMBNAIL_CONFIG,
+		comments_enabled: false,
+		logger: false //solo para debug
+	};
+	
+	imgbox.imgbox(file, options).then(function(result){
+		callback({success: true, data: {link: result.data[0].original_url, thumb: result.data[0].thumbnail_url}});
+	});
 }
 
 //FUNCION: subida de archivos a imgbb
