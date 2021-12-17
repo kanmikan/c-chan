@@ -4,7 +4,9 @@ const axios = require('axios');
 const sharp = require('sharp');
 const imgur = require('imgur');
 const imgbb = require('imgbb-uploader');
-const imgbox = require('imgbox-js');
+const {imgbox} = require('imgbox');
+const imgboxjs = require('imgbox-js');
+
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpeg_static = require('ffmpeg-static');
 const sConfig = require('../config/serverconfig.js');
@@ -40,7 +42,7 @@ function upload(file, callback){
 				break;
 			case 4:
 				//imgbox
-				imgboxUpload(file.path, callback);
+				imgboxUpload(file, callback);
 				break;
 			case 9:
 				//flag que desactiva la subida de imagenes.
@@ -118,7 +120,7 @@ function uploadLink(url, callback){
 			break;
 			case 4:
 				//imgbox
-				imgboxUpload(url, function(data){
+				imgboxURLUpload(url, function(data){
 					if (data.success){
 						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
 					} else {
@@ -288,14 +290,23 @@ function genLocalThumb(path, filename, callback){
 
 //FUNCION: subida de archivos a imgbox
 function imgboxUpload(file, callback){
+	imgbox([{filename: file.name, buffer: fs.readFileSync(file.path)}])
+	.then(function(result){
+		//console.log(result);
+		callback({success: true, data: {link: result.files[0].original_url, thumb: result.files[0].thumbnail_url}});
+	})
+}
+
+//FUNCION: subida via url a imgbox
+function imgboxURLUpload(url, callback){
 	let options = {
 		content_type: "adult",
 		thumbnail_size: sConfig.IMGBOX_THUMBNAIL_CONFIG,
 		comments_enabled: false,
 		logger: false //solo para debug
 	};
-	
-	imgbox.imgbox(file, options).then(function(result){
+
+	imgboxjs.imgbox(url, options).then(function(result){
 		callback({success: true, data: {link: result.data[0].original_url, thumb: result.data[0].thumbnail_url}});
 	});
 }
