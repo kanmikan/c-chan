@@ -290,9 +290,8 @@ function genLocalThumb(path, filename, callback){
 
 //FUNCION: subida de archivos a imgbox
 function imgboxUpload(file, callback){
-	imgbox([{filename: file.name, buffer: fs.readFileSync(file.path)}])
+	imgbox([{filename: file.name, buffer: fs.readFileSync(file.path), thumbnail_size: sConfig.IMGBOX_THUMBNAIL_CONFIG}])
 	.then(function(result){
-		//console.log(result);
 		callback({success: true, data: {link: result.files[0].original_url, thumb: result.files[0].thumbnail_url}});
 	})
 }
