@@ -49,7 +49,7 @@
 		</div>
 		<div class="commentReply">
 		<% com.content.extra.tags.forEach(function(tag){ %>
-			<a href="#<%= tag %>" class="tag" data-tag="<%= tag %>">&gt;&gt;<%= tag %></a>
+			<a href="#<%= tag %>" class="tag" data-tag="<%= tag %>">&gt;&gt;<%= tag %> <%= it.utils.isTagOp(tag, it.data.boxs, it.data.coms) ? "(OP)" : "" %></a>
 		<% }); %>
 		</div>
 		

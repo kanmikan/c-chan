@@ -237,6 +237,7 @@ nav {
 }
 
 body {
+	width: 100%;
 	padding:50px 0px 0px;
 	margin: 0px;
 	font-family: Lato,sans-serif;
@@ -2885,6 +2886,16 @@ input:checked + .slider:before {
 	60%  {background: linear-gradient(#02b13c 25%, #df0202 25%, #df0202 50%, #FFcc00 50%, #FFcc00 75%, #0579b3 75%, #0579b3 100%)}
 	80%  {background: linear-gradient(#0579b3 25%, #02b13c 25%, #02b13c 50%, #df0202 50%, #df0202 75%, #FFcc00 75%, #FFcc00 100%)}
 	100% {background: linear-gradient(#FFcc00 25%, #0579b3 25%, #0579b3 50%, #02b13c 50%, #02b13c 75%, #df0202 75%, #df0202 100%)}
+}
+
+.box-icons {
+	display: flex;
+	place-items: center;
+	color: white;
+	background: var(--hometag1);
+	width: fit-content;
+	height: 10%;
+	border-radius: 0 0 15px 0;
 }
 
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */

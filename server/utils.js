@@ -26,6 +26,11 @@ function getCatShow(categoria) {
     return categoria.toUpperCase();
 }
 
+function isTagOp(tag, boxs, coms){
+	let comdata = coms.filter(item => (item.cid === tag));
+	return (comdata[0] && comdata[0].user.uid) === (boxs[0] && boxs[0].user.uid);
+}
+
 //FUNCION: genera un hash de color random basado en un seed.
 function genColor(str) {
     var hash = 0;
@@ -140,4 +145,4 @@ function seclink(url) {
     return url.replace("http://", "https://");
 }
 
-module.exports = {isDataImage, seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3 };
+module.exports = {isTagOp, isDataImage, seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3 };
