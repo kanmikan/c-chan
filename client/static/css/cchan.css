@@ -2846,8 +2846,48 @@ input:checked + .slider:before {
 	80%  {background: linear-gradient(#df0202 25%,#4caf50 25%,#4caf50 50%,#df0202 50%,#df0202 75%,#4caf50 75%,#4caf50 100%)}
 	100% {background: linear-gradient(#4caf50 25%,#df0202 25%,#df0202 50%,#4caf50 50%,#4caf50 75%,#df0202 75%,#df0202 100%)}
 }
-
 /*******************/
+/*Items año nuevo*/
+.anbadge1 {
+	content: url(/assets/anon/extras/fitem1.png);
+}
+.anbadge2 {
+	content: url(/assets/anon/extras/fitem2.png);
+}
+.anbadge3 {
+	content: url(/assets/anon/extras/fitem3.png);
+}
+.anbadge4 {
+	content: url(/assets/anon/extras/fitem4.png);
+}
+.anbadge5 {
+	content: url(/assets/anon/extras/fitem5.png);
+}
+
+.anhat1 {
+	content: url(/assets/anon/extras/fhat1.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+.anhat2 {
+	content: url(/assets/anon/extras/fhat2.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+.anhat3 {
+	content: url(/assets/anon/extras/fhat3.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+.anhat4 {
+	content: url(/assets/anon/extras/fhat4.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+.anhat5 {
+	content: url(/assets/anon/extras/fhat5.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+
+
+/******************/
+
 .anonMulti {
 	background: linear-gradient(#df0202 25%, #FFcc00 25%, #FFcc00 50%, #0579b3 50%, #0579b3 75%, #02b13c 75%, #02b13c 100%);
 	animation: anonMulti 0.25s infinite;
