@@ -401,15 +401,17 @@ module.exports = function(app){
 				}
 				let desde = indice+1;
 				let hasta = 20; //numero de boxs a cargar.
-				dbManager.queryDBSkip(db, mdbScheme.C_BOXS, criterio, orden, desde, hasta, function(limitBoxs){
-					if (limitBoxs[0]){
-						//filtrar boxs hideados
-						limitBoxs = cfilter.filterBoxHides(limitBoxs, req.session.config);
-						res.json({success: true, data: pass.filterProtectedUID(limitBoxs)});
-					} else {
-						res.json({success: false, data: null});
-					}
-				});
+				
+				//filtrar contenido oculto
+				let filteredBoxs = cfilter.filterBoxHides(boxs, req.session.config);
+				//dividir array desde hasta
+				let limitedBoxs = filteredBoxs.slice(desde, desde+hasta);
+				if (limitedBoxs[0]){
+					res.json({success: true, data: pass.filterProtectedUID(limitedBoxs)});
+				} else {
+					res.json({success: false, data: null});
+				}
+				
 			} else {
 				res.json({success: false, data: null});
 			}

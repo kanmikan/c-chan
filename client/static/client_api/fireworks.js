@@ -15,19 +15,20 @@ var x = setInterval(function () {
 	var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 	var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 	
-	// Display the result in the element
-	document.querySelector("#d").innerText = addZero(days);
-	document.querySelector("#h").innerText = addZero(hours);
-	document.querySelector("#m").innerText = addZero(minutes);
-	document.querySelector("#s").innerText = addZero(seconds);
-
 	
 	// If the count down is finished, write some text
 	if (distance < 0) {
 		clearInterval(x);
 		update();
-		document.getElementById("counter").classList.add("hidden");
+		//document.getElementById("counter").classList.add("hidden");
+		document.getElementById("counter").innerHTML = "Feliz siglo 2022!";
 	} else {
+		// Display the result in the element
+		document.querySelector("#d").innerText = addZero(days);
+		document.querySelector("#h").innerText = addZero(hours);
+		document.querySelector("#m").innerText = addZero(minutes);
+		document.querySelector("#s").innerText = addZero(seconds);
+
 		if (document.getElementById("counter").classList.contains("hidden")){
 			document.getElementById("counter").classList.remove("hidden");
 		}
