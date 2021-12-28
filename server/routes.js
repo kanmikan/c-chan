@@ -17,11 +17,11 @@ module.exports = function(app){
 	app.get('/', function(req, res) {
 		var uid = req.session.uid;
 		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
-			result[mdbScheme.C_BOXS] = cfilter.filterBoxHides(result[mdbScheme.C_BOXS], req.session.config);
-			
+			//filtro de cosas ocultas
+			result[mdbScheme.C_BOXS] = cfilter.filterBoxHides(result[mdbScheme.C_BOXS], req.session.config);			
 			//limite despues del filtro
-			let PAGELIMIT = (renderConfig.ENABLE_V1 && renderConfig.V1_CARDS) ? 0 : sConfig.HOME_BOX_LIMIT;
-			result[mdbScheme.C_BOXS] = result[mdbScheme.C_BOXS].slice(0, PAGELIMIT);
+			result[mdbScheme.C_BOXS] = result[mdbScheme.C_BOXS].slice(0, sConfig.HOME_BOX_LIMIT);
+			
 			res.render("main", {
 				it : {
 					kind: req.originalUrl,

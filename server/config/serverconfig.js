@@ -1,6 +1,6 @@
 require('dotenv').config();
 module.exports = {
-	DBNAME: "mikandbv2",
+	DBNAME: process.env.DBNAME || "mikandbv2",
 	DBURL: process.env.MONGOURI || "mongodb://127.0.0.1:27017",
 	SSL: (process.env.SSL && process.env.SSL === "true") ? true : false,
 	PORT: process.env.PORT || 3000,
@@ -34,5 +34,6 @@ module.exports = {
 	MAX_TAGS: 5, //maximo numero de tagueos permitidos.
 	/* LIMITES */
 	HOME_BOX_LIMIT: 24, //limite de la carga inicial (no aplica a la v1)
+	HOME_BOX_PAGELOAD: 20, //cantidad de boxs a cargar en cada paginación.
 	CATEGORY_BOX_LIMIT: 41 //maximo de temas en una categoría.
 }

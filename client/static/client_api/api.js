@@ -133,6 +133,7 @@ function getCatShow(categoria){
 	return categoria.toUpperCase();
 }
 
+//TODO: cambiar esto por un render intermediario (redirect del api a ejs y retorno del html ya construido)
 function boxRender(box){
 	//render de boxs del lado del cliente.
 	let boxThumb = (box.type.includes("video")) ? box.media.preview : box.img.preview;
@@ -184,6 +185,7 @@ function boxRender(box){
 	return bbody;
 }
 
+//TODO: cambiar esto por un render intermediario (redirect del api a ejs y retorno del html ya construido)
 function activityRender(com){
 	let icon = com.icon.split(",");
 	let cbody = `<div class="chatlike-box" onclick="location.href='/tema/${com.bid}#${com.cid}'"><div class="chatlike-img">`;
@@ -220,6 +222,7 @@ function activityRender(com){
 	return cbody;
 }
 
+//TODO: cambiar esto por un render intermediario (redirect del api a ejs y retorno del html ya construido)
 function iconRender(iconData, acc=true, act=false){
 	let icon = iconData.split(",");
 	let iconText = (icon[4]) ? icon[4] : "ANON";
@@ -239,6 +242,7 @@ function iconRender(iconData, acc=true, act=false){
 	return ibody;
 }
 
+//TODO: cambiar esto por un render intermediario (redirect del api a ejs y retorno del html ya construido)
 function commentRender(op, com){
 	//render de comentarios del lado del cliente.			
 	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar unselect">`;
@@ -352,8 +356,7 @@ function hashScroll(hash){
 		if (h < wh) {offset = offset - ((wh/2)-(h/2));}
 		
 		[].forEach.call(document.querySelectorAll(".jump"), function(e) {e.classList.remove("jump");});
-		
-		//document.documentElement.scrollTo({top: offset, behavior: 'smooth'});
+
 		window.scrollTo({top: offset, behavior: 'smooth'});
 		elem.classList.add("jump");
 	}
@@ -403,6 +406,7 @@ function action_loadLastActivity(){
 	});
 }
 
+//TODO: limitar a un maximo de elementos.
 function action_appendActivity(data){
 	let actRender = activityRender(data);
 	$("#activityList").prepend(actRender);
@@ -451,8 +455,11 @@ function action_openPopup(data){
 	}
 	let msgHtml = "";
 	let type = (data.content.tag) ? "Te respondieron en:" : "Comentaron en tu tema:";
+	type = (data.type.includes("alert")) ? "" : type;
 	
-	msgHtml = `<div class="alert" data-bid="${data.content.bid}" data-cid="${data.content.cid}"><div class="ntfclose">x</div><div class="avatar"><img class="ntfavatar" src="${img}"></div><div class="ntfreport"><span>${type} ${title}</span></br><span>${cpreview}</span></div></div>`;
+	msgHtml = `<div class="alert" data-bid="${data.content.bid}" data-cid="${data.content.cid}"><div class="ntfclose">x</div><div class="avatar"><img class="ntfavatar" src="${img}"></div><div class="ntfreport">
+	<span>${type} ${title}</span></br><span>${cpreview}</span>
+	</div></div>`;
 	
 	//10 segundos hasta que remueva el primer elemento en la lista
 	$("#alertBox").append(msgHtml);
@@ -686,7 +693,6 @@ $(document).ready(function() {
 		if ($(window).height() + $(window).scrollTop() > (getDocumentHeight() - 100)){
 			if (!complete) return;
 			if (KIND.split("/")[1] === "tema") return;
-			if (V1 && V1_CARDS && KIND === "/") return;
 			
 			complete = false;
 			let indexID = $("#boxList").children().last().attr("id");
@@ -887,21 +893,13 @@ $(document).ready(function() {
 			});
 			
 			for (var i=0; i<B_BUFFER.length; i++){
-				if (V1 && V1_CARDS) {
-					$(`#${B_BUFFER[i].cat} .home-category-boxlist`).prepend(boxRender(B_BUFFER[i]));
-					//eliminar ultimo elemento de la lista.
-					if ($(`#${B_BUFFER[i].cat} .home-category-boxlist`).children().length > 9){
-						$(`#${B_BUFFER[i].cat} .home-category-boxlist`).children().last().remove();
-					}
-				} else {
-					//ordenar temas sticky
-					$("#boxList").prepend(boxRender(B_BUFFER[i]))
-					.children().sort(function(a, b){
-						let obj1 = (($(a).find(".tag.sticky").length > 0) || (KIND != "/" && ($(a).find(".csticky").length > 0)));
-						let obj2 = (($(b).find(".tag.sticky").length > 0) || (KIND != "/" && ($(b).find(".csticky").length > 0)));
-						return obj2 - obj1;
-					}).appendTo("#boxList");
-				}
+				//ordenar temas sticky
+				$("#boxList").prepend(boxRender(B_BUFFER[i]))
+				.children().sort(function(a, b){
+					let obj1 = (($(a).find(".tag.sticky").length > 0) || (KIND != "/" && ($(a).find(".csticky").length > 0)));
+					let obj2 = (($(b).find(".tag.sticky").length > 0) || (KIND != "/" && ($(b).find(".csticky").length > 0)));
+					return obj2 - obj1;
+				}).appendTo("#boxList");
 			}
 			
 			B_BUFFER = [];

@@ -27,18 +27,6 @@
 		let categoryData = it.utils.getCategoryData(it.data.cats, box.cat); %>
 		<a class="box" id="<%= box.bid %>" href="/<%= box.cat %>/<%= box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%= it.utils.seclink((box.type.includes("video")) ? box.media.preview : box.img.preview) %>); text-decoration: none; background-position: top;">
 		
-		<div class="box-icons" style="display:none">
-			<svg xmlns="http://www.w3.org/2000/svg" width="18px" height="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-			</svg>
-			<svg xmlns="http://www.w3.org/2000/svg" width="18px" height="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-				<circle cx="8.5" cy="8.5" r="1.5"></circle>
-				<polyline points="21 15 16 10 5 21"></polyline>
-			</svg>
-			<div style="margin-right: 10px"></div>
-		</div>
-		
 		<div class="voxHeader">
 			<div class="tagList">
 				<!-- tag sticky global -->

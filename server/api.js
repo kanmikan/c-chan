@@ -400,7 +400,7 @@ module.exports = function(app){
 					}
 				}
 				let desde = indice+1;
-				let hasta = 20; //numero de boxs a cargar.
+				let hasta = sConfig.HOME_BOX_PAGELOAD;
 				
 				//filtrar contenido oculto
 				let filteredBoxs = cfilter.filterBoxHides(boxs, req.session.config);
