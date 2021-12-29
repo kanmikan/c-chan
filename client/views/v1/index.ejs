@@ -35,7 +35,7 @@
 				</div>
 			<% } %>
 			<div class="activityzone">
-				<div class="acttitle">Temas populares<i class="fas fa-crown"></i></div>
+				<div class="acttitle">Hilos Populares<i class="fas fa-crown"></i></div>
 				<div class="chatlike">
 					<% it.data.boxs.sort((a,b) => b.content.comments - a.content.comments).slice(0, 3).forEach(function(box, i){ %>
 						<div class="home-temalist" onclick="location.href='/<%= box.cat %>/<%= box.bid %>'">
@@ -54,8 +54,8 @@
 				<div class="chatlike" id="activityList"></div>
 			</div>
 			<div class="activityzone">
-				<div class="acttitle">Usando el motor Cchan alfa 1</div>
-				<div class="acttitle"><a>Reglas</a> - <a>Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
+				<div class="acttitle">Usando como base Cchan alfa 2</div>
+				<div class="acttitle"><a href="info/reglas">Reglas</a> - <a href="info/welcome">Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
 			</div>
 			<div style="height: 50px"></div>
 		</div>

@@ -2,7 +2,7 @@
 	<ul class="slideMenuOptions">
 		<li data-toggle="modal" data-target="#createVox" data-backdrop="false">
 			<div class="optionIcon"><i class="fas fa-plus" aria-hidden="true"></i></div>
-			<div class="optionText">Nuevo Tema</div>
+			<div class="optionText">Nuevo Hilo</div>
 		</li>
 		
 	<% if (it.renderConfig.ENABLE_COMMUNITIES){ %>
@@ -18,7 +18,7 @@
 		
 		<li onclick="location.href='/ocultos'">
 			<div class="optionIcon"><i class="fas fa-eye" aria-hidden="true"></i></div>
-			<div class="optionText">Temas Ocultos</div>
+			<div class="optionText">Hilos Ocultos</div>
 		</li>
 		
 		<li onclick="location.href='/info/welcome'">
@@ -28,7 +28,7 @@
 		
 		<li data-toggle="modal" data-target="#config" data-backdrop="false">
 			<div class="optionIcon"><i class="fas fa-cog" aria-hidden="true"></i></div>
-			<div class="optionText">Configuracion</div>
+			<div class="optionText">Configuración</div>
 		</li>
 		
 		<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))) { %>

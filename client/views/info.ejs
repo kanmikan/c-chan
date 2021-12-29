@@ -27,12 +27,11 @@
 			<div class="contentElement" id="caracteristicas">
 				<h3>Caracteristicas de Cchan</h3>
 				<ul>
-				<li>cchan tiene 2 interfaces y una subinterfaz, la interfaz basada en voxed es la mas simplificada de todas y la que viene por defecto. Tambien estan la interfaz v1 basada en tarjetas que subdivide y agrupa las categorias en la home en base a la actividad; y la interfaz que mezcla la v1 con la clasica de voxed. Las tres son configurables en el servidor usando variables de entorno.</li>
-				<li>cchan tiene integrado un bot rss que recolecta la ultima informacion de myanimelist, el MALBOT, puede ser activado usando variables de entorno.</li>
+				<li>tiene 2 interfaces, la interfaz basada en voxed es la mas simplificada de todas y la que viene por defecto. Y la interfaz con una barra lateral con funciones extra. Son configurables en el servidor usando variables de entorno.</li>
 				<li>tiene un sistema de busqueda mas efectivo usando el contenido del tema ademas del titulo y subtitulo</li>
-				<li>se puede añadir formato basico al texto de los temas y comentarios.</li>
+				<li>se puede añadir formato basico al texto.</li>
 				<li>la pagina fue diseñada para que sea liviana en la carga, para que las conexiones inestables o lentas puedan navegar sin mayores problemas.</li>
-				<li>cchan hace una copia de la base de datos en memoria y lee datos de manera local, lo que hace que se ahorre una gran cantidad de conexiones a la base de datos. Esto puede ser desactivado usando variables de entorno, en situaciones donde sea inútil, por ejemplo, si la base de datos está alojada de manera local.</li>
+				<li>cchan tiene una caché integrada, lo que hace que se ahorre una gran cantidad de conexiones a la base de datos. Esto puede ser desactivado usando variables de entorno, en situaciones donde sea inútil, por ejemplo, si la base de datos está alojada en el mismo servidor.</li>
 				</ul>
 				<h4>Tags disponibles en los comentarios y/o temas</h4>
 				<ul>
@@ -40,21 +39,27 @@
 				<li>&gt&gt se utiliza para taguear el comentario de un usuario</li>
 				<li>:: se usa para colocar un link interno en la página o un link externo sin abrir una nueva pestaña</li>
 				<li>&gthttps:// se usa para añadir un link externo que abre una nueva pestaña.</li>
-				<li>$RGB -texto- $ colorea el -texto- usando el valor RGB en hexadecimal, (busca color picker en google)</li>
+				<li>$RGB -texto- $ colorea el -texto- usando el valor RGB en hexadecimal, (0xRGB ejemplo, F00:rojo 0F0:verde 00F:azul)</li>
 				</ul>
 			</div>
 			<div class="contentElement" id="reglas">
 				<h3>Reglas de Cchan</h3>
+				<span>Cchan pretende ser completamente anónima, el generador de sesiones <b>NO</b> guarda la direccion <b>IP</b> ni el <b>User-Agent</b> de los usuarios, pero si utiliza las <b>cookies</b> del navegador para identificar la sesion del usuario. <br>De esta manera, la infraestructura de moderacion y baneos está limitada y la unica forma de proteccion efectiva que tiene el servidor, frente a los accesos recurrentes desconocidos, es usando una lista blanca de usuarios o whitelist que se activará esporádicamente de acuerdo a la situación que lo amerite, bloqueando parcialmente el uso a los usuarios anonimos nuevos. Así queda a responsabilidad del usuario guardar y proteger su ID de acceso.</span>
+				</br>
+				</br>
 				<span>Queda prohibido cualquier accion o incitacion a:</span>
 				<ul>
-				<li>Todo lo que sea ilegal por sentido común, nada de gore ni cp etc.</li>
-				<li>Flood o temas repetitivos y molestos</li>
+				<li>Todo lo que sea ilegal por sentido común, nada de GORE, nada de CP, etc.</li>
+				<li>Flood o hilos repetitivos y molestos</li>
+				<li>Doxxeos, raids o violacion del anonimato de otros usuarios dentro de la página</li>
 				</ul>
 				<div>Al romper estas reglas, y dependiendo de la gravedad, el usuario puede ser baneado parcial o totalmente o advertido a criterio de la administracion.</div>
 				</br>
-				<b>Los usuarios advertidos y baneados podrian ser indexados en una blacklist para la proteccion del sitio.</b>
+				<b>En un futuro, los usuarios advertidos y baneados podrían ser indexados en una blacklist para la proteccion del sitio.</b>
+				</br>
 			</div>
 			<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
+			</br></br>
 		</div>
 	</div>
 	

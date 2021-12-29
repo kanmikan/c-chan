@@ -13,6 +13,10 @@ function elementClass(ecl){
 	return document.querySelectorAll(ecl);
 }
 
+function parseHTML(data){
+	return new DOMParser().parseFromString(data, "text/html").body.firstChild;
+}
+
 function swalert(data, callback){
 	Swal.fire(
 		data.title,
@@ -46,41 +50,28 @@ function getDataURL(file, before, callback) {
 }
 
 function post(formdata, url, before, callback){
-	$.ajax({
-		type: 'POST',
-		url: url,
+	before();
+	fetch(url, {
+		method: "POST",
 		headers: {
 			"X-CSRF-Token": element("_csrf_token").value
 		},
-		data: formdata,
-		processData: false,
-		contentType: false,
-		beforeSend: function() {
-			before();
-		}
-	}).done(function(data) {
-		callback(data);
-	}).fail(function(xhr, status, error){
-		if (status === "error"){
-			callback({success: false, data: "error"});
-		}
-	});
+		body: formdata
+	}).then(response => response.json())
+	.then(data => callback(data));
 }
 
 function postForm(formdata, url, before, callback){
-	$.ajax({
-		type: 'POST',
-		url: url,
+	before();
+	fetch(url, {
+		method: "POST",
 		headers: {
+			"Content-Type" : "application/x-www-form-urlencoded",
 			"X-CSRF-Token": element("_csrf_token").value
 		},
-		data: formdata,
-		beforeSend: function() {
-			before();
-		}
-	}).done(function(data) {
-		callback(data);
-	});
+		body: formdata
+	}).then(response => response.json())
+	.then(data => callback(data));
 }
 
 function timeSince(timestamp) {
@@ -314,15 +305,12 @@ function commentRender(op, com){
 function checkBoxFieldLocal(){
 	//Este es un simple control de campos local, su funcion es simplemente ahorrarse una request al pedo.
 	if (element("bcat").value === ""){
-		//alert("Elige una categoria valida");
 		swalert({title: "Error", text: "Elige una categoria valida", icon: "error"}, function(){});
 		return false;
 	} else if (element("btitle").value === ""){
-		//alert("Falta un titulo");
 		swalert({title: "Error", text: "Falta un titulo", icon: "error"}, function(){});
 		return false;
 	} else if ((element("bimg").value === "" && element("bvid").value === "")){
-		//alert("Añade una imagen o video");
 		swalert({title: "Error", text: "Añade una imagen o video", icon: "error"}, function(){});
 		return false;
 	} else {
@@ -333,7 +321,6 @@ function checkBoxFieldLocal(){
 function checkComFieldLocal(){
 	if (element("cimg").value === "" && element("cvid").value === ""){
 		if (element("commentTextarea").value === ""){
-			//alert("Escribe algo o sube una imagen.");
 			swalert({title: "Error", text: "Escribe algo o sube una imagen", icon: "error"}, function(){});
 			return false;
 		}
@@ -363,7 +350,7 @@ function hashScroll(hash){
 }
 
 function showHomebarScroll(){
-	$("#homeBar").css("overflow-y","scroll");
+	element("homeBar").style["overflow-y"] = "scroll";
 }
 
 function isGif(url){
@@ -399,8 +386,9 @@ function action_loadLastActivity(){
 		if (result.success){
 			result.data.slice(0, 8).forEach(function(com){
 				let actRender = activityRender(com);
-				$("#activityList").append(actRender);
-				$("#movilActivityList").append(actRender);
+				
+				if (element("activityList")) element("activityList").append(parseHTML(actRender));
+				element("movilActivityList").append(parseHTML(actRender));
 			});
 		}
 	});
@@ -409,10 +397,12 @@ function action_loadLastActivity(){
 //TODO: limitar a un maximo de elementos.
 function action_appendActivity(data){
 	let actRender = activityRender(data);
-	$("#activityList").prepend(actRender);
-	$("#movilActivityList").prepend(actRender);
+	
+	if (element("activityList")) element("activityList").prepend(parseHTML(actRender));
+	element("movilActivityList").prepend(parseHTML(actRender));
 }
 
+//TODO: javascript nativo
 function action_newNotification(data){
 	//actualizar contador.
 	$("#notif_icon").load(document.URL + " #notif_icon>*", function(){
@@ -428,7 +418,9 @@ function action_newNotification(data){
 }
 
 function action_titleAppendCounter(count){
-	document.title = htmlParse(document.title);
+	let d = document.createElement('div');
+	d.innerHTML = document.title;
+	document.title = d.innerText;
 	if (count > 0) {
 		let oldTitle = document.title;
 		let oldTitleRef = /^\(/s.test(oldTitle);
@@ -439,13 +431,6 @@ function action_titleAppendCounter(count){
 	}
 }
 
-function htmlParse(data) {
-    let d = document.createElement('div');
-    d.innerHTML = data;
-    return d.innerText;
-}
-
-//TODO: javascript nativo.
 function action_openPopup(data){
 	let img = data.content.preview.thumb;
 	let title = data.content.preview.title;
@@ -453,21 +438,20 @@ function action_openPopup(data){
 	if (cpreview.length > 150) {
 		cpreview = cpreview.substr(0, 150) + "...";
 	}
-	let msgHtml = "";
+	
 	let type = (data.content.tag) ? "Te respondieron en:" : "Comentaron en tu tema:";
 	type = (data.type.includes("alert")) ? "" : type;
 	
-	msgHtml = `<div class="alert" data-bid="${data.content.bid}" data-cid="${data.content.cid}"><div class="ntfclose">x</div><div class="avatar"><img class="ntfavatar" src="${img}"></div><div class="ntfreport">
-	<span>${type} ${title}</span></br><span>${cpreview}</span>
-	</div></div>`;
+	let msgHtml = `<div class="alert" data-bid="${data.content.bid}" data-cid="${data.content.cid}"><div class="ntfclose">x</div><div class="avatar"><img class="ntfavatar" src="${img}"></div><div class="ntfreport"><span>${type} ${title}</span></br><span>${cpreview}</span></div></div>`;
 	
+	element("alertBox").append(parseHTML(msgHtml));
 	//10 segundos hasta que remueva el primer elemento en la lista
-	$("#alertBox").append(msgHtml);
 	setTimeout(function(){
-		$("#alertBox").children().first().remove();
+		element("alertBox").removeChild(element("alertBox").children[0]);
 	}, 10000);
 }
 
+//TODO: javascript nativo
 function action_newBoxPopup(data){
 	//añadir box al buffer
 	B_BUFFER.push(data.data);
@@ -477,12 +461,14 @@ function action_newBoxPopup(data){
 	element("newAlert").classList.remove("disabled");
 }
 
+//TODO: javascript nativo
 function action_newComCupdate(data){
 	//actualiza el contador de comentarios.
 	let counter = $(`#${data.data.bid}`).find(".countComments");
 	counter.html(parseInt(counter.html()) + 1);
 }
 
+//TODO: javascript nativo
 function action_newComEffect(data){
 	let border = $(`#${data.data.bid}`).find(".over");
 	let color = ((data.eff) ? data.eff.color : null) || "#00bcd4";
@@ -509,7 +495,6 @@ function action_pollUpdate(data){
 }
 
 //FUNCION: envia la configuracion al server
-//TODO: convertir a emit de socket (si es posible)
 function applyConfig(query){
 	let formData = new FormData();
 	//ejemplo opcion:valor
@@ -537,13 +522,9 @@ function action_boxDrop(e){
 		getDataURL(dataFile, function(target){
 			$("#previewInputVox").attr("style", "display: block !important");
 			element("nimgpreview").setAttribute("src", target);
-			element("btext").classList.add("hidden");
-			element("bspin").classList.remove("hidden");
-			element("newVox").disabled = true;
+			effect_newboxLoading(0);
 		}, function(data){
-			element("bspin").classList.add("hidden");
-			element("btext").classList.remove("hidden");
-			element("newVox").disabled = false;
+			effect_newboxLoading(1);
 			if (data.success){
 				element("nimgpreview").setAttribute("src", data.data.thumb);
 				element("bimg").value = data.data.link + ";" + data.data.thumb;
@@ -566,13 +547,9 @@ function action_boxDrop(e){
 		post(formData, "/api/uplink", function(){
 			$("#previewInputVox").attr("style", "display: block !important");
 			element("nimgpreview").setAttribute("src", imgURL);
-			element("btext").classList.add("hidden");
-			element("bspin").classList.remove("hidden");
-			element("newVox").disabled = true;
+			effect_newboxLoading(0);
 		}, function(data){
-			element("bspin").classList.add("hidden");
-			element("btext").classList.remove("hidden");
-			element("newVox").disabled = false;
+			effect_newboxLoading(1);
 			if (data.success){
 				element("nimgpreview").setAttribute("src", data.data.thumb);
 				element("bimg").value = data.data.raw + ";" + data.data.thumb;
@@ -598,13 +575,9 @@ function action_commentDrop(e){
 		getDataURL(dataFile, function(target){
 			element("imgpreview").setAttribute("src", target);
 			element("previewInputComment").classList.remove("hide");
-			element("loadingCom").classList.remove("hidden");
-			element("ctext").classList.add("hidden");
-			element("newComment").disabled = true;
+			effect_newComLoading(0);
 		}, function(data){
-			element("loadingCom").classList.add("hidden");
-			element("ctext").classList.remove("hidden");
-			element("newComment").disabled = false;
+			effect_newComLoading(1);
 			if (data.success){
 				element("imgpreview").setAttribute("src", data.data.thumb);
 				element("cimg").value = data.data.link + ";" + data.data.thumb;
@@ -650,7 +623,38 @@ function isMobileDevice() {
 }
 
 function action_login(data){
-	$("#idForm").css("display", "block");
+	//$("#idForm").css("display", "block");
+	element("idForm").style["display"] = "block";
+}
+
+function effect_newComLoading(state){
+	switch(state){
+		case 0:
+			element("loadingCom").classList.remove("hidden");
+			element("ctext").classList.add("hidden");
+			element("newComment").disabled = true;
+		break;
+		case 1:
+			element("loadingCom").classList.add("hidden");
+			element("ctext").classList.remove("hidden");
+			element("newComment").disabled = false;
+		break;
+	}
+}
+
+function effect_newboxLoading(state){
+	switch(state){
+		case 0:
+			element("btext").classList.add("hidden");
+			element("bspin").classList.remove("hidden");
+			element("newVox").disabled = true;
+		break;
+		case 1:
+			element("btext").classList.remove("hidden");
+			element("bspin").classList.add("hidden");
+			element("newVox").disabled = false;
+		break;
+	}
 }
 
 /* EVENTOS */
@@ -721,29 +725,27 @@ $(document).ready(function() {
 			let formdata = new FormData();
 			
 			formdata.append("userid", userid);
-			
 			post(formdata, "/api/idlogin", function(){
-				element("loadingLogin").classList.remove("hidden");
+				element("idloadingLogin").classList.remove("hidden");
 				element("idText").classList.add("hidden");
 			}, function(result){
-				element("loadingLogin").classList.add("hidden");
+				element("idloadingLogin").classList.add("hidden");
 				element("idText").classList.remove("hidden");
 				if (result.success){
-					console.log("logueado."); //TODO mensaje de login.
-					$("#idForm").css("display", "none");
+					element("idForm").style["display"] = "none";
 				} else {
-					//alert(result.data);
 					swalert({title: "Error", text: result.data, icon: "error"}, function(){});
 				}
 			});
 			
 		});
 		element("idClose").addEventListener("click", function(e){
-			$("#idForm").css("display", "none");
+			element("idForm").style["display"] = "none";
 		});
 	}
-	
+		
 	//evento: votar encuesta
+	//TODO: javascript nativo
 	$(document).on("click", ".pollOption", function(e){
 		let option = $(e.currentTarget).data("poll");
 		let bid = $(e.currentTarget).parent().data("bid");
@@ -784,6 +786,14 @@ $(document).ready(function() {
 			element("toolsList").classList.toggle("hidden");
 		});
 	}
+	
+	$(document).on("click", ".commentBoxPollClose", function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		element("pollc").value = "0";
+		element("pollcOpt1").classList.add("hidden");
+		element("pollcOpt2").classList.add("hidden");
+	});
 	
 	$(document).on("click", ".toolButton", function(e){
 		let target = $(e.currentTarget);
