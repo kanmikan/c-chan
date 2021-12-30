@@ -573,13 +573,12 @@ module.exports = function(app){
 						break;
 				}
 			} else {
-				//detectar y convertir booleanos
-				if (options[1] === "true"){options[1] = true;}
-				if (options[1] === "false"){options[1] = false;}
-				
 				//se asume que es una reasignacion común
 				//unir options despues del primer split.
 				let fullvalue = options.splice(1).join(":");
+				//detectar y convertir booleanos
+				if (fullvalue === "true"){fullvalue = true;}
+				if (fullvalue === "false"){fullvalue = false;}
 				
 				if (!req.session.config){req.session.config = {};}
 				if (!sesiondata.extra.config){sesiondata.extra.config = {};}
