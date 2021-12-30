@@ -44,11 +44,28 @@
 					<% }); %>
 				</ul>
 			</li>
+			
+			<li style="display:inline;margin-top: 5px;">
+				<div class="visibleCategories" id="configTheme">
+					<div class="optionIcon"><i class="fas fa-palette" aria-hidden="true"></i></div>
+					<div class="optionText">Personalizar (Experimental)</div>
+				</div>
+				
+				<div class="configThemeInt hidden" id="configThemeInt">
+					<textarea id="themeinput" class="themeinput" placeholder="pega o escribe los estilos modificados de la página"><%= it.sesion.config.theme %></textarea>
+					<button id="applyTheme" class="buttonPress buttonPressv2" style="padding: 5px;">Aplicar</button>
+				</div>
+			</li>
+			
 			<li style="padding: 15px 0px;" onclick="location.href='/login'">
 				<div class="optionIcon"><i class="fas fa-user" aria-hidden="true"></i></div>
 				<div class="optionText" style="cursor:pointer">Iniciar Sesion</div>
             </li>
-<!--
+			<li>
+				<div class="opt-uidtext">UID: <span class="opt-uidata"><%= it.sesion.uid %></span></div>
+			</li>
+			
+			<!--
 			<li>
 				<div class="configTitle">Home clásica</div>
 				<div class="configToggle">
@@ -90,9 +107,26 @@
 		console.log("Configuracion Aplicada.");
 	});
 	
+	//EVENTO: al aplicar estilo.
+	document.getElementById("applyTheme").addEventListener("click", function(e){
+		let styles = document.getElementById("themeinput").value;
+		console.log(styles);
+		applyConfig("theme:" + styles);
+		
+		//vista previa test
+		let style = document.createElement('style');
+		style.textContent = styles;
+		document.head.append(style);
+	});
+	
 	//EVENTO: abrir lista de categorias.
 	document.getElementById("visibleCategories").addEventListener("click", function(e){
 		document.getElementById("configCategoriesList").classList.toggle("hidden");
+	});
+	
+	//EVENTO: abrir opciones de personalizacion.
+	document.getElementById("configTheme").addEventListener("click", function(e){
+		document.getElementById("configThemeInt").classList.toggle("hidden");
 	});
 	
 	/* FUNCIONES */
@@ -100,5 +134,7 @@
 		applyConfig("darkmode:" + toggle);
 		html.dataset.theme = (toggle) ? "darkmode" : "";
 	}
+	
+	
 	
 </script>

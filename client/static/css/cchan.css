@@ -2774,6 +2774,28 @@ input:checked + .slider:before {
 	font-size: 1.9rem;
 }
 
+.opt-uidtext {
+	font-size: 0.7rem;
+	margin: 10px 10px 0px 0px;
+}
+
+.opt-uidata {
+	color: #00000000;
+}
+
+.opt-uidata:hover {
+	color: inherit;
+}
+
+.themeinput {
+	margin: 3px !important;
+    width: 98%;
+    min-width: 98%;
+    height: 100px;
+    max-height: 200px;
+	font-size: 0.7rem !important;
+}
+
 /*hat muestra*/
 .hhat {
 	transform: translate(21px,-77px) rotate(30deg);

@@ -578,10 +578,13 @@ module.exports = function(app){
 				if (options[1] === "false"){options[1] = false;}
 				
 				//se asume que es una reasignacion común
+				//unir options despues del primer split.
+				let fullvalue = options.splice(1).join(":");
+				
 				if (!req.session.config){req.session.config = {};}
 				if (!sesiondata.extra.config){sesiondata.extra.config = {};}
-				req.session.config[options[0]] = options[1];
-				sesiondata.extra.config[options[0]] = options[1];
+				req.session.config[options[0]] = fullvalue;
+				sesiondata.extra.config[options[0]] = fullvalue;
 			}
 			//guardar info en el usuario.
 			dbManager.pushDB(req.app.locals.db, mdbScheme.C_ADM, {sid: req.session.id}, {$set: {"extra.config": sesiondata.extra.config}}, function(resp){});

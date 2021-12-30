@@ -45,5 +45,12 @@ let keywords = BOX.content.title.split(" ").join(", ");
 	html.dataset.theme = (darkmode) ? "darkmode" : "";
 </script>
 
+<!-- modificaciones de tema del usuario. -->
+
+
+<style>
+<%- it.sesion.config.theme %>
+</style>
+
 <!-- codepen fireworks -->
 <link rel="stylesheet" rel="preload" as="style" href="/css/fireworks.css">

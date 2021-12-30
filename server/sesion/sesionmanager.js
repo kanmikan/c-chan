@@ -72,7 +72,8 @@ function genUser(uid, pass, sid){
 			favs: [], //lista de favoritos.
 			comus: [], //lista de comunidades suscritas. (aplica a la v1)
 			anchors: [], //id de la categoria/comunidad pineada con prioridad en la home (aplica a la v1)
-			blacklist: [] //[placeholder] define una lista negra de palabras (o users), (nota: esto podria exponer el uid)
+			blacklist: [], //[placeholder] define una lista negra de palabras (o users), (nota: esto podria exponer el uid)
+			theme: "" //[extra] define estilos propios aplicados del usuario.
 		}
 	};
 	return json;
