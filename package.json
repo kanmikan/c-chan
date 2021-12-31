@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "@sweetalert2/theme-dark": "^5.0.7",
+    "@vitalets/google-translate-api": "^7.0.0",
     "axios": "^0.21.4",
     "bootstrap": "^3.4.1",
     "cloudinary": "^1.27.0",
@@ -25,6 +26,7 @@
     "imgbox-js": "^1.0.35",
     "imgur": "^1.0.2",
     "jquery": "^3.6.0",
+    "mal-scraper": "^2.11.4",
     "mingo": "^4.1.4",
     "mongodb": "^3.6.4",
     "node-cron": "^3.0.0",
