@@ -7,33 +7,14 @@ function genAnon(type){
 	if (type.includes("dice")){
 		return pickDadosAnon();
 	} else {
-		return pickNavidadAnon();
+		return pickCSSAnon(); //TODO: or (isFiestas(timestamp) then pickNavidadAnon())
 	}
-}
-
-function pickAñoAnon(){
-	let pickColor = Math.floor(Math.random() * 4);
-	pickColor = (pickColor != 0) ? pickColor : 1;
-	let itemType = (Math.floor(Math.random() * 2) === 0) ? "hhat anhat" : "hitem anbadge";
-	
-	let anone = [
-		["ico,#FFcc00,#ffffff," + itemType + pickColor, 1], //amarillo
-		["ico,#1545e6,#ffffff," + itemType + pickColor, 1], //azul
-		["ico,#02b13c,#ffffff," + itemType + pickColor, 1], //verde
-		["ico,#df0202,#ffffff," + itemType + pickColor, 1], //rojo
-		["class,anonMulti,white," + itemType + pickColor, 0.1], //multi
-		["class,anonInvertido,white," + itemType + pickColor, 0.1], //invertido
-		["ico,#000000,#ffffff," + itemType + pickColor, 0.01], //black
-		["ico,#ffffff,#000000," + itemType + pickColor, 0.01] //white
-	];
-	return weightRandom(anone);
 }
 
 function pickNavidadAnon(){
 	let pickColor = Math.floor(Math.random() * 4);
 	pickColor = (pickColor != 0) ? pickColor : 1;
-	//let itemType = (Math.floor(Math.random() * 2) === 0) ? "hhat navidadhat" : "hitem navidadbadge";
-	let itemType = "hhat navidadhat";
+	let itemType = (Math.floor(Math.random() * 2) === 0) ? "hhat navidadhat" : "hitem navidadbadge";
 	
 	let anone = [
 		["ico,#FFcc00,#ffffff," + itemType + pickColor, 1], //amarillo
@@ -72,12 +53,13 @@ function pickCSSAnon(){
 		["class,anonMulti,white, ,ANON, ", 0.1], //multi
 		["class,anonInvertido,white, ,ANON, ", 0.1], //invertido
 		["ico,#000000,#ffffff, ,ANON, ", 0.01], //black
-		["/assets/anon/8.png", 0.001], //uff
+		["/assets/anon/yuu.png", 0.001], //yuu
 		["ico,#ffffff,#000000, ,ANON, ", 0.01] //white
 	];
 	return weightRandom(anone);
 }
 
+//deprecated
 function pickDefaultAnon(){
 	//elemento, porcentaje de chance
 	let anone = [
