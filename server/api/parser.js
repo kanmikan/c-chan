@@ -51,7 +51,7 @@ function htmlSanitize(rawtext){
 function limitCR(rawtext){
 	let out = rawtext.split("\r\n");
 	let outn = out.filter(function(line, i){
-		return ((line === '') && (out[i+1] === '')) ? false : true;
+		return ((line.trim() === '') && (out[i+1].trim() === '')) ? false : true;
 	});
 	return outn.join("\r\n");
 }
