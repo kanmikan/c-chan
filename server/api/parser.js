@@ -39,13 +39,21 @@ function htmlSanitize(rawtext){
 		'<span style="color: #$1;text-shadow: 1px 1px black;">$2</span>',
 		'<br>'
 	]
-	let output = rawtext.replace(/[\r\n]+$/, ''); //limpiar espacios innecesarios.
+	let output = limitCR(rawtext).replace(/[\r\n]+$/, '');
 	
 	for (var i =0; i < patterns.length; i++) {
 		output = output.replace(patterns[i], pattern_replace[i]);
 	}
 	return output;
 	
+}
+
+function limitCR(rawtext){
+	let out = rawtext.split("\r\n");
+	let outn = out.filter(function(line, i){
+		return ((line === '') && (out[i+1] === '')) ? false : true;
+	});
+	return outn.join("\r\n");
 }
 
 //FUNCION: se encarga de detectar los tags y actualizar la informacion en la base de datos.
