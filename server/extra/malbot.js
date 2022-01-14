@@ -79,7 +79,7 @@ function listAnimes(DB, bid, criteria, callback){
 				}
 			};
 			
-			cdata.comment = `<div class="comObject" style="background: #3c3b3b;border-radius: 5px;padding: 10px;"><span style="color: orange">Resultados de "${criteria}":</span></br><ul>`;
+			cdata.comment = `<div class="comObject" style="border-radius: 5px;padding: 10px;"><span style="color: orange">Resultados de "${criteria}":</span></br><ul>`;
 			
 			animes.forEach(function(anm){
 				cdata.comment += `<li><a href="${anm.url}">${anm.name}</a></li>`;
@@ -125,7 +125,7 @@ function previewAnime(DB, bid, name, callback){
 			
 			translateCallback(data.synopsis, function(tres){
 				
-				cdata.comment = `<div class="comObject" style="background: #3c3b3b;border-radius: 5px;padding: 10px;">
+				cdata.comment = `<div class="comObject" style="border-radius: 5px;padding: 10px;">
 				<span>${data.title} - ${data.premiered}</span>
 				</br>
 				<a href="${data.url}" target="_blank">${data.url}</a>
@@ -179,7 +179,7 @@ function searchAnime(DB, bid, query, callback){
 				}
 			};
 			
-			cdata.comment = `<div class="comObject" style="background: #3c3b3b;border-radius: 5px;padding: 10px;"><span style="color: orange">Resultados de "${query}":</span></br><ul>`;
+			cdata.comment = `<div class="comObject" style="border-radius: 5px;padding: 10px;"><span style="color: orange">Resultados de "${query}":</span></br><ul>`;
 			
 			animes.forEach(function(anm){
 				cdata.comment += `<li><a href="${anm.url}">${anm.name}</a></li>`;
