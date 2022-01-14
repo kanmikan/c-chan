@@ -8,6 +8,7 @@ module.exports = {
 	DATABASE_CACHE: (process.env.DATABASE_CACHE && process.env.DATABASE_CACHE === "false") ? false : true,
 	STATIC_CACHE_VALUE: {maxAge: 3600000*12}, //{maxAge: 3600000*12}
 	CRON_THREADS: (process.env.CRON_THREADS && process.env.CRON_THREADS === "true") ? true : false,
+	CRON_HEARTBEAT: '*/5 * * * *', //cada 5 minutos
 	
 	/* APIS EXTERNAS */
 	YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,

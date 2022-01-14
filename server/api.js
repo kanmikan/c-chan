@@ -12,6 +12,7 @@ const parser = require('./api/parser.js');
 const avatar = require('./api/avatar.js');
 const pass = require('./api/passport.js');
 const live = require('./api/live.js');
+const builder = require('./api/builder.js');
 const compat = require('./db/compat.js');
 const recycler = require('./api/recyclemanager.js');
 const moderation = require('./api/moderation.js');
@@ -221,22 +222,17 @@ module.exports = function(app){
 			live.sendData("activity", {kind: "comment", data: protectedJSON});
 			
 			/* Notificar al dueño del box, si no es el solicitante */
-			if (!op){
-				//construir notificacion clonando el esquema json
-				let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
-				notifdata.sender.uid = req.session.uid;
-				notifdata.receiver.uid = box[0].user.uid;
-				notifdata.date.created = timestamp;
-				notifdata.state.push("new");
-				notifdata.content.cid = cid;
-				notifdata.content.bid = bid;
-				
-				//metadatos incrustados dentro de la notificación.
-				notifdata.content.preview = {
+			if (!op){	
+				let notifdata = builder.notification({
+					suid: req.session.uid,
+					ruid: box[0].user.uid,
+					cid: cid,
+					bid: bid,
+					tag: false,
 					title: box[0].content.title,
 					desc: json.content.body,
 					thumb: (box[0].type.includes("video")) ? box[0].media.preview : box[0].img.preview
-				}
+				});
 				
 				//escribe la notificacion en la base de datos.
 				await dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});

@@ -1,5 +1,6 @@
 /* MANEJO DE SUBIDA DE ARCHIVOS, SERVIDORES, ETC. */
 const fs = require('fs');
+const fsp = require('fs').promises;
 const axios = require('axios');
 const sharp = require('sharp');
 const imgur = require('imgur');
@@ -15,7 +16,6 @@ const youtube = require('./youtube.js');
 const cloudy = require('./cloudinary.js');
 
 //FUNCION: subida de imagenes, esto se encargaría de seleccionar el servidor configurado por el host, etc.
-//TODO: implementar compatibilidad con imgbb
 function upload(file, callback){
 	//comprobar restricciones de subida
 	if (file.size > sConfig.UPLOAD_MAX_SIZE){
@@ -33,7 +33,6 @@ function upload(file, callback){
 				break;
 			case 2:
 				//imgbb
-				//callback({success: false, data: "-no implementado-"});
 				imgbbUpload(file, callback);
 				break;
 			case 3:
@@ -74,65 +73,11 @@ function uploadVid(file, callback){
 function uploadLink(url, callback){
 	let type = checkURLType(url);
 	if (type === "youtube-embed" || type === "youtube-url"){
-		//TODO: manipular videos de youtube si es necesario.	
-		if (type === "youtube-url"){
-			url = "https://www.youtube.com/embed/" + youtube.youtubeParser(url);
-		}
+		url = (type === "youtube-url") ? "https://www.youtube.com/embed/" + youtube.youtubeParser(url) : url;
 		callback({success: true, data: {video: true, type: type, raw: url, thumb: youtube.genYoutubeThumb(url, "mq")}});
 	} else if (utils.isImg(url)){
 		//aca manipular la imagen, subir al server de preferencia, etc.
-		switch(sConfig.IMG_SERVER){
-			case 0:
-				//subida local
-				link2localStore(url, function(data){
-					if (data.success){
-						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
-					} else {
-						callback({success: false, data: data.data});
-					}
-				});
-			break;
-			case 1:
-				//imgur
-				imgurURLUpload(url, function(data){
-					if (data.success){
-						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
-					} else {
-						callback({success: false, data: data.data});
-					}
-				});
-			break;
-			case 2:
-				//imgbb
-				imgbbURLUpload(url, function(data){
-					if (data.success){
-						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
-					} else {
-						callback({success: false, data: data.data});
-					}
-				});
-			break;
-			case 3:
-				//cloudinary
-				cloudy.uploadImg(url, function(data){
-					callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
-				});
-			break;
-			case 4:
-				//imgbox
-				imgboxURLUpload(url, function(data){
-					if (data.success){
-						callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
-					} else {
-						callback({success: false, data: data.data});
-					}
-				});
-			break;
-			case 9:
-				callback({success: false, data: "Subida via links no permitido."});
-			break;
-		}
-		
+		uploadLinkImg(url, callback);
 	} else if (utils.isVideo(url)){
 		//si es un link directo a un video, linkearlo con un thumbnail genérico.
 		//solo permitir links de cloudinary por ahora.
@@ -154,8 +99,67 @@ function uploadLink(url, callback){
 			}
 		});
 	} else {
+		//desconocido/no soportado.
 		callback({success: false, data: null});
 	}
+}
+
+function uploadLinkImg(url, callback){
+	switch(sConfig.IMG_SERVER){
+		case 0:
+			//subida local
+			link2localStore(url, function(data){
+				if (data.success){
+					callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+				} else {
+					callback({success: false, data: data.data});
+				}
+			});
+		break;
+		case 1:
+			//imgur
+			imgurURLUpload(url, function(data){
+				if (data.success){
+					callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+				} else {
+					callback({success: false, data: data.data});
+				}
+			});
+		break;
+		case 2:
+			//imgbb
+			imgbbURLUpload(url, function(data){
+				if (data.success){
+					callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+				} else {
+					callback({success: false, data: data.data});
+				}
+			});
+		break;
+		case 3:
+			//cloudinary
+			cloudy.uploadImg(url, function(data){
+				if (data.success){
+					callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+				} else {
+					callback({success: false, data: data.data});
+				}
+			});
+		break;
+		case 4:
+			//imgbox
+			imgboxURLUpload(url, function(data){
+				if (data.success){
+					callback({success: true, data: {video: false, type: type, raw: data.data.link, thumb: data.data.thumb}});
+				} else {
+					callback({success: false, data: data.data});
+				}
+			});
+		break;
+		case 9:
+			callback({success: false, data: "Subida via links no permitido."});
+		break;
+		}
 }
 
 //FUNCION: subida de base64-data image al localStore
@@ -217,8 +221,8 @@ function link2localStore(url, callback){
 }
 
 //FUNCION: subida de archivos al localStore
-function localStore(file, callback){
-	let buffer = fs.readFileSync(file.path);
+async function localStore(file, callback){
+	let buffer = await fsp.readFile(file.path);
 	let filename = utils.randomString(16) + "." + file.type.split("/")[1];
 	let path = process.cwd() + "/uploads/" + filename;
 	let external_path = "/uploads/" + filename;
@@ -228,17 +232,8 @@ function localStore(file, callback){
 			callback({success: false, data: err});
 		} else {
 			if (file.type.split("/")[0] === "video"){
-				let thumbname = filename.split(".")[0] + "_thumb.png";
-				let thumb_path = process.cwd() + "/uploads/";
-				ffmpeg(path).setFfmpegPath(ffmpeg_static)
-				.screenshots({
-					timestamps: [0.0],
-					filename: thumbname,
-					folder: thumb_path,
-					size: '?x250'
-				}).on('end', function() {
-					callback({success: true, data: {link: external_path, thumb: "/uploads/" + thumbname}});
-				});
+				//generar thumbnail de videos.
+				genLocalVideoThumb(path, filename, callback);
 			} else {
 				genLocalThumb(path, filename, function(resthumb){
 					if (resthumb){
@@ -288,9 +283,24 @@ function genLocalThumb(path, filename, callback){
 		
 }
 
+function genLocalVideoThumb(path, filename, callback){
+	let thumbname = filename.split(".")[0] + "_thumb.png";
+	let thumb_path = process.cwd() + "/uploads/";
+	ffmpeg(path).setFfmpegPath(ffmpeg_static)
+	.screenshots({
+		timestamps: [0.0],
+		filename: thumbname,
+		folder: thumb_path,
+		size: '?x250'
+	}).on('end', function() {
+		callback({success: true, data: {link: external_path, thumb: "/uploads/" + thumbname}});
+	});
+}
+
 //FUNCION: subida de archivos a imgbox
-function imgboxUpload(file, callback){
-	imgbox([{filename: file.name, buffer: fs.readFileSync(file.path), thumbnail_size: sConfig.IMGBOX_THUMBNAIL_CONFIG}])
+async function imgboxUpload(file, callback){
+	let buffer = await fsp.readFile(file.path);
+	imgbox([{filename: file.name, buffer: buffer, thumbnail_size: sConfig.IMGBOX_THUMBNAIL_CONFIG}])
 	.then(function(result){
 		callback({success: true, data: {link: result.files[0].original_url, thumb: result.files[0].thumbnail_url}});
 	})

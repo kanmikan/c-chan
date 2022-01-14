@@ -17,6 +17,31 @@ let parser = new Parser({
 	}
 });
 
+function commands(DB, bid, cid, uid, rawtext){
+	/* Comandos del malbot */
+	let malsearch = new RegExp(/\$malsearch[^.](.+)/gi).exec(rawtext);
+	let malview = new RegExp(/\$malinfo[^.](.+)/gi).exec(rawtext);
+	let malcheck = new RegExp(/\$malcheck[^.](.+)/gi).exec(rawtext);
+	let malsimil = new RegExp(/\$malsimil[^.](.+)/gi).exec(rawtext);
+	
+	if (malsearch != null){
+		searchAnime(DB, bid, malsearch[1], function(result){});
+	}
+	
+	if (malview != null){
+		previewAnime(DB, bid, malview[1], function(result){});
+	}
+	
+	if (malcheck != null){
+		listAnimes(DB, bid, malcheck[1], function(result){});
+	}
+	
+	if (malsimil != null){
+		similarAnimes(DB, bid, malsimil[1], function(result){});
+	}
+	/* fin de comandos del malbot */
+}
+
 function similarAnimes(DB, bid, criteria, callback){
 
 	
@@ -54,7 +79,7 @@ function listAnimes(DB, bid, criteria, callback){
 				}
 			};
 			
-			cdata.comment = `<div class="comObject" style="border-radius: 5px;padding: 10px;"><span style="color: orange">Resultados de "${criteria}":</span></br><ul>`;
+			cdata.comment = `<div class="comObject" style="background: #3c3b3b;border-radius: 5px;padding: 10px;"><span style="color: orange">Resultados de "${criteria}":</span></br><ul>`;
 			
 			animes.forEach(function(anm){
 				cdata.comment += `<li><a href="${anm.url}">${anm.name}</a></li>`;
@@ -100,10 +125,10 @@ function previewAnime(DB, bid, name, callback){
 			
 			translateCallback(data.synopsis, function(tres){
 				
-				cdata.comment = `<div class="comObject" style="border-radius: 5px;padding: 10px;">
+				cdata.comment = `<div class="comObject" style="background: #3c3b3b;border-radius: 5px;padding: 10px;">
 				<span>${data.title} - ${data.premiered}</span>
 				</br>
-				<a href="${data.url}">${data.url}</a>
+				<a href="${data.url}" target="_blank">${data.url}</a>
 				</br>
 				<span>${tres.text}</span>
 				</br>
@@ -154,7 +179,7 @@ function searchAnime(DB, bid, query, callback){
 				}
 			};
 			
-			cdata.comment = `<div class="comObject" style="border-radius: 5px;padding: 10px;"><span style="color: orange">Resultados de "${query}":</span></br><ul>`;
+			cdata.comment = `<div class="comObject" style="background: #3c3b3b;border-radius: 5px;padding: 10px;"><span style="color: orange">Resultados de "${query}":</span></br><ul>`;
 			
 			animes.forEach(function(anm){
 				cdata.comment += `<li><a href="${anm.url}">${anm.name}</a></li>`;
@@ -257,4 +282,4 @@ function translateCallback(text, callback){
 		});
 }
 
-module.exports = {check, searchAnime, previewAnime, listAnimes, similarAnimes}
+module.exports = {commands, check, searchAnime, previewAnime, listAnimes, similarAnimes}

@@ -5,13 +5,13 @@ const malbot = require('./malbot.js');
 
 function init(db){
 	if (sConfig.CRON_THREADS){
-		console.log("[threads] Cron se ejecutará cada 5 minutos");
-		//ejecutar hilo cada 5 minutos.
-		cron.schedule('*/5 * * * *', () => {
-			//hilo del malbot
+		console.log("[threads] Thread del cron ejecutandose.");
+		cron.schedule(sConfig.CRON_HEARTBEAT, () => {
+			//malbot
 			malbot.check(db, 0, function(response){
 				console.log(response.data);
 			});
+			
 		});
 	}	
 }

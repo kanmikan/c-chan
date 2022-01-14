@@ -5,6 +5,7 @@ const jsonScheme = require('../db/models/jsonscheme.js');
 const utils = require('../utils.js');
 const pass = require('./passport.js');
 const live = require('./live.js');
+const builder = require('./builder.js');
 const malbot = require('../extra/malbot.js');
 
 //FUNCION: maneja el texto de entrada de un comentario.
@@ -60,39 +61,28 @@ function limitCR(rawtext){
 //TODO: mover el notification builder a un modulo independiente.
 function parseTags(DB, cid, uid, rawtext){
 	let tags = rawtext.match(/>>{1}([^\r\n\s]{7})/gi);
-	
 	//comprobar si se encontraron tags en el comentario
 	if (tags){
 		//si se detectan tags, iterar en cada uno
 		tags.forEach(async function(item, i){
-			
 			//se elimina el "#" y se añade el cid dentro del registro de tags del comentario taggeado
 			let selcid = tags[i].substring(2);
 			dbManager.pushDB(DB, mdbScheme.C_COMS, {cid: selcid}, {$push: {"content.extra.tags": cid}});
-			
-			//let timestamp = Date.now();
-			
 			//se lee la informacion del comentario receptor y el box al que pertenece
 			let c_receiver = await dbManager.queryDB(DB, mdbScheme.C_COMS, {cid: selcid}, "", function(){});
 			let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: c_receiver[0].bid}, "", function(){});
-			
 			//comprueba si el usuario se taggea a si mismo, para cancelar la notificacion.
 			if (c_receiver[0].user.uid != uid){
-				
-				//de lo contrario, clona el esquema de notificaciones y añade la nueva info.
-				let notifdata = utils.clone(jsonScheme.NOTIF_SCHEME);
-				notifdata.sender.uid = uid;
-				notifdata.receiver.uid = c_receiver[0].user.uid;
-				notifdata.date.created = Date.now();
-				notifdata.state.push("new");
-				notifdata.content.cid = cid;
-				notifdata.content.bid = c_receiver[0].bid;
-				notifdata.content.tag = true;
-				notifdata.content.preview = {
+				let notifdata = builder.notification({
+					suid: uid, 
+					ruid: c_receiver[0].user.uid,
+					cid: cid, 
+					bid: c_receiver[0].bid,
+					tag: true, 
 					title: box[0].content.title,
 					desc: htmlSanitize(rawtext),
 					thumb: (box[0].type.includes("video")) ? box[0].media.preview : box[0].img.preview
-				}
+				});
 				
 				//envia la notificacion por websockets y la guarda en la base de datos
 				await dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
@@ -100,35 +90,11 @@ function parseTags(DB, cid, uid, rawtext){
 			}
 		});
 	}
-	
-	//return []; //retorno irrelevante.
 }
 
 //FUNCION: detecta comandos dentro del comentario enviado y reacciona independientemente.
 function parseCommands(DB, bid, cid, uid, rawtext){	
-	/* Comandos del malbot */
-	//TODO: mover esto dentro del modulo del bot.
-	let malsearch = new RegExp(/\$malsearch[^.](.+)/gi).exec(rawtext);
-	let malview = new RegExp(/\$malinfo[^.](.+)/gi).exec(rawtext);
-	let malcheck = new RegExp(/\$malcheck[^.](.+)/gi).exec(rawtext);
-	let malsimil = new RegExp(/\$malsimil[^.](.+)/gi).exec(rawtext);
-	
-	if (malsearch != null){
-		malbot.searchAnime(DB, bid, malsearch[1], function(result){});
-	}
-	
-	if (malview != null){
-		malbot.previewAnime(DB, bid, malview[1], function(result){});
-	}
-	
-	if (malcheck != null){
-		malbot.listAnimes(DB, bid, malcheck[1], function(result){});
-	}
-	
-	if (malsimil != null){
-		malbot.similarAnimes(DB, bid, malsimil[1], function(result){});
-	}
-	/* fin de comandos del malbot */
+	malbot.commands(DB, bid, cid, uid, rawtext);
 }
 
 module.exports = {parseComInput, htmlSanitize, parseTags}
