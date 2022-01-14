@@ -41,6 +41,10 @@ app.use(formidable({}, [{event: 'error', action: function (req, res, next, name)
 app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, './client/views'));
 
+/* TEST DEL REVERSE PROXY DEL HOST */
+app.set('trust proxy', 1);
+/////////////////////////////////////
+
 /* BASE DE DATOS */
 dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}, async function (db){ 
 	app.locals.db = db;

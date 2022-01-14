@@ -16,7 +16,8 @@ function create(app){
 		secret: sConfig.SESSION_SECRET,
 		store: MongoStore.create({
 			mongoUrl: sConfig.DBURL,
-			mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}
+			mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL},
+			ttl: 7 * 24 * 60 * 60 //7 dias de expiracion para la sesion, si el usuario no se conecta antes.
 		}),
 		cookie: {maxAge: expires}
 	});
@@ -80,17 +81,16 @@ function genUser(uid, pass, sid){
 }
 
 //MIDDLEWARE: detecta si el usuario esta "logueado" y redirige al modal de bienvenida si no lo está
-async function checkSesion(req, res, next){
+function checkSesion(req, res, next){
 	let sid = req.session.id;
-	
-	let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
-	dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {sid: sid}, "", function(user){
+	dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {sid: sid}, "", async function(user){
 		if (!user[0]){
 			console.log("[Sesion] Usuario efimero detectado, redirigir al logeo.");
 			res.json({success: false, data: {redirect: true, to: "/login"}});
 		} else {
 			//comprueba la whitelist.
 			//TODO: mover esto a un middleware aparte.
+			let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
 			if (svrconfig[0].whitelist && !(user[0].permisos.includes("WHITELIST") || user[0].permisos.includes("ADMIN") || user[0].permisos.includes("GMOD") || user[0].permisos.includes("MOD"))) {
 				res.json({success: false, data: "Whitelist Activada - Solo los usuarios permitidos pueden realizar esa accion."});
 			} else {

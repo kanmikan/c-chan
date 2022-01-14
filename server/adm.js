@@ -183,6 +183,10 @@ module.exports = function(app){
 		
 	});
 	
+	app.get('/dev/ping', pass.onlyADM, function(req, res){
+		res.send({result: "pong", data: req.ip});
+	});
+	
 	app.get('/dev/:bid', pass.onlyADM, async function(req, res) {
 		let bid = req.params.bid;
 		req.app.locals.db.db("mikanchan").collection("boxs").find({bid: bid}).toArray(function(err, result){

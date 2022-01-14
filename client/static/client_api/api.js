@@ -1015,6 +1015,7 @@ $(document).ready(function() {
 		$(e.target).parent().parent().toggleClass("commentAttachExpand");
 		let voxImageE = $(e.currentTarget).parent().find(".voxImage");
 		let pics = voxImageE.data("pics").split("|");
+		voxImageE.children().first().toggleClass("commentAttachExpand");
 		
 		if ($(e.currentTarget).hasClass("fa-search-plus")){
 			$(e.currentTarget).removeClass("fa-search-plus");

@@ -63,22 +63,22 @@ function xmur3(str) {
     }
 }
 
-function timeSince(timestamp) {
+function timeSince(timestamp, mode=0) {
     var now = new Date();
     var secondsPast = (now.getTime() - timestamp) / 1000;
 
     if (secondsPast < 60) {
-        return parseInt(secondsPast) + 's';
+        return parseInt(secondsPast) + ((mode === 0) ? 's' : ' segundos');
     } else if (secondsPast < 3600) {
-        return parseInt(secondsPast / 60) + 'm';
+        return parseInt(secondsPast / 60) + ((mode === 0) ? 'm' : ' minuto' + ((parseInt(secondsPast / 60) != 1) ? "s" : ""));
     } else if (secondsPast < 86400) {
-        return parseInt(secondsPast / 3600) + 'h';
+        return parseInt(secondsPast / 3600) + ((mode === 0) ? 'h' : ' hora' + ((parseInt(secondsPast / 3600) != 1) ? "s" : ""));
     } else if (secondsPast < 2678400) {
-        return parseInt(secondsPast / 86400) + 'd';
+        return parseInt(secondsPast / 86400) + ((mode === 0) ? 'd' : ' dia' + ((parseInt(secondsPast / 86400) != 1) ? "s" : ""));
     } else if (secondsPast <= 32140800) {
-        return parseInt(secondsPast / 2678400) + 'ms';
+        return parseInt(secondsPast / 2678400) + ((mode === 0) ? 'ms' : ' mes' + ((parseInt(secondsPast / 2678400) != 1) ? "es" : ""));
     } else if (secondsPast > 32140800) {
-        return parseInt(secondsPast / 32140800) + 'a';
+        return parseInt(secondsPast / 32140800) + ((mode === 0) ? 'a' : ' año' + ((parseInt(secondsPast / 32140800) != 1) ? "s" : ""));
     }
 }
 

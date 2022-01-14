@@ -4,6 +4,7 @@ const mdbScheme = require('./db/models/mdbscheme.js');
 const jsonScheme = require('./db/models/jsonscheme.js');
 const sesionManager = require('./sesion/sesionmanager.js');
 const cfilter = require('./sesion/contentfilter.js');
+const rate = require('./sesion/limiter.js');
 
 const utils = require('./utils.js');
 const uploadManager = require('./api/upload.js');
@@ -18,7 +19,7 @@ const moderation = require('./api/moderation.js');
 module.exports = function(app){
 	
 	//API: subida de imagenes
-	app.post('/api/upload', pass.check, sesionManager.checkSesion, function(req, res) {
+	app.post('/api/upload', rate.apiLimit, pass.check, sesionManager.checkSesion, function(req, res) {
 		let filedata = req.files.fileData;
 		let mimetype = filedata.type.split("/");
 	
@@ -37,7 +38,7 @@ module.exports = function(app){
 	});
 	
 	//API: manipulacion de urls
-	app.post('/api/uplink', pass.check, sesionManager.checkSesion, function(req, res) {
+	app.post('/api/uplink', rate.apiLimit, pass.check, sesionManager.checkSesion, function(req, res) {
 		let link = req.fields.link;
 		uploadManager.uploadLink(link, function(result){
 			res.json(result);
@@ -45,7 +46,7 @@ module.exports = function(app){
 	});
 	
 	//RUTA: crea un nuevo box.
-	app.post('/api/new', pass.check, pass.checkBoxFields, sesionManager.checkSesion,  async function(req, res) {
+	app.post('/api/new', rate.spamLimit, pass.check, pass.checkBoxFields, sesionManager.checkSesion,  async function(req, res) {
 		let cat = req.fields.cat;
 		let title = req.fields.title;
 		let subtitle = req.fields.subtitle;
@@ -137,7 +138,7 @@ module.exports = function(app){
 	});
 	
 	//RUTA: nuevo comentario.
-	app.post('/api/com', pass.check, pass.checkComFields, sesionManager.checkSesion, async function(req, res) {
+	app.post('/api/com', rate.spamLimit, pass.check, pass.checkComFields, sesionManager.checkSesion, async function(req, res) {
 		let bid = req.fields.bid;
 		let content = req.fields.content;
 		let img = req.fields.img.split(";");
@@ -253,7 +254,7 @@ module.exports = function(app){
 	
 	//API: login de ID
 	//TODO añadir middleware de passport para comprobar la validez de los campos.
-	app.post('/api/idlogin', async function(req, res){
+	app.post('/api/idlogin', rate.loginLimit, async function(req, res){
 		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
 		let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
 		
@@ -301,7 +302,7 @@ module.exports = function(app){
 	
 	//API: login de usuario.
 	//TODO: comprobacion de credenciales, sanitizado
-	app.post('/api/login', async function(req, res) {
+	app.post('/api/login', rate.loginLimit, async function(req, res) {
 		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
 		let password = req.fields.password.trim();
 		
@@ -345,7 +346,7 @@ module.exports = function(app){
 	
 	//MUESTRA: obtener todos los boxs, ordenados por ultimo bump y stickys
 	//TODO: añadir filtro de datos
-	app.get('/api/boxs', pass.check, function(req, res) {
+	app.get('/api/boxs', rate.apiLimit, pass.check, function(req, res) {
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, "", {"date.sticky": -1, "date.bump": -1}, function(boxs){
 			if (boxs[0] != undefined){
 				boxs = cfilter.filterBoxHides(boxs, req.session.config);
@@ -357,7 +358,7 @@ module.exports = function(app){
 	});
 	
 	//MUESTRA: obtener boxs por la categoria.
-	app.get('/api/boxs/:cat', pass.check, function(req, res) {
+	app.get('/api/boxs/:cat', rate.apiLimit, pass.check, function(req, res) {
 		let cat = req.params.cat;
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {cat: cat}, {"date.sticky": -1, "date.bump": -1}, function(boxs){
 			if (boxs[0]){
@@ -370,7 +371,7 @@ module.exports = function(app){
 	});
 	
 	//MUESTRA: obtener box especificado con el bid.
-	app.get('/api/box/:bid', pass.check, function(req, res) {
+	app.get('/api/box/:bid', rate.apiLimit, pass.check, function(req, res) {
 		let bid = req.params.bid;
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, {bid: bid}, {"date.sticky": -1, "date.bump": -1}, function(boxs){
 			if (boxs[0]){
@@ -382,7 +383,7 @@ module.exports = function(app){
 	});
 	
 	//API: obtener boxs de x categoria desde un bid especifico
-	app.get('/api/box/:index/:kind', pass.check, function(req, res){
+	app.get('/api/box/:index/:kind', rate.apiLimit, pass.check, function(req, res){
 		let index = req.params.index;
 		let kind = req.params.kind;
 		let db = req.app.locals.db;
@@ -419,7 +420,7 @@ module.exports = function(app){
 	});
 	
 	//API: controla y redirige las notificaciones
-	app.get('/api/ntf/:bid/:cid', async function(req, res) {
+	app.get('/api/ntf/:bid/:cid', rate.apiLimit, async function(req, res) {
 		let bid = req.params.bid;
 		let cid = req.params.cid;
 		let uid = req.session.uid;
@@ -430,7 +431,7 @@ module.exports = function(app){
 	});
 	
 	//API: obtener una notificacion especificada por el timestamp, usada por el popup.
-	app.get('/api/notifs/:date', function(req, res) {
+	app.get('/api/notifs/:date', rate.apiLimit, function(req, res) {
 		let uid = req.session.uid;
 		let date = req.params.date;
 		
@@ -445,7 +446,7 @@ module.exports = function(app){
 	});
 	
 	//API: obtener todos los comentarios
-	app.get('/api/coms', pass.check, function(req, res) {
+	app.get('/api/coms', rate.apiLimit, pass.check, function(req, res) {
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, "", {"date.created": -1}, function(coms){
 			if (coms[0] != undefined){
 				res.json({success: true, data: pass.filterProtectedUID(coms)});
@@ -456,7 +457,7 @@ module.exports = function(app){
 	});
 	
 	//API: obtener todos los comentarios en base al bid
-	app.get('/api/coms/:bid', pass.check, function(req, res) {
+	app.get('/api/coms/:bid', rate.apiLimit, pass.check, function(req, res) {
 		let bid = req.params.bid;
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {bid: bid}, {"date.created": -1}, function(coms){
 			if (coms[0] != undefined){
@@ -468,7 +469,7 @@ module.exports = function(app){
 	});
 	
 	//API: obtener todos los comentarios en base a la categoria
-	app.get('/api/categorycoms/:cat/:limit', pass.check, async function(req, res) {
+	app.get('/api/categorycoms/:cat/:limit', rate.apiLimit, pass.check, async function(req, res) {
 		let cat = req.params.cat;
 		let limit = (req.params.limit) ? parseInt(req.params.limit) : 0;
 		let filter = (cat === "home") ? "" : {cat: cat};
@@ -496,7 +497,7 @@ module.exports = function(app){
 	});
 	
 	//API: obtener comentario especificado con el cid
-	app.get('/api/com/:cid', pass.check, function(req, res) {
+	app.get('/api/com/:cid', rate.apiLimit, pass.check, function(req, res) {
 		let cid = req.params.cid;
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_COMS, {cid: cid}, {"date.created": -1}, function(coms){
 			if (coms[0] != undefined){
@@ -509,7 +510,7 @@ module.exports = function(app){
 	
 	//API: manejo de votos en las encuestas
 	//TODO: placeholder
-	app.post('/api/poll', pass.check, sesionManager.checkSesion, async function(req, res) {
+	app.post('/api/poll', rate.spamLimit, pass.check, sesionManager.checkSesion, async function(req, res) {
 		let option = req.fields.vote;
 		let bid = req.fields.bid;
 		let timestamp = Date.now();
@@ -541,7 +542,7 @@ module.exports = function(app){
 	});
 	
 	//API: modificar las preferencias del usuario.
-	app.post('/api/config', pass.check, sesionManager.checkSesion, function(req, res) {
+	app.post('/api/config', rate.apiLimit, pass.check, sesionManager.checkSesion, function(req, res) {
 		let data = req.fields.data;
 		let options = data.split(":");
 		let sesiondata = sesionManager.getUserData(req.session.id)[0].data;
@@ -592,7 +593,7 @@ module.exports = function(app){
 	});
 	
 	//API: denuncias
-	app.post('/api/report', pass.check, sesionManager.checkSesion, function(req, res) {
+	app.post('/api/report', rate.spamLimit, pass.check, sesionManager.checkSesion, function(req, res) {
 		let kind = req.fields.kind;
 		let razon = req.fields.razon;
 		
