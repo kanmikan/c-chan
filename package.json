@@ -1,6 +1,6 @@
 {
   "name": "Cchan",
-  "version": "0.3",
+  "version": "0.3.0",
   "description": "Imageboard basado en voxed derivado de mikanchanv0",
   "main": "app.js",
   "dependencies": {
