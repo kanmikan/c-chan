@@ -625,8 +625,9 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .box .tagList .tag {
+	display: flex;
 	color: #fefefe;
-    padding: 4.1px;
+    padding: 3.5px;
     border-radius: 3px;
     font-size: .7rem;
     background: var(--hometag1);
@@ -758,7 +759,7 @@ span.countComments {
 }
 
 .tag.pollTag {
-	padding: 1.7px 4px !important;
+	padding: 2px 4px !important;
 	font-size: 0.95rem !important;
 	margin-bottom: 2px;
 }
