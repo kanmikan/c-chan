@@ -14,5 +14,5 @@ module.exports = {
 	ASYNC_COMMENTS: false,
 	
 	/* (deprecated) permite mostrar el icono de la categoria en la lista de temas */
-	SHOW_CATEGORY_ICON: true
+	SHOW_CATEGORY_ICON: false
 }
