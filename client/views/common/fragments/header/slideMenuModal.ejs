@@ -5,12 +5,6 @@
 			<div class="optionText">Nuevo Hilo</div>
 		</li>
 		
-	<% if (it.renderConfig.ENABLE_COMMUNITIES){ %>
-		<li data-toggle="modal" data-target="#createCommunity" data-backdrop="false">
-			<div class="optionIcon"><i class="fas fa-plus" aria-hidden="true"></i></div>
-			<div class="optionText">Nueva Comunidad</div>
-		</li>
-	<% } %>
 		<li onclick="location.href='/favoritos'">
 			<div class="optionIcon"><i class="fas fa-star" aria-hidden="true"></i></div>
 			<div class="optionText">Favoritos</div>
@@ -43,6 +37,8 @@
 			<div class="chatlike" id="movilActivityList"></div>
 		</div>
 	</ul>
-	<div style="height: 100px"></div>
-	
+	<div class="activityzone">
+		<div class="acttitle">Usando como base <%= it.renderConfig.VERSION %></div>
+		<div class="acttitle"><a href="info/reglas">Reglas</a> - <a href="info/welcome">Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
+	</div>
 </div>

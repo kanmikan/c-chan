@@ -1,7 +1,7 @@
 {
   "name": "Cchan",
-  "version": "0.0.1",
-  "description": "Imageboard basado en voxed derivado de mikanchan",
+  "version": "0.3",
+  "description": "Imageboard basado en voxed derivado de mikanchanv0",
   "main": "app.js",
   "dependencies": {
     "@sweetalert2/theme-dark": "^5.0.7",
@@ -53,6 +53,6 @@
     "start": "node app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "anon",
   "license": "ISC"
 }
