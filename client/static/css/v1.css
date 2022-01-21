@@ -216,11 +216,3 @@
 	margin: auto;
 	border-radius: 5px;
 }
-
-.acttitle a {
-	color: inherit;
-	text-decoration: none;
-}
-.acttitle a:hover {
-	color: inherit;
-}

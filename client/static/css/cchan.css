@@ -658,7 +658,7 @@ ul.slideMenuOptions li:hover.optionBolt {
 }
 
 .box .tagList .tag.ytb {
-	padding: 4.1px 5px 4.1px 7px;
+	padding: 4px 5px 4px 7px;
 }
 
 .box .tagList .tag.sticky {
@@ -765,13 +765,13 @@ span.countComments {
 }
 
 .tag.diceTag {
-	padding: 1.7px 4px !important;
+	padding: 2px 4px !important;
 	font-size: 0.95rem !important;
 	margin-bottom: 2px;
 }
 
 .tag.iduTag {
-	padding: 1.7px 4px !important;
+	padding: 2px 4px !important;
 	font-size: 0.95rem !important;
 	margin-bottom: 2px;
 }
@@ -2976,6 +2976,15 @@ input:checked + .slider:before {
 	width: fit-content;
 	height: 10%;
 	border-radius: 0 0 15px 0;
+}
+
+.acttitle a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.acttitle a:hover {
+	color: inherit;
 }
 
 /* CODIGO DE VOXEDRIP.CSS RESPONSIVO */
