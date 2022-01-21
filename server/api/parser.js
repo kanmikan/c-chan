@@ -7,6 +7,7 @@ const pass = require('./passport.js');
 const live = require('./live.js');
 const builder = require('./builder.js');
 const malbot = require('../extra/malbot.js');
+const sanitizeHtml = require('sanitize-html');
 
 //FUNCION: maneja el texto de entrada de un comentario.
 function parseComInput(DB, bid, cid, uid, rawtext){
@@ -18,6 +19,7 @@ function parseComInput(DB, bid, cid, uid, rawtext){
 	
 	//retorna el texto del comentario modificado para la base de datos y sanitizado.
 	return htmlSanitize(rawtext);
+	
 }
 
 //FUNCION: detecta comandos y tags y los modifica para ser guardado en la base de datos.
@@ -45,8 +47,11 @@ function htmlSanitize(rawtext){
 	for (var i =0; i < patterns.length; i++) {
 		output = output.replace(patterns[i], pattern_replace[i]);
 	}
-	return output;
 	
+	//return output;
+	return sanitizeHtml(output, { //podría retocar el regex, pero me da flojera.
+		allowedAttributes: false
+	});
 }
 
 function limitCR(rawtext){
