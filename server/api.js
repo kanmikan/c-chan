@@ -16,6 +16,7 @@ const builder = require('./api/builder.js');
 const compat = require('./db/compat.js');
 const recycler = require('./api/recyclemanager.js');
 const moderation = require('./api/moderation.js');
+const sanitizer = require('./api/sanitizer.js');
 
 module.exports = function(app){
 	
@@ -76,6 +77,11 @@ module.exports = function(app){
 		json.date.created = time;
 		json.date.bump = time;
 		
+		if (sConfig.ENABLE_POSTS){
+			//fuerza el formato de posts.
+			json.type.push("post");
+		}
+		
 		//detecta y configura si es un box con imagen o con un video
 		if (img[0] != "" && (sConfig.IMG_SERVER != 9)){
 			json.type.push("image");
@@ -92,10 +98,10 @@ module.exports = function(app){
 			json.flag.push("sync");
 		}
 		
-		json.content.title = title;
-		json.content.body = parser.htmlSanitize(content);
+		json.content.title = sanitizer.sanitizeAll(title);
+		json.content.body = parser.parseBoxInput(req.app.locals.db, bid, req.session.uid, content);
 		
-		if (subtitle != ""){json.content.extra.title2 = subtitle;}
+		if (subtitle != ""){json.content.extra.title2 = sanitizer.sanitizeAll(subtitle);}
 		if (dados){json.type.push("dice");}
 		if (idunico){json.type.push("idunico");}
 		
@@ -103,14 +109,21 @@ module.exports = function(app){
 		if (pollOne != "" && pollTwo != ""){
 			json.type.push("poll");
 			json.content.extra.poll = {
-				pollOne: pollOne,
+				pollOne: sanitizer.sanitizeAll(pollOne),
 				pollOneV: 0,
-				pollTwo: pollTwo,
+				pollTwo: sanitizer.sanitizeAll(pollTwo),
 				pollTwoV: 0,
 				pollVotes: []
 			};
 		} else {
 			json.content.extra.poll = {};
+		}
+		
+		//deteccion de imagenes en el body
+		if (json.type.includes("post")){
+			json.content.extra.post = {
+				images: parser.parseImgTags(content)
+			}
 		}
 		
 		//detectar opcion de anonimato para los usuarios con rango.
@@ -229,8 +242,8 @@ module.exports = function(app){
 					cid: cid,
 					bid: bid,
 					tag: false,
-					title: box[0].content.title,
-					desc: json.content.body,
+					title: sanitizer.sanitizeAll(box[0].content.title),
+					desc: sanitizer.sanitizeAll(json.content.body),
 					thumb: (box[0].type.includes("video")) ? box[0].media.preview : box[0].img.preview
 				});
 				

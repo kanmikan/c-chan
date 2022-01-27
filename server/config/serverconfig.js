@@ -36,5 +36,10 @@ module.exports = {
 	/* LIMITES */
 	HOME_BOX_LIMIT: 24, //limite de la carga inicial (no aplica a la v1)
 	HOME_BOX_PAGELOAD: 20, //cantidad de boxs a cargar en cada paginación.
-	CATEGORY_BOX_LIMIT: 41 //maximo de temas en una categoría.
+	CATEGORY_BOX_LIMIT: 41, //maximo de temas en una categoría.
+	
+	/* OTROS */
+	RTF_BOXS: false, //aceptar formato de texto enriquecido en los temas.
+	ENABLE_POSTS: false //formato de posts.
+	
 }

@@ -254,7 +254,7 @@ function createBox(DB, data, callback){
 	mbox.img.preview = data['media:thumbnail'];
 	mbox.content.title = data.title;
 	//body
-	mbox.content.body = cparser.htmlSanitize(data.content) + '</br><span style="color: #5fb732">Leer mas en: </span>' + '<a target="_blank" href="' + data.guid + '">' + data.guid + '</a>';
+	mbox.content.body = cparser.htmlParser(data.content) + '</br><span style="color: #5fb732">Leer mas en: </span>' + '<a target="_blank" href="' + data.guid + '">' + data.guid + '</a>';
 	
 	//parametros especiales del bot
 	mbox.flag.push("rss");

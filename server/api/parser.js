@@ -7,7 +7,7 @@ const pass = require('./passport.js');
 const live = require('./live.js');
 const builder = require('./builder.js');
 const malbot = require('../extra/malbot.js');
-const sanitizeHtml = require('sanitize-html');
+const sanitizer = require('./sanitizer.js');
 
 //FUNCION: maneja el texto de entrada de un comentario.
 function parseComInput(DB, bid, cid, uid, rawtext){
@@ -18,14 +18,17 @@ function parseComInput(DB, bid, cid, uid, rawtext){
 	parseCommands(DB, bid, cid, uid, rawtext);
 	
 	//retorna el texto del comentario modificado para la base de datos y sanitizado.
-	return htmlSanitize(rawtext);
-	
+	return sanitizer.sanitizeComments(htmlParser(rawtext));
+}
+
+//FUNCION: maneja el texto de entrada de un tema.
+function parseBoxInput(DB, bid, uid, rawtext){
+	return sanitizer.sanitizeBoxs(htmlParser(rawtext));
 }
 
 //FUNCION: detecta comandos y tags y los modifica para ser guardado en la base de datos.
-function htmlSanitize(rawtext){
+function htmlParser(rawtext){
 	let patterns = [
-		/(<(.*?)>|<(.*?)(\r\n|\r|\n)+)/g, //tags html en general.
 		/::{1}([^\r\n\s]+)/gi, //link interno
 		/>>{1}([^\r\n\s]{7})/gi, //tags
 		/>(([https?|ftp]+:\/\/)([^\s/?\.#]+\.?)+(\/[^\s]*)?)/gi, //link externo
@@ -34,7 +37,6 @@ function htmlSanitize(rawtext){
 		/\n/g //salto de linea.
 	];
 	let pattern_replace = [
-		'',
 		'<a href="$1" class="link">&gt;$1</a>',
 		'<a href="#$1" class="tag" data-tag="$1">&gt;&gt;$1</a>',
 		'<a href="$1" target="_blank" class="link">&gt;$1</a>',
@@ -42,40 +44,45 @@ function htmlSanitize(rawtext){
 		'<span style="color: #$1;text-shadow: 1px 1px black;">$2</span>',
 		'<br>'
 	]
-	let output = limitCR(rawtext).replace(/[\r\n]+$/, '');
+	let output = limitCR(rawtext.replace(/[\r\n]+$/, ''));
 	
 	for (var i =0; i < patterns.length; i++) {
 		output = output.replace(patterns[i], pattern_replace[i]);
 	}
 	
-	//return output;
-	return sanitizeHtml(output, { //podría retocar el regex, pero me da flojera.
-		allowedAttributes: false
-	});
+	return output;
 }
 
 function limitCR(rawtext){
 	let out = rawtext.split("\r\n");
 	let outn = out.filter(function(line, i){
-		return ((line && line.trim() === '') && (out[i+1] && out[i+1].trim() === '')) ? false : true;
+		return ((line && line.trim() === '') && (out[i+1].trim() === '')) ? false : true;
 	});
 	return outn.join("\r\n");
 }
 
+//FUNCION: detecta las imagenes en el body de una publicacion
+function parseImgTags(rawtext){
+	let imgExp = new RegExp("<img[^>]* src=\"([^\"]*)\"[^>]*>", "gm");
+	let imgTags = (rawtext.match(imgExp) || []).map(e => e.replace(imgExp, '$1'));
+	return imgTags;
+}
+
 //FUNCION: se encarga de detectar los tags y actualizar la informacion en la base de datos.
-//TODO: mover el notification builder a un modulo independiente.
 function parseTags(DB, cid, uid, rawtext){
 	let tags = rawtext.match(/>>{1}([^\r\n\s]{7})/gi);
 	//comprobar si se encontraron tags en el comentario
 	if (tags){
 		//si se detectan tags, iterar en cada uno
 		tags.forEach(async function(item, i){
+			
 			//se elimina el "#" y se añade el cid dentro del registro de tags del comentario taggeado
 			let selcid = tags[i].substring(2);
 			dbManager.pushDB(DB, mdbScheme.C_COMS, {cid: selcid}, {$push: {"content.extra.tags": cid}});
 			//se lee la informacion del comentario receptor y el box al que pertenece
 			let c_receiver = await dbManager.queryDB(DB, mdbScheme.C_COMS, {cid: selcid}, "", function(){});
 			let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: c_receiver[0].bid}, "", function(){});
+			
 			//comprueba si el usuario se taggea a si mismo, para cancelar la notificacion.
 			if (c_receiver[0].user.uid != uid){
 				let notifdata = builder.notification({
@@ -84,8 +91,8 @@ function parseTags(DB, cid, uid, rawtext){
 					cid: cid, 
 					bid: c_receiver[0].bid,
 					tag: true, 
-					title: box[0].content.title,
-					desc: htmlSanitize(rawtext),
+					title: sanitizer.sanitizeAll(box[0].content.title),
+					desc: sanitizer.sanitizeAll(htmlParser(rawtext)),
 					thumb: (box[0].type.includes("video")) ? box[0].media.preview : box[0].img.preview
 				});
 				
@@ -102,4 +109,4 @@ function parseCommands(DB, bid, cid, uid, rawtext){
 	malbot.commands(DB, bid, cid, uid, rawtext);
 }
 
-module.exports = {parseComInput, htmlSanitize, parseTags}
+module.exports = {parseComInput, parseBoxInput, htmlParser, parseTags, parseImgTags}
