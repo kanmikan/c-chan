@@ -640,15 +640,15 @@ ul.slideMenuOptions li:hover.optionBolt {
 	display: flex;
 	text-align: center;
 	font-size: 0.8rem;
-	padding: 0.28rem;
+	padding: 0.22rem;
 	align-items: center;
 }
 
 .box .tagList .tag i {
 	display: flex;
-	font-size: 1rem;
-	padding: 0.05rem;
-	line-height: 1.0;
+	font-size: 0.9rem;
+	padding: 0.06rem;
+	line-height: 0.98;
 	align-items: center;
     align-content: center;
 }
@@ -657,7 +657,7 @@ ul.slideMenuOptions li:hover.optionBolt {
 	display: flex;
 	text-align: center;
 	font-size: 0.8rem;
-	padding: 0.28rem;
+	padding: 0.22rem;
 	background: var(--tag1-sticky);
 	align-items: center;
 }
@@ -665,7 +665,7 @@ ul.slideMenuOptions li:hover.optionBolt {
 .tagInvisible.rss i {
 	background-color: #ff8100;
 	border-radius: 3px;
-	padding: 0.2rem;
+	padding: 0.14rem;
 	color: #fff;
 	font-size: 1.1rem;
 }

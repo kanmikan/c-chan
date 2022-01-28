@@ -6,7 +6,7 @@ module.exports = {
 	PORT: process.env.PORT || 3000,
 	SESSION_SECRET: process.env.SESSION_SECRET || "test",
 	DATABASE_CACHE: (process.env.DATABASE_CACHE && process.env.DATABASE_CACHE === "false") ? false : true,
-	STATIC_CACHE_VALUE: {}, //{maxAge: 3600000*12}
+	STATIC_CACHE_VALUE: {maxAge: 3600000*12}, //{maxAge: 3600000*12}
 	CRON_THREADS: (process.env.CRON_THREADS && process.env.CRON_THREADS === "true") ? true : false,
 	CRON_HEARTBEAT: '*/5 * * * *', //cada 5 minutos
 	
@@ -31,10 +31,10 @@ module.exports = {
 	
 	/* DELAYS ENTRE OTROS */
 	COMMENT_DELAY: 5, //tiempo de espera en segundos (5 segundos)
-	BOX_DELAY: 30,
+	BOX_DELAY: 60,
 	MAX_TAGS: 5, //maximo numero de tagueos permitidos.
 	/* LIMITES */
-	HOME_BOX_LIMIT: 24, //limite de la carga inicial (no aplica a la v1)
+	HOME_BOX_LIMIT: 48, //limite de la carga inicial (no aplica a la v1)
 	HOME_BOX_PAGELOAD: 20, //cantidad de boxs a cargar en cada paginación.
 	CATEGORY_BOX_LIMIT: 41, //maximo de temas en una categoría.
 	
