@@ -34,10 +34,7 @@
 					<div class="tag sticky">Sticky</div>
 				<% } %>
 				<div class="tag categoryTag">
-					<% if (it.renderConfig.SHOW_CATEGORY_ICON) { %>
-						<img src="<%= categoryData.content.media.icon %>">
-					<% } %>
-					<span style="margin-left: 4px;margin-right: 5px;align-self: center;"><%- it.utils.getCatShow(box.cat) %></span></img>
+					<%- it.utils.getCatShow(box.cat) %>
 				</div>
 				<!-- tag sticky local -->
 				<% if (box.date && box.date.csticky > 0){ %>

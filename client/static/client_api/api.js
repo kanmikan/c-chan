@@ -131,11 +131,8 @@ function boxRender(box){
 	let catdata = getCategoryData(box.cat);
 	
 	let bbody = `<a class="box" id="${box.bid}" href="/${box.cat}/${box.bid}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${boxThumb}); text-decoration: none; background-position: top;"><div class="voxHeader"><div class="tagList"><div class="tag categoryTag">`;
-	if (SHOW_CATEGORY_ICON) {
-		bbody +=`<img src="${catdata.content.media.icon}"`;			
-	}
-	bbody += `<span style="margin-left: 4px;margin-right: 5px;align-self: center;">${getCatShow(box.cat)}</span>
-	</img></div>`;
+
+	bbody += `<span>${getCatShow(box.cat)}</span></div>`;
 	
 	if (box.date && box.date.sticky > 0){
 		bbody +=`<div class="tag sticky">Sticky</div>`;

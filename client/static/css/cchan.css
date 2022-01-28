@@ -31,7 +31,7 @@
 	--text-createdAt: #00000096;
 	--text-createdAt2: #00000096;
 	--text-voxCount: #343a40;
-	--tag1: #ff5722;
+	--tag1: #194d9f;
 	--comment-textArea: #efefef;
 	--comment-textArea-border: #afafaf;
 	--comment-textArea-focus: white;
@@ -209,7 +209,7 @@ html[data-theme='darkmode']{
 	--homelink-hover: #3f51b5;
 	--modal-background: #3c3c3c;
 	--tag1-sticky: #f44336;
-	--hometag1: #303f9f;
+	--hometag1: #16448f;
 	--categoryTitle: white;
 	--categoryTitle-hover: #3f51b5;
 	--moreload-background: #3f51b5;
@@ -627,53 +627,47 @@ ul.slideMenuOptions li:hover.optionBolt {
 .box .tagList .tag {
 	display: flex;
 	color: #fefefe;
-    padding: 3.5px;
-    border-radius: 3px;
-    font-size: .7rem;
-    background: var(--hometag1);
-    margin-right: 3px;
-	box-shadow: 0 1px 1px 0 rgb(0 0 0 / 60%);
-}
-
-.box .tagList .tag img{
-	width: 17px;
-	vertical-align: middle;
 	border-radius: 3px;
-	padding: 1px;
+	padding: 0.2rem;
+	background: var(--hometag1);
+	margin-right: 3px;
+	align-items: center;
+    align-content: center;
+	margin-bottom: 3px;
 }
 
-.tagInvisible.rss i {
-    background-color: #ff8100;
-    border-radius: 3px;
-    padding: 2px;
-    color: white;
-    font-size: 14px;
+.box .tagList .tag.categoryTag {
+	display: flex;
+	text-align: center;
+	font-size: 0.8rem;
+	padding: 0.28rem;
+	align-items: center;
 }
 
-.tagInvisible.ytb i {
-    color: red;
-    z-index: 2;
-    padding-right: 5px;
-	font-size: 21px;
-}
-
-.box .tagList .tag.ytb {
-	padding: 4px 5px 4px 7px;
+.box .tagList .tag i {
+	display: flex;
+	font-size: 1rem;
+	padding: 0.05rem;
+	line-height: 1.0;
+	align-items: center;
+    align-content: center;
 }
 
 .box .tagList .tag.sticky {
-	background-color: var(--tag1-sticky);
-    padding: 4.1px;
+	display: flex;
+	text-align: center;
+	font-size: 0.8rem;
+	padding: 0.28rem;
+	background: var(--tag1-sticky);
+	align-items: center;
 }
 
-.tagInvisible.csticky i {
-	color: #ffffff;
-	background-color: var(--hometag1);
-    padding: 3.4px 4px;
-    border-radius: 3px;
-    font-size: 11px;
-    margin-top: 1px;
-    margin-bottom: 5px;
+.tagInvisible.rss i {
+	background-color: #ff8100;
+	border-radius: 3px;
+	padding: 0.2rem;
+	color: #fff;
+	font-size: 1.1rem;
 }
 
 .title {
@@ -727,54 +721,6 @@ span.countComments {
     margin-right: 4px;
 }
 
-.tagInvisible {
-	height: 18px;
-    display: flex;
-    position: relative;
-}
-
-.tagWrapper {
-	display: flex;
-    background: white;
-    width: 13px;
-    height: 15px;
-    position: absolute;
-    margin-left: 4px;
-    margin-top: 4px;
-}
-
-.tag.categoryTag {
-	padding: 4.1px 1px;
-	margin-bottom: 2px;
-}
-
-.tagInvisible i {
-    color: red;
-    z-index: 2;
-}
-.tagInvisible.pollTag .tagWrapper {
-	width: 18px;
-	height: 13px;
-	margin-left: 1px;
-}
-
-.tag.pollTag {
-	padding: 2px 4px !important;
-	font-size: 0.95rem !important;
-	margin-bottom: 2px;
-}
-
-.tag.diceTag {
-	padding: 2px 4px !important;
-	font-size: 0.95rem !important;
-	margin-bottom: 2px;
-}
-
-.tag.iduTag {
-	padding: 2px 4px !important;
-	font-size: 0.95rem !important;
-	margin-bottom: 2px;
-}
 
 .voxAction {
     color: white;
