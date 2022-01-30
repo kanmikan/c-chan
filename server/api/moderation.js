@@ -14,6 +14,31 @@ function advUserByCID(DB, cid, callback){
 	
 }
 
+async function sendMSG(DB, ruid, nick, thumb, text, callback){
+	let notif = utils.clone(jsonScheme.NOTIF_SCHEME);
+	notif.sender.uid = nick;
+	notif.receiver.uid = ruid;
+	notif.date.created = Date.now();
+	notif.type.push("alert");
+	notif.state.push("new");
+	notif.content = {
+		cid: nick,
+		bid: "msg",
+		tag: true,
+		preview : {
+			title: `Mensaje de ${nick}:`,
+			desc: text,
+			thumb: thumb
+		}
+	}
+	
+	dbManager.insertDB(DB, mdbScheme.C_NOTIF, notif, function(){
+		live.sendDataTo(ruid, "notif", pass.filterProtectedUID(notif));
+		callback({success: true, data: "Mensaje Enviado."});
+	});
+	
+}
+
 //FUNCION: envia una alerta de denuncia.
 async function sendADMFlag(DB, data, callback){
 	
@@ -107,6 +132,16 @@ async function banUser(DB, uid, razon, time, callback){
 	callback({success: true, data: bandata});
 }
 
+async function unbanUser(DB, uid, callback){
+	await dbManager.pushDB(DB, mdbScheme.C_ADM, {uid: uid}, {$pull: {state: {$in: ["BANNED"]}}}, () => {});
+	callback({success: true, data: "OK."});
+}
+
+async function getUserData(DB, uid, callback){
+	let userData = await dbManager.queryDB(DB, mdbScheme.C_ADM, {uid: uid}, "", () => {});
+	callback({success: true, data: userData});
+}
+
 async function updateBoxParams(DB, bid, params, callback){
 	await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: params}, () => {});
 	callback({success: true, data: "modificado."});
@@ -124,4 +159,4 @@ function deleteComment(DB, cid, callback){
 	})
 }
 
-module.exports = {advUserByCID, banUserByCID, banUserByBID, banUser, deleteComment, deleteBox, moveBox, updateBoxParams, sendADMFlag}
+module.exports = {advUserByCID, banUserByCID, banUserByBID, banUser, deleteComment, deleteBox, moveBox, updateBoxParams, sendADMFlag, sendMSG, unbanUser, getUserData}

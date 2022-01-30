@@ -6,6 +6,8 @@ const mdbScheme = require('../db/models/mdbscheme.js');
 const jsonScheme = require('../db/models/jsonscheme.js');
 const utils = require('../utils.js');
 const csrf = require('simple-csrf');
+const defaults = require('../db/defaults.js');
+const access = require('../api/access.js');
 
 var USER_FLAG = [];
 
@@ -58,24 +60,13 @@ function checkUser(req, res, next){
 }
 
 //FUNCION: genera un usuario nuevo, y lo retorna
-//TODO: mover parte de esto a defaults.js
 function genUser(uid, pass, sid){
 	let json = utils.clone(jsonScheme.USER_SCHEME);
 	json.uid = uid;
 	json.pass = pass;
 	json.sid = sid;
 	json.extra = {
-		config: {
-			darkmode: true, //tema claro/oscuro.
-			autoloadgifs: true, //[placeholder] define si los gifs se van a cargar automaticamente o si se usará el thumbnail estático.
-			boxhides: [], //lista de boxs ocultos
-			cathides: [], //lista de categorias ocultas.
-			favs: [], //lista de favoritos.
-			comus: [], //lista de comunidades suscritas. (aplica a la v1)
-			anchors: [], //id de la categoria/comunidad pineada con prioridad en la home (aplica a la v1)
-			blacklist: [], //[placeholder] define una lista negra de palabras (o users), (nota: esto podria exponer el uid)
-			theme: "" //[extra] define estilos propios aplicados del usuario.
-		}
+		config: defaults.getDefUserConfig()
 	};
 	return json;
 }
@@ -88,14 +79,13 @@ function checkSesion(req, res, next){
 			console.log("[Sesion] Usuario efimero detectado, redirigir al logeo.");
 			res.json({success: false, data: {redirect: true, to: "/login"}});
 		} else {
-			//comprueba la whitelist.
-			//TODO: mover esto a un middleware aparte.
-			let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
-			if (svrconfig[0].whitelist && !(user[0].permisos.includes("WHITELIST") || user[0].permisos.includes("ADMIN") || user[0].permisos.includes("GMOD") || user[0].permisos.includes("MOD"))) {
-				res.json({success: false, data: "Whitelist Activada - Solo los usuarios permitidos pueden realizar esa accion."});
-			} else {
-				next();
-			}
+			access.whitelist(req.app.locals.db, user[0], function(access){
+				if (access){
+					res.json(access);
+				} else {
+					next();
+				}
+			});
 		}
 	});
 }

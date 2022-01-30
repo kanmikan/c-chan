@@ -41,20 +41,20 @@
 		</div>
 		<div>Acciones Generales</div>
 		<div class="pcontainer-int">
-			<% let whitelist = it.data.server[0].whitelist; %>
+			<% let access = it.data.server[0]; %>
 			
-			<button class="buttonPress" id="action-1" data-state="<%= (whitelist) ? "1" : "0" %>" style="<%= (whitelist) ? "background: red" : "" %>" type="submit">
-				<span><%= (whitelist) ? "Desactivar" : "Activar" %> Whitelist</span> 
+			<button class="buttonPress" id="action-1" data-state="<%= (access.whitelist) ? "1" : "0" %>" style="<%= (access.whitelist) ? "background: red" : "" %>" type="submit">
+				<span><%= (access.whitelist) ? "Desactivar" : "Activar" %> Whitelist</span> 
 			</button>
-			<button class="buttonPress" type="submit">
-				<span>Cerrar Comentarios</span> 
+			<button class="buttonPress" id="action-2" data-state="<%= (access.login) ? "1" : "0" %>" style="<%= (access.login) ? "" : "background: red" %>" type="submit">
+				<span><%= (access.login) ? "Cerrar" : "Abrir" %> Login</span> 
 			</button>
-			<button class="buttonPress" type="submit">
-				<span>Cerrar Temas</span> 
+			<button class="buttonPress" id="action-3" data-state="<%= (access.coms) ? "1" : "0" %>" style="<%= (access.coms) ? "" : "background: red" %>" type="submit">
+				<span><%= (access.coms) ? "Cerrar" : "Abrir" %> Comentarios</span> 
 			</button>
-			<button class="buttonPress" type="submit">
-				<span>Sesiones</span>
-			</button>	
+			<button class="buttonPress" id="action-4" data-state="<%= (access.boxs) ? "1" : "0" %>" style="<%= (access.boxs) ? "" : "background: red" %>" type="submit">
+				<span><%= (access.boxs) ? "Cerrar" : "Abrir" %> Temas</span> 
+			</button>
 		</div>
 		<div class="admActivity">
 			<div>Actividad Reciente</div>
@@ -65,7 +65,7 @@
 		</div>
 		<div class="pcontainer-int admConsole">
 			<div class="consoleResult" id="consoleResult">[Escribe /help para obtener una lista de ordenes]</div>
-			<form class="admConsole-int" id="consoleForm">
+			<form class="admConsole-int" id="consoleForm" autocomplete="off">
 				<input type="hidden" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">
 				<input type="text" id="consoleInput" value="" placeholder="/reload /promote">
 				<button class="buttonPress" type="submit"><span>Enviar</span></button>

@@ -38,6 +38,60 @@
 			});
 		});
 		
+		//login
+		element("action-2").addEventListener("click", function(e){
+			let target = $(e.currentTarget);
+			admActionSend("adm_login", target.attr("data-state"), function(){}, function(result){
+				if (result.success){
+					if (result.data.login){
+						target.attr("data-state", "1");
+						$("#action-2").css({background: ""});
+						$("#action-2").text("Cerrar Login");
+					} else {
+						target.attr("data-state", "0");
+						$("#action-2").css({background: "red"});
+						$("#action-2").text("Abrir Login");
+					}
+				}
+			});
+		});
+		
+		//coms
+		element("action-3").addEventListener("click", function(e){
+			let target = $(e.currentTarget);
+			admActionSend("adm_coms", target.attr("data-state"), function(){}, function(result){
+				if (result.success){
+					if (result.data.coms){
+						target.attr("data-state", "1");
+						$("#action-3").css({background: ""});
+						$("#action-3").text("Cerrar Comentarios");
+					} else {
+						target.attr("data-state", "0");
+						$("#action-3").css({background: "red"});
+						$("#action-3").text("Abrir Comentarios");
+					}
+				}
+			});
+		});
+		
+		//boxs
+		element("action-4").addEventListener("click", function(e){
+			let target = $(e.currentTarget);
+			admActionSend("adm_boxs", target.attr("data-state"), function(){}, function(result){
+				if (result.success){
+					if (result.data.boxs){
+						target.attr("data-state", "1");
+						$("#action-4").css({background: ""});
+						$("#action-4").text("Cerrar Temas");
+					} else {
+						target.attr("data-state", "0");
+						$("#action-4").css({background: "red"});
+						$("#action-4").text("Abrir Temas");
+					}
+				}
+			});
+		});
+		
 		//abrir tema
 		$(document).on("click", ".adm-temalist", function(e){
 			let data = $(e.currentTarget).data();

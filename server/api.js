@@ -17,6 +17,7 @@ const compat = require('./db/compat.js');
 const recycler = require('./api/recyclemanager.js');
 const moderation = require('./api/moderation.js');
 const sanitizer = require('./api/sanitizer.js');
+const access = require('./api/access.js');
 
 module.exports = function(app){
 	
@@ -48,7 +49,7 @@ module.exports = function(app){
 	});
 	
 	//RUTA: crea un nuevo box.
-	app.post('/api/new', rate.spamLimit, pass.check, pass.checkBoxFields, sesionManager.checkSesion,  async function(req, res) {
+	app.post('/api/new', rate.spamLimit, access.boxs, pass.check, pass.checkBoxFields, sesionManager.checkSesion,  async function(req, res) {
 		let cat = req.fields.cat;
 		let title = req.fields.title;
 		let subtitle = req.fields.subtitle;
@@ -152,7 +153,7 @@ module.exports = function(app){
 	});
 	
 	//RUTA: nuevo comentario.
-	app.post('/api/com', rate.spamLimit, pass.check, pass.checkComFields, sesionManager.checkSesion, async function(req, res) {
+	app.post('/api/com', rate.spamLimit, access.coms, pass.check, pass.checkComFields, sesionManager.checkSesion, async function(req, res) {
 		let bid = req.fields.bid;
 		let content = req.fields.content;
 		let img = req.fields.img.split(";");
@@ -263,9 +264,8 @@ module.exports = function(app){
 	
 	//API: login de ID
 	//TODO añadir middleware de passport para comprobar la validez de los campos.
-	app.post('/api/idlogin', rate.loginLimit, async function(req, res){
+	app.post('/api/idlogin', rate.loginLimit, access.login, async function(req, res){
 		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
-		let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
 		
 		//leer la base de datos de IDs filtrando al uid en cuestion
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {uid: userid}, "", async function(user){
@@ -288,10 +288,7 @@ module.exports = function(app){
 			} else {
 				//si el usuario no existe, generar uno nuevo.
 				//comprobar que el userid sea un id valido de 32 caracteres.
-				//TODO: añadir middleware de acceso (svrConfig)
-				if (!svrconfig[0].login){
-					res.json({success: false, data: "La generacion de ID se encuentra cerrada."});
-				} else if (userid.trim().length !== 32){
+				if (userid.trim().length !== 32){
 					res.json({success: false, data: "ID invalido, tiene que tener 32 caracteres."});
 				} else {
 					//generar nuevo usuario.
@@ -311,11 +308,10 @@ module.exports = function(app){
 	
 	//API: login de usuario.
 	//TODO: comprobacion de credenciales, sanitizado
-	app.post('/api/login', rate.loginLimit, async function(req, res) {
+	app.post('/api/login', rate.loginLimit, access.login, async function(req, res) {
 		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
 		let password = req.fields.password.trim();
 		
-		let svrconfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(svr){});
 		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {$or: [{uid: userid}, {nick: new RegExp(userid, "i")}]}, "", async function(user){
 			if (user[0]){
 				//existe el usuario, comparar contraseña.
@@ -335,9 +331,7 @@ module.exports = function(app){
 			} else {
 				//crear usuario
 				//primero, comprobar que el userid sea un id valido de 32 caracteres.
-				if (!svrconfig[0].login){
-					res.json({success: false, data: "La generacion de ID se encuentra cerrada."});
-				} else if (userid.trim().length !== 32){
+				if (userid.trim().length !== 32){
 					res.json({success: false, data: "ID invalido, tiene que tener 32 caracteres."});
 				} else {
 					let json = sesionManager.genUser(userid, password, req.session.id);
@@ -436,7 +430,12 @@ module.exports = function(app){
 		//limpiar notificaciones
 		await dbManager.deleteDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "content.bid": bid, "content.tag": false}, ()=>{});
 		await dbManager.deleteDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid, "content.bid": bid, "content.cid": cid, "content.tag": true}, ()=>{});
-		res.redirect("/tema/" + bid + "#" + cid);
+		
+		if (bid === "msg"){
+			res.redirect("/");
+		} else {
+			res.redirect("/tema/" + bid + "#" + cid);
+		}
 	});
 	
 	//API: obtener una notificacion especificada por el timestamp, usada por el popup.

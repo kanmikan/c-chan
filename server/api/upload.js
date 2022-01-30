@@ -105,6 +105,7 @@ function uploadLink(url, callback){
 }
 
 function uploadLinkImg(url, callback){
+	let type = checkURLType(url);
 	switch(sConfig.IMG_SERVER){
 		case 0:
 			//subida local

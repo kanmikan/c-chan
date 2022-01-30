@@ -15,6 +15,7 @@ module.exports = function(app){
 	
 	app.post('/adm/command', pass.onlyADM, function(req, res) {
 		let args = req.fields.args.split(" ");
+		let cxArgs = req.fields.args.match(/[^\s"]+|"([^"]*)"/gi);
 		let rbody = "";
 		//mini interprete
 		switch(args[0]){
@@ -22,9 +23,12 @@ module.exports = function(app){
 				rbody = `
 					<span style="color: orange">/promote</span> uid permiso<br/>
 					<span style="color: orange">/demote</span> uid permiso<br/>
-					<span style="color: orange">/ban</span> uid razon duracion<br/>
+					<span style="color: orange">/ban</span> uid "razon" duracion<br/>
+					<span style="color: orange">/unban</span> uid<br/>
+					<span style="color: orange">/msg</span> uid "texto del mensaje"<br/>
 					<span style="color: orange">/user</span> uid opcion valor<br/>
-					<span style="color: orange">/reload</span>
+					<span style="color: orange">/reload</span><br/>
+					<span style="color: orange">/permisos</span> uid
 				`;
 				res.send({success: true, data: rbody});
 				break;
@@ -52,13 +56,31 @@ module.exports = function(app){
 				res.send({success: true, data: rbody});
 				break;
 			case "/ban":
-				let uid = args[1];
-				let razon = args[2];
-				let tiempo = args[3];
-				//TODO: banear user
+				let razon = cxArgs[2].substr(1, cxArgs[2].length-2);
+				let tiempo = cxArgs[3];
+				moderation.banUser(req.app.locals.db, cxArgs[1], razon, tiempo, function(resp){
+					rbody = `<span style="color:red">${cxArgs[1]} baneado, razon: ${razon}, tiempo: ${tiempo}</span>`;
+					res.send({success: true, data: rbody});
+				});
+				break;
+			case "/unban":
+				moderation.unbanUser(req.app.locals.db, cxArgs[1], function(resp){
+					rbody = `<span style="color:orange">${cxArgs[1]} desbaneado.</span>`;
+					res.send({success: true, data: rbody});
+				});
+				break;
+			case "/permisos":
+				moderation.getUserData(req.app.locals.db, cxArgs[1], function(resp){
+					rbody = `<span style="color:orange">Permisos: ${resp.data[0].permisos}</span>`;
+					res.send({success: true, data: rbody});
+				})
+				break;
+			case "/msg":
+				let text = cxArgs[2].substr(1, cxArgs[2].length-2);
 				
-				rbody = `${uid} baneado.`;
-				res.send({success: true, data: rbody});
+				moderation.sendMSG(req.app.locals.db, cxArgs[1], "Admin", "/assets/logo.png", text, function(resp){
+					res.send(resp);
+				});
 				break;
 			default:
 				res.send({success: true, data: "orden indefinida."});
@@ -97,18 +119,24 @@ module.exports = function(app){
 		
 		switch(action){
 			case "adm_whitelist":
-				let state = (data === "1") ? false : true;
-				dbManager.updateDBAll(req.app.locals.db, mdbScheme.C_SVR, {}, {whitelist: state}, () => {});
-				res.json({success: true, data: {whitelist: state}});
+				let wlState = (data === "1") ? false : true;
+				dbManager.updateDBAll(req.app.locals.db, mdbScheme.C_SVR, {}, {whitelist: wlState}, () => {});
+				res.json({success: true, data: {whitelist: wlState}});
 				break;
 			case "adm_login":
-				res.json({success: false, data: "-no implementado-"});
+				let loginState = (data === "1") ? false : true;
+				dbManager.updateDBAll(req.app.locals.db, mdbScheme.C_SVR, {}, {login: loginState}, () => {});
+				res.json({success: true, data: {login: loginState}});
 				break;
 			case "adm_coms":
-				res.json({success: false, data: "-no implementado-"});
+				let comsState = (data === "1") ? false : true;
+				dbManager.updateDBAll(req.app.locals.db, mdbScheme.C_SVR, {}, {coms: comsState}, () => {});
+				res.json({success: true, data: {coms: comsState}});
 				break;
 			case "adm_boxs":
-				res.json({success: false, data: "-no implementado-"});
+				let boxsState = (data === "1") ? false : true;
+				dbManager.updateDBAll(req.app.locals.db, mdbScheme.C_SVR, {}, {boxs: boxsState}, () => {});
+				res.json({success: true, data: {boxs: boxsState}});
 				break;
 			default:
 				res.json({success: false, data: "accion no definida"});

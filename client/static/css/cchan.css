@@ -430,7 +430,6 @@ li.noNotification {
     width: 48px;
     border-radius: 4px;
     height: 48px;
-    background: #3f96c5;
     display: flex;
 	object-fit: cover;
 }
@@ -523,19 +522,23 @@ li.noNotification {
 /* copypaste directo */
 .slideMenu {
     position: fixed;
+	overflow-y: scroll;
     right: 0;
     top: 50px;
-    background: var(--slidemenu-background);
+	background: var(--slidemenu-background);
     z-index: 5;
     width: 20vw;
     height: calc(100vh - 50px);
     box-shadow: -1px 0px 3px 0 rgba(0,0,0,.2);
 }
 
+div.slideMenu::-webkit-scrollbar {
+	height: 0px;
+	width: 0px;
+}
+
 ul.slideMenuOptions {
     height: auto;
-    overflow: scroll;
-    overflow: overlay;
 	padding: 0px;
     margin-top: 0px;
 }
@@ -639,8 +642,8 @@ ul.slideMenuOptions li:hover.optionBolt {
 .box .tagList .tag.categoryTag {
 	display: flex;
 	text-align: center;
-	font-size: 0.8rem;
-	padding: 0.22rem;
+	font-size: 0.7rem;
+	padding: 0.32rem;
 	align-items: center;
 }
 
@@ -656,8 +659,8 @@ ul.slideMenuOptions li:hover.optionBolt {
 .box .tagList .tag.sticky {
 	display: flex;
 	text-align: center;
-	font-size: 0.8rem;
-	padding: 0.22rem;
+	font-size: 0.7rem;
+	padding: 0.32rem;
 	background: var(--tag1-sticky);
 	align-items: center;
 }
@@ -1279,7 +1282,6 @@ button.close:hover{
 	width: 48px;
     border-radius: 4px;
     height: 48px;
-    background: #3f96c5;
     display: flex;
 	object-fit: cover;
 }
@@ -1478,11 +1480,6 @@ h4{
 .homebarContainer {
 	display: flex;
 	padding: 3px;
-}
-
-#slideMenu {
-	overflow-y: overlay;
-	background: var(--slidemenu-background);
 }
 
 .chatlike-box {
@@ -2511,11 +2508,11 @@ input:checked + .slider:before {
 }
 
 .tagNew {
-	background: #12a201;
+	background: #2e7d32;
 	color: #fff;
-	padding: 3px;
+	padding: 0.3rem;
 	margin-left: 3px;
-	font-size: 11px;
+	font-size: 0.7rem;
 	border-radius: 3px;
 }
 

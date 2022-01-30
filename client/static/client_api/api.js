@@ -718,7 +718,7 @@ $(document).ready(function() {
 	if (element("idButton")){
 		element("idButton").addEventListener("click", function(e){
 			e.preventDefault();
-			let userid = element("userid").value;
+			let userid = element("iuserid").value;
 			let formdata = new FormData();
 			
 			formdata.append("userid", userid);
