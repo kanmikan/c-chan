@@ -30,4 +30,9 @@ function youtubeParser(url){
 	return (match && match[2].length == 11) ? match[2] : null;
 }
 
-module.exports = {getVideoData, genYoutubeThumb, youtubeParser}
+function embed2url(url){
+	var id = youtubeParser(url);
+	return (id) ? "https://www.youtube.com/watch?v=" + id : "";
+}
+
+module.exports = {getVideoData, genYoutubeThumb, youtubeParser, embed2url}

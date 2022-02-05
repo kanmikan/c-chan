@@ -1,4 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
+const youtube = require('./api/youtube.js');
+
 
 /* FUNCIONES UTILITARIAS DE USO EN EL SERVER Y EN EL RENDER */
 function clone(json) {
@@ -145,4 +147,4 @@ function seclink(url) {
     return url.replace("http://", "https://");
 }
 
-module.exports = {isTagOp, isDataImage, seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3 };
+module.exports = {isTagOp, isDataImage, seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3, embed2url: youtube.embed2url};
