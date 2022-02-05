@@ -31,12 +31,12 @@ module.exports = {
 	
 	/* DELAYS ENTRE OTROS */
 	COMMENT_DELAY: 5, //tiempo de espera en segundos (5 segundos)
-	BOX_DELAY: 60,
+	BOX_DELAY: 120,
 	MAX_TAGS: 5, //maximo numero de tagueos permitidos.
 	/* LIMITES */
 	HOME_BOX_LIMIT: 48, //limite de la carga inicial (no aplica a la v1)
 	HOME_BOX_PAGELOAD: 20, //cantidad de boxs a cargar en cada paginación.
-	CATEGORY_BOX_LIMIT: 41, //maximo de temas en una categoría.
+	CATEGORY_BOX_LIMIT: 82, //maximo de temas en una categoría.
 	
 	/* OTROS */
 	RTF_BOXS: false, //aceptar formato de texto enriquecido en los temas.

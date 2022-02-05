@@ -175,6 +175,22 @@ function updateDBAll(DB, cname, criterio, valor, callback){
 	});
 }
 
+function deleteDBAll(DB, cname, criterio, callback){
+	return new Promise(function(resolve, reject){
+		DB.db(sConfig.DBNAME).collection(cname).deleteMany(criterio, function(err, result){
+			if (sConfig.DATABASE_CACHE){
+				cache.update(cname, function(){
+					callback(result);
+					resolve(result);
+				});
+			} else {
+				callback(result);
+				resolve(result);
+			}
+		});
+	});
+}
+
 function deleteDB(DB, cname, criterio, callback){
 	return new Promise(function(resolve, reject){
 		DB.db(sConfig.DBNAME).collection(cname).remove(criterio, function(err, result){
@@ -191,4 +207,4 @@ function deleteDB(DB, cname, criterio, callback){
 	});
 }
 
-module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll, pushDB, queryDBSkip, deleteDB, insertAllDB};
+module.exports = {connect, queryDB, mQuery, queryAggregate, insertDB, updateDBAll, pushDB, queryDBSkip, deleteDB, deleteDBAll, insertAllDB};

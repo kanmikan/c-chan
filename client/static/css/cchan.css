@@ -2508,11 +2508,11 @@ input:checked + .slider:before {
 }
 
 .tagNew {
-	background: #2e7d32;
+	background: #12a201;
 	color: #fff;
-	padding: 0.3rem;
 	margin-left: 3px;
-	font-size: 0.7rem;
+	font-size: .7rem;
+	padding: 0.32rem;
 	border-radius: 3px;
 }
 
