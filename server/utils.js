@@ -147,4 +147,26 @@ function seclink(url) {
     return url.replace("http://", "https://");
 }
 
-module.exports = {isTagOp, isDataImage, seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3, embed2url: youtube.embed2url};
+function weightRandom(data){
+	let elements = new Array();
+	let probability = new Array();
+	
+	for (var i=0; i<data.length; i++){
+		elements.push(data[i][0]);
+		probability.push(data[i][1]);
+	}
+	
+	let total = eval(probability.join("+"));
+	let weighted = new Array();
+	let current = 0;
+	while(current < probability.length){
+		for(i=0; i<probability[current]; i++){
+			weighted[weighted.length] = elements[current];
+		}
+		current++;
+	}
+	let random = Math.floor(Math.random() * total);
+	return weighted[random];
+}
+
+module.exports = {isTagOp, isDataImage, seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3, embed2url: youtube.embed2url, weightRandom};

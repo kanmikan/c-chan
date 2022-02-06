@@ -215,6 +215,36 @@ module.exports = function(app){
 		res.send({result: "pong", data: req.ip});
 	});
 	
+	app.get('/dev/randomness/:count', pass.onlyADM, function(req, res){
+		let count = parseInt(req.params.count);
+		
+		let anone = [
+			["amarillo", 90], //amarillo
+			["azul", 90], //azul
+			["verde", 90], //verde
+			["rojo", 90], //rojo
+			["multi", 20], //multi
+			["invertido", 20], //invertido
+			["black", 3], //black
+			["yuu.png", 1], //yuu
+			["white", 3] //white
+		];
+		let object = {};
+		
+		for(let i=0; i<count; i++){
+			let selected = utils.weightRandom(anone);
+			if (!object[selected]){
+				object[selected] = 1;
+			} else {
+				object[selected] = object[selected] + 1;
+			}
+		}
+		
+		res.send(object);
+		
+	});
+	
+	
 	app.get('/dev/:bid', pass.onlyADM, async function(req, res) {
 		let bid = req.params.bid;
 		req.app.locals.db.db("mikanchan").collection("boxs").find({bid: bid}).toArray(function(err, result){
