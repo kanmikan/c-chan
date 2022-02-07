@@ -13,6 +13,7 @@ module.exports = {
 	/* esto desincroniza el orden de los comentarios enviados, pero da el efecto de carga instantanea en el emisor, es necesario invalidar la cache. */
 	ASYNC_COMMENTS: false,
 	
-	/* (deprecated) permite mostrar el icono de la categoria en la lista de temas */
-	SHOW_CATEGORY_ICON: false
+	/* boton con funciones extra para los comentarios */
+	ENABLE_COMMENT_TOOLS: false
+
 }
