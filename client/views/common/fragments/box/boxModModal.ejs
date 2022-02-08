@@ -6,11 +6,13 @@
 		<button type="buttonPress" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		</div>
 	<div class="modalSection boxModModal">
+	<% if (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD")){ %>
 		<div style="padding: 0px 15px;">
 			<div>Informacion del OP</div>
 			</br>
 			<div id="admOPuid">UID: <%= BOX.user.uid %></div>
 		</div>
+	<% } %>
 		<div style="width: 100%;display: flex;align-items: center;">
 			<select id="modMovecat">
 				<option value="" selected="selected" disabled="disabled">Elige una categoría</option>

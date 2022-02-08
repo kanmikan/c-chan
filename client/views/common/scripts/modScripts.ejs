@@ -10,18 +10,25 @@
 			let target = $(e.currentTarget);
 			let data = target.data();
 			
-			if (data.action === "com_ban" || data.action === "com_adv" || data.action === "com_delete"){
+			if (data.action === "com_ban"){
+				let razon = prompt("Razon:", "");
+				let time = prompt("Tiempo (en milisegundos)", "");
+				data.data = data.cid + ":" + razon + ":" + time;
+			}
+			
+			if (data.action === "com_adv" || data.action === "com_delete"){
 				if (!cconfirmer){
 					cconfirmer = true;
 					target.text("Confirmar?");
 					target.css({color: "#ff0000"});
 					return;
 				} else {
+					data.data = data.cid;
 					cconfirmer = false;
 				}
 			}
 			
-			modAction(data.action, data.cid, function(result){
+			modAction(data.action, data.data, function(result){
 				if (result.success){
 					//acciones a realizar luego de la accion de moderacion.
 					switch (result.data.action){
@@ -64,8 +71,14 @@
 				actdata = data.bid + ":" + sticky + ":" + csticky; 
 			}
 			
+			if (data.action === "box_ban"){
+				let razon = prompt("Razon:", "");
+				let time = prompt("Tiempo (en milisegundos)", "");
+				actdata = data.cid + ":" + razon + ":" + time;
+			}
+			
 			//pide confirmacion antes de enviar la solicitud.
-			if (data.action === "box_delete" || data.action === "box_ban" || data.action === "box_adv"){
+			if (data.action === "box_delete" || data.action === "box_adv"){
 				if (!bconfirmer) {
 					bconfirmer = true;
 					target.text("Confirmar?");

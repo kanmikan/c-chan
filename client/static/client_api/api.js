@@ -1383,6 +1383,7 @@ $(document).ready(function() {
 					element("newVox").disabled = true;
 				}, function(data){
 					if (data.success){
+						element("nimgpreview").style.filter = "inherit";
 						element("nimgpreview").setAttribute("src", data.data.thumb);
 						let img = data.data.link + ";" + data.data.thumb;
 						element("bimg").value = img;
@@ -1409,6 +1410,7 @@ $(document).ready(function() {
 					element("newVox").disabled = true;
 				}, function(data){
 					if (data.success){
+						element("nimgpreview").style.filter = "inherit";
 						element("nimgpreview").setAttribute("src", data.data.thumb);
 						$("#previewInputVox").attr("style", "display: block !important");
 						let vid = data.data.link + ";" + data.data.thumb;

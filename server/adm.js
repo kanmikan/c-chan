@@ -162,12 +162,14 @@ module.exports = function(app){
 				});
 				break;
 			case "com_ban":
-				moderation.banUserByCID(req.app.locals.db, data, "-razon-", 1000, function(response){
+				let parsed = data.split(":");
+				moderation.banUserByCID(req.app.locals.db, parsed[0], parsed[1], parsed[2], function(response){
 					res.json({success: response.success, data: {action: action, response: response.data}});
 				});
 				break;
 			case "box_ban":
-				moderation.banUserByBID(req.app.locals.db, data, "-razon-", 1000, function(response){
+				let bparsed = data.split(":");
+				moderation.banUserByBID(req.app.locals.db, bparsed[0], bparsed[1], bparsed[2], function(response){
 					res.json({success: response.success, data: {action: action, response: response.data}});
 				});
 				break;

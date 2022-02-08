@@ -32,7 +32,7 @@
 		<div class="voxOption <%= (it.sesion.config.boxhides.includes(BOX.bid)) ? "hided" : "" %>" data-bid="<%= BOX.bid %>" id="iconhide">
 		<i class="fas fa-lock"></i><span class="voxOptionText">Ocultar</span></div>
 		
-		<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))){ %>
+		<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD")) || it.data.users[0].permisos.includes("MOD")){ %>
 			<div class="voxOption" data-bid="<%= BOX.bid %>" data-toggle="modal" data-target="#boxModModal" data-backdrop="false">
 			<i class="fas fa-circle"></i><span class="voxOptionText">Moderar</span></div>
 		<% } %>
