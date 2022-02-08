@@ -1141,10 +1141,25 @@ $(document).ready(function() {
 			});
 			for (var i=0; i<COMS.length; i++){
 				commentRender(COMS[i].op, COMS[i].data);
+				
+				//renderizar tags nuevos
+				//detectar taggueos dentro del comentario.
+				checkNewTags(COMS[i].op, COMS[i].data.cid, COMS[i].data.content.body);
+				
 			}
 			COMS = [];
-			element("commentLoadMore").classList.add("hidden");
+			element("commentLoadMore").classList.add("hidden");	
 		});
+	}
+	
+	function checkNewTags(op, lcom, raw){
+		let tags = $(parseHTML(raw)).parent().find(".tag");
+		let tagnum = tags.length;
+		
+		for (var i=0; i<tagnum; i++){
+			let tag = $(tags[i]).data("tag");
+			element(tag).querySelector(".commentReply").append(parseHTML(`<a href="#${lcom}" class="tag" data-tag="${lcom}">&gt;&gt;${lcom} ${(op) ? "(OP)" : ""}</a>`));
+		}
 	}
 	
 	//evento: al seleccinar un link en modal de tema
