@@ -1159,7 +1159,11 @@ $(document).ready(function() {
 				
 				var link = $("input[name=burl]").val();
 				if (link.trim() != ""){
+					//resetea los datos para evitar duplicacion.
 					element("burl").value = "";
+					element("bimg").value = "";
+					element("bvid").value = "";
+					
 					//analizar y manipular la url
 					let formData = new FormData();
 					formData.append("link", link);
@@ -1221,7 +1225,10 @@ $(document).ready(function() {
 				$("#linkButton").html('<i class="fas fa-link"></i>');
 				var link = $("input[name=url]").val();
 				if (link.trim() != ""){
+					//resetea los datos para evitar duplicacion.
 					element("curl").value = "";
+					element("cimg").value = "";
+					element("cvid").value = "";
 
 					//analizar y manipular la url
 					let formData = new FormData();
@@ -1375,6 +1382,9 @@ $(document).ready(function() {
 		element("bfile").addEventListener("change", function(e){
 			let file = element("bfile").files.item(0);
 			if (file && file.type.split("/")[0] === "image"){
+				element("bimg").value = "";
+				element("bvid").value = "";
+				
 				getDataURL(file, function(target){
 					$("#previewInputVox").attr("style", "display: block !important");
 					element("nimgpreview").setAttribute("src", target);
@@ -1389,8 +1399,6 @@ $(document).ready(function() {
 						element("bimg").value = img;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						//(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
-						
 						if (data.data && data.data.banned) {
 								swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
 						} else {
@@ -1403,6 +1411,9 @@ $(document).ready(function() {
 					element("newVox").disabled = false;
 				});	
 			} else if (file.type.split("/"[0] === "video")) {
+				element("cimg").value = "";
+				element("cvid").value = "";
+				
 				getDataURL(file, function(){
 					//element("nimgpreview").setAttribute("src", target);
 					element("btext").classList.add("hidden");
@@ -1417,7 +1428,6 @@ $(document).ready(function() {
 						element("bvid").value = vid;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
-						//(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
 						
 						if (data.data && data.data.banned) {
 							swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
@@ -1444,6 +1454,10 @@ $(document).ready(function() {
 			let file = element("cfile").files.item(0);
 			//comprobacion rapida de que el archivo sea una imagen.
 			if (file && file.type.split("/")[0] === "image"){
+				//resetear campos para evitar el bug de datos duplicados.
+				element("cimg").value = "";
+				element("cvid").value = "";
+				
 				//si es una imagen, subir
 				getDataURL(file, function(target){
 					element("imgpreview").setAttribute("src", target);
@@ -1459,8 +1473,6 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
-						//(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
-						
 						if (data.data && data.data.banned) {
 							swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
 						} else {
@@ -1474,6 +1486,10 @@ $(document).ready(function() {
 					element("newComment").disabled = false;
 				});	
 			} else if (file.type.split("/")[0] === "video"){
+				//resetear campos para evitar el bug de datos duplicados.
+				element("cimg").value = "";
+				element("cvid").value = "";
+				
 				//subir video.
 				getDataURL(file, function(){
 					element("loadingCom").classList.remove("hidden");
@@ -1488,7 +1504,6 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
-						//(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
 						
 						if (data.data && data.data.banned) {
 							swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
@@ -1502,7 +1517,6 @@ $(document).ready(function() {
 					element("newComment").disabled = false;
 				});
 			} else {
-				//alert("Formato no admitido");
 				swalert({title: "Error", text: "Formato no admitido", icon: "error"}, function(){});
 			}
 			

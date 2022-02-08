@@ -110,6 +110,7 @@
     --adm-box-title: #4caf50;
     --navbar-icon-color-hover: #3f51b5;
 	--menumodal-notif-text-hover: white;
+	--video-url-color: #43439e;
 }
 
 html[data-theme='darkmode']{
@@ -125,7 +126,7 @@ html[data-theme='darkmode']{
 	--button1b: #565656;
 	--button1b-hover: #3f51b5;
 	--comment-background: #2c2c2c;
-	--comment-background-hover: #363636;
+	--comment-background-hover: #303030;
 	--comment-background-jump: #3a3a3a;
 	--box-links: #5692c1;
 	--box-links-hover: #3f51b5;
@@ -218,6 +219,7 @@ html[data-theme='darkmode']{
 	--adm-box-title: #4caf50;
 	--navbar-icon-color-hover: white;
 	--menumodal-notif-text-hover: white;
+	--video-url-color: white;
 }
 
 /* CODIGO DE VOXEDRIP.CSS ADAPTADO */
@@ -1097,7 +1099,7 @@ figure.commentAttachVideo .video-link {
 }
 
 figure.commentAttachVideo .video-link a {
-	color: var(--link-color);
+	color: var(--video-url-color);
 }
 
 figure.commentAttachVideo .video-link a:hover {
