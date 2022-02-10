@@ -645,7 +645,7 @@ ul.slideMenuOptions li:hover.optionBolt {
 .box .tagList .tag {
 	display: flex;
 	color: #fefefe;
-	border-radius: 1px;
+	border-radius: 2px;
 	padding: 0.2rem;
 	background: var(--hometag1);
 	margin-right: 3px;
@@ -1084,53 +1084,52 @@ figure.commentAttachVideo {
     margin-right: 16px;
     width: 100%;
     height: auto;
-    padding: 8px;
+    padding: 8px 8px 4px 8px;
     border-radius: 4px;
     background: var(--box-attach-background);
-    /*display: flex;*/
     align-items: flex-start;
     box-sizing: border-box;
 }
 
-figure.commentAttachVideo .video-link {
+.video-link {
 	word-break: break-all;
 	margin-top: 4px;
 	font-size: 0.7rem;
 }
 
-figure.commentAttachVideo .video-link a {
-	color: var(--video-url-color);
+.video-link a {
+	color: var(--video-url-color) !important;
 }
 
-figure.commentAttachVideo .video-link a:hover {
-	color: var(--box-test-hover);
+.video-link a:hover {
+	color: var(--box-links) !important;
+}
+
+.videoAttachData {
+	border-radius: 4px;
+	padding: 8px 8px 4px 8px;
+	background: var(--box-attach-background);
 }
 
 figure.voxAttachVideo {
-    margin: 0;
-    float: left;
-    margin-right: 16px;
-    background: var(--box-attach-background);
-    border-radius: 4px;
-    display: flex;
-    align-items: flex-start;
-    max-width: 100%;
-    margin-bottom: 16px;
-    width: 100%;
-	position:relative;
-	padding-bottom:56.25%;
-	height:0;
-	overflow:hidden;
+	margin: 0;
+	width: 100%;
+	position: relative;
 }
 
-.objectContainer {
+figure.voxAttachVideo::after {
+	padding-top: 56.25%;
+	display: block;
+	content: '';
+}
+
+figure.voxAttachVideo > iframe{
+	display:block;
+	width:100%;
+	height:100%;
 	position:absolute;
 	top:0;
 	left:0;
-	padding: 8px;
-	width:100%;
-	height:100%;
-	box-sizing: border-box;
 }
 
 .fixed-position {

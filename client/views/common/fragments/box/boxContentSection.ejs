@@ -6,7 +6,6 @@
 		</div>
 	</a>
 	<div class="voxCategory" style="justify-content: flex-end">
-	
 		<% if (BOX.type.includes("poll")){ %>
 			<div class="categoryAvatar"><i class="fas fa-poll"></i></div>
 		<% } %>
@@ -73,6 +72,7 @@
 		</div>
 	</div>
 <% } %>
+
 <!-- cuerpo del box -->
 <article class="voxContent" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
 	<!-- multimedia del box, imagen, video, etc. -->
@@ -87,14 +87,19 @@
 				<a class="voxImage" data-pics="<%= BOX.img.full %>|<%= BOX.img.preview %>" target="_BLANK" href="<%= BOX.img.full %>"><img src="<%= (it.utils.isGif(BOX.img.full)) ? BOX.img.full : BOX.img.preview %>"></img></a>
 			</div>
 		</figure>
-	<% } else { %>
-		<figure class="voxAttachVideo">
-		<% if (BOX.type.includes("object")){ %>
-			<object class="objectContainer" data="<%= BOX.media.raw %>" width="100%" height="100%"></object>
-		<% } else { %>
-			<iframe class="objectContainer" id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= BOX.media.raw %>?enablejsapi=1&origin=https://<%= it.host %>&autoplay=1><img src=<%= BOX.media.preview %>><span id='playYT'>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-		<% } %>
-		</figure>
+	<% } else { 
+	let rawurl = it.utils.embed2url(BOX.media.raw); 
+	%>
+		<div class="videoAttachData">
+			<figure class="voxAttachVideo">
+			<% if (BOX.type.includes("object")){ %>
+				<object class="objectContainer" data="<%= BOX.media.raw %>" width="100%" height="100%"></object>
+			<% } else { %>
+				<iframe id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= BOX.media.raw %>?enablejsapi=1&origin=https://<%= it.host %>&autoplay=1><img src=<%= BOX.media.preview %>><span id='playYT'>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			<% } %>
+			</figure>
+			<div class="video-link"><a target="_blank" href="<%= rawurl %>"><%= rawurl %></a></div>
+		</div>
 	<% } %>
 	<!-- contenido del box, titulo, texto, etc. -->
 	<header class="voxBody">
