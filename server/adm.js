@@ -28,7 +28,12 @@ module.exports = function(app){
 					<span style="color: orange">/msg</span> uid "texto del mensaje"<br/>
 					<span style="color: orange">/user</span> uid opcion valor<br/>
 					<span style="color: orange">/reload</span><br/>
-					<span style="color: orange">/permisos</span> uid
+					<span style="color: orange">/permisos</span> uid<br/>
+					<span style="color: orange">/tracebox</span> bid<br/>
+					<span style="color: orange">/tracecom</span> cid<br/>
+					<span style="color: orange">/updateBox</span> bid mongodb_object<br/>
+					<span style="color: orange">/updateCom</span> cid mongodb_object
+					
 				`;
 				res.send({success: true, data: rbody});
 				break;
@@ -73,7 +78,33 @@ module.exports = function(app){
 				moderation.getUserData(req.app.locals.db, cxArgs[1], function(resp){
 					rbody = `<span style="color:orange">Permisos: ${resp.data[0].permisos}</span>`;
 					res.send({success: true, data: rbody});
-				})
+				});
+				break;
+			case "/tracecom":
+				moderation.getUIDbyCID(req.app.locals.db, args[1], function(resp){
+					rbody = `<span style="color:orange">UID: ${resp.data}</span>`;
+					res.send({success: true, data: rbody});
+				});
+				break;
+			case "/tracebox":
+				moderation.getUIDbyBID(req.app.locals.db, args[1], function(resp){
+					rbody = `<span style="color:orange">UID: ${resp.data}</span>`;
+					res.send({success: true, data: rbody});
+				});
+				break;
+			case "/updatebox":
+				let params = JSON.parse(cxArgs[2].substr(1, cxArgs[2].length-2).replace(/'/g, '"'));
+				moderation.updateBoxParams(req.app.locals.db, cxArgs[1], params, function(response){
+					rbody = `<span style="color:orange">Parámetro cambiado, /reload para ver cambios</span>`;
+					res.json({success: true, data: rbody});
+				});
+				break;
+			case "/updatecom":
+				let params = JSON.parse(cxArgs[2].substr(1, cxArgs[2].length-2).replace(/'/g, '"'));
+				moderation.updateComParams(req.app.locals.db, cxArgs[1], params, function(response){
+					rbody = `<span style="color:orange">Parámetro cambiado, /reload para ver cambios</span>`;
+					res.json({success: true, data: rbody});
+				});
 				break;
 			case "/msg":
 				let text = cxArgs[2].substr(1, cxArgs[2].length-2);
