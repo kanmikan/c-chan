@@ -93,15 +93,15 @@ module.exports = function(app){
 				});
 				break;
 			case "/updatebox":
-				let params = JSON.parse(cxArgs[2].substr(1, cxArgs[2].length-2).replace(/'/g, '"'));
-				moderation.updateBoxParams(req.app.locals.db, cxArgs[1], params, function(response){
+				let paramsb = JSON.parse(cxArgs[2].substr(1, cxArgs[2].length-2).replace(/'/g, '"'));
+				moderation.updateBoxParams(req.app.locals.db, cxArgs[1], paramsb, function(response){
 					rbody = `<span style="color:orange">Parámetro cambiado, /reload para ver cambios</span>`;
 					res.json({success: true, data: rbody});
 				});
 				break;
 			case "/updatecom":
-				let params = JSON.parse(cxArgs[2].substr(1, cxArgs[2].length-2).replace(/'/g, '"'));
-				moderation.updateComParams(req.app.locals.db, cxArgs[1], params, function(response){
+				let paramsc = JSON.parse(cxArgs[2].substr(1, cxArgs[2].length-2).replace(/'/g, '"'));
+				moderation.updateComParams(req.app.locals.db, cxArgs[1], paramsc, function(response){
 					rbody = `<span style="color:orange">Parámetro cambiado, /reload para ver cambios</span>`;
 					res.json({success: true, data: rbody});
 				});
