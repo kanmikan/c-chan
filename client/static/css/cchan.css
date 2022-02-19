@@ -904,6 +904,15 @@ a.selectedVox.box .over {border-color: #f4a833 !important;background: #fff8f866;
     margin: 4px 16px;
 }
 
+#ctext {
+	display: flex;
+	flex-direction: column;
+}
+
+.ctext-mini {
+	font-size: 0.5rem;
+}
+
 .openModal {
     display: flex;
 }
@@ -3000,7 +3009,10 @@ input:checked + .slider:before {
 
 /* Tablets */
 @media only screen and (max-width: 800px) {
-
+	.ctext-mini {
+		display: none;
+	}
+	
     section.voxData {
         flex-basis: 100%;
         height: auto;
@@ -3037,6 +3049,10 @@ input:checked + .slider:before {
 
 /* Celulares */
 @media only screen and (max-width: 600px) {
+	.ctext-mini {
+		display: none;
+	}
+	
 	.actionModContainer {
 		margin-top: 5px;
 	}

@@ -322,7 +322,7 @@ function action_instantRender(form){
 		date: {
 			created: Date.now()
 		},
-		icon: "/assets/anon/temp.png",
+		icon: "ico,#00000080,#00000080, , , ",
 		img: {
 			preview: "",
 			full: "",
@@ -1434,6 +1434,15 @@ $(document).ready(function() {
 						}
 					}
 				});
+			}
+		});
+	}
+	
+	//evento: al presionar CTRL+ENTER
+	if (element("createComment")){
+		element("createComment").addEventListener("keydown", function(e){
+			if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey) {
+				element("newComment").click();
 			}
 		});
 	}

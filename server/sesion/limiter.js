@@ -18,7 +18,7 @@ const apiLimit = rateLimit({
 
 const spamLimit = rateLimit({
 	windowMs: 15 * 60 * 1000,
-	max: 30,
+	max: 60,
 	standardHeaders: true,
 	legacyHeaders: false,
 	message: {success: false, data: "Superaste el limite maximo de solicitudes"}
