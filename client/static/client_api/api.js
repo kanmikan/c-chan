@@ -741,7 +741,7 @@ $(document).ready(function() {
 	
 	//anti hover para evitar lag
 	function onScrollDesktop(){
-		if (!isMobileDevice()){
+		if (!isMobileDevice() && KIND.split("/")[1] != "tema"){
 			if (!document.body.classList.contains("disable-hover")){
 				document.body.classList.add("disable-hover");
 			}
@@ -765,6 +765,7 @@ $(document).ready(function() {
 		}
 		
 		//evento: al llegar al final
+		//TODO: cambiar por un IntersectionObserver
 		if ($(window).height() + $(window).scrollTop() > (getDocumentHeight() - 100)){
 			if (!complete) return;
 			if (KIND.split("/")[1] === "tema") return;
