@@ -222,7 +222,7 @@ function iconRender(iconData, acc=true, act=false){
 	} else if (icon[0] === "class") {
 		ibody +=`<div class="anonIcon ${icon[1]}"><div class="anonText ${textmode} ${icon[2]}">${iconText}</div></div>`;
 	} else {
-		ibody +=`<img class="avatar" src="${com.icon}" alt="">`;
+		ibody +=`<img class="avatar" src="${iconData}" alt="">`;
 	}
 	if (acc){
 		ibody +=`<div class="anonIcon anonAccesory ${icon[3]}"></div>`;
@@ -232,12 +232,13 @@ function iconRender(iconData, acc=true, act=false){
 
 //TODO: cambiar esto por un render intermediario (redirect del api a ejs y retorno del html ya construido)
 function commentRender(op, com){
+	
 	//render de comentarios del lado del cliente.			
 	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar unselect">`;
 	
 	cbody += iconRender(com.icon);
 	
-	cbody +=`</div><div class="commentBody"><div class="commentMetadata"><div class="commentsTag unselect">`;
+	cbody +=`</div><div class="commentBody"><div class="commentMetadata"><div class="metaversion hidden" data-version="${com.version}"></div><div class="commentsTag unselect">`;
 	if (op){
 		cbody += `<span class="commentTag op">OP</span>`;
 	}
@@ -298,6 +299,77 @@ function commentRender(op, com){
 	
 	//actualizar lista de comentarios.
 	element("voxComments").innerHTML = $("#commentList").children().length;
+}
+
+function action_instantRender(form){
+	let data = deparam(form);
+
+	//TempScheme
+	let tempScheme = {
+		version: "temp",
+		cid: "CARGANDO",
+		bid: data.bid,
+		user: {
+			uid: "uid",
+			jerarquia: {
+				nick: "Anonimo",
+				rango: "anon",
+				color: ""
+			}
+		},
+		type: [],
+		flag: [],
+		date: {
+			created: Date.now()
+		},
+		icon: "/assets/anon/temp.png",
+		img: {
+			preview: "",
+			full: "",
+			raw: ""
+		},
+		media: {
+			preview: "",
+			raw: ""
+		},
+		content: {
+			body: data.content,
+			extra: {
+				tags: [],
+				idunico: {},
+				poll: {}
+			}
+		}
+	}
+	
+	commentRender(false, tempScheme);
+}
+
+//filtrar comentarios temporales de la lista
+function clearTempComments(){
+	let metaversionlist = $("#commentList").find(".metaversion");
+	for (var v=0; v<metaversionlist.length; v++){
+		if ($(metaversionlist[v]).data("version") === "temp"){
+			$(metaversionlist[v]).parent().parent().parent().remove()
+		}
+	}
+}
+
+function deparam(query) {
+    var pairs, i, keyValuePair, key, value, map = {};
+    if (query.slice(0, 1) === '?') {
+        query = query.slice(1);
+    }
+    if (query !== '') {
+        pairs = query.split('&');
+        for (i = 0; i < pairs.length; i += 1) {
+            keyValuePair = pairs[i].split('=');
+            key = decodeURIComponent(keyValuePair[0]);
+            value = (keyValuePair.length > 1) ? decodeURIComponent(keyValuePair[1]) : undefined;
+            map[key] = value;
+        }
+    }
+    return map;
 }
 
 function checkBoxFieldLocal(){
@@ -1137,6 +1209,8 @@ $(document).ready(function() {
 	//evento: al hacer click en cargar mas comentarios.
 	if (element("commentLoadMore")){
 		element("commentLoadMore").addEventListener("click", function(e){
+			clearTempComments();
+			
 			//ordenar array en base al timestamp:
 			COMS.sort(function(a, b){
 				return a.created - b.created;
@@ -1326,18 +1400,22 @@ $(document).ready(function() {
 	});
 	
 	//evento: post de comentario.
-	//TODO: añadir los efectos de la interfaz.
 	if (element("newComment")) {
 		element("newComment").addEventListener("click", function(e){
 			e.preventDefault();
 			let form = $("#createComment").serialize();
 			if (checkComFieldLocal()){
 				postForm(form, "/api/com", function(target){
+					
+					//render instantaneo
+					action_instantRender(form);
+					
 					//accion antes de enviar.
 					element("loadingCom").classList.remove("hidden");
 					element("ctext").classList.add("hidden");
 					element("newComment").disabled = true;
 				}, function(result){
+					clearTempComments();
 					element("loadingCom").classList.add("hidden");
 					element("ctext").classList.remove("hidden");
 					element("newComment").disabled = false;
