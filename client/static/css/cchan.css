@@ -20,7 +20,7 @@
     --comment-background: #f5f5f5;
     --comment-background-hover: #f9f9f9;
     --comment-background-jump: #ffffff;
-    --box-links: #2196f3;
+    --box-links: #1470b9;
     --box-links-hover: #00bcd4;
     --bar1: #f5f5f5;
     --bar1-text: #222222;
@@ -111,6 +111,7 @@
     --navbar-icon-color-hover: #3f51b5;
 	--menumodal-notif-text-hover: white;
 	--video-url-color: #43439e;
+	--vox-option-color: #32343c;
 }
 
 html[data-theme='darkmode']{
@@ -220,6 +221,7 @@ html[data-theme='darkmode']{
 	--navbar-icon-color-hover: white;
 	--menumodal-notif-text-hover: white;
 	--video-url-color: white;
+	--vox-option-color: white;
 }
 
 /* CODIGO DE VOXEDRIP.CSS ADAPTADO */
@@ -1765,7 +1767,7 @@ section.voxCommentList {
     font-size: 13px;
     margin-right: 16px;
     cursor: pointer;
-
+	color: var(--vox-option-color);
 }
 
 .voxOption i {
@@ -2702,6 +2704,7 @@ input:checked + .slider:before {
     font-weight: 600;
 	margin-top: 10px;
 	padding: 7px;
+	color: white;
 	background: var(--poll);
 	border-radius: 5px;
 	box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%);

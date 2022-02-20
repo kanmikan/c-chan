@@ -50,28 +50,45 @@ function getDataURL(file, before, callback) {
 }
 
 function post(formdata, url, before, callback){
-	before();
-	fetch(url, {
-		method: "POST",
+	$.ajax({
+		type: 'POST',
+		url: url,
 		headers: {
 			"X-CSRF-Token": element("_csrf_token").value
 		},
-		body: formdata
-	}).then(response => response.json())
-	.then(data => callback(data));
+		data: formdata,
+		processData: false,
+		contentType: false,
+		beforeSend: function() {
+			before();
+		}
+	}).done(function(data) {
+		callback(data);
+	}).fail(function(xhr, status, error){
+		if (status === "error"){
+			callback({success: false, data: "error"});
+		}
+	});
 }
 
 function postForm(formdata, url, before, callback){
-	before();
-	fetch(url, {
-		method: "POST",
+	$.ajax({
+		type: 'POST',
+		url: url,
 		headers: {
-			"Content-Type" : "application/x-www-form-urlencoded",
 			"X-CSRF-Token": element("_csrf_token").value
 		},
-		body: formdata
-	}).then(response => response.json())
-	.then(data => callback(data));
+		data: formdata,
+		beforeSend: function() {
+			before();
+		}
+	}).done(function(data) {
+		callback(data);
+	}).fail(function(xhr, status, error){
+		if (status === "error"){
+			callback({success: false, data: "error"});
+		}
+	});
 }
 
 function timeSince(timestamp) {
@@ -1142,7 +1159,7 @@ $(document).ready(function() {
 				//console.log(contentId);
 				
 				Swal.fire({
-					title: "Denunciar comentario",
+					title: "Denunciar hilo",
 					text: "Motivo de la denuncia:",
 					input: 'text',
 					showCancelButton: true,
