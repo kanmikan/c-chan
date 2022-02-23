@@ -807,7 +807,7 @@ $(document).ready(function() {
 	
 	//anti hover para evitar lag
 	function onScrollDesktop(){
-		if (!isMobileDevice() && KIND.split("/")[1] != "tema"){
+		if (!isMobileDevice() && (KIND && KIND.split("/")[1] != "tema")){
 			if (!document.body.classList.contains("disable-hover")){
 				document.body.classList.add("disable-hover");
 			}
