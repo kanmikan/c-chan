@@ -15,9 +15,15 @@
 
 <div class="attachList hidden" id="attachList">
 <% it.utils.filterComMedia(it.data.coms).forEach(function(com) { %>
-	<% if (com.img) { %>
+	<% if (com.type.includes("image")) { %>
 		<a class="attach" target="_BLANK" href="<%= it.utils.seclink(com.img.full) %>">
-			<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.img.preview) %>" alt=""><div class="attachType"><i class="fas fa-image"></i></div>
+			<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.img.preview) %>" alt="">
+			<div class="attachType"><i class="fas fa-image"></i></div>
+		</a>
+	<% } else if (com.type.includes("video")) { %>
+		<a class="attach" target="_BLANK" href="<%= it.utils.seclink(com.media.raw) %>">
+			<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.media.preview) %>" alt="">
+			<div class="attachType"><i class="fas fa-film"></i></div>
 		</a>
 	<% } %>
 <% }); %>

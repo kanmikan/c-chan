@@ -1013,11 +1013,18 @@ $(document).ready(function() {
 				element("commentList").classList.add("hidden");
 				element("commentsTitle").innerText = "Archivos";
 				element("voxComments").innerText = element("attachList").childElementCount;
+				
+				element("option-imglist").classList.remove("fa-folder");
+				element("option-imglist").classList.add("fa-folder-open");
+				
 			} else {
 				element("attachList").classList.add("hidden");
 				element("commentList").classList.remove("hidden");
 				element("commentsTitle").innerText = "Comentarios";
 				element("voxComments").innerText = element("commentList").childElementCount;
+				
+				element("option-imglist").classList.remove("fa-folder-open");
+				element("option-imglist").classList.add("fa-folder");
 			}
 		});
 	}

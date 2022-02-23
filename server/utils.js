@@ -16,7 +16,7 @@ function getCategoryData(categorias, catid) {
 
 function filterComMedia(comments) {
     if (comments) {
-        return comments.filter(item => item.img.full != "");
+        return comments.filter(item => item.img.full != "" || item.media.preview != "");
     } else {
         return comments;
     }
