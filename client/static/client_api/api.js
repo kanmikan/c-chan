@@ -141,6 +141,8 @@ function getCatShow(categoria){
 	return categoria.toUpperCase();
 }
 
+/* CLIENT RENDER */
+
 //TODO: cambiar esto por un render intermediario (redirect del api a ejs y retorno del html ya construido)
 function boxRender(box){
 	//render de boxs del lado del cliente.
@@ -248,9 +250,8 @@ function iconRender(iconData, acc=true, act=false){
 }
 
 //TODO: cambiar esto por un render intermediario (redirect del api a ejs y retorno del html ya construido)
+//render de comentarios del lado del cliente.			
 function commentRender(op, com){
-	
-	//render de comentarios del lado del cliente.			
 	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar unselect">`;
 	
 	cbody += iconRender(com.icon);
@@ -318,10 +319,12 @@ function commentRender(op, com){
 	element("voxComments").innerHTML = $("#commentList").children().length;
 }
 
+/* ---------------------------------- */
+
 function action_instantRender(form){
 	let data = deparam(form);
 
-	//TempScheme
+	//esquema de un comentario temporal.
 	let tempScheme = {
 		version: "temp",
 		cid: "CARGANDO",
@@ -350,7 +353,7 @@ function action_instantRender(form){
 			raw: ""
 		},
 		content: {
-			body: data.content,
+			body: "",
 			extra: {
 				tags: [],
 				idunico: {},
@@ -359,7 +362,53 @@ function action_instantRender(form){
 		}
 	}
 	
+	//parser del texto local
+	tempScheme.content.body = commandsParser(data.content);
+	//detectar multimedia
+	if (data.img != "" && data.vid === ""){
+		let image = data.img.split(";");
+		tempScheme.type.push("image");
+		tempScheme.img.full = image[0];
+		tempScheme.img.preview = image[1];
+	}
+	
+	if (data.vid != "" && data.img === ""){
+		let video = data.vid.split(";");
+		tempScheme.type.push("video");
+		tempScheme.media.raw = video[0];
+		tempScheme.media.preview = video[1];
+	}
+	
+	//render del comentario temporal
 	commentRender(false, tempScheme);
+}
+
+//detecta los comandos y en general, todo el codigo html del comentario
+function commandsParser(rawtext){
+	let patterns = [
+		/(<(.*?)>|<(.*?)(\r\n|\r|\n)+)/g, //sanitizado simple
+		/::{1}([^\r\n\s]+)/gi, //link interno
+		/>>{1}([^\r\n\s]{7})/gi, //tags
+		/>(([https?|ftp]+:\/\/)([^\s/?\.#]+\.?)+(\/[^\s]*)?)/gi, //link externo
+		/^(>(?!\>).+)/gim, //greentext
+		/\$([0-9A-Fa-f]{3})([^]*?)\$/g, //deteccion de color rgb
+		/\n/g //salto de linea.
+	];
+	let pattern_replace = [
+		'', //evitar que los kakersitos se domen solos
+		'<a href="$1" class="link">&gt;$1</a>',
+		'<a href="#$1" class="tag" data-tag="$1">&gt;&gt;$1</a>',
+		'<a href="$1" target="_blank" class="link">&gt;$1</a>',
+		'<span class="greentext">$1</span>',
+		'<span style="color: #$1;text-shadow: 1px 1px black;">$2</span>',
+		'<br>'
+	];
+	
+	let output = rawtext;
+	for (let i =0; i < patterns.length; i++) {
+		output = output.replace(patterns[i], pattern_replace[i]);
+	}
+	return output;
 }
 
 //filtrar comentarios temporales de la lista
@@ -370,23 +419,6 @@ function clearTempComments(){
 			$(metaversionlist[v]).parent().parent().parent().remove()
 		}
 	}
-}
-
-function deparam(query) {
-    var pairs, i, keyValuePair, key, value, map = {};
-    if (query.slice(0, 1) === '?') {
-        query = query.slice(1);
-    }
-    if (query !== '') {
-        pairs = query.split('&');
-        for (i = 0; i < pairs.length; i += 1) {
-            keyValuePair = pairs[i].split('=');
-            key = decodeURIComponent(keyValuePair[0]);
-            value = (keyValuePair.length > 1) ? decodeURIComponent(keyValuePair[1]) : undefined;
-            map[key] = value;
-        }
-    }
-    return map;
 }
 
 function checkBoxFieldLocal(){
@@ -439,6 +471,23 @@ function hashScroll(hash){
 
 function showHomebarScroll(){
 	element("homeBar").style["overflow-y"] = "scroll";
+}
+
+function deparam(query) {
+    var pairs, i, keyValuePair, key, value, map = {};
+    if (query.slice(0, 1) === '?') {
+        query = query.slice(1);
+    }
+    if (query !== '') {
+        pairs = query.split('&');
+        for (i = 0; i < pairs.length; i += 1) {
+            keyValuePair = pairs[i].split('=');
+            key = decodeURIComponent(keyValuePair[0]);
+            value = (keyValuePair.length > 1) ? decodeURIComponent(keyValuePair[1]) : undefined;
+            map[key] = value;
+        }
+    }
+    return map;
 }
 
 function isGif(url){
