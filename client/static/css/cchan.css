@@ -3013,7 +3013,11 @@ input:checked + .slider:before {
 	
 	figure.commentAttach {
 		width: 100%;
-		/*max-width: 100%;*/
+		padding: 4px;
+	}
+	
+	figure.voxAttach {
+		margin: 0px 8px 8px 0px;
 	}
 	
 	.globalMessages {
