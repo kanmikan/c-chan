@@ -18,6 +18,7 @@ const recycler = require('./api/recyclemanager.js');
 const moderation = require('./api/moderation.js');
 const sanitizer = require('./api/sanitizer.js');
 const access = require('./api/access.js');
+const yuu = require('./extra/yuubot.js');
 
 module.exports = function(app){
 	
@@ -259,6 +260,10 @@ module.exports = function(app){
 		//guarda el comentario en la base de datos y envia una notificacion de nueva actividad.
 		live.sendData("new", {kind: "newcom", data: pass.filterProtectedUID(json)});
 		await dbManager.insertDB(DB, mdbScheme.C_COMS, json, () => {});
+		
+		//invocar al yuubot para que analize el comentario
+		yuu.modCom(cid, req);
+		
 		res.json({success: true, data: json});
 	});
 	

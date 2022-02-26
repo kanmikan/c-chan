@@ -19,7 +19,7 @@
 	--button1b-hover: #2196f3;
 	--comment-background: #f2f2f2;
 	--comment-background-hover: #f9f9f9;
-	--comment-background-jump: #b3d8f5;
+	--comment-background-jump: #e2eff9;
 	--box-links: #1470b9;
 	--box-links-hover: #00bcd4;
 	--bar1: #f2f2f2;
@@ -2287,7 +2287,7 @@ ul.attachsVox i {
 	display: flex;
 	margin-top: 4px;
 	background: var(--alert-background);
-	max-width: 350px;
+	max-width: 100%; /*350px*/
 	width: 100%;
 	padding: 12px;
 	color: var(--alert-color);

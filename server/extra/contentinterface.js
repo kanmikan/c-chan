@@ -5,12 +5,11 @@ const avatar = require('../api/avatar.js');
 const utils = require('../utils.js');
 const pass = require('../api/passport.js');
 const live = require('../api/live.js');
-const cparser = require('../api/parser.js');
 
 async function createCom(DB, data, before, callback){
 	before();
 	let mcom = utils.clone(jsonScheme.COMMENT_SCHEME);
-	mcom.cid = utils.genCID(7);
+	mcom.cid = (data.cid) ? data.cid : utils.genCID(7);
 	mcom.bid = data.bid;
 	mcom.user.uid = data.user.uid;
 	mcom.user.jerarquia = data.user.jerarquia;
@@ -19,7 +18,7 @@ async function createCom(DB, data, before, callback){
 	mcom.img = data.img;
 	
 	mcom.date.created = Date.now();
-	mcom.icon = avatar.genAnon(data.type);
+	mcom.icon = (data.icon) ? data.icon : avatar.genAnon(data.type);
 	mcom.content.body = data.comment;
 	
 	//insertar comentario
