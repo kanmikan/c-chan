@@ -1,0 +1,126 @@
+<script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+<script>
+var player;
+var socket;
+var DESYNC_RANGE = 1;
+var BID = "<%= BOX.bid %>";
+var container;
+
+function onYouTubeIframeAPIReady() {
+	$(function () {
+		socket = io();
+		let timer;
+		console.log("SYNC SCRIPT CARGADO");
+		DESYNC_RANGE = parseInt(element("syncThresholdValue").value);
+		container = element("mainSyncContainer");
+	
+		//incrustar iframe del player.
+		let yplayer = `<iframe id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>?enablejsapi=1&origin=https://<%= it.host %>&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+		$(container).append(yplayer);		
+	
+		//TODO: esto tiene que ejecutarse una vez que le doy al boton de play y no directamente.
+		player = new YT.Player('mainPlayer', {
+			events: {
+				'onReady': function(e){
+					console.log("[Sync] ready.");
+					startInterval();
+					syncUser();
+				},
+				'onStateChange': function(e){
+					console.log("[Sync] changed.");
+				}
+			}
+		});
+		
+		socket.on('sync', function(data){
+			switch (data.key){
+				case "ytb_play":
+					if (player) {
+						if (!OP && player.getPlayerState() === YT.PlayerState.PLAYING){
+							//tolerancia de tiempo desincronizado
+							if (player.getCurrentTime() < (data.value - DESYNC_RANGE) || player.getCurrentTime() > (data.value + DESYNC_RANGE)){
+								player.seekTo(data.value);
+							}
+						}
+					}
+				break;
+				case "ytb_pause":
+					if (!OP){
+						if (data.value){
+							player.pauseVideo();
+						} else {
+							player.playVideo();
+						}
+					}
+				break;
+				case "ytb_change":
+					player.loadVideoById(data.value);
+				break;
+				case "ytb_live":
+					//si el op esta conectado, mantener señal.
+					$("#livesync").css("color", "red");
+					$("#livesync").text("Live");
+					clearTimeout(timer);
+					
+					//si no se reciben nuevas señales, el timeout continúa y se desactiva despues de 5 segundos.
+					timer = setInterval(function(){
+						$("#livesync").css("color", "inherit");
+						$("#livesync").text("Offline");
+					}, 5000);
+				break;
+			}
+		});
+		
+		$(document).on("click", "#syncPlay", function(e){
+			let url = $("#syncURL").val();
+			changeVideo(youtubeParser(url));
+		});
+		
+		$(document).on("click", "#syncOptionsApply", function(e){
+			DESYNC_RANGE = parseInt(element("syncThresholdValue").value);	
+		});
+		
+	});
+}
+
+function syncUser(){
+	//enviar señal de que esta conectado
+	socket.emit("syncme", {bid: BID, key: "ytb_change"});
+}
+
+//TODO: hacer que esta opcion solo le funcione al op (check del lado del server.)
+function changeVideo(id){
+	if (OP) {
+		socket.emit("sync", {bid: BID, key: "ytb_change", value: id});
+		socket.emit("sync", {bid: BID, key: "ytb_url", value: id});
+		player.loadVideoById(id);
+	}
+}
+
+//TODO: hacer que esta opcion solo le funcione al op (check del lado del server.)
+function startInterval(){
+	setInterval(function(){
+		if (OP){
+			socket.emit("sync", {bid: BID, key: "ytb_live", value: true});
+		}
+		if (OP && player && player.getPlayerState() === YT.PlayerState.PLAYING){
+			//accion al estar reproduciendo.
+			socket.emit("sync", {bid: BID, key: "ytb_play", value: player.getCurrentTime()});
+			socket.emit("sync", {bid: BID, key: "ytb_pause", value: false});
+			
+		}
+		if (OP && player && player.getPlayerState() === YT.PlayerState.PAUSED){
+			socket.emit("sync", {bid: BID, key: "ytb_pause", value: true});
+		}
+	}, 1000);
+}
+
+//copy-paste del lado del cliente
+function youtubeParser(url){
+	console.log(url);
+	let regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+	let match = url.match(regExp);
+	return (match && match[2].length == 11) ? match[2] : null;
+}
+
+</script>

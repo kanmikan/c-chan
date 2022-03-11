@@ -1,0 +1,68 @@
+<div id="notifMenu" class="dropdown-content notifDropdown hidden">
+	<ul>
+	<% if (!it.data.notifs[0]) { %>
+		<li class="notifElement"><div class="notifContext" style="text-align: center;padding: 5px;">No hay notificaciones</div></li>
+	<% } else {
+			let NOTIF_LIST = [];
+			//notificaciones de tags.
+			it.data.notifs.forEach(function(noti) {
+				if (noti.content.tag){
+					//notiRender(noti);
+					NOTIF_LIST.push([noti, 0]);
+				}
+			});
+			
+			//agrupa las notificaciones en base al bid
+			let result = it.data.notifs.filter(item => !item.content.tag).reduce(function (res, item) {
+				res[item.content.bid] = res[item.content.bid] || [];
+				res[item.content.bid].push(item);
+				return res;
+			}, Object.create(null));
+			
+			let notifGroup = Object.keys(result).map(function (key) {
+				return result[key];
+			});
+			
+			//crea un item para cada grupo de notificaciones.
+			notifGroup.forEach(function(ngroup){
+				if (ngroup[0]){
+					//notiRender(ngroup[0], ngroup.length);
+					NOTIF_LIST.push([ngroup[0], ngroup.length]);
+				}
+			});	
+			
+			//reordenar la lista de notificaciones en base al timestamp
+			NOTIF_LIST = NOTIF_LIST.sort(function(a, b){
+				return b[0].date.created - a[0].date.created;
+			});
+			
+			//render de notificaciones
+			NOTIF_LIST.forEach(function(notf){
+				notiRender(notf[0], notf[1]);
+			}); 
+	%>
+		<li class="notifElement" id="clearNotifications" style="justify-content: center;">Eliminar Todos</li>
+	<% } %>
+	</ul>
+</div>
+
+<% function notiRender(noti, count=0){ %>
+	<li class="notifElement" onclick="location.href='/api/ntf/<%= noti.content.bid %>/<%= noti.content.cid %>'">
+		<div class="notifPreview"><img src="<%= noti.content.preview.thumb %>"></img></div>
+		
+		<% let msgTitle = (noti.content.tag) ? `Te taggearon en:` : `Comentaron en tu hilo ${(count === 0 ? ":" : "x" + count + ":")}`; %>
+		
+		<% if (noti.type.includes("alert")) { %>
+			<div class="notifContent">
+				<div class="notifContext"><%= noti.content.preview.title %></div>
+				<div class="notifDescription"><%= noti.content.preview.desc %></div>
+			</div>
+		<% } else { %>
+			<div class="notifContent">
+				<div class="notifContext"><%= msgTitle %></div>
+				<div class="notifDescription"><%= noti.content.preview.title %></div>
+			</div>
+		<% } %>
+		
+	</li>
+<% } %>

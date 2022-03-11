@@ -1,0 +1,137 @@
+<form class="idLogin hidden" id="idLogin" action="/api/idlogin" method="POST" enctype="multipart/form-data" aria-modal="true" role="dialog">
+	
+	<div class="idContainer">
+		<div class="containerLeft">
+			<img src="/assets/welcome.png"></img>
+		</div>
+		<div class="containerRight">
+			<div class="idClose"><span class="closeButton" id="idClose">X</span></div>
+			<h2>Bienvenido a Cchan!</h2>
+			<span>El sitio es anónimo pero para poder interactuar con las funciones necesitas generar un ID.</span>
+			</br>
+			<span>Recordá leer las reglas <a href="/info/reglas">acá</a>, no son muchas, al darle click a continuar aceptas respetarlas.</span>
+			<div class="loginFormContents">
+				<span>Si tenés un ID pegalo acá, o podes usar el que se ha generado para vos</span>
+				<input type="text" class="field" name="userid" id="userid" placeholder="ID del Usuario" value="<%= it.sesion.uid %>">
+				<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">
+				
+				<button class="mainButton" id="idButton">
+					<i id="loadingLogin" class="fas fa-circle-notch fa-spin hidden"></i>
+					<span id="idText">Continuar</span>
+				</button>
+			</div>
+		</div>
+	</div>
+	
+	<!--
+	<input type="text" class="modalInput" name="userid" id="userid" placeholder="ID del Usuario" value="<%= it.sesion.uid %>">
+	<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">	
+	<div class="loginFormButtons">
+		<button class="buttonPress" id="idButton">
+			<i id="loadingLogin" class="fas fa-circle-notch fa-spin hidden"></i>
+			<span id="idText">Continuar</span>
+		</button>
+	</div>
+	-->
+</form>
+
+<style>
+	.loginFormContents {
+		display: flex;
+		flex-direction: column;
+		padding: 10px;
+		margin: 10px 5px 5px 0px;
+		background: #242424;
+	}
+	
+	.loginFormContents span {
+		padding: 10px;
+	}
+
+	.loginFormContents .mainButton {
+		width: inherit;
+	}
+	
+	.idLogin {
+		width: 50%;
+		/*min-height: 60vh;*/
+		height: auto;
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%,-50%);
+		background: #181818;
+		color: white;
+		padding: 5px;
+		background: #131313;
+		z-index: 99;
+	}
+
+	.idLogin .idContainer {
+		display: flex;
+		background: #1e1e1e;
+	}
+	
+	.idContainer .containerLeft {
+		width: 50%;
+	}
+	
+	.idContainer .containerLeft img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		padding: 20px;
+	}
+	
+	.idContainer .containerRight {
+		width: 50%;
+		padding: 5px;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	
+	.containerRight span {
+		font-size: 0.9rem;
+	}
+	
+	.containerRight .idClose {
+		display: flex;
+		justify-content: flex-end;
+	}
+	
+	.idClose span {
+		padding: 1px 4px;
+		font-weight: 600;
+		border-radius: 2px;
+	}
+	
+	.idClose span:hover {
+		cursor: pointer;
+		color: red;
+	}
+	
+	.containerRight h2 {
+		margin: 0px 5px 20px;
+		font-size: 1.8em;
+		/*font-family: 'Caveat';*/
+		/*color: #ff9800;*/
+		text-align: center;
+	}
+	
+	@media only screen and (max-width: 800px) {
+		.idLogin {
+			width: 100%;
+		}
+		
+		.idContainer .containerLeft {
+			width: 2%;
+		}
+		
+		.idContainer .containerRight {
+			width: 100%;
+		}
+		
+	}
+	
+</style>

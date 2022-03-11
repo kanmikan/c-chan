@@ -4,6 +4,7 @@ npm-debug.log*
 CODEDUMP.txt
 *.lnk
 uploads/*.*
+client_bk
 .env
 
 node_modules

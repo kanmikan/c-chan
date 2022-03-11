@@ -1,0 +1,161 @@
+<div id="generalMenu" class="dropdown-content generalMenu hidden">
+	<ul>
+		<li onclick="location.href='/propios'">
+			<div class="optionIcon"><img class="mikanColor" src="/assets/uicons/home.svg"></img></div>
+			<div class="optionText">Mis Publicaciones</div>
+		</li>
+		<li onclick="location.href='/favoritos'">
+			<div class="optionIcon"><img class="mikanColor" src="/assets/uicons/star.svg"></img></div>
+			<div class="optionText">Mis Favoritos</div>
+		</li>
+		<li onclick="location.href='/ocultos'">
+			<div class="optionIcon"><img class="mikanColor" src="/assets/uicons/eye.svg"></img></div>
+			<div class="optionText">Publicaciones Ocultas</div>
+		</li>
+		<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD"))) { %>
+		<li onclick="location.href='/adm'">
+			<div class="optionIcon"><img class="mikanColor" src="/assets/uicons/flag.svg"></img></div>
+			<div class="optionText">Administrar</div>
+		</li>
+		<% } %>
+		<li id="optionConfigMenu">
+			<div class="optionIcon"><img class="mikanColor" src="/assets/uicons/settings.svg"></img></div>
+			<div class="optionText">Configuraciones</div>
+			<img class="menu-group-icon" style="margin-left: auto" src="/assets/uicons/chevron-down.svg">
+		</li>
+	</ul>
+	
+	<div class="configMenu hidden" id="configMenu">
+		<ul>
+			<li>
+				<div class="optionIcon"><i class="fas fa-moon" aria-hidden="true"></i></div>
+                <div class="optionText">Tema oscuro</div>
+                <div class="configToggle">
+                    <label class="switch">
+					<% if (it.sesion.config && it.sesion.config.darkmode) { %>
+						<input type="checkbox"  id="dkswitch" checked="true">
+					<% } else { %>
+						<input type="checkbox"  id="dkswitch">
+					<% } %>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </li>
+			<li id="visibleCategories">
+				<div class="visibleCategories">
+					<div class="optionIcon"><i class="fas fa-dice-d6" aria-hidden="true"></i></div>
+					<div class="optionText">Areas visibles</div>
+					<i class="fas fa-angle-down" style="margin-left: auto;" aria-hidden="true"></i>
+				</div>
+			</li>
+			<ul class="configCategoriesList hidden" id="configCategoriesList">
+					<% it.data.cats.forEach(function(categoria){ %>
+						<li>
+							<div class="optionText"><%= categoria.content.name %></div>
+							<div class="configToggle">
+								<label class="checkContainer">
+									<% if (it.sesion.config.cathides.includes(categoria.catid)) { %>
+										<input type="checkbox" class="catlistCheckbox" data-catid="<%= categoria.catid %>">
+									<% } else { %>	
+										<input type="checkbox" class="catlistCheckbox" data-catid="<%= categoria.catid %>" checked="true">
+									<% } %>
+									<span class="checkmark"></span>
+								</label>
+							</div>
+						</li>
+					<% }); %>
+			</ul>
+			
+			<li id="configTheme">
+				<div class="visibleCategories">
+					<div class="optionIcon"><i class="fas fa-palette" aria-hidden="true"></i></div>
+					<div class="optionText">Personalizar...</div>
+				</div>
+			</li>
+			<div class="configThemeInt hidden" id="configThemeInt">
+				<textarea id="themeinput" class="field themeinput" placeholder="pega o escribe los estilos modificados de la página"><%= it.sesion.config.theme %></textarea>
+				<button id="applyTheme" class="mainButton" style="padding: 5px;margin:0px">Aplicar</button>
+			</div>
+			
+			<li onclick="location.href='/login'">
+				<div class="optionIcon"><i class="fas fa-user" aria-hidden="true"></i></div>
+				<div class="optionText" style="cursor:pointer">Iniciar Sesion</div>
+            </li>
+			<li>
+				<div style="font-size: 0.6rem">UID:<span style="padding-left: 5px;"><%= it.sesion.uid %></span></div>
+			</li>
+			
+        </ul>
+	</div>
+	
+	<div class="activityContainer">
+		<div class="sideTitle">Actividad Reciente</div>
+		<ul id="activityListMobile"></ul>
+		
+		<div class="activityContainer">
+			<div class="sideTitle sideInfo version">Usando el motor <%- it.renderConfig.VERSION %></div>
+			<div class="sideTitle sideInfo"><a href="info/reglas">Reglas</a> - <a href="info/welcome">Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
+		</div>
+	</div>
+	
+</div>
+
+<script>
+	/* EVENTOS */
+	//EVENTO: al cambiar el switch del darkmode.
+	//TODO: cambiar a javascript nativo.
+	$("#dkswitch").on('change', function() {
+		if ($(this).is(':checked')) {
+			darkmode(true);
+		} else {
+			darkmode(false);
+		}
+	});
+	
+	//EVENTO: manipular switch
+	$(".catlistCheckbox").on('change', function() {
+		let catid = $(this).data("catid");
+		if ($(this).is(':checked')) {
+			applyConfig("cathides_del:" + catid);
+		} else {
+			applyConfig("cathides_add:" + catid);
+		}
+		console.log("Configuracion Aplicada.");
+	});
+	
+	//EVENTO: al aplicar estilo.
+	document.getElementById("applyTheme").addEventListener("click", function(e){
+		let styles = document.getElementById("themeinput").value;
+		console.log(styles);
+		applyConfig("theme:" + styles);
+		
+		//vista previa test
+		let style = document.createElement('style');
+		style.textContent = styles;
+		document.head.append(style);
+	});
+	
+	/* Configuraciones */
+	document.getElementById("optionConfigMenu").addEventListener("click", function(e){
+			document.getElementById("configMenu").classList.toggle("hidden");
+	});
+	
+	//EVENTO: abrir lista de categorias.
+	document.getElementById("visibleCategories").addEventListener("click", function(e){
+		document.getElementById("configCategoriesList").classList.toggle("hidden");
+	});
+	
+	//EVENTO: abrir opciones de personalizacion.
+	document.getElementById("configTheme").addEventListener("click", function(e){
+		document.getElementById("configThemeInt").classList.toggle("hidden");
+	});
+	
+	/* FUNCIONES */
+	function darkmode(toggle){
+		applyConfig("darkmode:" + toggle);
+		html.dataset.theme = (toggle) ? "darkmode" : "";
+	}
+	
+	
+	
+</script>

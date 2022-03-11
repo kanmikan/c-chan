@@ -1,0 +1,153 @@
+/*hat muestra*/
+.hhat {
+	transform: translate(21px,-77px) rotate(30deg) !important;
+}
+.activityAccesory.hhat {
+	transform: scale(.8) translate(21px,-77px) rotate(30deg) !important;
+}
+@media only screen and (max-width: 600px){
+	.hhat {
+		transform: translate(18px,-65px) rotate(30deg) !important;
+	}
+}
+/*item muestra */
+.hitem {
+	transform: translate(-18px,-30px) scale(0.7) !important;
+}
+.activityAccesory.hitem {
+	transform: scale(.6) translate(-30px,-40px) !important;
+}
+@media only screen and (max-width: 600px){
+	.hitem {
+		transform: translate(-14px,-26px) rotate(0deg) scale(0.6) !important;
+	}
+}
+
+/********* Items de halloween ********/
+.hat1 {
+	content: url(/assets/anon/extras/hhat.png);
+}
+.hbadge0 {
+	content: url(/assets/anon/extras/tela.png);
+}
+.hbadge1 {
+	content: url(/assets/anon/extras/calabaza.png);
+}
+.hbadge2 {
+	content: url(/assets/anon/extras/calavera.png);
+}
+.hbadge3 {
+	content: url(/assets/anon/extras/fantasma.png);
+}
+.hbadge4 {
+	content: url(/assets/anon/extras/tela.png);
+}
+.hbadge5 {
+	content: url(/assets/anon/extras/bat.png);
+}
+/********************/
+/* Items de Navidad */
+.navidadhat1 {
+	content: url(/assets/anon/extras/nhat.png);
+}
+.navidadhat2 {
+	content: url(/assets/anon/extras/nhat2.png);
+}
+.navidadhat3 {
+	content: url(/assets/anon/extras/nhat3.png);
+}
+
+.navidadbadge1 {
+	content: url(/assets/anon/extras/nitem1.png);
+}
+.navidadbadge2 {
+	content: url(/assets/anon/extras/nitem2.png);
+}
+.navidadbadge3 {
+	content: url(/assets/anon/extras/nitem3.png);
+}
+.anonMultiNavidad {
+	background: linear-gradient(#df0202 25%,#4caf50 25%,#4caf50 50%,#df0202 50%,#df0202 75%,#4caf50 75%,#4caf50 100%);
+	animation: anonMultiNavidad 0.5s infinite;
+}
+@keyframes anonMultiNavidad {
+	20% {background: linear-gradient(#df0202 25%,#4caf50 25%,#4caf50 50%,#df0202 50%,#df0202 75%,#4caf50 75%,#4caf50 100%)}
+	60%  {background: linear-gradient(#4caf50 25%,#df0202 25%,#df0202 50%,#4caf50 50%,#4caf50 75%,#df0202 75%,#df0202 100%)}
+	80%  {background: linear-gradient(#df0202 25%,#4caf50 25%,#4caf50 50%,#df0202 50%,#df0202 75%,#4caf50 75%,#4caf50 100%)}
+	100% {background: linear-gradient(#4caf50 25%,#df0202 25%,#df0202 50%,#4caf50 50%,#4caf50 75%,#df0202 75%,#df0202 100%)}
+}
+
+/**********************/
+/* Aniversario mikanchan */
+.anonMultiMikan {
+	background: linear-gradient(#ff5722 25%,#ffffff 25%,#ffffff 50%,#ff5722 50%,#ff5722 75%,#ffffff 75%,#ffffff 100%);
+	animation: anonMultiMikan 0.4s infinite;
+}
+@keyframes anonMultiMikan {
+	20% {background: linear-gradient(#ff5722 25%,#ffffff 25%,#ffffff 50%,#ff5722 50%,#ff5722 75%,#ffffff 75%,#ffffff 100%)}
+	60%  {background: linear-gradient(#ffffff 25%,#ff5722 25%,#ff5722 50%,#ffffff 50%,#ffffff 75%,#ff5722 75%,#ff5722 100%)}
+	80%  {background: linear-gradient(#ff5722 25%,#ffffff 25%,#ffffff 50%,#ff5722 50%,#ff5722 75%,#ffffff 75%,#ffffff 100%)}
+	100% {background: linear-gradient(#ffffff 25%,#ff5722 25%,#ff5722 50%,#ffffff 50%,#ffffff 75%,#ff5722 75%,#ff5722 100%)}
+}
+
+.mikan {
+	content: url(/assets/anon/mikan.svg);
+	filter: opacity(0.7);
+}
+
+.mikanbadge1 {
+	content: url(/assets/logo.png);
+	transform: translate(-18px, -30px) scale(0.5);
+}
+
+/*******************/
+/*Items año nuevo*/
+.anbadge1 {
+	content: url(/assets/anon/extras/fitem1.png);
+}
+.anbadge2 {
+	content: url(/assets/anon/extras/fitem2.png);
+}
+.anbadge3 {
+	content: url(/assets/anon/extras/fitem3.png);
+}
+.anbadge4 {
+	content: url(/assets/anon/extras/fitem4.png);
+}
+.anbadge5 {
+	content: url(/assets/anon/extras/fitem5.png);
+}
+
+.anhat1 {
+	content: url(/assets/anon/extras/fhat1.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+.anhat2 {
+	content: url(/assets/anon/extras/fhat2.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+.anhat3 {
+	content: url(/assets/anon/extras/fhat3.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+.anhat4 {
+	content: url(/assets/anon/extras/fhat4.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+.anhat5 {
+	content: url(/assets/anon/extras/fhat5.png);
+	transform: translate(10px,-62px) rotate(0deg);
+}
+/******************/
+
+.white {
+	color: white;
+}
+
+.black {
+	color: black;
+}
+
+.invert {
+	filter: invert(1);
+}

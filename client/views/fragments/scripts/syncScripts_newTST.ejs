@@ -1,0 +1,191 @@
+<script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+<script>
+var player;
+var socket;
+var DESYNC_RANGE = 1;
+var BID = "<%= BOX.bid %>";
+var container;
+var TYPE = 0; //0: youtube, 1: mp4
+var defaultMedia = "<%= BOX.media.raw %>";
+
+function onYouTubeIframeAPIReady() {
+	$(function () {
+		socket = io();
+		let timer;
+		console.log("SYNC SCRIPT CARGADO");
+		DESYNC_RANGE = parseInt(element("syncThresholdValue").value);
+		container = element("mainSyncContainer");
+	
+		//loadmedia
+		loadMedia(defaultMedia);
+		startInterval();
+		syncUser();
+		
+		/* EVENTOS DE INTERFAZ */
+		$(document).on("click", "#syncPlay", function(e){
+			let url = $("#syncURL").val();
+			changeVideo(url);
+		});
+		
+		$(document).on("click", "#syncOptionsApply", function(e){
+			DESYNC_RANGE = parseInt(element("syncThresholdValue").value);	
+		});
+		
+		socket.on('sync', function(data){
+			console.log(data);
+			console.log(TYPE);
+			
+			switch (data.key){
+				case "ytb_play":
+					if (player) {
+						if (TYPE === 0) {
+							if (!OP && player.getPlayerState() === YT.PlayerState.PLAYING){
+								if (player.getCurrentTime() < (data.value - DESYNC_RANGE) || player.getCurrentTime() > (data.value + DESYNC_RANGE)){
+									player.seekTo(data.value);
+								}
+							}
+						} else {
+							if (!OP && !player.paused){
+								if (player.currentTime < (data.value - DESYNC_RANGE) || player.currentTime > (data.value + DESYNC_RANGE)){
+									player.currentTime = data.value;
+								}
+							}
+						}
+					}
+				break;
+				case "ytb_pause":
+					if (!OP){
+						if (TYPE === 0){
+							if (data.value){
+								player.pauseVideo();
+							} else {
+								player.playVideo();
+							}
+						} else {
+							if (data.value){
+								player.pause();
+							} else {
+								player.play();
+							}
+						}
+					}
+				break;
+				case "ytb_change":
+					console.log(data.value);
+					loadMedia(data.value);
+				break;
+				case "ytb_live":
+					//si el op esta conectado, mantener señal.
+					$("#livesync").css("color", "red");
+					$("#livesync").text("Live");
+					clearTimeout(timer);
+					
+					//si no se reciben nuevas señales, el timeout continúa y se desactiva despues de 5 segundos.
+					timer = setInterval(function(){
+						$("#livesync").css("color", "inherit");
+						$("#livesync").text("Offline");
+					}, 5000);
+				break;
+			}
+		});
+
+	});
+}
+
+function loadMedia(url){
+	//detectar type
+	console.log(url);
+	let yid = youtubeParser(url);
+	TYPE = (yid) ? 0 : 1;
+	console.log(TYPE);
+
+	if (TYPE === 0){
+		//youtube
+		container.innerHTML = "";
+		let yplayer = `<iframe id="mainPlayer" width="100%" height="100%" src="https://www.youtube.com/embed/${yid}?enablejsapi=1&origin=https://<%= it.host %>&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+		$(container).append(yplayer);
+		player = new YT.Player('mainPlayer', {
+			events: {
+				'onReady': function(e){
+					console.log("[Sync] youtube listo.");			
+					
+					//syncUser();
+					
+				},
+				'onStateChange': function(e){
+					console.log("[Sync] estado cambiado.");
+				}
+			}
+		});
+	} else {
+		//mp4
+		container.innerHTML = "";
+		let mp4player = `<video width="100%" height="100%" id="mainPlayer" preload="auto" autoplay muted><source src="${url}" type="video/mp4"/></video>`;
+		$(container).append(mp4player);
+		player = element("mainPlayer");
+		player.addEventListener("canplay", function(e){
+			console.log("[Sync] reproduciendo mp4..");
+			player.play();
+			
+			
+		});
+	}
+	
+}
+
+function syncUser(){
+	//enviar señal de que esta conectado
+	socket.emit("syncme", {bid: BID, key: "ytb_change"});
+}
+
+//TODO: hacer que esta opcion solo le funcione al op (check del lado del server.)
+function changeVideo(id){
+	if (OP) {
+		socket.emit("sync", {bid: BID, key: "ytb_change", value: id});
+		socket.emit("sync", {bid: BID, key: "ytb_url", value: id});
+		loadMedia(id);
+	}
+}
+
+//TODO: hacer que esta opcion solo le funcione al op (check del lado del server.)
+function startInterval(){
+	setInterval(function(){
+		if (TYPE === 0){
+			if (OP){
+				socket.emit("sync", {bid: BID, key: "ytb_live", value: true});
+			}
+			if (OP && player && player.getPlayerState() === YT.PlayerState.PLAYING){
+				//accion al estar reproduciendo.
+				socket.emit("sync", {bid: BID, key: "ytb_play", value: player.getCurrentTime()});
+				socket.emit("sync", {bid: BID, key: "ytb_pause", value: false});
+				
+			}
+			if (OP && player && player.getPlayerState() === YT.PlayerState.PAUSED){
+				socket.emit("sync", {bid: BID, key: "ytb_pause", value: true});
+			}
+		} else {
+			if (OP){
+				socket.emit("sync", {bid: BID, key: "ytb_live", value: true});
+			}
+			if (OP && player && !player.paused){
+				//accion al estar reproduciendo.
+				socket.emit("sync", {bid: BID, key: "ytb_play", value: player.currentTime});
+				socket.emit("sync", {bid: BID, key: "ytb_pause", value: false});
+				
+			}
+			if (OP && player && player.paused){
+				socket.emit("sync", {bid: BID, key: "ytb_pause", value: true});
+			}
+		}
+	}, 1000);
+}
+
+//copy-paste del lado del cliente
+function youtubeParser(url){
+	console.log(url);
+	let regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+	let match = url.match(regExp);
+	return (match && match[2].length == 11) ? match[2] : null;
+}
+
+</script>

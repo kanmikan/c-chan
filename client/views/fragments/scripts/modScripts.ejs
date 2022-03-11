@@ -1,0 +1,120 @@
+<script>
+	$(document).ready(function() {
+	
+		$(document).on("click", "#postActionMod", function(e){
+			$("#modsToolBarContainer").toggleClass("hidden");
+		});
+	
+		/*
+		$(document).on("click", ".actionMod", function(e){
+			let actionContainer = $(e.currentTarget).parent().children().filter(".actionModContainer");
+			actionContainer.toggleClass("hidden");
+		});
+		*/
+		
+		let cconfirmer = false;
+		$(document).on("click", ".actionModComOption", function(e){
+			e.preventDefault();
+			e.stopPropagation();
+			
+			let target = $(e.currentTarget);
+			let data = target.data();
+			
+			if (data.action === "com_ban" || data.action === "com_adv" || data.action === "com_delete"){
+				if (!cconfirmer){
+					cconfirmer = true;
+					target.text("Confirmar?");
+					target.css({color: "#ff0000"});
+					return;
+				} else {
+					cconfirmer = false;
+				}
+			}
+			
+			modAction(data.action, data.cid, function(result){
+				if (result.success){
+					//acciones a realizar luego de la accion de moderacion.
+					switch (result.data.action){
+						case "com_delete":
+							//eliminar elemento del comentario
+							$(`#${data.cid}`).remove();
+							break;
+						case "com_adv":
+							target.parent().addClass("hidden");
+							break;
+						case "com_ban":
+							target.text("Usuario Baneado.");
+							target.css({color: "inherit"});
+							target.parent().addClass("hidden");
+							break;
+					}
+				} else {
+					alert(result.data);
+				}
+			});
+		});
+		
+		let bconfirmer = false;
+		$(document).on("click", ".actionModBoxOption", function(e){
+			let target = $(e.currentTarget);
+			let data = target.data();
+			let actdata = data.bid;
+			
+			//parametros especiales para la accion de mover temas.
+			if (data.action === "box_move"){
+				//acciones si se tiene que mover un tema
+				let newcat = $("#modMovecat option:selected").val();
+				actdata = data.bid + ":" + newcat;
+			}
+			
+			//parametros especiales para la accion de modificar atributos del tema.
+			if (data.action === "box_change"){
+				let sticky = $("#bsticky").is(":checked");
+				let csticky = $("#bcsticky").is(":checked");
+				actdata = data.bid + ":" + sticky + ":" + csticky; 
+			}
+			
+			//pide confirmacion antes de enviar la solicitud.
+			if (data.action === "box_delete" || data.action === "box_ban" || data.action === "box_adv"){
+				if (!bconfirmer) {
+					bconfirmer = true;
+					target.text("Confirmar?");
+					target.css({background: "#ff0000"});
+					return;
+				} else {
+					bconfirmer = false;
+				}
+			}
+			
+			modAction(data.action, actdata, function(result){
+				if (result.success){
+					switch (result.data.action) {
+						case "box_change":
+						case "box_delete":
+						case "box_move":
+							window.location.href = "/";
+							break;
+						case "box_ban":
+							target.text("Usuario Baneado");
+							target.css({background: "inherit"});
+							target.prop("disabled", true);
+							break;
+					}
+				} else {
+					alert(result.data);
+				}
+			});
+		});
+		
+	});
+	
+	function modAction(action, data, callback){
+		let formData = new FormData();
+		formData.append("action", action);
+		formData.append("data", data);
+		post(formData, "/adm/action", function(){}, function(result){
+			callback(result);
+		});
+	}
+	
+</script>

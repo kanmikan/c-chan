@@ -1,0 +1,51 @@
+<form class="commentWriteBox" id="commentForm" action="/api/com" method="POST" enctype="multipart/form-data">
+	<input type="hidden" name="bid" value="<%= it.data.boxs[0].bid %>">
+	<input type="hidden" name="img" id="cimg" value="">
+	<input type="hidden" name="vid" id="cvid" value="">
+	<input type="hidden" name="token" id="token" value="<%= it.token %>">
+	<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">
+	
+	
+	<div class="closeButton" id="closeCommentBox">
+		<span aria-hidden="true">x</span>
+	</div>
+	
+	<% if (it.data.boxs[0].type.includes("poll")) { %>
+		<input type="hidden" name="pollc" id="pollc" value="0">
+		<div class="pollOption commentBoxPoll hidden" id="pollcOpt1"><div class="pollOptionText"><%= it.data.boxs[0].content.extra.poll.pollOne %></div><div class="commentBoxPollClose">x</div></div>
+		<div class="pollOption commentBoxPoll hidden" id="pollcOpt2"><div class="pollOptionText"><%= it.data.boxs[0].content.extra.poll.pollTwo %></div><div class="commentBoxPollClose">x</div></div>
+	<% } %>
+	
+	<div style="width: 100%;display: flex;">
+		<div id="commentAttachPreview" class="commentAttachPreview hidden">
+			<img id="attachImage" class="attachImage" src="/assets/logo.png"></img>
+		</div>
+		<div style="width: 100%">
+			<input name="file" type="file" id="cfile" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hidden">
+			<textarea name="content" class="commentArea" id="commentTextarea" maxlength="3000" placeholder="Escribe un comentario o arrastra una imagen..."></textarea>
+			<div class="commentTools">
+				<div class="horizontalTools">
+					<div class="commentButton" onclick="openFileSelector('cfile')">
+						<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+					</div>
+					
+					<input type="text" class="field hidden" style="width: calc(100% - 95px)" name="curl" id="curl" placeholder="Pega un link de youtube, video o imagen...">
+					<div id="linkButton" class="commentButton">
+						<img id="clinkUnselect" src="/assets/uicons/link.svg"></img>
+						<img id="clinkSelect" class="hidden" src="/assets/uicons/check.svg"></img>
+					</div>
+					
+				</div>
+				<button class="commentButton commentSend" id="commentSend">
+					<span id="commentButtonText">Comentar</span>
+					<i id="sendComIcon" class="fas fa-circle-notch fa-spin hidden"></i>
+				</button>
+			</div>
+			<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))) { %>
+				<div style="padding:5px">
+					<input type="checkbox" name="modAnon" style="width:auto" checked="true"><span>Comentario Anonimo</span>			
+				</div>
+			<% } %>
+		</div>
+	</div>
+</form>

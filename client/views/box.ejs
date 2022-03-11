@@ -1,29 +1,230 @@
 <!doctype html>
 <html lang="en">
 	<head>
-	<%- include('./common/head', it); %>
+		<%- include('./fragments/head', it); %>
 	</head>
-	<%- include('./common/header', it); %>
-	<% 
-		/* VARIABLES DE USO LOCAL EN EL RENDER */
-		var BOX = it.data.boxs[0];
-		var categoryData = it.utils.getCategoryData(it.data.cats, BOX.cat);
-	%>
-	<body>
-	<%- include('./common/scripts/boxScripts', {it, BOX, categoryData}); %>
-		<main>
-			<div class="voxWraper">
-				<!-- barra/header del box -->
-				<section class="voxData">
-				<%- include('./common/fragments/box/boxContentSection', {it, BOX, categoryData}); %>
-				</section>
-				<!-- area de comentarios -->
-				<section class="voxCommentList">
-				<%- include('./common/fragments/box/boxCommentSection', {it, BOX}); %>
-				</section>
-				<div class="floatQuote hidden" id="floatQuote"></div>
+	<body class="main">
+		<% 
+		var BOX = it.data.boxs[0]; 
+		var categoryData = it.utils.getCategoryData(it.data.cats, BOX.cat); 
+		%>
+		
+		<%- include('./fragments/scripts/headerScripts', it); %>
+		<%- include('./fragments/scripts/postScripts', {it, BOX}); %>
+		<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))){ %>
+			<%- include('./fragments/scripts/modScripts', {it, BOX}); %>
+		<% } %>
+		<% if (BOX.flag.includes("sync")){ %>
+			<%- include('./fragments/scripts/syncScripts', {it, BOX}); %>
+		<% } %>
+	
+		<div class="mainContainer mainContainerPost mainfixedView">
+			
+			<div class="navbar mainNavbar mainNavbarPost">
+				<%- include('./fragments/navbar', it); %>
 			</div>
-		</main>
+			
+			<%- include('./fragments/navbar/navbarElements', it); %>
+		
+			<div class="mainCatsBar toolsBar" id="mainCatsBar">	
+				<a href="/" class="catElement" style="background-color: #3f51b5"><img src="/assets/uicons/home.svg"></img><span class="catElementTitle">Home</span></a>
+				
+				<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))){ %>
+					<div id="postActionMod" class="catElement"><img src="/assets/uicons/flag.svg"></img><span class="catElementTitle">Moderar</span></div>
+				<% } else { %>
+					<div id="postActionFlag" class="catElement"><img src="/assets/uicons/flag.svg"></img><span class="catElementTitle">Denunciar</span></div>
+				<% } %>
+				
+				<div id="postActionFollow" data-bid="<%= BOX.bid %>" class="catElement <%= (it.data.users[0] && (it.data.users[0].uid === BOX.user.uid) ? "follow" : "") %>"><img src="/assets/uicons/eye.svg"></img><span class="catElementTitle">Seguir</span></div>
+				<div id="postActionFav" data-bid="<%= BOX.bid %>" class="catElement <%= (it.sesion.config.favs.includes(BOX.bid)) ? "faved" : "" %>"><img src="/assets/uicons/star.svg"></img><span class="catElementTitle">Favorito</span></div>
+				<div id="postActionHide" data-bid="<%= BOX.bid %>" class="catElement <%= (it.sesion.config.boxhides.includes(BOX.bid)) ? "hided" : "" %>"><img src="/assets/uicons/eye-off.svg"></img><span class="catElementTitle">Ocultar</span></div>
+				
+				<span style="margin-left: auto"></span>
+				<div class="catElement catIcon">
+					<img src="<%= categoryData.content.media.icon %>"></img>
+					<span><a href="/<%= BOX.cat %>"><%= categoryData.content.name %></a></span>
+				</div>
+			</div>
+			
+			<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))){ %>
+			
+			<div id="modsToolBarContainer" class="modsToolBarContainer hidden">
+				<div class="modsToolBarPanel">
+					<div class="modsToolBar modsPanel">UID: <%= BOX.user.uid %></div>
+					<div class="modsToolBar modsPanel">
+						<div class="mainButton basicButton actionModBoxOption" data-bid="<%= BOX.bid %>" data-action="box_adv">Advertir</div>
+						<div class="mainButton basicButton actionModBoxOption" data-bid="<%= BOX.bid %>" data-action="box_ban">Banear</div>
+						<select id="modMovecat">
+							<option value="" selected="selected" disabled="disabled">Elige un área</option>
+							<% it.data.cats.forEach(function(cat){ %>
+								<option value="<%= cat.content.tid %>"><%= cat.content.name %></option>
+							<% }) %>
+						</select>
+						<div class="mainButton basicButton actionModBoxOption" data-bid="<%= BOX.bid %>" data-action="box_move">Mover Publicación</div>
+						<div class="mainButton basicButton actionModBoxOption" data-bid="<%= BOX.bid %>" data-action="box_delete">Borrar Publicación</div>
+					</div>
+					<div class="modsToolBarPanelB">
+						<div class="modsToolBar modsPanelB">
+							<span style="padding-right:5px">Sticky Global</span>
+							<div class="configToggle">
+								<label class="switch">
+								<% if (BOX.date.sticky > 0) { %>
+									<input type="checkbox"  id="bsticky" checked="true">
+								<% } else { %>
+									<input type="checkbox"  id="bsticky">
+								<% } %>
+									<span class="slider"></span>
+								</label>
+							</div>
+						</div>
+						<div class="modsToolBar modsPanelB">
+							<span style="padding-right:5px">Sticky Local</span>
+							<div class="configToggle">
+								<label class="switch">
+								<% if (BOX.date.csticky > 0) { %>
+									<input type="checkbox"  id="bcsticky" checked="true">
+								<% } else { %>
+									<input type="checkbox"  id="bcsticky">
+								<% } %>
+									<span class="slider"></span>
+								</label>
+							</div>
+						</div>
+						<div class="mainButton basicButton actionModBoxOption" data-bid="<%= BOX.bid %>" data-action="box_change">Aplicar</div>
+					</div>
+				</div>
+			</div>
+			
+			<% } %>
+			
+			<div class="mainPostMetadata">
+				<div class="metaElement op">OP</div>
+				<div class="metaElement nick"><%= (BOX.user.jerarquia.nick) ? BOX.user.jerarquia.nick : "Anonimo" %></div>
+				<div class="metaElement" style="<%= (BOX.user.jerarquia.color) ? "background: " + BOX.user.jerarquia.color : "" %>"><%= (BOX.user.jerarquia.rango) ? BOX.user.jerarquia.rango : "anon" %></div>
+				
+				<div class="metaElement type">
+				<% if (BOX.type.includes("image")){ %>
+					<div id="metaImage" data-img="<%= BOX.img.full %>" class="typeItem pointer"><img src="/assets/uicons/image.svg"></img></div>
+				<% } %>
+				<% if (BOX.type.includes("post")){ %>
+					<div class="typeItem"><img src="/assets/uicons/file-text.svg"></img></div>
+				<% } %>
+				<% if (BOX.type.includes("video")){ %>
+					<div class="typeItem"><img src="/assets/uicons/film.svg"></img></div>
+					<% if (BOX.flag.includes("sync")) { %>
+						<div class="typeItem">
+							<span id="livesync" style="margin: 0px 5px;font-weight: 600;font-size: small;">Offline</span>
+							<img src="/assets/uicons/refresh-cw.svg"></img>
+						</div>
+					<% } %>
+				<% } %>
+				<% if (BOX.type.includes("poll")){ %>
+					<div class="typeItem"><img src="/assets/uicons/bar-chart-2.svg"></img></div>
+				<% } %>
+				</div>
+				
+				<div class="metaElement date"><%= it.utils.timeSince(it.data.boxs[0].date.created) %></div>
+			</div>
+			
+			<article class="mainPostContent" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
+				<% if (!BOX.type.includes("post")){ %>
+				
+					<% if (BOX.type.includes("image")){ %>
+					<div class="mainPostMediaContainer">
+						<div class="mainPostImage media" data-img="<%= BOX.img.preview %>;<%= BOX.img.full %>">
+							<img alt="post image" src="<%= (it.utils.isGif(BOX.img.full)) ? BOX.img.full : BOX.img.preview %>" onerror="this.src='/assets/imageplaceholder.png'"></img>
+						</div>
+					</div>
+					<% } else if (BOX.type.includes("video") && !BOX.type.includes("object") && !BOX.flag.includes("sync")){ %>	
+					<div class="mainPostMediaContainer postExpand">
+						<div class="mainPostVideo">
+							<iframe id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= BOX.media.raw %>?enablejsapi=1&origin=https://<%= it.host %>&autoplay=1><img src=<%= BOX.media.preview %>><span id='playYT'>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						</div>
+					</div>
+					<% } else if (BOX.type.includes("video") && BOX.flag.includes("sync")) { %>
+					
+						<div class="mainPostVideo" id="mainSyncContainer"></div>
+						
+					<% } else if (BOX.type.includes("object")) { %>
+					<div class="mainPostMediaContainer postExpand">
+						<div class="mainPostVideo">
+							<object class="objectContainer" data="<%= BOX.media.raw %>" width="100%" height="100%"></object>
+						</div>
+					</div>
+					<% } %>
+					
+				<% } %>
+				<header class="mainPostInfo">
+					<h1 class="mainPostTitle" itemprop="name"><%- BOX.content.title %></h1>
+					<div class="mainPostBody" itemprop="articleBody"><%- BOX.content.body %></div>
+				</header>
+			</article>
+			
+		</div>
+		
+		<div class="sideContainer sideContainerPost sideView">
+			<div class="sideContainerBottom sideContainerBottomPost">
+				<%- include('./fragments/post/syncElement', {it, BOX}); %>
+				<%- include('./fragments/post/pollElement', {it, BOX}); %>
+				
+				<%- include('./fragments/post/commentForm', it); %>
+				<div class="contentTitle">
+					<div class="leftTools">
+						<div class="catElement" id="goComment">
+							<img src="/assets/uicons/message-square.svg"></img>
+						</div>
+						<div class="catElement" id="autoLoad">
+							<img src="/assets/uicons/radio.svg"></img>
+						</div>
+					</div>
+					<span>Comentarios (<span id="commentCounter"><%- BOX.content.comments %></span>)</span>
+					<div class="rightTools">
+						<div class="catElement" id="postFiles">
+							<img src="/assets/uicons/folder.svg"></img>
+						</div>
+						<div class="catElement" id="goDown">
+							<img src="/assets/uicons/arrow-down.svg"></img>
+						</div>
+					</div>
+				</div>
+				<div class="contentTitle newCommentPopup pointer hidden" id="commentLoadMore">
+					<span id="comBufferNumber"></span>
+				</div>
+				
+				
+				<div class="commentFiles hidden" id="commentFiles">
+				<% it.utils.filterComMedia(it.data.coms).forEach(function(com) { %>
+					<% if (com.type.includes("image")) { %>
+						<a class="file" target="_BLANK" href="<%= it.utils.seclink(com.img.full) %>">
+							<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.img.preview) %>" alt="">
+							<div class="attachType"><img src="/assets/uicons/image.svg"></img></div>
+						</a>
+					<% } else if (com.type.includes("video")) { %>
+						<a class="file" target="_BLANK" href="<%= it.utils.seclink(com.media.raw) %>">
+							<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.media.preview) %>" alt="">
+							<div class="attachType"><img src="/assets/uicons/film.svg"></img></div>
+						</a>
+					<% } %>
+				<% }); %>
+				</div>
+				
+				<ul class="commentList" id="commentList">
+				<% if (it.data.coms.length > 0) { %>
+					<% it.data.coms.forEach(function(com){ %>
+						<%- include('./fragments/post/commentElement', {it, com}); %>
+					<% }); %>
+				<% } else { %>
+					<div class="noCommentsBox" id="noCommentsBox"><%- it.utils.randomNoCom() %></div>
+				<% } %>
+				</ul>
+				<div class="floatQuote hidden" id="floatQuote"></div>
+				<div style="height: 50px"></div>
+				<div class="gotop hidden" id="attach-goup"><span style="width: 100%"><i class="fas fa-arrow-up"></i></span></div>
+			</div>
+		</div>
+		
 	</body>
-	<%- include('./common/footer', it); %>
+	
+	<%- include('./fragments/footer', it); %>
+	
 </html>

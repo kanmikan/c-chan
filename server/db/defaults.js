@@ -54,7 +54,7 @@ function genDefConfig(DB){
 
 function getDefUserConfig(){
 	return {
-		darkmode: false, //tema claro/oscuro.
+		darkmode: true, //tema claro/oscuro.
 		autoloadgifs: true, //[placeholder] define si los gifs se van a cargar automaticamente o si se usará el thumbnail estático.
 		boxhides: [], //lista de boxs ocultos
 		cathides: [], //lista de categorias ocultas.

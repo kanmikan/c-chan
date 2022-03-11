@@ -1,0 +1,39 @@
+<li id="<%= box.bid %>">
+	<a class="post" href="/<%= box.cat %>/<%= box.bid %>" 
+	style="background: url(<%= (box.type.includes("video")) ? box.media.preview : box.img.preview %>) center, url(/assets/placeholder.png); background-size: cover;">
+		<div class="icons">
+		<% if (box.type.includes("image") && !box.type.includes("post")) { %>
+			<img alt="image type" class="imgIcon" src="/assets/uicons/image.svg"></img>
+		<% } %>
+		<% if (box.type.includes("video")) { %>
+			<img alt="video type" class="videoIcon" src="/assets/uicons/film.svg"></img>
+		<% } %>
+		<% if (box.flag.includes("sync")) { %>
+			<img alt="video sync type" class="postIcon postIconSync" src="/assets/uicons/refresh-cw.svg" style="<%= (box.flag.includes("online")) ? "filter: invert(0.5) sepia(1) hue-rotate(310deg) saturate(30);" : "" %>"></img>
+		<% } %>
+		<% if (box.type.includes("post")) { %>
+			<img alt="post type" class="postIcon" src="/assets/uicons/file-text.svg"></img>
+		<% } %>
+		<% if (box.type.includes("poll")) { %>
+			<img alt="post type" class="postIcon" src="/assets/uicons/bar-chart-2.svg"></img>
+		<% } %>
+		<% if (box.date.sticky > 0) { %>
+			<img alt="sticky type" class="sticky" src="/assets/uicons/bookmark.svg"></img>
+		<% } %>
+		<% if (box.date.csticky > 0) { %>
+			<img alt="local sticky type" class="csticky" src="/assets/uicons/paperclip.svg"></img>
+		<% } %>
+		</div>
+		<div class="data">
+			<h1 class="title"><%= box.content.title %></h1>
+			<%
+				let bodypreview = box.content.body.replace(/<\/?[^>]+(>|$)/g, " ");
+				if (bodypreview.length > 50){
+					bodypreview = bodypreview.substr(0, 50) + "...";
+				}
+			%>
+			<h1 class="info txtpreview"><%- bodypreview %></h1>
+			<h1 class="info"><%= box.content.comments %> Comentarios - Hace <%= it.utils.timeSince(box.date.created, 1) %></h1>
+		</div>
+	</a>
+</li>

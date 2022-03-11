@@ -1,0 +1,43 @@
+<script>
+	var B_BUFFER = [];
+	var CATS = <%- JSON.stringify(it.data.cats) %>;
+	var KIND = "<%= it.kind %>";
+	$(function () {
+		var socket = io();
+		socket.on('connect', function(){
+			/* abandonar cualquier instancia que haya quedado abierta */
+			socket.emit("leave", "all");
+		});
+		socket.on('new', function(data){
+			switch(data.kind){
+				case "newbox":
+					//solo mostrar notificacion si la categoria es igual o si es la home.
+					if (KIND === "/" || (data.data.cat === KIND.substr(1))){
+						action_newBoxPopup(data);
+					}
+				break;
+				case "newcom":
+					action_newComEffect(data);
+					action_newComCupdate(data);
+				break;
+			}
+		});
+		
+		//señal de sync
+		let timer;
+		socket.on('sync', function(data){
+			switch(data.key){
+				case "ytb_live":
+					let bid = data.bid;
+					//mostrar señal
+					$(`#${bid} .icons .postIconSync`).addClass("syncSignal");
+					clearTimeout(timer);
+					timer = setInterval(function(){
+						$(`#${bid} .icons .postIconSync`).removeClass("syncSignal");
+					}, 5000);
+				break;
+			}
+		});
+		
+	});
+</script>

@@ -1,0 +1,19 @@
+<% if ((BOX.type.includes("video") && BOX.flag.includes("sync")) || (BOX.type.includes("object"))) { %>
+	<div class="syncContainer">
+	<% if ((it.sesion.uid === BOX.user.uid)){ %>
+		<input type="text" class="field syncInput" id="syncURL" 
+			placeholder="URL del <%= (it.data.boxs[0].type.includes("object")) ? "archivo .swf a cargar" : "video de youtube" %>" 
+			value="<%= it.data.boxs[0].media.raw %>"></input>
+		<button class="mainButton syncButton" style="width: inherit" id="syncPlay"><span>Play</span></button>
+	<% } %>
+		<div class="syncOptions">
+			<label><b>Configuracion de sincronizacion</b></label>
+			<div>
+				<label>Tolerancia de desincronizacion: (en segundos)</label>
+				<input type="number" step="0.1" min="0.0" max="5.0" class="field" style="width: 50px; padding: 3px;" id="syncThresholdValue" placeholder="1.0" value="1.5"></input>
+			</div>
+			<button class="mainButton syncButtonB" style="width: inherit" id="syncOptionsApply"><span>Aplicar</span></button>
+		</div>
+	</div>
+<% } %>
+

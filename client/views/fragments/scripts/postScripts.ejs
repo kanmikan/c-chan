@@ -1,0 +1,50 @@
+<script src="/node/vanilla-lazyload/dist/lazyload.min.js" type="text/javascript"></script>
+
+<script>
+	/* variables globales */
+	var OP = <%= (BOX.user.uid === it.sesion.uid) ? true : false %>;
+	var TOKEN = "<%= it.token %>";
+	var COMS = []; //buffer de comentarios.
+	var USERDATA = "<%= (it.data.users[0]) ? it.data.users[0].permisos : [] %>".split(",");
+	var ASYNC_COMMENTS = <%= it.renderConfig.ASYNC_COMMENTS %>;
+	var AUTOLOAD_COMMENTS = false;
+	var KIND = "<%= it.kind %>";
+	
+	/* LISTENERS DEL SOCKETIO */
+	$(function () {
+		let lazy = new LazyLoad({}).update();
+		
+		var socket = io();
+		socket.on('connect', function(){
+			socket.emit("room", "<%= BOX.bid %>");
+		});
+		socket.on('comment', function(data){
+			COMS.push({created: data.data.date.created, op: data.op, data: data.data});
+			let bufferCount = (COMS.length > 1) ? `${COMS.length} comentarios` : `1 comentario`;
+			
+			element("comBufferNumber").innerHTML = bufferCount;
+			
+			if (TOKEN != data.token){
+				//si no es el emisor, mostrar el boton.
+				if (!AUTOLOAD_COMMENTS){	
+					element("commentLoadMore").classList.remove("hidden");
+				} else {
+					element("commentLoadMore").click();
+				}
+			} else {
+				<% if (it.renderConfig.ASYNC_COMMENTS){ %>
+					//no renderizar buffer, y eliminar el push del comentario en cuestion.
+					COMS = COMS.filter(item => item.data.cid != data.data.cid);
+					bufferCount = (COMS.length > 1) ? `${COMS.length} comentarios` : `1 comentario`;
+					element("comBufferNumber").innerHTML = bufferCount;
+				<% } else { %>
+					//de lo contrario, renderizar la lista una vez recibida.
+					element("commentLoadMore").click();
+				<% } %>
+			}
+		});
+		socket.on('vote', function(data){
+			action_pollUpdate(data);
+		});
+	});
+</script>

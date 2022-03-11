@@ -91,6 +91,27 @@ module.exports = function(app){
 		
 	});
 	
+	//RUTA: lista de publicaciones propias.
+	app.get('/propios', function(req, res) {
+		
+		let filter = {"user.uid": req.session.uid};
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_BOXS, filter, {"date.created": -1, "date.bump": -1}, function(rboxs){
+			dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(req.session.uid), function(result){
+				result[mdbScheme.C_BOXS] = rboxs;
+				res.render("index", {
+					it : {
+						kind: req.originalUrl,
+						host: req.get('host'),
+						utils: utils,
+						renderConfig: renderConfig,
+						sesion: req.session,
+						data: result
+					}
+				});
+			});
+		});
+	});
+	
 	//RUTA: lista de favoritos.
 	//llamada para añadir elemento: applyConfig("favs_add:bid"), donde bid es el id del box a añadir a favoritos.
 	app.get('/favoritos', function(req, res) {

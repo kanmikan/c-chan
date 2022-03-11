@@ -1,0 +1,32 @@
+<!-- swf emulator -->
+<script src='https://e9x.github.io/ruffle-example/ruffle.js'></script>
+<script>
+	$(function () {
+		let socket = io();
+		let mainPlayer = document.getElementById("mainPlayer");
+		
+		socket.on('sync', function(data){
+			
+		});
+		
+		$(document).on("click", "#syncPlay", function(e){
+			let url = $("#syncURL").val();
+			mainPlayer.innerHTML = '';
+			swfobject.embedSWF(url, mainPlayer, "100%", "100%");
+		});
+		
+		let swfobject = {};
+		swfobject.embedSWF = function(url, cont, width, height){
+			player = Object.assign(cont.appendChild(window.RufflePlayer.newest().createPlayer()), {
+				width: width,
+				height: height,
+				style: `width: ${width}; height: ${height}`
+			});
+			player.load({url: url});
+		}
+			
+		
+		//swfobject.embedSWF(`<%= (it.data.boxs[0].media.raw) %>`, mainPlayer, "100%", "100%");
+		
+	});
+</script>

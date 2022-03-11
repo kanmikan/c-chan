@@ -1,98 +1,88 @@
 <!doctype html>
 <html lang="en">
 	<head>
-	<%- include('./common/head', it); %>
+		<%- include('./fragments/head', it); %>
 	</head>
-	<!-- ..El navbar se renderiza aca.. -->
-	<%- include('./common/header', it); %>
-	<%- include('./common/scripts/indexScripts', it); %>
-	<body>
-		<div class="bottonContextual" data-toggle="modal" data-target="#createVox" data-backdrop="false"><i class="fas fa-plus"></i></div>
-		<div class="moreContainer">
-			<div class="moreload hidden" id="moreload">
-				<i class="fas fa-circle-notch fa-spin"></i>
-				<span>Cargando mas...</span>
+	<body class="main">
+		<%- include('./fragments/scripts/headerScripts', it); %>
+		<%- include('./fragments/scripts/indexScripts', it); %>
+		<div class="mainContainer" id="mainContainer">
+			<div class="navbar mainNavbar">
+				<%- include('./fragments/navbar', it); %>
 			</div>
+			
+			<%- include('./fragments/navbar/navbarElements', it); %>
+			
+			<div class="mainCatsBar" id="mainCatsBar" style="padding: 10px 5px 5px 5px">
+				<a href="/" class="catElement" style="background-color: #3f51b5"><img src="/assets/uicons/home.svg"></img></a>
+				<% it.data.cats.forEach(function(cat){ %>
+					<a href="/<%= cat.content.tid %>" class="catElement <%= (it.kind === "/" + cat.content.tid) ? "catElementSelected" : "" %> ">&gt;<%= cat.content.tid %></a>
+				<% }); %>
+				<a href="#" class="catElement" style="background-color: #3f51b5"><img src="/assets/uicons/plus.svg"></img></a>
+			</div>
+			
+			<div class="newPostAlertContainer hidden" id="newPostAlertContainer">
+				<div class="newPostAlert" id="newPostAlert">Cargar x Temas</div>
+			</div>
+			
+			<ul class="mainContents" id="mainContents">
+			<% it.data.boxs.forEach(function(box){ %>
+				<%- include('./fragments/home/postElement', {it, box}); %>
+			<% }); %>
+			</ul>
+			<div id="list-end"></div>
+			
+			<div class="newPostAlertContainer loadMoreContainer hidden" id="loadMoreContainer">
+				<div class="newPostAlert">
+					<i class="fas fa-circle-notch fa-spin"></i>
+					<span>Cargando mas...</span>
+				</div>
+			</div>
+			
 		</div>
-		<div class="boxList" id="boxList">
-			<% it.data.boxs.forEach(function(box){renderBox(box);}); %>
+		<div class="sideContainer">
+			<div class="sideContainerBottom" id="sideContainerBottom">
+				
+			<% if (!["/", "/favoritos","/ocultos", "/propios"].includes(it.kind) && (it.kind.split("/")[1] && it.kind.split("/")[1] !== "search")) { 
+				let categoryData = it.utils.getCategoryData(it.data.cats, it.kind.split("/")[1]); %>
+				<div class="categoryInfoContainer containerMain">
+					<div class="categoryInfoContainer">
+						<div class="categoryInfoImage">
+							<img src="<%= categoryData.content.media.image %>"></img>
+						</div>
+						<div class="categoryInfoDescription">
+							<h1><%= categoryData.content.name %></h1>
+							<h2><%= categoryData.content.description %></h2>
+						</div>
+					</div>
+					<div class="categoryInfoButtons">
+						<div class="mainButton categoryInfoButton catElementSelected">
+							<span>Ocultar de la Home</span>
+						</div>
+					</div>
+				</div>
+			<% } %>
+				
+				<!-- <div class="sideTitle">Nuevas Imágenes</div> -->	
+				<div class="slideshowContainer" id="slidecontainer">
+					<%- include('./fragments/scripts/slideScript', it); %>
+				</div>
+				
+				<div class="activityContainer">
+					<div class="sideTitle">Actividad Reciente</div>
+					<ul id="activityList"></ul>
+					
+					<div class="activityContainer">
+						<div class="sideTitle sideInfo version">Usando como base <%- it.renderConfig.VERSION %></div>
+						<div class="sideTitle sideInfo"><a href="info/reglas">Reglas</a> - <a href="info/welcome">Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
+					</div>
+				</div>
+				
+			</div>
 		</div>
 	</body>
-	<%- include('./common/footer', it); %>
+	
+	<script src="/js/nanoSlideshow.js"></script>
+	<%- include('./fragments/footer', it); %>
+	
 </html>
-
-<!-- FUNCIONES DEL RENDER -->
-<% function renderBox(box) { %>
-	<% if (box != undefined) { 
-		let categoryData = it.utils.getCategoryData(it.data.cats, box.cat); %>
-		<a class="box" id="<%= box.bid %>" href="/<%= box.cat %>/<%= box.bid %>" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(<%= it.utils.seclink((box.type.includes("video")) ? box.media.preview : box.img.preview) %>); text-decoration: none; background-position: top;">
-		
-		<div class="voxHeader">
-			<div class="tagList">
-				<!-- tag sticky global -->
-				<% if (box.date && box.date.sticky > 0){ %>
-					<div class="tag sticky">Sticky</div>
-				<% } %>
-				<div class="tag categoryTag">
-					<%- it.utils.getCatShow(box.cat) %>
-				</div>
-				<!-- tag sticky local -->
-				<% if (box.date && box.date.csticky > 0){ %>
-					<div class="tag csticky"><i class="fas fa-thumbtack"></i></div>
-				<% } %>
-				<!-- tag video -->
-				<% if (box.type && box.type.includes("video")){ %>
-					<div class="tag ytb"><i class="fas fa-play"></i></div>
-				<% } %>
-				<!-- tag dados -->
-				<% if (box.type && box.type.includes("dice")){ %>
-					<div class="tag diceTag"><i class="fas fa-dice-three"></i></div>
-				<% } %>
-				<!-- tag encuesta -->
-				<% if (box.type && box.type.includes("poll")){ %>
-					<div class="tag pollTag"><i class="fas fa-poll"></i></div>
-				<% } %>
-				<!-- tag idunico -->
-				<% if (box.type && box.type.includes("idunico")){ %>
-					<div class="tag iduTag"><i class="fas fa-id-card"></i></div>
-				<% } %>
-				<!-- tag rss -->
-				<% if (box.flag && box.flag.includes("rss")){ %>
-					<div class="tagInvisible rss"><i class="fas fa-rss"></i></div>
-				<% } %>
-				<!-- tag sync -->
-				<% if (box.flag && box.flag.includes("sync")){ %>
-					<div class="tag sync"><i class="fas fa-sync"></i></div>
-				<% } %>
-			</div>
-			<div class="voxComments textShadon">
-				<i class="fas fa-comment"></i>
-				<span class="countComments"><%= box.content.comments %></span>
-			</div>
-			<div class="voxAction textShadon">
-				<div class="actionBotton" data-voxaction="<%= box.bid %>">
-					<i class="fas fa-ellipsis-v" data-voxaction="<%= box.bid %>"></i>
-				</div>
-			</div>
-		</div>
-		
-		<% if (box.content.extra != undefined && box.content.extra.title2 != undefined){ %>
-			<h5 class="animetitle textShadon"><%= box.content.extra.title2 %></h5>
-		<% } %>
-		
-		<h1 class="title textShadon"><%= box.content.title %></h1>
-		<div class="over"></div>
-		<div class="voxActions unselect">
-			<div class="voxActionBotton">
-				<div class="actionText" data-act="<%= (it.kind === "/ocultos") ? "unhide" : "hide" %>" data-contentid="<%= box.bid %>"><%= (it.kind === "/ocultos") ? "Mostrar" : "Ocultar" %></div>
-			</div>
-			<div class="voxActionBotton">
-				<div class="actionText" data-act="report" data-contentid="<%= box.bid %>">Reportar</div>
-			</div>
-			<div class="voxActionBotton">
-				<div class="actionText" data-act="close"><i class="fas fa-times"></i></div>
-			</div>
-		</div>
-	</a>
-	<% } %>
-<% } %>

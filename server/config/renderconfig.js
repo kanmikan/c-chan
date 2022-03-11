@@ -2,7 +2,7 @@ require('dotenv').config();
 module.exports = {
 	/* MODULOS DEL RENDER */
 	/* info de la version del motor para mostrar en el cliente */
-	VERSION: "Cchan Alfa 5",
+	VERSION: "Cchan Alfa 5 - Interfaz MV2",
 	
 	/* usar la interfaz v1 de mikanchan en vez de la clasica. */
 	ENABLE_V1: (process.env.V1 && process.env.V1 === "true") ? true : false,

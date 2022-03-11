@@ -50,45 +50,28 @@ function getDataURL(file, before, callback) {
 }
 
 function post(formdata, url, before, callback){
-	$.ajax({
-		type: 'POST',
-		url: url,
+	before();
+	fetch(url, {
+		method: "POST",
 		headers: {
 			"X-CSRF-Token": element("_csrf_token").value
 		},
-		data: formdata,
-		processData: false,
-		contentType: false,
-		beforeSend: function() {
-			before();
-		}
-	}).done(function(data) {
-		callback(data);
-	}).fail(function(xhr, status, error){
-		if (status === "error"){
-			callback({success: false, data: "error"});
-		}
-	});
+		body: formdata
+	}).then(response => response.json())
+	.then(data => callback(data));
 }
 
 function postForm(formdata, url, before, callback){
-	$.ajax({
-		type: 'POST',
-		url: url,
+	before();
+	fetch(url, {
+		method: "POST",
 		headers: {
+			"Content-Type" : "application/x-www-form-urlencoded",
 			"X-CSRF-Token": element("_csrf_token").value
 		},
-		data: formdata,
-		beforeSend: function() {
-			before();
-		}
-	}).done(function(data) {
-		callback(data);
-	}).fail(function(xhr, status, error){
-		if (status === "error"){
-			callback({success: false, data: "error"});
-		}
-	});
+		body: formdata
+	}).then(response => response.json())
+	.then(data => callback(data));
 }
 
 function timeSince(timestamp) {
@@ -140,8 +123,6 @@ function getCatShow(categoria){
 	if (categoria === "oficial"){return "<span>Oficial</span>";}
 	return categoria.toUpperCase();
 }
-
-/* CLIENT RENDER */
 
 //TODO: cambiar esto por un render intermediario (redirect del api a ejs y retorno del html ya construido)
 function boxRender(box){
@@ -250,13 +231,13 @@ function iconRender(iconData, acc=true, act=false){
 }
 
 //TODO: cambiar esto por un render intermediario (redirect del api a ejs y retorno del html ya construido)
-//render de comentarios del lado del cliente.			
 function commentRender(op, com){
+	//render de comentarios del lado del cliente.			
 	let cbody =`<div class="comment" id="${com.cid}"><div class="commentAvatar unselect">`;
 	
 	cbody += iconRender(com.icon);
 	
-	cbody +=`</div><div class="commentBody"><div class="commentMetadata"><div class="metaversion hidden" data-version="${com.version}"></div><div class="commentsTag unselect">`;
+	cbody +=`</div><div class="commentBody"><div class="commentMetadata"><div class="commentsTag unselect">`;
 	if (op){
 		cbody += `<span class="commentTag op">OP</span>`;
 	}
@@ -309,116 +290,13 @@ function commentRender(op, com){
 		cbody +=`<figure class="commentAttach"><div style="position: relative;width: 100%;height: 100%;"><i class="fa fa-search-plus attachExpandIcon hidden"></i><a class="voxImage" data-pics="${com.img.full}|${com.img.preview}" target="_BLANK" href="${com.img.full}"><img src="${(isGif(com.img.preview)) ? com.img.full : com.img.preview}"></img></a></div></figure>`;
 	}
 	if (com.type.includes("video")){
-		cbody +=`<figure class="commentAttachVideo"><div class="video-container"><iframe src="${com.media.raw}" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=${com.media.raw}?autoplay=1><img src=${ com.media.preview}><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-		<div class="video-link"><a target="_blank" href="${com.media.raw}">${com.media.raw}</a></div></figure>`;
+		cbody +=`<figure class="commentAttachVideo"><div class="video-container"><iframe src="${com.media.raw}" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=${com.media.raw}?autoplay=1><img src=${ com.media.preview}><span>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></figure>`;
 	}
 	cbody +=`<div class="commentContent">${com.content.body}<br></div></div></div></div>`;	
 	$("#commentList").prepend(cbody);
 	
 	//actualizar lista de comentarios.
 	element("voxComments").innerHTML = $("#commentList").children().length;
-}
-
-/* ---------------------------------- */
-
-function action_instantRender(form){
-	let data = deparam(form);
-
-	//esquema de un comentario temporal.
-	let tempScheme = {
-		version: "temp",
-		cid: "CARGANDO",
-		bid: data.bid,
-		user: {
-			uid: "uid",
-			jerarquia: {
-				nick: "Anonimo",
-				rango: "anon",
-				color: ""
-			}
-		},
-		type: [],
-		flag: [],
-		date: {
-			created: Date.now()
-		},
-		icon: "ico,#00000080,#00000080, , , ",
-		img: {
-			preview: "",
-			full: "",
-			raw: ""
-		},
-		media: {
-			preview: "",
-			raw: ""
-		},
-		content: {
-			body: "",
-			extra: {
-				tags: [],
-				idunico: {},
-				poll: {}
-			}
-		}
-	}
-	
-	//parser del texto local
-	tempScheme.content.body = commandsParser(data.content);
-	//detectar multimedia
-	if (data.img != "" && data.vid === ""){
-		let image = data.img.split(";");
-		tempScheme.type.push("image");
-		tempScheme.img.full = image[0];
-		tempScheme.img.preview = image[1];
-	}
-	
-	if (data.vid != "" && data.img === ""){
-		let video = data.vid.split(";");
-		tempScheme.type.push("video");
-		tempScheme.media.raw = video[0];
-		tempScheme.media.preview = video[1];
-	}
-	
-	//render del comentario temporal
-	commentRender(false, tempScheme);
-}
-
-//detecta los comandos y en general, todo el codigo html del comentario
-function commandsParser(rawtext){
-	let patterns = [
-		/(<(.*?)>|<(.*?)(\r\n|\r|\n)+)/g, //sanitizado simple
-		/::{1}([^\r\n\s]+)/gi, //link interno
-		/>>{1}([^\r\n\s]{7})/gi, //tags
-		/>(([https?|ftp]+:\/\/)([^\s/?\.#]+\.?)+(\/[^\s]*)?)/gi, //link externo
-		/^(>(?!\>).+)/gim, //greentext
-		/\$([0-9A-Fa-f]{3})([^]*?)\$/g, //deteccion de color rgb
-		/\n/g //salto de linea.
-	];
-	let pattern_replace = [
-		'', //evitar que los kakersitos se domen solos
-		'<a href="$1" class="link">&gt;$1</a>',
-		'<a href="#$1" class="tag" data-tag="$1">&gt;&gt;$1</a>',
-		'<a href="$1" target="_blank" class="link">&gt;$1</a>',
-		'<span class="greentext">$1</span>',
-		'<span style="color: #$1;text-shadow: 1px 1px black;">$2</span>',
-		'<br>'
-	];
-	
-	let output = rawtext;
-	for (let i =0; i < patterns.length; i++) {
-		output = output.replace(patterns[i], pattern_replace[i]);
-	}
-	return output;
-}
-
-//filtrar comentarios temporales de la lista
-function clearTempComments(){
-	let metaversionlist = $("#commentList").find(".metaversion");
-	for (var v=0; v<metaversionlist.length; v++){
-		if ($(metaversionlist[v]).data("version") === "temp"){
-			$(metaversionlist[v]).parent().parent().parent().remove()
-		}
-	}
 }
 
 function checkBoxFieldLocal(){
@@ -453,7 +331,6 @@ function tag(cid){
 
 function hashScroll(hash){
 	if (hash != ""){
-		element("floatQuote").classList.add("hidden");
 		window.history.replaceState(null, null, hash);
 		
 		let elem = element(hash.substring(1));
@@ -471,23 +348,6 @@ function hashScroll(hash){
 
 function showHomebarScroll(){
 	element("homeBar").style["overflow-y"] = "scroll";
-}
-
-function deparam(query) {
-    var pairs, i, keyValuePair, key, value, map = {};
-    if (query.slice(0, 1) === '?') {
-        query = query.slice(1);
-    }
-    if (query !== '') {
-        pairs = query.split('&');
-        for (i = 0; i < pairs.length; i += 1) {
-            keyValuePair = pairs[i].split('=');
-            key = decodeURIComponent(keyValuePair[0]);
-            value = (keyValuePair.length > 1) ? decodeURIComponent(keyValuePair[1]) : undefined;
-            map[key] = value;
-        }
-    }
-    return map;
 }
 
 function isGif(url){
@@ -807,7 +667,7 @@ $(document).ready(function() {
 	
 	//anti hover para evitar lag
 	function onScrollDesktop(){
-		if (!isMobileDevice() && (KIND && KIND.split("/")[1] != "tema")){
+		if (!isMobileDevice()){
 			if (!document.body.classList.contains("disable-hover")){
 				document.body.classList.add("disable-hover");
 			}
@@ -831,7 +691,6 @@ $(document).ready(function() {
 		}
 		
 		//evento: al llegar al final
-		//TODO: cambiar por un IntersectionObserver
 		if ($(window).height() + $(window).scrollTop() > (getDocumentHeight() - 100)){
 			if (!complete) return;
 			if (KIND.split("/")[1] === "tema") return;
@@ -859,7 +718,7 @@ $(document).ready(function() {
 	if (element("idButton")){
 		element("idButton").addEventListener("click", function(e){
 			e.preventDefault();
-			let userid = element("iuserid").value;
+			let userid = element("userid").value;
 			let formdata = new FormData();
 			
 			formdata.append("userid", userid);
@@ -911,7 +770,8 @@ $(document).ready(function() {
 				element("pollcOpt" + result.data.option).classList.remove("hidden");
 				action_pollUpdate(result.data);
 			} else {
-				(result.data.redirect) ? action_login(result.data) : swalert({title: "Error", text: result.data, icon: "error"}, function(){});
+				//(result.data.redirect) ? action_login(result.data) : swalert({title: "Error", text: result.data, icon: "error"}, function(){});
+				console.log(result.data);
 			}
 			element("pollOne").classList.remove("pollLoading");
 			element("pollTwo").classList.remove("pollLoading");
@@ -1013,18 +873,11 @@ $(document).ready(function() {
 				element("commentList").classList.add("hidden");
 				element("commentsTitle").innerText = "Archivos";
 				element("voxComments").innerText = element("attachList").childElementCount;
-				
-				element("option-imglist").classList.remove("fa-folder");
-				element("option-imglist").classList.add("fa-folder-open");
-				
 			} else {
 				element("attachList").classList.add("hidden");
 				element("commentList").classList.remove("hidden");
 				element("commentsTitle").innerText = "Comentarios";
 				element("voxComments").innerText = element("commentList").childElementCount;
-				
-				element("option-imglist").classList.remove("fa-folder-open");
-				element("option-imglist").classList.add("fa-folder");
 			}
 		});
 	}
@@ -1215,7 +1068,7 @@ $(document).ready(function() {
 				//console.log(contentId);
 				
 				Swal.fire({
-					title: "Denunciar hilo",
+					title: "Denunciar comentario",
 					text: "Motivo de la denuncia:",
 					input: 'text',
 					showCancelButton: true,
@@ -1283,33 +1136,16 @@ $(document).ready(function() {
 	//evento: al hacer click en cargar mas comentarios.
 	if (element("commentLoadMore")){
 		element("commentLoadMore").addEventListener("click", function(e){
-			clearTempComments();
-			
 			//ordenar array en base al timestamp:
 			COMS.sort(function(a, b){
 				return a.created - b.created;
 			});
 			for (var i=0; i<COMS.length; i++){
 				commentRender(COMS[i].op, COMS[i].data);
-				
-				//renderizar tags nuevos
-				//detectar taggueos dentro del comentario.
-				checkNewTags(COMS[i].op, COMS[i].data.cid, COMS[i].data.content.body);
-				
 			}
 			COMS = [];
-			element("commentLoadMore").classList.add("hidden");	
+			element("commentLoadMore").classList.add("hidden");
 		});
-	}
-	
-	function checkNewTags(op, lcom, raw){
-		let tags = $(parseHTML(raw)).parent().find(".tag");
-		let tagnum = tags.length;
-		
-		for (var i=0; i<tagnum; i++){
-			let tag = $(tags[i]).data("tag");
-			element(tag).querySelector(".commentReply").append(parseHTML(`<a href="#${lcom}" class="tag" data-tag="${lcom}">&gt;&gt;${lcom} ${(op) ? "(OP)" : ""}</a>`));
-		}
 	}
 	
 	//evento: al seleccinar un link en modal de tema
@@ -1324,11 +1160,7 @@ $(document).ready(function() {
 				
 				var link = $("input[name=burl]").val();
 				if (link.trim() != ""){
-					//resetea los datos para evitar duplicacion.
 					element("burl").value = "";
-					element("bimg").value = "";
-					element("bvid").value = "";
-					
 					//analizar y manipular la url
 					let formData = new FormData();
 					formData.append("link", link);
@@ -1390,10 +1222,7 @@ $(document).ready(function() {
 				$("#linkButton").html('<i class="fas fa-link"></i>');
 				var link = $("input[name=url]").val();
 				if (link.trim() != ""){
-					//resetea los datos para evitar duplicacion.
 					element("curl").value = "";
-					element("cimg").value = "";
-					element("cvid").value = "";
 
 					//analizar y manipular la url
 					let formData = new FormData();
@@ -1474,22 +1303,18 @@ $(document).ready(function() {
 	});
 	
 	//evento: post de comentario.
+	//TODO: añadir los efectos de la interfaz.
 	if (element("newComment")) {
 		element("newComment").addEventListener("click", function(e){
 			e.preventDefault();
 			let form = $("#createComment").serialize();
 			if (checkComFieldLocal()){
 				postForm(form, "/api/com", function(target){
-					
-					//render instantaneo
-					action_instantRender(form);
-					
 					//accion antes de enviar.
 					element("loadingCom").classList.remove("hidden");
 					element("ctext").classList.add("hidden");
 					element("newComment").disabled = true;
 				}, function(result){
-					clearTempComments();
 					element("loadingCom").classList.add("hidden");
 					element("ctext").classList.remove("hidden");
 					element("newComment").disabled = false;
@@ -1508,15 +1333,6 @@ $(document).ready(function() {
 						}
 					}
 				});
-			}
-		});
-	}
-	
-	//evento: al presionar CTRL+ENTER
-	if (element("createComment")){
-		element("createComment").addEventListener("keydown", function(e){
-			if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey) {
-				element("newComment").click();
 			}
 		});
 	}
@@ -1560,9 +1376,6 @@ $(document).ready(function() {
 		element("bfile").addEventListener("change", function(e){
 			let file = element("bfile").files.item(0);
 			if (file && file.type.split("/")[0] === "image"){
-				element("bimg").value = "";
-				element("bvid").value = "";
-				
 				getDataURL(file, function(target){
 					$("#previewInputVox").attr("style", "display: block !important");
 					element("nimgpreview").setAttribute("src", target);
@@ -1571,12 +1384,13 @@ $(document).ready(function() {
 					element("newVox").disabled = true;
 				}, function(data){
 					if (data.success){
-						element("nimgpreview").style.filter = "inherit";
 						element("nimgpreview").setAttribute("src", data.data.thumb);
 						let img = data.data.link + ";" + data.data.thumb;
 						element("bimg").value = img;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
+						//(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
+						
 						if (data.data && data.data.banned) {
 								swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
 						} else {
@@ -1589,9 +1403,6 @@ $(document).ready(function() {
 					element("newVox").disabled = false;
 				});	
 			} else if (file.type.split("/"[0] === "video")) {
-				element("cimg").value = "";
-				element("cvid").value = "";
-				
 				getDataURL(file, function(){
 					//element("nimgpreview").setAttribute("src", target);
 					element("btext").classList.add("hidden");
@@ -1599,13 +1410,13 @@ $(document).ready(function() {
 					element("newVox").disabled = true;
 				}, function(data){
 					if (data.success){
-						element("nimgpreview").style.filter = "inherit";
 						element("nimgpreview").setAttribute("src", data.data.thumb);
 						$("#previewInputVox").attr("style", "display: block !important");
 						let vid = data.data.link + ";" + data.data.thumb;
 						element("bvid").value = vid;
 					} else {
 						element("nimgpreview").setAttribute("src", "");
+						//(data.data && data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data && data.data.redirect) ? action_login(data.data) : alert (data.data));
 						
 						if (data.data && data.data.banned) {
 							swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
@@ -1632,10 +1443,6 @@ $(document).ready(function() {
 			let file = element("cfile").files.item(0);
 			//comprobacion rapida de que el archivo sea una imagen.
 			if (file && file.type.split("/")[0] === "image"){
-				//resetear campos para evitar el bug de datos duplicados.
-				element("cimg").value = "";
-				element("cvid").value = "";
-				
 				//si es una imagen, subir
 				getDataURL(file, function(target){
 					element("imgpreview").setAttribute("src", target);
@@ -1651,6 +1458,8 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
+						//(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
+						
 						if (data.data && data.data.banned) {
 							swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
 						} else {
@@ -1664,10 +1473,6 @@ $(document).ready(function() {
 					element("newComment").disabled = false;
 				});	
 			} else if (file.type.split("/")[0] === "video"){
-				//resetear campos para evitar el bug de datos duplicados.
-				element("cimg").value = "";
-				element("cvid").value = "";
-				
 				//subir video.
 				getDataURL(file, function(){
 					element("loadingCom").classList.remove("hidden");
@@ -1682,6 +1487,7 @@ $(document).ready(function() {
 					} else {
 						element("previewInputComment").classList.add("hide");
 						element("imgpreview").setAttribute("src", "");
+						//(data.data.banned) ? alert(JSON.stringify(data.data.bandata)) : ((data.data.redirect) ? action_login(data.data) : alert (data.data));
 						
 						if (data.data && data.data.banned) {
 							swalert({title: "Has sido baneado", text: data.data.bandata.razon, icon: "error"}, function(){});
@@ -1695,6 +1501,7 @@ $(document).ready(function() {
 					element("newComment").disabled = false;
 				});
 			} else {
+				//alert("Formato no admitido");
 				swalert({title: "Error", text: "Formato no admitido", icon: "error"}, function(){});
 			}
 			

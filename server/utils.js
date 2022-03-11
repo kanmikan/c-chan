@@ -16,7 +16,7 @@ function getCategoryData(categorias, catid) {
 
 function filterComMedia(comments) {
     if (comments) {
-        return comments.filter(item => item.img.full != "" || item.media.preview != "");
+        return comments.filter(item => item.img.full != "");
     } else {
         return comments;
     }
@@ -169,4 +169,16 @@ function weightRandom(data){
 	return weighted[random];
 }
 
-module.exports = {isTagOp, isDataImage, seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3, embed2url: youtube.embed2url, weightRandom};
+function randomNoCom(){
+	let frases = [
+		`<img src="/assets/icon.png" style="width: 15px; height: 15px"></img> Dejá un comentario <img src="/assets/icon.png" style="width: 15px; height: 15px"></img>`,
+		"No hay comentarios acá...",
+		"No hay comentarios :sad:",
+		"No hay comentarios",
+		"No hay comentarios, dejá uno."
+	];
+	
+	return frases[Math.floor(Math.random() * frases.length)];
+}
+
+module.exports = {randomNoCom, isTagOp, isDataImage, seclink, isGif, isImg, isVideo, clone, getCategoryData, filterComMedia, getCatShow, timeSince, formatBytes, getPollPercent, genCID, uuidv4, randomString, parseCookies, genColor, xmur3, embed2url: youtube.embed2url, weightRandom};

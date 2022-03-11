@@ -1,0 +1,127 @@
+<div class="newPostViewContainer hidden" id="newPostViewContainer">
+	<div class="newPostView">
+		<div class="mainCatsBar mainCatsBarPostView">
+			<span class="catTitle">Publicación</span>
+			<a class="catElement accent flex-right" id="closePostView">Cerrar</a>
+		</div>
+
+		<form class="newPostContentsForm" id="postForm" method="POST" action="/api/new" enctype="multipart/form-data">
+			<input id="bimg" name="img" type="hidden" value="">
+			<input id="bvid" name="vid" type="hidden" value="">
+			<input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= it.sesion.simpleCsrfToken %>">
+			
+			<div class="panelA">
+				
+				<div style="display:flex">
+					<select id="catSelector" name="cat" style="width: 25%;">
+						<option value="" selected="selected" disabled="disabled">Elige un área</option>
+						<% it.data.cats.forEach(function(categoria){ %>
+							<option value="<%= categoria.content.tid %>"><%= categoria.content.name %></option>
+						<% }); %>
+					</select>
+					<input class="field" id="btitle" style="width: calc(75% - 13px);" name="title" type="text" placeholder="Titulo" maxlength="120">
+				</div>
+				
+				<div class="generalEditorToolbar hidden" id="generalEditorToolbar">
+					<div class="itemButton" onclick="toolBold()"><img src="/assets/uicons/bold.svg"></img></div>
+					<div class="itemButton" onclick="toolItalic()"><img src="/assets/uicons/italic.svg"></img></div>
+					<div class="itemButtonSeparator"></div>
+					<div class="itemButton" onclick="toolAlignLeft()"><img src="/assets/uicons/align-left.svg"></img></div>
+					<div class="itemButton" onclick="toolAlignCenter()"><img src="/assets/uicons/align-center.svg"></img></div>
+					<div class="itemButton" onclick="toolAlignRight()"><img src="/assets/uicons/align-right.svg"></img></div>
+					<div class="itemButtonSeparator"></div>
+					<div class="itemButton" onclick="toolURL()"><img src="/assets/uicons/link.svg"></img></div>
+					<input class="hidden" id="toolImageFile" type="file">
+					<div class="itemButton" onclick="toolImage()"><img id="imgIcon" src="/assets/uicons/image.svg"></img><i id="imgLIcon" class="fas fa-circle-notch fa-spin loadingButton hidden"></i></div>
+					<div class="itemButton" onclick="toolYoutube()"><img id="ytIcon" src="/assets/uicons/film.svg"></img><i id="ytLIcon" class="fas fa-circle-notch fa-spin loadingButton hidden"></i></div>
+					<input class="colorSelect" id="toolColor" type="color" value="#ffffff">
+					<select id="toolSize" style="width:auto;height: 30px;">
+					<% for(var i=1; i<8; i++) { %>
+						<option value="<%= i %>"><%= i %></option>
+					<% } %>
+					</select>
+					<div class="itemButtonSeparator"></div>
+					<div class="itemButton" onclick="toolRemoveFormat()"><img src="/assets/uicons/type.svg"></img></div>
+					
+				</div>
+				
+				<textarea class="generalTextArea hidden" id="postTextContent" name="content" maxlength="5000"></textarea>
+				<div class="generalTextArea" id="richEditor" contenteditable="true" placeholder="Escribe el contenido de la publicacion acá..."></div>
+				
+			</div>
+			<div class="panelB">
+				<div class="panelBTop" id="panelBTop">
+					<div class="imageContainer" onclick="openFileSelector('bfile')">
+						<img id="postImg" src="/assets/dragdrop.png"></img>
+						<input id="bfile" name="file" type="file" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hidden">
+					</div>
+				</div>
+				<div class="panelBBottom">
+					<div class="postTools">
+						<div id="uploadButtonPost" class="itemButton postHorizontalButton" onclick="openFileSelector('bfile')">
+							<img src="/assets/uicons/upload.svg"></img>
+						</div>
+						
+						<div id="linkButtonPost" class="itemButton postHorizontalButton">
+							<img id="linkUnselect" src="/assets/uicons/link.svg"></img>
+							<img id="linkSelect" class="hidden" src="/assets/uicons/check.svg"></img>
+						</div>
+					</div>
+					<div class="menu-group-content hidden" id="linkSelector">
+						<input class="field" id="burl" type="text" name="burl" maxlength="300" placeholder="Pega un link de youtube o imagen...">
+				
+					</div>
+					<div class="menu-group pointer" data-target="menuPoll">
+						<span class="menu-group-text">Añadir encuesta</span>
+						<img class="menu-group-icon" src="/assets/uicons/chevron-down.svg"></img>
+					</div>
+					<div class="menu-group-content hidden" id="menuPoll">
+						<input class="field" type="text" name="pollAsk" maxlength="50" placeholder="Titulo/pregunta de la encuesta (Opcional)">
+						<input class="field" type="text" name="pollOne" maxlength="50" placeholder="Opcion 1">
+						<input class="field" type="text" name="pollTwo" maxlength="50" placeholder="Opcion 2">
+					</div>
+					
+					<div class="menu-group pointer" data-target="menuOptions">
+						<span class="menu-group-text">Opciones</span>
+						<img class="menu-group-icon" src="/assets/uicons/chevron-down.svg"></img>
+					</div>
+					<div class="menu-group-content hidden" id="menuOptions">
+						<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))) { %>
+							<div class="menu-group-subgroup">
+								<input type="checkbox" name="modAnon" style="width:auto" checked="true"><span> Publicar Anonimamente</span>
+							</div>
+						<% } %>
+						<div id="vidsync" class="menu-group-subgroup hidden">
+								<input type="checkbox" name="vidsync" style="width:auto"><span>Modo Streaming (experimental)</span></input>
+						</div>	
+						<div class="menu-group-subgroup">
+							<input type="checkbox" name="dados" style="width:auto"><span>Dados</span></input>
+							<input type="checkbox" name="idunico" style="width:auto"><span>ID Unico</span></input>
+						</div>
+						<div class="menu-group-subgroup">
+							<input type="checkbox" name="noavatar" style="width:auto"><span>Sin avatars</span></input>
+							<input type="checkbox" name="automod" style="width:auto"><span>Automoderar</span></input>
+						</div>
+						<input class="field hidden" type="text" name="subtitle" maxlength="50" placeholder="Subtitulo">
+					</div>
+					<div class="sendArea">
+						<button id="postSend" class="mainButton">
+							<span id="sendLText">Iniciar Tema</span>
+							<i id="sendLIcon" class="fas fa-circle-notch fa-spin loadingButton hidden"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+		
+	</div>
+</div>
+
+
+<script>
+$(document).ready(function() {
+	element("closePostView").addEventListener("click", function(e){
+		element("newPostViewContainer").classList.add("hidden");
+	});
+});
+</script>
