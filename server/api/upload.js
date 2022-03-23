@@ -74,7 +74,24 @@ function uploadLink(url, callback){
 	let type = checkURLType(url);
 	if (type === "youtube-embed" || type === "youtube-url"){
 		url = (type === "youtube-url") ? "https://www.youtube.com/embed/" + youtube.youtubeParser(url) : url;
-		callback({success: true, data: {video: true, type: type, raw: url, thumb: youtube.genYoutubeThumb(url, "mq")}});
+		
+		//obtener thumbnail de la api.
+		let yid = youtube.youtubeParser(url);
+		youtube.getVideoData(yid, function(result){
+			//console.log(result.snippet.title);
+			let thumbnails = result.snippet.thumbnails;
+			let selectedThumb = "";
+			
+			if (thumbnails.standard){
+				selectedThumb = thumbnails.standard.url;
+			} else if (thumbnails.high){
+				selectedThumb = thumbnails.high.url;
+			} else {
+				selectedThumb = youtube.genYoutubeThumb(url, "mq");
+			}
+			
+			callback({success: true, data: {video: true, type: type, raw: url, thumb: youtube.genYoutubeThumb(url, "mq"), medium: selectedThumb, title: result.snippet.title}});
+		});
 	} else if (utils.isImg(url)){
 		//aca manipular la imagen, subir al server de preferencia, etc.
 		uploadLinkImg(url, callback);

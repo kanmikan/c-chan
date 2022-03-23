@@ -1,0 +1,182 @@
+<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+<script src="/socket.io/socket.io.js" type="text/javascript"></script>
+<script>
+	/* EVENTOS */
+	$(document).ready(function() {
+		
+		element("consoleForm").addEventListener("submit", function(e){
+			e.preventDefault();
+			let consoleText = element("consoleInput");
+			let consoleRes = element("consoleResult");
+			let formData = new FormData();
+			formData.append("args", consoleText.value);
+			post(formData, "/adm/command", function(){}, function(result){
+				consoleRes.innerHTML = consoleRes.innerHTML + `<br/><span style="color: yellow">&gt;` + consoleText.value + `</span><br/>` + result.data;
+				consoleText.value = "";
+				$('#consoleResult').animate({
+				  scrollTop: $('#consoleResult')[0].scrollHeight
+				}, 100);
+			});	
+		});
+		
+		//whitelist
+		element("action-1").addEventListener("click", function(e){
+			let target = $(e.currentTarget);
+			admActionSend("adm_whitelist", target.attr("data-state"), function(){}, function(result){
+				if (result.success){
+					if (result.data.whitelist){
+						target.attr("data-state", "1");
+						$("#action-1").css({background: "red"});
+						$("#action-1").text("Desactivar Whitelist");
+					} else {
+						target.attr("data-state", "0");
+						$("#action-1").css({background: ""});
+						$("#action-1").text("Activar Whitelist");
+					}					
+				}
+			});
+		});
+		
+		//login
+		element("action-2").addEventListener("click", function(e){
+			let target = $(e.currentTarget);
+			admActionSend("adm_login", target.attr("data-state"), function(){}, function(result){
+				if (result.success){
+					if (result.data.login){
+						target.attr("data-state", "1");
+						$("#action-2").css({background: ""});
+						$("#action-2").text("Cerrar Login");
+					} else {
+						target.attr("data-state", "0");
+						$("#action-2").css({background: "red"});
+						$("#action-2").text("Abrir Login");
+					}
+				}
+			});
+		});
+		
+		//coms
+		element("action-3").addEventListener("click", function(e){
+			let target = $(e.currentTarget);
+			admActionSend("adm_coms", target.attr("data-state"), function(){}, function(result){
+				if (result.success){
+					if (result.data.coms){
+						target.attr("data-state", "1");
+						$("#action-3").css({background: ""});
+						$("#action-3").text("Cerrar Comentarios");
+					} else {
+						target.attr("data-state", "0");
+						$("#action-3").css({background: "red"});
+						$("#action-3").text("Abrir Comentarios");
+					}
+				}
+			});
+		});
+		
+		//boxs
+		element("action-4").addEventListener("click", function(e){
+			let target = $(e.currentTarget);
+			admActionSend("adm_boxs", target.attr("data-state"), function(){}, function(result){
+				if (result.success){
+					if (result.data.boxs){
+						target.attr("data-state", "1");
+						$("#action-4").css({background: ""});
+						$("#action-4").text("Cerrar Temas");
+					} else {
+						target.attr("data-state", "0");
+						$("#action-4").css({background: "red"});
+						$("#action-4").text("Abrir Temas");
+					}
+				}
+			});
+		});
+		
+		//abrir tema
+		$(document).on("click", ".adm-temalist", function(e){
+			let data = $(e.currentTarget).data();
+			window.open(data.url);
+		});
+		
+		//seleccion de uid
+		$(document).on("click", ".act-uid", function(e){
+			e.preventDefault();
+			e.stopPropagation();
+			let data = $(e.currentTarget).data();
+			
+			//añadir uid en la consola
+			element("consoleInput").value += data.uid;
+			//añadir al clipboard because why not
+			navigator.clipboard.writeText(data.uid);
+			
+		});
+		
+	});
+	
+	/* FUNCIONES */
+	function loadAdmActivity(){
+		updateActivityBox();
+		updateActivityCom();
+	}
+	
+	function admActionSend(action, data, precallback, callback){
+		let formData = new FormData();
+		formData.append("action", action);
+		formData.append("data", data);
+		post(formData, "/adm/server", function(){
+			precallback();
+		}, function(result){
+			callback(result);
+		});
+	}
+	
+	function updateActivityBox(){
+		request("/adm/boxs/10", function(response){
+			$("#admActBoxsView").empty();
+			response.data.forEach(function(box){
+				$("#admActBoxsView").append(buildActivityBox(box));
+			});
+		});
+	}
+	
+	function updateActivityCom(){
+		request("/adm/coms/8", function(response){
+			$("#admActComsView").empty();			
+			response.data.forEach(function(com){
+				$("#admActComsView").append(buildActivityCom(com));
+			});
+		});
+	}
+	
+	function buildActivityBox(box){
+		let bdata = `<div class="adm-temalist home-temalist" data-url="/${box.cat}/${box.bid}">
+		<div style="display:flex">
+			<img src="${(box.type.includes("video")) ? box.media.preview : box.img.preview}">
+			<div class="chatlike-container">
+				<span class="act-title">${box.content.title.substr(0,70)}</span>
+				<span class="act-uid" data-uid="${box.user.uid}">UID: ${box.user.uid}</span>
+			</div>
+		</div>`;
+		return bdata;
+	}
+	
+	function buildActivityCom(com){
+		let cdata = `<div class="adm-temalist home-temalist" data-url="/tema/${com.bid}#${com.cid}">
+		<div class="commentAvatar unselect" style="display:flex">${avatarRender(com, false)}<div>`;
+		if (com.type.includes("image")){
+			cdata += `<div class="chatlike-container"><img class="act-image" src="${com.img.preview}"></img></div>`;
+		}
+		let textbody = (com.content.body.length > 100) ? com.content.body.substr(0,100) + "..." : com.content.body;
+		cdata += `<span style="display:block">${textbody}</span><span class="act-uid" data-uid="${com.user.uid}">UID: ${com.user.uid}</span></div></div>`;
+		return cdata;
+	}
+</script>
+
+<svg style="display: none" version="1.0" xmlns="http://www.w3.org/2000/svg" width="50.000000pt" height="50.000000pt" viewBox="0 0 50.000000 50.000000" preserveAspectRatio="xMidYMid meet">
+	<g id="iconanon_front" transform="translate(1.000000,50.000000) scale(0.08,-0.08)" stroke="none">
+	<path d="M296 437 c-4 -18 -6 -18 -28 -3 -50 35 -105 7 -115 -59 l-6 -40 34
+	30 33 30 -19 -30 c-50 -80 -55 -106 -30 -155 23 -45 69 -64 150 -65 86 0 119
+	18 136 74 23 77 -11 150 -79 171 -57 19 -58 27 -3 26 40 -1 55 4 73 22 l23 23
+	-82 -2 c-71 -2 -82 -5 -87 -22z"/>
+	</g>
+</svg>

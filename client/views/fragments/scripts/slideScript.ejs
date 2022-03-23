@@ -56,5 +56,5 @@
 	
 	if (imgArray[0]){
 		for (var i=0; i<imgArray.length; i++){ %>
-		<img class="slideshowImg hidden-anim fade" id="slide<%=i%>" src="<%= imgArray[i] %>"></img>
+		<img class="slideshowImg hidden-anim fade" id="slide<%=i%>" src="<%= imgArray[i] %>" onerror="this.src='/assets/imageplaceholder.png'"></img>
 	<% }} %>

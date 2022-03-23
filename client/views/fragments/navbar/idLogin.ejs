@@ -6,10 +6,14 @@
 		</div>
 		<div class="containerRight">
 			<div class="idClose"><span class="closeButton" id="idClose">X</span></div>
-			<h2>Bienvenido a Cchan!</h2>
-			<span>El sitio es anónimo pero para poder interactuar con las funciones necesitas generar un ID.</span>
-			</br>
-			<span>Recordá leer las reglas <a href="/info/reglas">acá</a>, no son muchas, al darle click a continuar aceptas respetarlas.</span>
+			
+			<div class="containerInt">
+				<h2>Bienvenido a Cchan!</h2>
+				<span>El sitio es anónimo pero para poder interactuar con las funciones necesitas generar un ID.</span>
+				</br>
+				<span>Recordá leer las reglas <a href="/info/reglas">acá</a>, no son muchas, al darle click a continuar aceptas respetarlas.</span>
+			</div>
+			
 			<div class="loginFormContents">
 				<span>Si tenés un ID pegalo acá, o podes usar el que se ha generado para vos</span>
 				<input type="text" class="field" name="userid" id="userid" placeholder="ID del Usuario" value="<%= it.sesion.uid %>">
@@ -22,17 +26,6 @@
 			</div>
 		</div>
 	</div>
-	
-	<!--
-	<input type="text" class="modalInput" name="userid" id="userid" placeholder="ID del Usuario" value="<%= it.sesion.uid %>">
-	<input type="hidden" name="_csrf_token" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">	
-	<div class="loginFormButtons">
-		<button class="buttonPress" id="idButton">
-			<i id="loadingLogin" class="fas fa-circle-notch fa-spin hidden"></i>
-			<span id="idText">Continuar</span>
-		</button>
-	</div>
-	-->
 </form>
 
 <style>
@@ -44,16 +37,19 @@
 		background: #242424;
 	}
 	
+	.idContainer .containerInt {
+		padding: 5px;
+	}
+	
 	.loginFormContents span {
 		padding: 10px;
 	}
-
 	.loginFormContents .mainButton {
 		width: inherit;
 	}
 	
 	.idLogin {
-		width: 50%;
+		width: 30%;
 		/*min-height: 60vh;*/
 		height: auto;
 		position: fixed;
@@ -66,14 +62,13 @@
 		background: #131313;
 		z-index: 99;
 	}
-
 	.idLogin .idContainer {
 		display: flex;
 		background: #1e1e1e;
 	}
 	
 	.idContainer .containerLeft {
-		width: 50%;
+		width: 1%;
 	}
 	
 	.idContainer .containerLeft img {
@@ -84,7 +79,7 @@
 	}
 	
 	.idContainer .containerRight {
-		width: 50%;
+		/*width: 50%;*/
 		padding: 5px;
 		flex-direction: column;
 		justify-content: center;
@@ -113,10 +108,15 @@
 	
 	.containerRight h2 {
 		margin: 0px 5px 20px;
-		font-size: 1.8em;
-		/*font-family: 'Caveat';*/
-		/*color: #ff9800;*/
+		font-size: 1.6em;
+		color: #2196f3;
 		text-align: center;
+	}
+	
+	@media only screen and (max-width: 600px) {
+		.idLogin {
+			width: 100%;
+		}
 	}
 	
 	@media only screen and (max-width: 800px) {

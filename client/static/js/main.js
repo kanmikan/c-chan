@@ -106,7 +106,11 @@ function timeSince(timestamp, mode=0) {
 function tag(cid){
 	element("commentTextarea").value += cid + "\n";
 	element("commentForm").classList.remove("hidden");
-	element("commentForm").classList.add("floatBox");
+	element("attach-comment").classList.remove("hidden");
+	
+	//resaltar el comentario taggeado
+	[].forEach.call(document.querySelectorAll(".jump"), function(e) {e.classList.remove("jump");});
+	element(cid.substr(2)).classList.add("jump");
 }
 
 function hashScroll(hash){
@@ -121,13 +125,16 @@ function hashScroll(hash){
 		
 		[].forEach.call(document.querySelectorAll(".jump"), function(e) {e.classList.remove("jump");});
 		
-		window.scrollTo({top: offset, behavior: 'smooth'});
+		//window.scrollTo({top: offset, behavior: 'smooth'});
+		window.scrollTo({top: offset});
+		
 		elem.classList.add("jump");
 	}
 }
 
 //filtrar comentarios temporales de la lista
 function clearTempComments(){
+	[].forEach.call(document.querySelectorAll(".jump"), function(e) {e.classList.remove("jump");});
 	let metaversionlist = $("#commentList").find(".metaversion");
 	for (var v=0; v<metaversionlist.length; v++){
 		if ($(metaversionlist[v]).data("version") === "temp"){
@@ -136,13 +143,28 @@ function clearTempComments(){
 	}
 }
 
+
+let COMMENT_INPUT_BACKUP = {};
 function resetCommentInputData(){
+	element("attach-comment").classList.add("hidden");
+	
+	COMMENT_INPUT_BACKUP = {};
+	COMMENT_INPUT_BACKUP["commentTextarea"] = element("commentTextarea").value;
+	COMMENT_INPUT_BACKUP["cimg"] = element("cimg").value;
+	COMMENT_INPUT_BACKUP["cvid"] = element("cvid").value;
+	
 	element("commentForm").dispatchEvent(new Event("reset"));
 	element("commentTextarea").value = "";
 	element("cimg").value = "";
 	element("cvid").value = "";
 	
 	if (element("pollc")) {
+		COMMENT_INPUT_BACKUP["pollc"] = element("pollc").value;
+		if (!element("pollcOpt1").classList.contains("hidden")){
+			COMMENT_INPUT_BACKUP["selectedPoll"] = 1;
+		} else if (!element("pollcOpt2").classList.contains("hidden")){
+			COMMENT_INPUT_BACKUP["selectedPoll"] = 2;
+		}
 		element("pollc").value = "0";
 		element("pollcOpt1").classList.add("hidden");
 		element("pollcOpt2").classList.add("hidden");
@@ -152,29 +174,60 @@ function resetCommentInputData(){
 	element("attachImage").setAttribute("src", "");	
 }
 
+function restoreCommentInputData(){
+	console.log(COMMENT_INPUT_BACKUP);
+	
+	element("commentTextarea").value = COMMENT_INPUT_BACKUP["commentTextarea"];
+	element("cimg").value = COMMENT_INPUT_BACKUP["cimg"];
+	element("cvid").value = COMMENT_INPUT_BACKUP["cvid"];
+	
+	if (element("pollc")){
+		element("pollc").value = COMMENT_INPUT_BACKUP["pollc"];
+		if (COMMENT_INPUT_BACKUP["selectedPoll"] === 1){
+			element("pollcOpt1").classList.remove("hidden");
+		} else if (COMMENT_INPUT_BACKUP["selectedPoll"] === 2) {
+			element("pollcOpt2").classList.remove("hidden");
+		}
+	}
+	
+	if (COMMENT_INPUT_BACKUP["cimg"] != "" || COMMENT_INPUT_BACKUP["cvid"] != ""){
+		element("commentAttachPreview").classList.remove("hidden");
+		element("attachImage").setAttribute("src", COMMENT_INPUT_BACKUP["cimg"].split(";")[1]);
+	}
+	
+}
+
 function manageLogin(data){
 	element("idLogin").classList.remove("hidden");
 }
 
 function boxRender(box){
 	let ibody = `<li id="${box.bid}"><a class="post" href="/${box.cat}/${box.bid}" 
-	style="background: url(${box.img.preview}) center, url(/assets/placeholder.png); background-size: cover;">
+	style="background: url(${(box.type.includes("video")) ? box.media.preview : box.img.preview}) center, url(/assets/placeholder.png); background-size: cover;">
 	<div class="icons">`;
 	if (box.type.includes("image")) { 
-		ibody += `<img class="imgIcon" src="/assets/uicons/image.svg"></img>`;
+		ibody += `<img alt="image type" class="imgIcon" src="/assets/uicons/image.svg"></img>`;
 	}
 	if (box.type.includes("video")) {
-		ibody += `<img class="videoIcon" src="/assets/uicons/film.svg"></img>`;
+		ibody += `<img alt="video type" class="videoIcon" src="/assets/uicons/film.svg"></img>`;
+	}
+	if (box.flag.includes("sync")) {
+		ibody += `<img alt="video sync type" class="postIcon postIconSync" src="/assets/uicons/refresh-cw.svg"></img>`;
 	}
 	if (box.type.includes("post")) {
-		ibody += `<img class="postIcon" src="/assets/uicons/file-text.svg"></img>`;
+		ibody += `<img alt="post type" class="postIcon" src="/assets/uicons/file-text.svg"></img>`;
 	}
-	
+	if (box.type.includes("poll")) {
+		ibody += `<img alt="poll type" class="postIcon" src="/assets/uicons/bar-chart-2.svg"></img>`;
+	}
+	if (box.type.includes("idunico")) {
+		ibody += `<img alt="idunico type" class="postIcon" src="/assets/uicons/user.svg"></img>`;
+	}
 	if (box.date.sticky > 0) {
-		ibody += `<img class="sticky" src="/assets/uicons/bookmark.svg" style="filter: invert(0.5) sepia(1) hue-rotate(21deg) saturate(30);"></img>`;
+		ibody += `<img alt="sticky type" class="sticky" src="/assets/uicons/bookmark.svg" style="filter: invert(0.5) sepia(1) hue-rotate(21deg) saturate(30);"></img>`;
 	}
 	if (box.date.csticky > 0) {
-		ibody += `<img class="csticky" src="/assets/uicons/paperclip.svg"></img>`;
+		ibody += `<img alt="csticky type" class="csticky" src="/assets/uicons/paperclip.svg"></img>`;
 	}
 	
 	let bodypreview = box.content.body.replace(/<\/?[^>]+(>|$)/g, " ");
@@ -182,6 +235,7 @@ function boxRender(box){
 		bodypreview = bodypreview.substr(0, 50) + "...";
 	}
 	
+	//TODO: filtrar el contenido html de bodypreview y title para que no se renderize.
 	ibody += `</div>
 	<div class="data">
 		<h1 class="title">${box.content.title}</h1>
@@ -197,13 +251,13 @@ function avatarRender(com, act=false){
 	let activity = (act) ? "activityIcon" : "";
 	if (icon[0] === "ico") {
 		ibody +=`<div class="anonIcon ${activity}" style="background: ${icon[1]}">`;
-		ibody +=`<div class="anonText ${icon[5]}" style="color: ${icon[2]}">${(icon[4]) ? icon[4] : "ANON"}</div>`;
+		ibody +=`<div class="anonText ${icon[5]} ${activity}" style="color: ${icon[2]}">${(icon[4]) ? icon[4] : "ANON"}</div>`;
 	
 		ibody +=`</div>`;
 	} else if (icon[0] === "class") {
 		ibody +=`<div class="anonIcon ${activity} ${icon[1]}">`;
-		ibody +=`<div class="anonText ${icon[2]}">${(icon[4]) ? icon[4] : "ANON"}</div>`;
-	
+		ibody +=`<div class="anonText ${icon[2]} ${activity}">${(icon[4]) ? icon[4] : "ANON"}</div>`;
+
 		ibody +=`</div>`;
 	} else {
 		ibody += `<img class="avatar ${activity}" src="${com.icon}" alt="">`;
@@ -225,18 +279,23 @@ function commentRender(op, com){
 	if (op) {
 		cbody += `<div class="metaElement op">OP</div>`;
 	}
-	if (com.user.jerarquia.nick){
-		cbody +=`<div class="metaElement nick">${com.user.jerarquia.nick}</div>`;
+	if (com.type.includes("idunico")){
+		cbody += `<span class="metaElement idunico" style="background-color: ${com.content.extra.idunico.color}">${com.content.extra.idunico.id}</span>`;
 	} else {
-		cbody +=`<div class="metaElement nick">Anonimo</div>`;
+		if (com.user.jerarquia.nick){
+			cbody +=`<div class="metaElement nick">${com.user.jerarquia.nick}</div>`;
+		} else {
+			cbody +=`<div class="metaElement nick">Anonimo</div>`;
+		}
 	}
+
 	if (com.user.jerarquia.rango || com.user.jerarquia.color){
 		cbody +=`<div class="metaElement" style="background-color: ${com.user.jerarquia.color}">${com.user.jerarquia.rango}</div>`;
 	} else {
 		cbody +=`<div class="metaElement">anon</div>`;
 	}
 	
-	cbody += `<div class="metaElement pointer" onclick="tag('&gt;&gt;${com.cid}')">${com.cid}</div>`;	
+	cbody += `<div class="metaElement cid pointer" onclick="tag('&gt;&gt;${com.cid}')">${com.cid}</div>`;	
 	cbody += `</div><div class="commentRightButtons"><div class="metaElement dateComment">${timeSince(com.date.created)}</div>
 	
 	<div class="metaElement ficon pointer actionMod"><i class="fas fa-ellipsis-v" style="padding: 0px 3px;"></i>
@@ -436,10 +495,6 @@ function action_newComCupdate(data){
 	
 }
 
-function action_titleAppendCounter(num){
-	
-}
-
 function action_pollUpdate(data){
 	let pollData = data.pollData;
 	$("#pollOne").css("width", pollData[0]);
@@ -521,19 +576,36 @@ function action_appendActivity(data){
 
 function action_newNotification(data){
 	$("#notifButton").load(document.URL + " #notifButton>*", function(){
-		//action_titleAppendCounter()
+		let count = parseInt($("#notifCount").text());
+		action_titleAppendCounter(count);
 	});
 	$("#notifMenu").load(document.URL + " #notifMenu>*");
 	
 	action_openPopup(data);
 }
 
+function action_titleAppendCounter(count){
+	let d = document.createElement('div');
+	d.innerHTML = document.title;
+	document.title = d.innerText;
+	let oldTitle = document.title;
+	let oldTitleRef = /^\(/s.test(oldTitle);
+	if (oldTitleRef){
+		oldTitle = oldTitle.substr(4);
+	}
+	if (count > 0) {
+		document.title = `(${count}) ${oldTitle}`;
+	} else {
+		document.title = `${oldTitle}`;
+	}
+}
+
 function action_openPopup(data){
 	let img = data.content.preview.thumb;
 	let title = data.content.preview.title;
 	let cpreview = data.content.preview.desc;
-	if (cpreview.length > 150) {
-		cpreview = cpreview.substr(0, 150) + "...";
+	if (cpreview.length > 250) {
+		cpreview = cpreview.substr(0, 250) + "...";
 	}
 	
 	let type = (data.content.tag) ? "Te taggearon en:" : "Comentaron en:";
@@ -562,8 +634,10 @@ function applyConfig(query){
 	//opcion:valor = actualizar elemento
 	formData.append("data", query);
 	post(formData, "/api/config", function(){}, function(result){
-		if (!result.success){
-			(result.data.redirect) ? action_login(result.data) : swalert({title: "Error", text: result.data, icon: "error"}, function(){});
+		if (result.data.redirect){
+			manageLogin(result.data);
+		} else if (!result.success){
+			alert(result.data);
 		}
 	});
 }
@@ -692,7 +766,6 @@ $(document).ready(function() {
 		let observer = new IntersectionObserver(function(entries, observer){
 			entries.forEach(function(entry){
 				if (entry.isIntersecting){
-					
 					//quitar el list-end
 					let indexID = $("#mainContents").children().last().attr("id");
 					let kind = (KIND === "/") ? "home" : KIND.split("/")[1];
@@ -709,8 +782,6 @@ $(document).ready(function() {
 							$("#mainContents").append(BBUFFER);
 						}
 					});
-					
-					
 				}
 			});
 		}, options);
@@ -734,8 +805,14 @@ $(document).ready(function() {
 					element("cimg").value = data.data.link + ";" + data.data.thumb;
 					element("attachImage").setAttribute("src", data.data.thumb);
 					element("commentAttachPreview").classList.remove("hidden");
+				} else if (data.data.redirect) {
+					manageLogin(data.data);
+					element("attachImage").setAttribute("src", "");
+					element("commentAttachPreview").classList.add("hidden");
 				} else {
-					console.log(data.data);
+					alert(data.data);
+					element("attachImage").setAttribute("src", "");
+					element("commentAttachPreview").classList.add("hidden");
 				}
 			});
 		});
@@ -764,15 +841,58 @@ $(document).ready(function() {
 				if (data.success){
 					element("attachImage").setAttribute("src", data.data.thumb);
 					element("cimg").value = data.data.link + ";" + data.data.thumb;
-				} else {
+				} else if (data.data.redirect) {
+					manageLogin(data.data);
 					element("commentAttachPreview").classList.add("hidden");
 					element("attachImage").setAttribute("src", "");
+				} else {
 					alert(JSON.stringify(data.data));
-					//swalert({title: "Error", text: data.data, icon: "error"}, function(){});
+					element("commentAttachPreview").classList.add("hidden");
+					element("attachImage").setAttribute("src", "");
 				}
 			});
 		}
 	}
+	
+	//evento: al pegar una imagen
+	//TODO: limpiar codigo repetido.
+	$("#commentTextarea").on("paste", function(e) {
+		//solo leer imagenes e ignorar texto o links.
+		let actionPaste = e.originalEvent.clipboardData.getData("text/html");
+		let context = $('<div>').append(actionPaste);
+		let imgURL = $(context).find("img").attr("src");
+		if (imgURL){
+			
+			let formData = new FormData();
+			formData.append("link", imgURL);
+			post(formData, "/api/uplink", function(target){
+				if (isImg(imgURL)){
+					element("attachImage").setAttribute("src", imgURL);
+					element("commentAttachPreview").classList.remove("hidden");
+				}
+				element("sendComIcon").classList.remove("hidden");
+				element("commentButtonText").classList.add("hidden");
+			}, function(data){
+				element("sendComIcon").classList.add("hidden");
+				element("commentButtonText").classList.remove("hidden");
+				if (data.success){
+					let mediaData = data.data;
+					element("cimg").value = mediaData.raw + ";" + mediaData.thumb;
+					element("attachImage").setAttribute("src", mediaData.thumb);
+					element("commentAttachPreview").classList.remove("hidden");
+				} else if (data.data.redirect) {
+					manageLogin(data.data);
+					element("attachImage").setAttribute("src", "");
+					element("commentAttachPreview").classList.add("hidden");
+				} else {
+					alert(JSON.stringify(data.data));
+					element("attachImage").setAttribute("src", "");
+					element("commentAttachPreview").classList.add("hidden");
+				}
+			});
+			
+		}
+	});
 	
 	//elegir archivo en tema
 	if (element("bfile")){
@@ -790,8 +910,10 @@ $(document).ready(function() {
 					element("bimg").value = data.data.link + ";" + data.data.thumb;
 					element("postImg").setAttribute("src", data.data.thumb);
 					element("panelBTop").style.display = "block";
+				} else if (data.data.redirect) {
+					manageLogin(data.data);
 				} else {
-					console.log(data.data);
+					alert(data.data);
 				}
 			});
 			
@@ -844,6 +966,8 @@ $(document).ready(function() {
 							element("postImg").setAttribute("src", mediaData.thumb);
 							element("panelBTop").style.display = "block";
 							
+						} else if (data.data.redirect) {
+							manageLogin(data.data);
 						} else {
 							alert(data.data);
 						}
@@ -895,6 +1019,8 @@ $(document).ready(function() {
 							}
 							element("attachImage").setAttribute("src", mediaData.thumb);
 							element("commentAttachPreview").classList.remove("hidden");
+						} else if (data.data.redirect) {
+							manageLogin(data.data);
 						} else {
 							alert(data.data);
 						}
@@ -916,17 +1042,20 @@ $(document).ready(function() {
 				
 				//experimental de render instantaneo
 				action_instantRender(form);
+				resetCommentInputData();
 				
 			}, function(result){
 				clearTempComments();
 				element("sendComIcon").classList.add("hidden");
 				element("commentButtonText").classList.remove("hidden");
 				if (result.success){
-					resetCommentInputData();
+					//resetCommentInputData();
 				} else if (result.data.redirect){
 					manageLogin(result.data);
+					restoreCommentInputData();
 				} else {
 					alert(result.data);
+					restoreCommentInputData();
 				}
 			});
 		});
@@ -1089,7 +1218,21 @@ $(document).ready(function() {
 	
 	if (element("postFiles")){
 		element("postFiles").addEventListener("click", function(e){
-			element("commentFiles").classList.toggle("hidden");
+			
+			if (element("commentFiles").classList.contains("hidden")){
+				element("commentFiles").classList.remove("hidden");
+				element("commentList").classList.add("hidden");
+				element("commentsTitle").innerText = "Archivos";
+				element("commentCounter").innerText = $("#commentFiles > .file").length;
+				
+			} else {
+				element("commentFiles").classList.add("hidden");
+				element("commentList").classList.remove("hidden");
+				element("commentsTitle").innerText = "Comentarios";
+				element("commentCounter").innerText = $("#commentList > .comment").length;
+				
+			}
+			
 		});
 	}
 	
@@ -1106,9 +1249,17 @@ $(document).ready(function() {
 		});
 	}
 	
+	if (element("attach-comment")){
+		element("attach-comment").addEventListener("click", function(e){
+			element("commentForm").classList.add("floatBox");
+		});
+	}
+	
 	if (element("closeCommentBox")){
 		element("closeCommentBox").addEventListener("click", function(e){
+			[].forEach.call(document.querySelectorAll(".jump"), function(e) {e.classList.remove("jump");});
 			element("commentForm").classList.remove("floatBox");
+			element("attach-comment").classList.add("hidden");
 		});
 	}
 	
@@ -1141,12 +1292,26 @@ $(document).ready(function() {
 		});
 	}
 	
+	//evento: eliminar imagen incrustada
+	if (element("attachImageClose")){
+		element("attachImageClose").addEventListener("click", function(e){
+			element("cvid").value = "";
+			element("cimg").value = "";
+			element("commentAttachPreview").classList.add("hidden");
+			element("attachImage").setAttribute("src", "");
+		});
+	}
+	
 	//evento: limpiar notificaciones
 	$(document).on("click", "#clearNotifications", function(e){
 		request("/api/ntf/clear", function(data){
-			console.log(data);
-			$("#notifButton").load(document.URL + " #notifButton>*", function(){});
-			$("#notifMenu").load(document.URL + " #notifMenu>*");
+			$("#notifButton").load(document.URL + " #notifButton>*", function(){
+				$("#notifMenu").load(document.URL + " #notifMenu>*", function(){
+					let count = parseInt($("#notifCount").text());
+					console.log(count);
+					action_titleAppendCounter(count);
+				});
+			});
 		});
 	});
 	
@@ -1184,6 +1349,27 @@ $(document).ready(function() {
 			$(e.currentTarget).removeClass("pollLoading");
 		});
 		
+	});
+	
+	//evento: ocultar categoria
+	$(document).on("click", ".categoryHide", function(e){
+		let catid = $(e.currentTarget).data("catid");
+		
+		if ($(e.currentTarget).hasClass("cathidden")){
+			$(e.currentTarget).removeClass("cathidden");
+			applyConfig(`cathides_del:${catid}`);
+			$(e.currentTarget).text("Ocultar de la home");
+		} else {
+			$(e.currentTarget).addClass("cathidden");
+			applyConfig(`cathides_add:${catid}`);
+			$(e.currentTarget).text("Mostrar en la home");
+		}
+	});
+	
+	//evento: imagenes incrustadas en post
+	$(document).on("click", ".mainPostBody > .attImage", function(e){
+		let data = $(e.currentTarget).children().data("img").split("|");
+		window.open(data[1]);
 	});
 	
 });

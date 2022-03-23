@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<%- include('./common/head', it); %>
+	<%- include('./fragments/head', it); %>
 	<link rel="stylesheet" href="/css/fontawesome.css" rel="preload" as="style">
-	<link rel="stylesheet" rel="preload" as="style" href="/css/cchan.css">
-	<link rel="stylesheet" rel="preload" as="style" href="/css/v1.css">
 	<link rel="stylesheet" rel="preload" as="style" href="/css/adm.css">
 </head>
 <body>
-	<%- include('./common/scripts/admScripts', it); %>
+	<%- include('./fragments/scripts/admScripts', it); %>
 	<script>
 		let KIND = "<%= it.kind %>";
 		let V1 = "<%= it.renderConfig.ENABLE_V1 %>";
@@ -40,22 +38,23 @@
 			</div>
 		</div>
 		<div>Acciones Generales</div>
-		<div class="pcontainer-int">
+		<div class="pcontainer-int" style="display: flex;justify-content: flex-start;">
 			<% let access = it.data.server[0]; %>
 			
-			<button class="buttonPress" id="action-1" data-state="<%= (access.whitelist) ? "1" : "0" %>" style="<%= (access.whitelist) ? "background: red" : "" %>" type="submit">
+			<button class="itemButton" id="action-1" data-state="<%= (access.whitelist) ? "1" : "0" %>" style="<%= (access.whitelist) ? "background: red" : "" %>" type="submit">
 				<span><%= (access.whitelist) ? "Desactivar" : "Activar" %> Whitelist</span> 
 			</button>
-			<button class="buttonPress" id="action-2" data-state="<%= (access.login) ? "1" : "0" %>" style="<%= (access.login) ? "" : "background: red" %>" type="submit">
+			<button class="itemButton" id="action-2" data-state="<%= (access.login) ? "1" : "0" %>" style="<%= (access.login) ? "" : "background: red" %>" type="submit">
 				<span><%= (access.login) ? "Cerrar" : "Abrir" %> Login</span> 
 			</button>
-			<button class="buttonPress" id="action-3" data-state="<%= (access.coms) ? "1" : "0" %>" style="<%= (access.coms) ? "" : "background: red" %>" type="submit">
+			<button class="itemButton" id="action-3" data-state="<%= (access.coms) ? "1" : "0" %>" style="<%= (access.coms) ? "" : "background: red" %>" type="submit">
 				<span><%= (access.coms) ? "Cerrar" : "Abrir" %> Comentarios</span> 
 			</button>
-			<button class="buttonPress" id="action-4" data-state="<%= (access.boxs) ? "1" : "0" %>" style="<%= (access.boxs) ? "" : "background: red" %>" type="submit">
+			<button class="itemButton" id="action-4" data-state="<%= (access.boxs) ? "1" : "0" %>" style="<%= (access.boxs) ? "" : "background: red" %>" type="submit">
 				<span><%= (access.boxs) ? "Cerrar" : "Abrir" %> Temas</span> 
 			</button>
 		</div>
+		
 		<div class="admActivity">
 			<div>Actividad Reciente</div>
 			<div class="pcontainer-int act-int">
@@ -63,15 +62,16 @@
 				<div class="chatlike" id="admActComsView"></div>
 			</div>
 		</div>
+		
 		<div class="pcontainer-int admConsole">
 			<div class="consoleResult" id="consoleResult">[Escribe /help para obtener una lista de ordenes]</div>
 			<form class="admConsole-int" id="consoleForm" autocomplete="off">
 				<input type="hidden" id="_csrf_token" value="<%= it.sesion.simpleCsrfToken %>">
-				<input type="text" id="consoleInput" value="" placeholder="/reload /promote">
-				<button class="buttonPress" type="submit"><span>Enviar</span></button>
+				<input class="field" type="text" id="consoleInput" value="" placeholder="/reload /promote">
+				<button class="itemButton" type="submit"><span>Enviar</span></button>
 			</form>
 		</div>
-		<div style="text-align: center;"><a style="color: inherit;text-decoration: none;" href="/">Volver a cchan</a></div>
+		<div style="text-align: center;"><a style="color: inherit;text-decoration: none;" href="/">Volver a mikanchan</a></div>
 	</div>
 </body>
 </html>

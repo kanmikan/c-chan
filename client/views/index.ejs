@@ -14,11 +14,11 @@
 			<%- include('./fragments/navbar/navbarElements', it); %>
 			
 			<div class="mainCatsBar" id="mainCatsBar" style="padding: 10px 5px 5px 5px">
-				<a href="/" class="catElement" style="background-color: #3f51b5"><img src="/assets/uicons/home.svg"></img></a>
+				<a href="/" class="catElement catElementSelected"><img src="/assets/uicons/home.svg"></img></a>
 				<% it.data.cats.forEach(function(cat){ %>
 					<a href="/<%= cat.content.tid %>" class="catElement <%= (it.kind === "/" + cat.content.tid) ? "catElementSelected" : "" %> ">&gt;<%= cat.content.tid %></a>
 				<% }); %>
-				<a href="#" class="catElement" style="background-color: #3f51b5"><img src="/assets/uicons/plus.svg"></img></a>
+				<a href="#" class="catElement catElementSelected"><img src="/assets/uicons/plus.svg"></img></a>
 			</div>
 			
 			<div class="newPostAlertContainer hidden" id="newPostAlertContainer">
@@ -56,8 +56,10 @@
 						</div>
 					</div>
 					<div class="categoryInfoButtons">
-						<div class="mainButton categoryInfoButton catElementSelected">
-							<span>Ocultar de la Home</span>
+						<% let hiddencat = (it.sesion.config.cathides.includes(categoryData.catid)) ? true : false; %>
+					
+						<div class="mainButton catElementSelected categoryInfoButton categoryHide <%= (hiddencat) ? "cathidden" : "" %>" data-catid="<%= categoryData.catid %>">
+							<span><%= (hiddencat) ? "Mostrar en la home" : "Ocultar de la home" %></span>
 						</div>
 					</div>
 				</div>

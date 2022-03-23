@@ -15,8 +15,15 @@
 			<img alt="post type" class="postIcon" src="/assets/uicons/file-text.svg"></img>
 		<% } %>
 		<% if (box.type.includes("poll")) { %>
-			<img alt="post type" class="postIcon" src="/assets/uicons/bar-chart-2.svg"></img>
+			<img alt="poll type" class="postIcon" src="/assets/uicons/bar-chart-2.svg"></img>
 		<% } %>
+		<% if (box.type.includes("idunico")) { %>
+			<img alt="idunico type" class="postIcon" src="/assets/uicons/user.svg"></img>
+		<% } %>
+		<% if (box.type.includes("dice")) { %>
+			<img alt="dice type" class="postIcon" src="/assets/uicons/dice.svg"></img>
+		<% } %>
+		
 		<% if (box.date.sticky > 0) { %>
 			<img alt="sticky type" class="sticky" src="/assets/uicons/bookmark.svg"></img>
 		<% } %>

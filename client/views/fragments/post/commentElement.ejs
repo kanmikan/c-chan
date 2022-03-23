@@ -9,7 +9,7 @@
 		<% } else if (icon[0] === "class") { %>
 			<div class="anonIcon <%= icon[1] %>">
 				<div class="anonText <%= icon[2] %>"><%= (icon[4]) ? icon[4] : "ANON" %></div>
-				
+		
 			</div>
 		<% } else { %>
 			<img class="avatar" src="<%= com.icon %>" alt="">
@@ -22,9 +22,15 @@
 			<% if (it.data.boxs[0].user.uid === com.user.uid) { %>
 				<div class="metaElement op">OP</div>
 			<% } %>
+			
+			<% if (com.type.includes("idunico")){ %>
+				<span class="metaElement idunico" style="background-color: <%= com.content.extra.idunico.color %>"><%= com.content.extra.idunico.id %></span>
+			<% } else { %>
 				<div class="metaElement nick"><%= (com.user.jerarquia.nick) ? com.user.jerarquia.nick : "Anonimo" %></div>
+			<% } %>
+			
 				<div class="metaElement" style="<%= (com.user.jerarquia.color) ? "background: " + com.user.jerarquia.color : "" %>"><%= (com.user.jerarquia.rango) ? com.user.jerarquia.rango : "anon" %></div>
-				<div class="metaElement pointer" data-cid="<%= com.cid %>" onclick="tag('&gt;&gt;<%= com.cid %>')"><%= com.cid %></div>
+				<div class="metaElement cid pointer" data-cid="<%= com.cid %>" onclick="tag('&gt;&gt;<%= com.cid %>')"><%= com.cid %></div>
 
 			</div>
 			<div class="commentRightButtons">

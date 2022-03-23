@@ -7,38 +7,31 @@
 	<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
 	
 	<div class="infomenu">
-		<div style="color: blue;font-weight: 600;">MENU</div>
+		<div>MENU</div>
 		<ul class="menulist">
-			<li class="menuElement" data-kind="welcome">Bienvenido a Cchan</li>
-			<li class="menuElement" data-kind="caracteristicas">Caracteristicas</li>
-			<li class="menuElement" data-kind="reglas">Reglas</li>
-			<li class="menuElement" data-kind="about">Sobre el proyecto</li>
+			<li class="menuElement">Bienvenido a Cchan</li>
+			<li class="menuElement">Caracteristicas</li>
+			<li class="menuElement">Reglas</li>
+			<li class="menuElement">Sobre el proyecto</li>
 			<li class="menuElement" onclick="location.href='/'">Volver a la home</li>
 		</ul>
 	</div>
 	
 	<div class="infoContainer">
 		<div class="infocontent">
-			<a class="buttonElement" href="/">Volver a la home</a>
+			<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
 			<div class="contentElement" id="welcome">
-				<h3 class="titleAccent">Bienvenido al proyecto Cchan!</h3>
-				Que es esto? lo divido en 3 partes:
-				<ul>
-				<li>Cchan es un imageboard anonimo y ligero basado en el diseño de voxed.net.</li>
-				<li>La demo de cchan, es esta web, encargada de mostrar el funcionamiento del motor cchan, buscar bugs, hacer experimentos o simplemente pasar el rato.</li>
-				<li>El motor cchan, es (o será en algún momento) un servidor y api plantilla para diseñar Imageboards ligeros basado en nodejs, su principal objetivo es permitir el montado rápido y gratuito de webs/ib pequeñas.</li>
-				</ul>
+				<h3>Bienvenido a Cchan!</h3>
+				Cchan es un imageboard anonimo y ligero basado en el diseño de voxed.net
 			</div>
 			<div class="contentElement" id="caracteristicas">
-				<h3 class="titleAccent">Caracteristicas de Cchan</h3>
+				<h3>Caracteristicas de Cchan</h3>
 				<ul>
 				<li>tiene 2 interfaces, la interfaz basada en voxed es la mas simplificada de todas y la que viene por defecto. Y la interfaz con una barra lateral con funciones extra. Son configurables en el servidor usando variables de entorno.</li>
-				<li>Carga dinámica de comentarios, como un instant messenger o chat</li>
-				<li>tiene un sistema de busqueda completa, usando el contenido del tema ademas del titulo y subtitulo</li>
-				<li>se puede añadir formato basico al texto, tambien soporta formato de texto enriquecido.</li>
-				<li>la pagina (y el motor) fue diseñada para que sea liviana en la carga, para que las conexiones inestables o lentas puedan navegar sin mayores problemas.</li>
-				<li>tiene una pseudocaché intermediaria, encargada de ahorrar conexiones a la base de datos, totalmente desactivable con variables de entorno.</li>
-				<li>soporta la integración de bots, llamadas con comandos y ejecuciones automáticas. Funcionan similar a los bots de discord</li>
+				<li>tiene un sistema de busqueda mas efectivo usando el contenido del tema ademas del titulo y subtitulo</li>
+				<li>se puede añadir formato basico al texto.</li>
+				<li>la pagina fue diseñada para que sea liviana en la carga, para que las conexiones inestables o lentas puedan navegar sin mayores problemas.</li>
+				<li>cchan tiene una caché integrada, lo que hace que se ahorre una gran cantidad de conexiones a la base de datos. Esto puede ser desactivado usando variables de entorno, en situaciones donde sea inútil, por ejemplo, si la base de datos está alojada en el mismo servidor.</li>
 				</ul>
 				<h4>Tags disponibles en los comentarios y/o temas</h4>
 				<ul>
@@ -47,40 +40,25 @@
 				<li>:: se usa para colocar un link interno en la página o un link externo sin abrir una nueva pestaña</li>
 				<li>&gthttps:// se usa para añadir un link externo que abre una nueva pestaña.</li>
 				<li>$RGB -texto- $ colorea el -texto- usando el valor RGB en hexadecimal, (0xRGB ejemplo, F00:rojo 0F0:verde 00F:azul)</li>
-				<li>Los del malbot, $malsearch, $malcheck y $malinfo</li>
 				</ul>
-				<h4>Acceso e identificacion de usuarios</h4>
-				<span>Cchan pretende ser completamente anónima, el generador de sesiones <b>NO</b> guarda la direccion <b>IP</b> ni el <b>User-Agent</b> de los usuarios, pero si utiliza las <b>cookies</b> del navegador para identificar la sesion del usuario. <br><br>El ID de acceso (o token, como quieran llamarlo), es un codigo alfanumerico de 32 digitos que esta asociada con una cookie del navegador, las configuraciones quedan alojadas en el server, si la cookie de la sesion se elimina en el navegador, o se invalida, el servidor pierde la capacidad de identificar al usuario hasta que este especifique su ID.<br><br>De esta manera, la infraestructura de moderacion y baneos está limitada y la unica forma de proteccion efectiva que tiene el servidor, frente a los accesos recurrentes desconocidos, es usando una lista blanca de usuarios o whitelist que se activará esporádicamente de acuerdo a la situación que lo amerite, bloqueando parcialmente el uso a los usuarios anonimos nuevos.</span>
-				
 			</div>
 			<div class="contentElement" id="reglas">
-				<h3 class="titleAccent">Reglas de Cchan</h3>
-				<div>Primero que nada, <b>la demo de cchan</b> refiriendome exclusivamente a esta web y no al codigo ni el proyecto, no pretende reemplazar, competir, atacar, ni ser parte de las demás paginas similares. Ni busca, ni espera tener público, aunque todos son bienvenidos. No voy a dejar que sea el clon típico de voxed.</div>
+				<h3>Reglas de Cchan</h3>
+				<span>Cchan pretende ser completamente anónima, el generador de sesiones <b>NO</b> guarda la direccion <b>IP</b> ni el <b>User-Agent</b> de los usuarios, pero si utiliza las <b>cookies</b> del navegador para identificar la sesion del usuario. <br>De esta manera, la infraestructura de moderacion y baneos está limitada y la unica forma de proteccion efectiva que tiene el servidor, frente a los accesos recurrentes desconocidos, es usando una lista blanca de usuarios o whitelist que se activará esporádicamente de acuerdo a la situación que lo amerite, bloqueando parcialmente el uso a los usuarios anonimos nuevos. Así queda a responsabilidad del usuario guardar y proteger su ID de acceso.</span>
+				</br>
 				</br>
 				<span>Queda prohibido cualquier accion o incitacion a:</span>
 				<ul>
 				<li>Todo lo que sea ilegal por sentido común, nada de GORE, nada de CP, etc.</li>
 				<li>Flood o hilos repetitivos y molestos</li>
-				<li>Doxxeos, raids, violacion del anonimato de otros usuarios dentro de la página</li>
+				<li>Doxxeos, raids o violacion del anonimato de otros usuarios dentro de la página</li>
 				</ul>
 				<div>Al romper estas reglas, y dependiendo de la gravedad, el usuario puede ser baneado parcial o totalmente o advertido a criterio de la administracion.</div>
 				</br>
-				<b>Los usuarios advertidos y baneados podrían ser indexados en una blacklist para la proteccion del sitio (esto implica bloqueo de acceso via IP y user-agent) a futuro.</b>
-				</br></br>
-				<div>Y queda a responsabilidad del usuario guardar y proteger su ID, en esta página es algo valioso por los privilegios de acceso</div>
+				<b>En un futuro, los usuarios advertidos y baneados podrían ser indexados en una blacklist para la proteccion del sitio.</b>
 				</br>
 			</div>
-			<div class="contentElement" id="about">
-				<h3 class="titleAccent">Sobre el Proyecto</h3>
-				<span>Cchan deriva de dos proyectos anteriores, el proyecto box fue mi primer intento de ripear la interfaz de voxed de la wayback machine, empecé entre noviembre y diciembre del 2020, adaptando fragmentos de la página a ejs e intentando hacer que se parezca a voxed, era una version bastante más fea, lenta y parcialmente completada, el proyecto fue abandonado en finales de diciembre de ese año.</span>
-				</br></br>
-				<span>Despues del cierre de tsubit v4, surgió mi segundo proyecto, derivando el codigo del primero y con un ligero reskin, que lentamente fue transformandose. En esa primera versión completé muchas cosas que habian quedado a medias, ademas de optimizar un poco mas el funcionamiento y surgió la v0 de mikanchan</span>
-				</br></br>
-				<span>La lentitud de esta versión y todo el spaguetti gigantesco me obligó a hacer un rewrite total del server, abandonando el codigo del proyecto box, y ahi surgió este proyecto, que pretende servir como plantilla para futuros proyectos.</span>
-				</br>
-				<span>Tambien se pretende que pueda montarse como un imageboard temporario por cualquiera, de manera que este tiene que ser necesariamente ligero, facilmente configurable y con minimos requisitos de hosting.</span>
-			</div>
-			<a class="buttonElement" href="/">Volver a la home</a>
+			<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
 			</br></br>
 		</div>
 	</div>
@@ -89,18 +67,10 @@
 	<%- include('./common/footer', it); %>
 </html>
 <style>
-	html {
-		background-color: var(--base-background3);
-	}
-	
 	body {
 		display: flex;
 		height: 100vh;
 		padding: 0px;
-	}
-	
-	.titleAccent {
-		color: #673ab7;
 	}
 
 	.infomenu {
@@ -128,7 +98,6 @@
 	
 	.menuElement:hover {
 		background: var(--modal-border);
-		color: white;
 		cursor: pointer;
 	}
 	
@@ -158,20 +127,3 @@
 		}
 	}
 </style>
-<script>
-	let KIND = "<%= it.kind %>";
-	$(function () {
-		var ePosition = $("#" + KIND.split("/")[2]).offset().top - 100;
-		document.documentElement.scrollTo({top: ePosition, behavior: 'smooth'});
-			
-		
-		$(document).on("click", ".menuElement", function (e) {
-			let data = $(e.target).data();
-			console.log(data);
-			var ePosition = $("#" + data.kind).offset().top - 100;
-			document.documentElement.scrollTo({top: ePosition, behavior: 'smooth'});
-			
-		});
-	
-	});
-</script>

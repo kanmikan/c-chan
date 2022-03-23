@@ -7,15 +7,22 @@
 %>
 
 	<div class="pollContainer">
-		<div class="hidden">
-			Estas de acuerdo con tal tal y tal bla bla bla?
+		<% 
+		let pollAsk = (BOX.content.extra.poll.pollAsk && BOX.content.extra.poll.pollAsk.trim() === "") ? false : true; 
+		let pollDate = new Date(BOX.content.extra.poll.pollDate);	
+		%>
+		
+		<!--
+		<div class="pollTitle <%= (pollAsk) ? "" : "hidden" %>">
+			<span><%= BOX.content.extra.poll.pollAsk %></span>
 		</div>
-	
+		-->
+		
 		<div class="pollElement">
 			<div class="pollVoteButton <%= (voted && voted.option === "1") ? "voted" : "" %>" data-poll="1" data-bid="<%= BOX.bid %>">
 				<img src="/assets/uicons/circle.svg"></img>
 			</div>
-			<div id="pollOne" class="pollOption" style="width: <%= pollData[0] %>">
+			<div id="pollOne" class="pollOption" style="width: calc(<%= pollData[0] %>)">
 				<div class="pollValue"><%= BOX.content.extra.poll.pollOne %></div>
 				<div class="pollPercent"><%= pollData[0] %></div>
 			</div>
@@ -25,14 +32,18 @@
 			<div class="pollVoteButton <%= (voted && voted.option === "2") ? "voted" : "" %>" data-poll="2" data-bid="<%= BOX.bid %>">
 				<img src="/assets/uicons/circle.svg"></img>
 			</div>
-			<div id="pollTwo" class="pollOption" style="width: <%= pollData[1] %>">
+			<div id="pollTwo" class="pollOption" style="width: calc(<%= pollData[1] %>)">
 				<div class="pollValue"><%= BOX.content.extra.poll.pollTwo %></div>
 				<div class="pollPercent"><%= pollData[1] %></div>
 			</div>
 		</div>
-		<div class="hidden">
-			Iniciada el xx/xx/xx a las xx:xx - Finaliza en x horas
+		
+		<!--
+		<div class="pollTitle <%= (pollAsk) ? "" : "hidden" %>">
+			<%- `Iniciada el ${pollDate.getDate()}/${pollDate.getMonth()+1}/${pollDate.getFullYear()} a las ${pollDate.getHours()}:${pollDate.getMinutes()} <span class="hidden">- Finaliza en x horas</span>` %>
 		</div>
+		-->
+		
 	</div>
 	
 <% } %>

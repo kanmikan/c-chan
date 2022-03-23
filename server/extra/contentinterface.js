@@ -22,7 +22,7 @@ async function createCom(DB, data, before, callback){
 	mcom.content.body = data.comment;
 	
 	//insertar comentario
-	await dbManager.insertDB(DB, mdbScheme.C_COMS, mcom, () => {});
+	dbManager.insertDB(DB, mdbScheme.C_COMS, mcom, () => {});
 	callback({success: true, data: mcom});
 	
 	//enviar comentario via socket

@@ -59,6 +59,7 @@ module.exports = function(app){
 		let vid = req.fields.vid.split(";");
 		let pollOne = req.fields.pollOne;
 		let pollTwo = req.fields.pollTwo;
+		let pollAsk = req.fields.pollAsk;
 		
 		//checkboxes de las opciones.
 		let modAnonimo = (req.fields.modAnon) ? true : false;
@@ -79,9 +80,16 @@ module.exports = function(app){
 		json.date.created = time;
 		json.date.bump = time;
 		
-		if (sConfig.ENABLE_POSTS){
-			//fuerza el formato de posts.
-			json.type.push("post");
+		if (sConfig.ENABLE_POSTS && vid[0] === ""){
+			//fuerza el formato de posts, solo si no es un post donde se eligió un video para mostrar.
+			let imglist = parser.parseImgTags(content);
+			//si hay al menos 1 elemento, usar el formato de post
+			if (imglist[0]){
+				json.type.push("post");
+				json.content.extra.post = {
+					images: imglist
+				}
+			}
 		}
 		
 		//detecta y configura si es un box con imagen o con un video
@@ -109,23 +117,20 @@ module.exports = function(app){
 		
 		//deteccion y configuracion de box de encuestas.
 		if (pollOne != "" && pollTwo != ""){
+			console.log(pollAsk);
 			json.type.push("poll");
 			json.content.extra.poll = {
 				pollOne: sanitizer.sanitizeAll(pollOne),
 				pollOneV: 0,
 				pollTwo: sanitizer.sanitizeAll(pollTwo),
 				pollTwoV: 0,
-				pollVotes: []
+				pollVotes: [],
+				pollAsk: pollAsk,
+				pollDate: time,
+				pollEnds: 0
 			};
 		} else {
 			json.content.extra.poll = {};
-		}
-		
-		//deteccion de imagenes en el body
-		if (json.type.includes("post")){
-			json.content.extra.post = {
-				images: parser.parseImgTags(content)
-			}
 		}
 		
 		//detectar opcion de anonimato para los usuarios con rango.
@@ -441,6 +446,17 @@ module.exports = function(app){
 		} else {
 			res.redirect("/tema/" + bid + "#" + cid);
 		}
+	});
+	
+	//API: elimina todas las notificaciones
+	app.get('/api/ntf/clear', rate.apiLimit, async function(req, res) {
+		let bid = req.params.bid;
+		let cid = req.params.cid;
+		let uid = req.session.uid;
+		//limpiar notificaciones
+		await dbManager.deleteDB(req.app.locals.db, mdbScheme.C_NOTIF, {"receiver.uid": uid}, ()=>{});
+		res.send({sucess: true, data: null});
+		
 	});
 	
 	//API: obtener una notificacion especificada por el timestamp, usada por el popup.

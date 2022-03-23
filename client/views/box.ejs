@@ -27,7 +27,7 @@
 			<%- include('./fragments/navbar/navbarElements', it); %>
 		
 			<div class="mainCatsBar toolsBar" id="mainCatsBar">	
-				<a href="/" class="catElement" style="background-color: #3f51b5"><img src="/assets/uicons/home.svg"></img><span class="catElementTitle">Home</span></a>
+				<a href="/" class="catElement catElementSelected"><img src="/assets/uicons/home.svg"></img><span class="catElementTitle">Home</span></a>
 				
 				<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))){ %>
 					<div id="postActionMod" class="catElement"><img src="/assets/uicons/flag.svg"></img><span class="catElementTitle">Moderar</span></div>
@@ -121,6 +121,9 @@
 				<% if (BOX.type.includes("poll")){ %>
 					<div class="typeItem"><img src="/assets/uicons/bar-chart-2.svg"></img></div>
 				<% } %>
+				<% if (BOX.type.includes("idunico")){ %>
+					<div class="typeItem"><img src="/assets/uicons/user.svg"></img></div>
+				<% } %>
 				</div>
 				
 				<div class="metaElement date"><%= it.utils.timeSince(it.data.boxs[0].date.created) %></div>
@@ -177,7 +180,7 @@
 							<img src="/assets/uicons/radio.svg"></img>
 						</div>
 					</div>
-					<span>Comentarios (<span id="commentCounter"><%- BOX.content.comments %></span>)</span>
+					<span><span id="commentsTitle">Comentarios</span> (<span id="commentCounter"><%- BOX.content.comments %></span>)</span>
 					<div class="rightTools">
 						<div class="catElement" id="postFiles">
 							<img src="/assets/uicons/folder.svg"></img>
@@ -193,19 +196,25 @@
 				
 				
 				<div class="commentFiles hidden" id="commentFiles">
-				<% it.utils.filterComMedia(it.data.coms).forEach(function(com) { %>
-					<% if (com.type.includes("image")) { %>
-						<a class="file" target="_BLANK" href="<%= it.utils.seclink(com.img.full) %>">
-							<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.img.preview) %>" alt="">
-							<div class="attachType"><img src="/assets/uicons/image.svg"></img></div>
-						</a>
-					<% } else if (com.type.includes("video")) { %>
-						<a class="file" target="_BLANK" href="<%= it.utils.seclink(com.media.raw) %>">
-							<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.media.preview) %>" alt="">
-							<div class="attachType"><img src="/assets/uicons/film.svg"></img></div>
-						</a>
-					<% } %>
-				<% }); %>
+				
+				<% let commedia = it.utils.filterComMedia(it.data.coms);
+				if (commedia.length > 0) { %>
+					<% it.utils.filterComMedia(it.data.coms).forEach(function(com) { %>
+						<% if (com.type.includes("image")) { %>
+							<a class="file" target="_BLANK" href="<%= it.utils.seclink(com.img.full) %>">
+								<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.img.preview) %>" alt="">
+								<div class="attachType"><img src="/assets/uicons/image.svg"></img></div>
+							</a>
+						<% } else if (com.type.includes("video")) { %>
+							<a class="file" target="_BLANK" href="<%= it.utils.seclink(com.media.raw) %>">
+								<img data-attach="<%= com.cid %>" src="<%= it.utils.seclink(com.media.preview) %>" alt="">
+								<div class="attachType"><img src="/assets/uicons/film.svg"></img></div>
+							</a>
+						<% } %>
+					<% }); %>
+				<% } else { %>
+					<div class="comment" style="width: 100%; display: flex; justify-content: center;">No hay imagenes ni videos.</div>
+				<% } %>
 				</div>
 				
 				<ul class="commentList" id="commentList">
@@ -219,7 +228,12 @@
 				</ul>
 				<div class="floatQuote hidden" id="floatQuote"></div>
 				<div style="height: 50px"></div>
-				<div class="gotop hidden" id="attach-goup"><span style="width: 100%"><i class="fas fa-arrow-up"></i></span></div>
+				
+				<div class="floatActionContainer">
+					<div class="floatButton goComment hidden" id="attach-comment"><img src="/assets/uicons/message-square.svg"></div>
+					<div class="floatButton hidden" id="attach-goup"><img src="/assets/uicons/arrow-up.svg"></div>
+				</div>
+				
 			</div>
 		</div>
 		

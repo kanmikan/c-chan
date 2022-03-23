@@ -86,10 +86,11 @@ document.getElementById("toolImageFile").addEventListener("change", function(e){
 		element("imgLIcon").classList.add("hidden");
 		element("imgIcon").classList.remove("hidden");
 		if (data.success){
+			console.log(data);
 			let full = data.data.link;
 			let preview = data.data.thumb;
 			//insertar un objeto a con el thumbnail y la imagen original.
-			let imageObject = `</br><div class="attImage"><img data-img="${preview}|${full}" src="${full}"></img></div></br>`;
+			let imageObject = `</br><div class="attImage"><img data-img="${preview}|${full}" src="${preview}"></img></div></br>`;
 			document.execCommand("insertHTML", false, imageObject);
 		} else {
 			alert(data.data);

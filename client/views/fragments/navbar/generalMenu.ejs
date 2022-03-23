@@ -1,5 +1,22 @@
 <div id="generalMenu" class="dropdown-content generalMenu hidden">
 	<ul>
+		<li id="areaList">
+			<div class="optionIcon"><img class="mikanColor" src="/assets/uicons/box.svg"></img></div>
+			<div class="optionText">Lista de Areas</div>
+			<img class="menu-group-icon" style="margin-left: auto" src="/assets/uicons/chevron-down.svg">
+		</li>
+		<div class="areaListMenu hidden" id="areaListMenu">
+			<ul>
+			<% it.data.cats.forEach(function(categoria){ %>
+				<li onclick="location.href='/<%= categoria.catid %>'">
+					<div class="optionIcon areaIcon"><img src="<%= categoria.content.media.icon %>"></img></div>
+					<div class="optionText"><%= categoria.content.name %></div>
+					<div class="optionText" style="margin-left: auto">&gt;<%= categoria.catid %></div>
+				</li>
+			<% }); %>
+			</ul>
+		</div>
+		
 		<li onclick="location.href='/propios'">
 			<div class="optionIcon"><img class="mikanColor" src="/assets/uicons/home.svg"></img></div>
 			<div class="optionText">Mis Publicaciones</div>
@@ -28,7 +45,7 @@
 	<div class="configMenu hidden" id="configMenu">
 		<ul>
 			<li>
-				<div class="optionIcon"><i class="fas fa-moon" aria-hidden="true"></i></div>
+				<div class="optionIcon"><img src="/assets/uicons/moon.svg"></div>
                 <div class="optionText">Tema oscuro</div>
                 <div class="configToggle">
                     <label class="switch">
@@ -43,9 +60,9 @@
             </li>
 			<li id="visibleCategories">
 				<div class="visibleCategories">
-					<div class="optionIcon"><i class="fas fa-dice-d6" aria-hidden="true"></i></div>
+					<div class="optionIcon"><img src="/assets/uicons/box.svg"></div>
 					<div class="optionText">Areas visibles</div>
-					<i class="fas fa-angle-down" style="margin-left: auto;" aria-hidden="true"></i>
+					<img class="menu-group-icon" style="margin-left: auto" src="/assets/uicons/chevron-down.svg">
 				</div>
 			</li>
 			<ul class="configCategoriesList hidden" id="configCategoriesList">
@@ -68,7 +85,7 @@
 			
 			<li id="configTheme">
 				<div class="visibleCategories">
-					<div class="optionIcon"><i class="fas fa-palette" aria-hidden="true"></i></div>
+					<div class="optionIcon"><img src="/assets/uicons/pen-tool.svg"></div>
 					<div class="optionText">Personalizar...</div>
 				</div>
 			</li>
@@ -78,7 +95,7 @@
 			</div>
 			
 			<li onclick="location.href='/login'">
-				<div class="optionIcon"><i class="fas fa-user" aria-hidden="true"></i></div>
+				<div class="optionIcon"><img src="/assets/uicons/user.svg"></div>
 				<div class="optionText" style="cursor:pointer">Iniciar Sesion</div>
             </li>
 			<li>
@@ -120,7 +137,6 @@
 		} else {
 			applyConfig("cathides_add:" + catid);
 		}
-		console.log("Configuracion Aplicada.");
 	});
 	
 	//EVENTO: al aplicar estilo.
@@ -137,10 +153,15 @@
 	
 	/* Configuraciones */
 	document.getElementById("optionConfigMenu").addEventListener("click", function(e){
-			document.getElementById("configMenu").classList.toggle("hidden");
+		document.getElementById("configMenu").classList.toggle("hidden");
 	});
 	
-	//EVENTO: abrir lista de categorias.
+	//EVENTO: lista de areas
+	document.getElementById("areaList").addEventListener("click", function(e){
+		document.getElementById("areaListMenu").classList.toggle("hidden");
+	});
+	
+	//EVENTO: lista de areas visibles.
 	document.getElementById("visibleCategories").addEventListener("click", function(e){
 		document.getElementById("configCategoriesList").classList.toggle("hidden");
 	});

@@ -11,7 +11,6 @@
 			<input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= it.sesion.simpleCsrfToken %>">
 			
 			<div class="panelA">
-				
 				<div style="display:flex">
 					<select id="catSelector" name="cat" style="width: 25%;">
 						<option value="" selected="selected" disabled="disabled">Elige un área</option>
@@ -22,7 +21,7 @@
 					<input class="field" id="btitle" style="width: calc(75% - 13px);" name="title" type="text" placeholder="Titulo" maxlength="120">
 				</div>
 				
-				<div class="generalEditorToolbar hidden" id="generalEditorToolbar">
+				<div class="generalEditorToolbar" id="generalEditorToolbar">
 					<div class="itemButton" onclick="toolBold()"><img src="/assets/uicons/bold.svg"></img></div>
 					<div class="itemButton" onclick="toolItalic()"><img src="/assets/uicons/italic.svg"></img></div>
 					<div class="itemButtonSeparator"></div>
@@ -72,6 +71,7 @@
 				
 					</div>
 					<div class="menu-group pointer" data-target="menuPoll">
+						<img class="menu-group-icon invert-off" src="/assets/uicons/bar-chart-2.svg"></img>
 						<span class="menu-group-text">Añadir encuesta</span>
 						<img class="menu-group-icon" src="/assets/uicons/chevron-down.svg"></img>
 					</div>
@@ -82,31 +82,75 @@
 					</div>
 					
 					<div class="menu-group pointer" data-target="menuOptions">
+						<img class="menu-group-icon invert-off" src="/assets/uicons/settings.svg"></img>
 						<span class="menu-group-text">Opciones</span>
 						<img class="menu-group-icon" src="/assets/uicons/chevron-down.svg"></img>
 					</div>
 					<div class="menu-group-content hidden" id="menuOptions">
 						<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))) { %>
 							<div class="menu-group-subgroup">
-								<input type="checkbox" name="modAnon" style="width:auto" checked="true"><span> Publicar Anonimamente</span>
+							
+								<div class="toggle">
+									<label class="checkContainer">
+										<input type="checkbox" name="modAnon" checked="true">
+										<span class="checkmark"></span>
+									</label>
+									<span class="checkText">Publicar Anonimamente</span>
+								</div>
+							
 							</div>
 						<% } %>
 						<div id="vidsync" class="menu-group-subgroup hidden">
-								<input type="checkbox" name="vidsync" style="width:auto"><span>Modo Streaming (experimental)</span></input>
+							
+							<div class="toggle">
+								<label class="checkContainer">
+									<input type="checkbox" name="vidsync">
+									<span class="checkmark"></span>
+								</label>
+								<span class="checkText">Modo Sincronizado (Sincroniza el video para todos)</span>
+							</div>
+							
 						</div>	
 						<div class="menu-group-subgroup">
-							<input type="checkbox" name="dados" style="width:auto"><span>Dados</span></input>
-							<input type="checkbox" name="idunico" style="width:auto"><span>ID Unico</span></input>
+							
+							<div class="toggle">
+								<label class="checkContainer">
+									<input type="checkbox" name="dados">
+									<span class="checkmark"></span>
+								</label>
+								<span class="checkText">Dados</span>
+							</div>
+							<div class="toggle">
+								<label class="checkContainer">
+									<input type="checkbox" name="idunico">
+									<span class="checkmark"></span>
+								</label>
+								<span class="checkText">ID Unico</span>
+							</div>
+							
 						</div>
 						<div class="menu-group-subgroup">
-							<input type="checkbox" name="noavatar" style="width:auto"><span>Sin avatars</span></input>
-							<input type="checkbox" name="automod" style="width:auto"><span>Automoderar</span></input>
+						
+							<div class="toggle">
+								<label class="checkContainer">
+									<input type="checkbox" name="noavatar">
+									<span class="checkmark"></span>
+								</label>
+								<span class="checkText">Sin Avatars</span>
+							</div>
+							<div class="toggle">
+								<label class="checkContainer">
+									<input type="checkbox" name="automod">
+									<span class="checkmark"></span>
+								</label>
+								<span class="checkText">Automoderar</span>
+							</div>
 						</div>
 						<input class="field hidden" type="text" name="subtitle" maxlength="50" placeholder="Subtitulo">
 					</div>
 					<div class="sendArea">
 						<button id="postSend" class="mainButton">
-							<span id="sendLText">Iniciar Tema</span>
+							<span id="sendLText">Iniciar Publicación</span>
 							<i id="sendLIcon" class="fas fa-circle-notch fa-spin loadingButton hidden"></i>
 						</button>
 					</div>

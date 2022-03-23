@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 	<head>
-	<%- include('./common/head', it); %>
+	<%- include('./fragments/head', it); %>
 	</head>
 	<body class="loginContainer">
 	<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
@@ -10,7 +10,7 @@
 			<div class="closeButton" id="closeButton"><span aria-hidden="true">×</span></div>
 			
 				<h3>Iniciar Sesion en Cchan</h3>
-				<div class="innerText">Si tenés una cuenta de Cchan, introducí las credenciales a continuacion:</div>
+				<div class="innerText">Si tenés una cuenta de MikanChan, introducí las credenciales a continuacion:</div>
 				<div class="inputs">
 					<input type="text" class="modalInput" name="userid" id="userid" placeholder="ID o Nick del Usuario" value="<%= it.sesion.uid %>">
 					<input type="password" class="modalInput" name="password" id="password" placeholder="Contraseña">
@@ -28,7 +28,7 @@
 			</form>
 		</main>
 	</body>
-	<%- include('./common/footer', it); %>
+	<%- include('./fragments/footer', it); %>
 </html>
 
 <script>
@@ -51,8 +51,7 @@
 				if (result.success){
 					window.location.replace("/");
 				} else {
-					//alert(result.data);
-					swalert({title: "Error", text: result.data, icon: "error"}, function(){});
+					alert(result.data);
 				}
 			});
 			
@@ -67,11 +66,13 @@
 </script>
 
 <style>
-
+	body {
+		background: var(--mainBackground);
+		color: white;
+	}
+	
 	.login h3 {
-		margin-left: auto;
-		margin-right: auto;
-		width: fit-content;
+		text-align: center;
 	}
 	
 	.login a {
@@ -103,6 +104,7 @@
 	}
 	
 	.login form {
+		background: var(--sideBarBackground);
 		padding: 10px;
 		border: 1px solid var(--modal-border);
 	}

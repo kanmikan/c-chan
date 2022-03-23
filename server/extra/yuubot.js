@@ -96,20 +96,62 @@ function modCom(cid, req){
 
 function sendYuuResponse(DB, cid, bid, uid, raw){
 	const pre1 = (process.env.YUU_INS === undefined) ? [] : process.env.YUU_INS.split(",");
+	const pre2 = (process.env.YUU_INS2 === undefined) ? ["tetón"] : process.env.YUU_INS2.split(",");
+	const pre3 = ["", "anon", "anoncete", "", "y...", "gordo", ":P", ":)", "&lt;3", "&lt;/3"];
+	const pre4 = ["bueno", "muy bueno", "malo", "muy malo", "estupendo", "feo", "lindo", "raro", "tierno", "agradable"];
 	
+	
+	//respuestas tiradas al aire
 	const resp1 = [
 		`</br>Que me mencionas ${pre1[Math.floor(Math.random() * pre1.length)]}`,
-		`</br>Si necesitas info sobre la página, entrá <a class="link" target="blank" href="/info/welcome">acá</a>`,
+		`</br>${pre3[Math.floor(Math.random() * pre3.length)]}`,
+		`</br>no entendí`,
+		`</br>tamos al pedo mijo?`,
+		``,
+		`</br>no respondo a eso`,
+		`</br>me cuesta entender lo que decis`,
+		`</br>${pre4[Math.floor(Math.random() * pre4.length)]}`,
+		`</br>basta ${pre2[Math.floor(Math.random() * pre2.length)]}`,
+		`</br>Te recuerdo leer las reglas <a class="link" target="blank" href="/info/reglas">acá</a> asi no te tengo que domar`
+	];
+	
+	//respuestas a preguntas concretas
+	const resp2 = [
 		`</br>no se`,
 		`</br>si`,
 		`</br>no`,
-		`</br>no entendí`,
+		`</br>vos sabras`
+	];
+	
+	//respuestas a preguntas de opinion
+	const resp3 = [
 		`</br>puede ser`,
-		`</br>hola`,
-		`</br>tamos al pedo mijo?`,
-		``,
-		`</br>basta tetón`,
-		`</br>Te recuerdo leer las reglas <a class="link" target="blank" href="/info/reglas">acá</a> asi no te tengo que domar`,
+		`</br>creo que es ${pre4[Math.floor(Math.random() * pre4.length)]} ${pre3[Math.floor(Math.random() * pre3.length)]}`,
+		`</br>me parece ${pre4[Math.floor(Math.random() * pre4.length)]} ${pre3[Math.floor(Math.random() * pre3.length)]}`
+	];
+	
+	//respuestas a saludos (llegada)
+	const resp4 = [
+		`</br>hola ${pre3[Math.floor(Math.random() * pre3.length)]}`,
+		`</br>Ya llegué ${pre3[Math.floor(Math.random() * pre3.length)]}`,
+		`</br>que tal ${pre3[Math.floor(Math.random() * pre3.length)]}`
+	];
+	
+	//respuesta a afecto
+	const resp5 = [
+		`</br>que es eso?`,
+		`</br>gracias`,
+		`</br>ok. ${pre3[Math.floor(Math.random() * pre3.length)]}`,
+		`</br>eeh? *blush*`,
+		`</br>ayumu tambien habla de eso`,
+		`</br>bien por vos`
+	];
+	
+	//respuesta a despedida
+	const resp6 = [
+		`</br>chau ${pre3[Math.floor(Math.random() * pre3.length)]}`,
+		`</br>Hasta la próxima ${pre3[Math.floor(Math.random() * pre3.length)]}`,
+		`</br>Dale ${pre3[Math.floor(Math.random() * pre3.length)]}`
 	];
 	
 	let botcid = utils.genCID(7);
@@ -123,33 +165,42 @@ function sendYuuResponse(DB, cid, bid, uid, raw){
 		color: "#00aa00"
 	};
 	data.icon = "/assets/anon/yuu.png"
-	data.comment = cparser.htmlParser(`>>${cid}`); //taggeo
 	
-	let yuuask = new RegExp(`\\b(ayuda|ashuda|help)\\b`, "mgi").exec(raw);
-	if (yuuask){
-		data.comment += `${resp1[1]}`;
-	} else {
-		data.comment += `${resp1[Math.floor(Math.random() * resp1.length)]}`;
+	//parser de taggeos
+	data.comment = cparser.htmlParser(`>>${cid}`);
+	
+	let resp = "";
+	
+	//pseudorespuestas, se concatenan.
+	resp += pseudoAnswer(raw, new RegExp(`\\b(ayuda|ashuda|help)\\b`, "mgi"), `</br>Si necesitas info sobre la página, entrá <a class="link" target="blank" href="/info/welcome">acá</a>`);
+	resp += pseudoAnswer(raw, new RegExp(`\\b(ayumu.)\\b`, "mgi"), `</br>Ayumu es mi mejor amiga`);
+
+	//deteccion neutra
+	resp += pseudoAnswer(raw, new RegExp(`\\b(hola.+?|que tal|como andas|hi.+?|dias)\\b`, "mgi"), `${resp4[Math.floor(Math.random() * resp4.length)]}`);
+	resp += pseudoAnswer(raw, new RegExp(`\\b(amo.+?|linda|waifu|novia|bebe|mam.)\\b`, "mgi"), `${resp5[Math.floor(Math.random() * resp5.length)]}`);
+	resp += pseudoAnswer(raw, new RegExp(`\\b(chau|dormir|mimir|noches)\\b`, "mgi"), `${resp6[Math.floor(Math.random() * resp6.length)]}`);
+	
+	//responsiva
+	resp += pseudoAnswer(raw, new RegExp(`\\w+(?:\\s+\\w+)*\\s*\\?`, "mgi"), `${resp2[Math.floor(Math.random() * resp2.length)]}`);
+	resp += pseudoAnswer(raw, new RegExp(`\\b(te parece|pensas|opinas)\\b`, "mgi"), `${resp3[Math.floor(Math.random() * resp3.length)]}`);
+	
+	//si no hay match, responder algo al azar
+	if (resp === ""){
+		resp = `${resp1[Math.floor(Math.random() * resp1.length)]}`;
 	}
 	
+	data.comment += resp;
+	
 	//enviar comentario del bot.
-	//TODO: es un copypaste de abajo... eso
 	cinterface.createCom(DB, data, function(){}, async function(){
-		let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", () => {});
-		let notifdata = builder.notification({
-			suid: data.user.uid,
-			ruid: uid,
-			cid: botcid,
-			bid: bid,
-			tag: true,
-			title: box[0].content.title,
-			desc: data.comment,
-			thumb: (box[0].type.includes("video")) ? box[0].media.preview : box[0].img.preview
-		});
-		await dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
-		live.sendDataTo(uid, "notif", pass.filterProtectedUID(notifdata));
+		cparser.parseTags(DB, botcid, data.user.uid, `>>${cid}${resp}`);
 	});
 	
+}
+
+function pseudoAnswer(raw, regex, respuesta){
+	let rgx = regex.exec(raw);
+	return (rgx) ? respuesta : "";
 }
 
 function sendADV(DB, cid, bid, uid){
@@ -165,34 +216,26 @@ function sendADV(DB, cid, bid, uid){
 	};
 	data.icon = "/assets/anon/yuu.png"
 	
-	//cuerpo del comentario
+	//parser de taggeos
+	cparser.parseTags(DB, botcid, data.user.uid, `>>${cid}`);
 	data.comment = cparser.htmlParser(`>>${cid}`);
+	
+	//cuerpo del comentario
 	data.comment += `<div class="advertencia">Has sido advertido porque tu accion infringe las reglas, por favor lee las reglas <a style="color: #ffeb3b;" target="blank" href="/info/reglas">acá</a>.<br>Si continuas vas a ser muteado temporalmente para proteger al sitio.</div>`;
 	
 	//enviar comentario del bot.
 	cinterface.createCom(DB, data, function(){}, async function(){
-		let box = await dbManager.queryDB(DB, mdbScheme.C_BOXS, {bid: bid}, "", () => {});
-		let notifdata = builder.notification({
-			suid: "yuubot",
-			ruid: uid,
-			cid: botcid,
-			bid: bid,
-			tag: true,
-			title: box[0].content.title,
-			desc: data.comment,
-			thumb: (box[0].type.includes("video")) ? box[0].media.preview : box[0].img.preview
-		});
-		await dbManager.insertDB(DB, mdbScheme.C_NOTIF, notifdata, function(){});
-		live.sendDataTo(uid, "notif", pass.filterProtectedUID(notifdata));
 		console.log("[YuuBot] Yuu ha advertido al usuario " + uid);
 	});
 }
 
 function commands(DB, bid, cid, uid, rawtext){
+	/*
 	let comm1 = new RegExp(/\$yuu[^.](.+)/gi).exec(rawtext);
 	if (comm1 != null){
 		
 	}
+	*/
 }
 
 
