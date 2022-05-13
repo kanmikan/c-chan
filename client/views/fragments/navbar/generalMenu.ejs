@@ -3,7 +3,7 @@
 		<li id="areaList">
 			<div class="optionIcon"><img class="mikanColor" src="/assets/uicons/box.svg"></img></div>
 			<div class="optionText">Lista de Areas</div>
-			<img class="menu-group-icon" style="margin-left: auto" src="/assets/uicons/chevron-down.svg">
+			<img class="menu-group-icon svgIcon" style="margin-left: auto" src="/assets/uicons/chevron-down.svg">
 		</li>
 		<div class="areaListMenu hidden" id="areaListMenu">
 			<ul>
@@ -38,14 +38,14 @@
 		<li id="optionConfigMenu">
 			<div class="optionIcon"><img class="mikanColor" src="/assets/uicons/settings.svg"></img></div>
 			<div class="optionText">Configuraciones</div>
-			<img class="menu-group-icon" style="margin-left: auto" src="/assets/uicons/chevron-down.svg">
+			<img class="menu-group-icon svgIcon" style="margin-left: auto" src="/assets/uicons/chevron-down.svg">
 		</li>
 	</ul>
 	
 	<div class="configMenu hidden" id="configMenu">
 		<ul>
 			<li>
-				<div class="optionIcon"><img src="/assets/uicons/moon.svg"></div>
+				<div class="optionIcon"><img class="svgIcon" src="/assets/uicons/moon.svg"></div>
                 <div class="optionText">Tema oscuro</div>
                 <div class="configToggle">
                     <label class="switch">
@@ -58,11 +58,26 @@
                     </label>
                 </div>
             </li>
+			<li>
+				<div class="optionIcon"><img class="svgIcon" src="/assets/uicons/sidebar.svg"></div>
+                <div class="optionText">Barra Principal</div>
+                <div class="configToggle">
+                    <label class="switch">
+					<% if (it.sesion.config && it.sesion.config.sidebar) { %>
+						<input type="checkbox"  id="sideswitch" checked="true">
+					<% } else { %>
+						<input type="checkbox"  id="sideswitch">
+					<% } %>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </li>
+			
 			<li id="visibleCategories">
 				<div class="visibleCategories">
-					<div class="optionIcon"><img src="/assets/uicons/box.svg"></div>
+					<div class="optionIcon"><img class="svgIcon" src="/assets/uicons/box.svg"></div>
 					<div class="optionText">Areas visibles</div>
-					<img class="menu-group-icon" style="margin-left: auto" src="/assets/uicons/chevron-down.svg">
+					<img class="menu-group-icon svgIcon" style="margin-left: auto" src="/assets/uicons/chevron-down.svg">
 				</div>
 			</li>
 			<ul class="configCategoriesList hidden" id="configCategoriesList">
@@ -85,7 +100,7 @@
 			
 			<li id="configTheme">
 				<div class="visibleCategories">
-					<div class="optionIcon"><img src="/assets/uicons/pen-tool.svg"></div>
+					<div class="optionIcon"><img class="svgIcon" src="/assets/uicons/pen-tool.svg"></div>
 					<div class="optionText">Personalizar...</div>
 				</div>
 			</li>
@@ -94,12 +109,12 @@
 				<button id="applyTheme" class="mainButton" style="padding: 5px;margin:0px">Aplicar</button>
 			</div>
 			
-			<li onclick="location.href='/login'">
-				<div class="optionIcon"><img src="/assets/uicons/user.svg"></div>
-				<div class="optionText" style="cursor:pointer">Iniciar Sesion</div>
+			<li class="loginOption" onclick="location.href='/login'">
+				<div class="optionIcon"><img class="svgIcon" src="/assets/uicons/user.svg"></div>
+				<div class="optionText" style="cursor:pointer"><%= (it.data.users[0]) ? it.data.users[0].nick + " (Cambiar Sesion)" : "Iniciar Sesion" %></div>
             </li>
-			<li>
-				<div style="font-size: 0.6rem">UID:<span style="padding-left: 5px;"><%= it.sesion.uid %></span></div>
+			<li class="uidview" data-uid="<%= it.sesion.uid %><%= (it.data.users[0]) ? "" : " (EFIMERO)" %>">
+				<div style="font-size: 0.6rem">UID: <span style="padding-left: 5px;user-select: all;cursor: text;">MOSTRAR UID</span></div>
 			</li>
 			
         </ul>
@@ -111,7 +126,7 @@
 		
 		<div class="activityContainer">
 			<div class="sideTitle sideInfo version">Usando el motor <%- it.renderConfig.VERSION %></div>
-			<div class="sideTitle sideInfo"><a href="info/reglas">Reglas</a> - <a href="info/welcome">Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
+			<div class="sideTitle sideInfo"><a href="/info#reglas">Reglas</a> - <a href="/info#use">Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
 		</div>
 	</div>
 	
@@ -120,12 +135,24 @@
 <script>
 	/* EVENTOS */
 	//EVENTO: al cambiar el switch del darkmode.
-	//TODO: cambiar a javascript nativo.
 	$("#dkswitch").on('change', function() {
 		if ($(this).is(':checked')) {
 			darkmode(true);
 		} else {
 			darkmode(false);
+		}
+	});
+	
+	//EVENTO: al cambiar el switch del sidemenu
+	$("#sideswitch").on('change', function() {
+		if ($(this).is(':checked')) {
+			applyConfig("sidebar:true", function(result){
+				window.location.reload();
+			});
+		} else {
+			applyConfig("sidebar:false", function(result){
+				window.location.reload();
+			});
 		}
 	});
 	

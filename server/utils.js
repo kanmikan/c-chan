@@ -15,8 +15,8 @@ function getCategoryData(categorias, catid) {
 }
 
 function filterComMedia(comments) {
-    if (comments) {
-        return comments.filter(item => item.img.full != "");
+	if (comments) {
+        return comments.filter(item => item.img && item.img.full != "");
     } else {
         return comments;
     }
@@ -171,8 +171,7 @@ function weightRandom(data){
 
 function randomNoCom(){
 	let frases = [
-		`<img src="/assets/icon.png" style="width: 15px; height: 15px"></img> Dejá un comentario <img src="/assets/icon.png" style="width: 15px; height: 15px"></img>`,
-		"No hay comentarios acá...",
+		`<img src="/assets/icon.svg" style="width: 15px; height: 15px"></img> Dejá un comentario <img src="/assets/icon.svg" style="width: 15px; height: 15px"></img>`,
 		"No hay comentarios :sad:",
 		"No hay comentarios",
 		"No hay comentarios, dejá uno."

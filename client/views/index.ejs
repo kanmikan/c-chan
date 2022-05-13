@@ -6,7 +6,8 @@
 	<body class="main">
 		<%- include('./fragments/scripts/headerScripts', it); %>
 		<%- include('./fragments/scripts/indexScripts', it); %>
-		<div class="mainContainer" id="mainContainer">
+		
+		<div class="mainContainer <%= it.sesion.config.sidebar ? "" : "sideContract" %>" id="mainContainer">
 			<div class="navbar mainNavbar">
 				<%- include('./fragments/navbar', it); %>
 			</div>
@@ -21,18 +22,19 @@
 				<a href="#" class="catElement catElementSelected"><img src="/assets/uicons/plus.svg"></img></a>
 			</div>
 			
-			<div class="newPostAlertContainer hidden" id="newPostAlertContainer">
-				<div class="newPostAlert" id="newPostAlert">Cargar x Temas</div>
-			</div>
 			
-			<ul class="mainContents" id="mainContents">
+			<%- include('./fragments/navbar/newPostPopup', it); %>
+			<%- include('./fragments/navbar/genericPopup', it); %>
+			<%- include('./fragments/navbar/queryPopup', it); %>
+			
+			<ul class="mainContents <%= it.sesion.config.sidebar ? "" : "sideContract" %>" id="mainContents">
 			<% it.data.boxs.forEach(function(box){ %>
 				<%- include('./fragments/home/postElement', {it, box}); %>
 			<% }); %>
 			</ul>
 			<div id="list-end"></div>
 			
-			<div class="newPostAlertContainer loadMoreContainer hidden" id="loadMoreContainer">
+			<div class="newPostAlertContainer loadMoreContainer <%= it.sesion.config.sidebar ? "" : "sideContract" %> hidden" id="loadMoreContainer">
 				<div class="newPostAlert">
 					<i class="fas fa-circle-notch fa-spin"></i>
 					<span>Cargando mas...</span>
@@ -40,9 +42,9 @@
 			</div>
 			
 		</div>
-		<div class="sideContainer">
+		
+		<div class="sideContainer <%= it.sesion.config.sidebar ? "" : "sideContract" %>">
 			<div class="sideContainerBottom" id="sideContainerBottom">
-				
 			<% if (!["/", "/favoritos","/ocultos", "/propios"].includes(it.kind) && (it.kind.split("/")[1] && it.kind.split("/")[1] !== "search")) { 
 				let categoryData = it.utils.getCategoryData(it.data.cats, it.kind.split("/")[1]); %>
 				<div class="categoryInfoContainer containerMain">
@@ -73,15 +75,16 @@
 				<div class="activityContainer">
 					<div class="sideTitle">Actividad Reciente</div>
 					<ul id="activityList"></ul>
-					
 					<div class="activityContainer">
-						<div class="sideTitle sideInfo version">Usando como base <%- it.renderConfig.VERSION %></div>
-						<div class="sideTitle sideInfo"><a href="info/reglas">Reglas</a> - <a href="info/welcome">Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
+						<div class="sideTitle sideInfo version">Usando el motor <%- it.renderConfig.VERSION %></div>
+						<div class="sideTitle sideInfo"><a href="/info#reglas">Reglas</a> - <a href="/info#use">Acerca de</a> - <a target="_blank" href="https://github.com/kanmikan/c-chan">Github</a></div>
 					</div>
 				</div>
 				
 			</div>
 		</div>
+		
+		<div class="floatQuote hidden" id="floatBoxView"></div>
 	</body>
 	
 	<script src="/js/nanoSlideshow.js"></script>

@@ -4,9 +4,9 @@ const mdbScheme = require('../db/models/mdbscheme.js');
 const sConfig = require('../config/serverconfig.js');
 const utils = require('../utils.js');
 const sesionManager = require('../sesion/sesionmanager.js');
-const unzalgo = require('unzalgo').clean;
 
 /* MIDDLEWARES */
+
 //MIDDLEWARE: comprobacion de uso generalizado.
 function check(req, res, next){
 	checkBan(req, res, function(ban){
@@ -71,10 +71,6 @@ function boxFields(req, res, callback){
 			//obtener info del usuario y la categoria.
 			let userdata = sesionManager.getUserData(req.session.id)[0].data;
 			let catdata = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_CATS, {catid: req.fields.cat}, "", function(){});
-			//filtro del zalgo
-			req.fields.title = unzalgo(req.fields.title);
-			req.fields.subtitle = unzalgo(req.fields.subtitle);
-			req.fields.content = unzalgo(req.fields.content);
 			
 			if (!userdata.permisos.includes("CREAR_BOX")){
 				callback({success: false, data: "No tienes permitido crear temas"});
@@ -99,15 +95,12 @@ function boxFields(req, res, callback){
 }
 
 function comFields(req, res, callback){
-	checkRecursiveRequest(req, res, mdbScheme.C_COMS, sConfig.COMMENT_DELAY, function(repeated){
-		if (repeated){
-			res.send(repeated);
+	checkRecursiveRequest(req, res, mdbScheme.C_COMS, sConfig.COMMENT_DELAY, function(rreq){
+		if (rreq){
+			res.send(rreq);
 		} else {
-			//filtro del zalgo
-			req.fields.content = unzalgo(req.fields.content);
-			
-			checkTags(req, res, function(tagsExceeded){
-				if (tagsExceeded){
+			checkTags(req, res, function(tres){
+				if (tres){
 					callback(tres);
 				} else {
 					let userdata = sesionManager.getUserData(req.session.id)[0].data;

@@ -17,7 +17,13 @@
 		<% if (BOX.flag.includes("sync")){ %>
 			<%- include('./fragments/scripts/syncScripts', {it, BOX}); %>
 		<% } %>
-	
+		<% if (BOX.flag.includes("dash")){ %>
+			<%- include('./fragments/scripts/dashScripts', {it, BOX}); %>
+		<% } %>
+		<% if (BOX.type.includes("video") && !BOX.flag.includes("sync") && !BOX.flag.includes("dash")){ %>
+			<!-- <%- include('./fragments/scripts/mediaScripts', {it, BOX}); %> -->
+		<% } %>
+		
 		<div class="mainContainer mainContainerPost mainfixedView">
 			
 			<div class="navbar mainNavbar mainNavbarPost">
@@ -27,17 +33,50 @@
 			<%- include('./fragments/navbar/navbarElements', it); %>
 		
 			<div class="mainCatsBar toolsBar" id="mainCatsBar">	
-				<a href="/" class="catElement catElementSelected"><img src="/assets/uicons/home.svg"></img><span class="catElementTitle">Home</span></a>
+				<a href="/" class="catElement catElementSelected"><img class="svgIcon" src="/assets/uicons/home.svg"></img><span class="catElementTitle">Home</span></a>
 				
 				<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))){ %>
-					<div id="postActionMod" class="catElement"><img src="/assets/uicons/flag.svg"></img><span class="catElementTitle">Moderar</span></div>
+					<div id="postActionMod" class="catElement"><img class="svgIcon" src="/assets/uicons/flag.svg"></img><span class="catElementTitle">Moderar</span></div>
 				<% } else { %>
-					<div id="postActionFlag" class="catElement"><img src="/assets/uicons/flag.svg"></img><span class="catElementTitle">Denunciar</span></div>
+					<div id="postActionFlag" class="catElement"><img class="svgIcon" src="/assets/uicons/flag.svg"></img><span class="catElementTitle">Denunciar</span></div>
 				<% } %>
 				
-				<div id="postActionFollow" data-bid="<%= BOX.bid %>" class="catElement <%= (it.data.users[0] && (it.data.users[0].uid === BOX.user.uid) ? "follow" : "") %>"><img src="/assets/uicons/eye.svg"></img><span class="catElementTitle">Seguir</span></div>
-				<div id="postActionFav" data-bid="<%= BOX.bid %>" class="catElement <%= (it.sesion.config.favs.includes(BOX.bid)) ? "faved" : "" %>"><img src="/assets/uicons/star.svg"></img><span class="catElementTitle">Favorito</span></div>
-				<div id="postActionHide" data-bid="<%= BOX.bid %>" class="catElement <%= (it.sesion.config.boxhides.includes(BOX.bid)) ? "hided" : "" %>"><img src="/assets/uicons/eye-off.svg"></img><span class="catElementTitle">Ocultar</span></div>
+				
+				<% if (it.data.users[0] && (it.data.users[0].uid === BOX.user.uid)) { %>
+					<div id="postActionFollow" data-bid="<%= BOX.bid %>" class="catElement follow">
+						<img class="svgIcon" src="/assets/uicons/eye.svg"></img>
+						<span class="catElementTitle">OP</span>
+					</div>
+				<% } else { %>
+					<div id="postActionFollow" data-bid="<%= BOX.bid %>" class="catElement">
+						<img class="svgIcon" src="/assets/uicons/eye.svg"></img>
+						<span class="catElementTitle">Seguir</span>
+					</div>
+				<% } %>
+				
+				<% if (it.sesion.config.favs.includes(BOX.bid)) { %>
+					<div id="postActionFav" data-bid="<%= BOX.bid %>" class="catElement faved">
+						<img class="svgIcon" src="/assets/uicons/star.svg"></img>
+						<span class="catElementTitle">Añadido</span>
+					</div>
+				<% } else { %>
+					<div id="postActionFav" data-bid="<%= BOX.bid %>" class="catElement">
+						<img class="svgIcon" src="/assets/uicons/star.svg"></img>
+						<span class="catElementTitle">Favorito</span>
+					</div>
+				<% } %>
+				
+				<% if (it.sesion.config.boxhides.includes(BOX.bid)) { %>
+					<div id="postActionHide" data-bid="<%= BOX.bid %>" class="catElement hided">
+						<img class="svgIcon" src="/assets/uicons/eye-off.svg"></img>
+						<span class="catElementTitle">Oculto</span>
+					</div>
+				<% } else { %>
+					<div id="postActionHide" data-bid="<%= BOX.bid %>" class="catElement">
+						<img class="svgIcon" src="/assets/uicons/eye-off.svg"></img>
+						<span class="catElementTitle">Ocultar</span>
+					</div>
+				<% } %>
 				
 				<span style="margin-left: auto"></span>
 				<div class="catElement catIcon">
@@ -45,6 +84,9 @@
 					<span><a href="/<%= BOX.cat %>"><%= categoryData.content.name %></a></span>
 				</div>
 			</div>
+			
+			<%- include('./fragments/navbar/genericPopup', it); %>
+			<%- include('./fragments/navbar/queryPopup', it); %>
 			
 			<% if (it.data.users[0] && (it.data.users[0].permisos.includes("ADMIN") || it.data.users[0].permisos.includes("GMOD") || it.data.users[0].permisos.includes("MOD"))){ %>
 			
@@ -104,25 +146,25 @@
 				
 				<div class="metaElement type">
 				<% if (BOX.type.includes("image")){ %>
-					<div id="metaImage" data-img="<%= BOX.img.full %>" class="typeItem pointer"><img src="/assets/uicons/image.svg"></img></div>
+					<div id="metaImage" data-img="<%= BOX.img.full %>" class="typeItem pointer"><img class="svgIcon" src="/assets/uicons/image.svg"></img></div>
 				<% } %>
 				<% if (BOX.type.includes("post")){ %>
-					<div class="typeItem"><img src="/assets/uicons/file-text.svg"></img></div>
+					<div class="typeItem"><img class="svgIcon" src="/assets/uicons/file-text.svg"></img></div>
 				<% } %>
 				<% if (BOX.type.includes("video")){ %>
-					<div class="typeItem"><img src="/assets/uicons/film.svg"></img></div>
+					<div class="typeItem"><img class="svgIcon" src="/assets/uicons/film.svg"></img></div>
 					<% if (BOX.flag.includes("sync")) { %>
 						<div class="typeItem">
 							<span id="livesync" style="margin: 0px 5px;font-weight: 600;font-size: small;">Offline</span>
-							<img src="/assets/uicons/refresh-cw.svg"></img>
+							<img class="svgIcon" src="/assets/uicons/refresh-cw.svg"></img>
 						</div>
 					<% } %>
 				<% } %>
 				<% if (BOX.type.includes("poll")){ %>
-					<div class="typeItem"><img src="/assets/uicons/bar-chart-2.svg"></img></div>
+					<div class="typeItem"><img class="svgIcon" src="/assets/uicons/bar-chart-2.svg"></img></div>
 				<% } %>
 				<% if (BOX.type.includes("idunico")){ %>
-					<div class="typeItem"><img src="/assets/uicons/user.svg"></img></div>
+					<div class="typeItem"><img class="svgIcon" src="/assets/uicons/user.svg"></img></div>
 				<% } %>
 				</div>
 				
@@ -138,16 +180,14 @@
 							<img alt="post image" src="<%= (it.utils.isGif(BOX.img.full)) ? BOX.img.full : BOX.img.preview %>" onerror="this.src='/assets/imageplaceholder.png'"></img>
 						</div>
 					</div>
-					<% } else if (BOX.type.includes("video") && !BOX.type.includes("object") && !BOX.flag.includes("sync")){ %>	
+					<% } else if (BOX.type.includes("video") && !BOX.type.includes("object") && !BOX.flag.includes("sync") && !BOX.flag.includes("dash")){ %>
 					<div class="mainPostMediaContainer postExpand">
-						<div class="mainPostVideo">
-							<iframe id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>" srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=<%= BOX.media.raw %>?enablejsapi=1&origin=https://<%= it.host %>&autoplay=1><img src=<%= BOX.media.preview %>><span id='playYT'>▶</span></a>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						<div class="mainPostVideo" id="mainSyncContainer">
+							<iframe id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 						</div>
 					</div>
-					<% } else if (BOX.type.includes("video") && BOX.flag.includes("sync")) { %>
-					
+					<% } else if (BOX.type.includes("video") && (BOX.flag.includes("sync") || BOX.flag.includes("dash"))) { %>
 						<div class="mainPostVideo" id="mainSyncContainer"></div>
-						
 					<% } else if (BOX.type.includes("object")) { %>
 					<div class="mainPostMediaContainer postExpand">
 						<div class="mainPostVideo">
@@ -174,19 +214,19 @@
 				<div class="contentTitle">
 					<div class="leftTools">
 						<div class="catElement" id="goComment">
-							<img src="/assets/uicons/message-square.svg"></img>
+							<img class="svgIcon" src="/assets/uicons/message-square.svg"></img>
 						</div>
 						<div class="catElement" id="autoLoad">
-							<img src="/assets/uicons/radio.svg"></img>
+							<img class="svgIcon" src="/assets/uicons/radio.svg"></img>
 						</div>
 					</div>
 					<span><span id="commentsTitle">Comentarios</span> (<span id="commentCounter"><%- BOX.content.comments %></span>)</span>
 					<div class="rightTools">
 						<div class="catElement" id="postFiles">
-							<img src="/assets/uicons/folder.svg"></img>
+							<img class="svgIcon" src="/assets/uicons/folder.svg"></img>
 						</div>
 						<div class="catElement" id="goDown">
-							<img src="/assets/uicons/arrow-down.svg"></img>
+							<img class="svgIcon" src="/assets/uicons/arrow-down.svg"></img>
 						</div>
 					</div>
 				</div>

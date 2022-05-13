@@ -14,16 +14,6 @@ function advUserByCID(DB, cid, callback){
 	
 }
 
-async function getUIDbyBID(DB, bid, callback){
-	let box = await dbManager.queryDB(DB, mdbScheme.C_COMS, {bid: bid}, "", () => {});
-	callback({success: true, data: (box[0]) ? box[0].user.uid : "bid no encontrado."});
-}
-
-async function getUIDbyCID(DB, cid, callback){
-	let comment = await dbManager.queryDB(DB, mdbScheme.C_COMS, {cid: cid}, "", () => {});
-	callback({success: true, data: (comment[0]) ? comment[0].user.uid : "cid no encontrado."});
-}
-
 async function sendMSG(DB, ruid, nick, thumb, text, callback){
 	let notif = utils.clone(jsonScheme.NOTIF_SCHEME);
 	notif.sender.uid = nick;
@@ -157,11 +147,6 @@ async function updateBoxParams(DB, bid, params, callback){
 	callback({success: true, data: "modificado."});
 }
 
-async function updateComParams(DB, cid, params, callback){
-	await dbManager.pushDB(DB, mdbScheme.C_BOXS, {bid: bid}, {$set: params}, () => {});
-	callback({success: true, data: "modificado."});
-}
-
 function deleteBox(DB, bid, callback){
 	dbManager.deleteDB(DB, mdbScheme.C_BOXS, {bid: bid}, function(){
 		callback({success: true, data: `tema ${bid} eliminado.`});
@@ -174,4 +159,4 @@ function deleteComment(DB, cid, callback){
 	})
 }
 
-module.exports = {advUserByCID, banUserByCID, banUserByBID, banUser, deleteComment, deleteBox, moveBox, updateBoxParams, updateComParams, sendADMFlag, sendMSG, unbanUser, getUserData, getUIDbyBID, getUIDbyCID}
+module.exports = {advUserByCID, banUserByCID, banUserByBID, banUser, deleteComment, deleteBox, moveBox, updateBoxParams, sendADMFlag, sendMSG, unbanUser, getUserData}

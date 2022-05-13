@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Cchan - Gracias!</title>
+	<style>	
+		:root {
+			--scrollbar-thumb: #135f9b;
+			--scrollbar-track: #585858;
+			--scrollbar-thumb-hover: #3f51b5;
+		}
+
+		/* SCROLLBARS */
+		::-webkit-scrollbar {width: 4px;}
+		::-webkit-scrollbar-track {
+			background: var(--scrollbar-track);
+		} 
+		::-webkit-scrollbar-thumb {
+			background: var(--scrollbar-thumb);
+			border-radius: 6px;
+		}
+		::-webkit-scrollbar-thumb:hover {
+			background: var(--scrollbar-thumb-hover);
+		}
+			
+		body {
+			background: black;
+		}
+			
+		.center {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 400px;
+			padding: 20px 10px;
+			display: flex;
+			font-family: monospace;
+			background: #0a0a0a;
+			color: white;
+			flex-direction: column;
+			align-content: center;
+			justify-content: center;
+			align-items: center;
+		}
+			
+		.logo {
+			width: 50px;
+		}
+		
+		a {
+			color: #2196f3
+		}
+			
+		a:hover {
+			color: #4caf50;
+		}
+			
+		.commentForm {
+			display: flex;
+			width: 100%;
+			padding: 10px;
+		}
+			
+		.commentForm textarea {
+			width: 100%;
+			height: 40px;
+			outline: 0;
+			background: #e7e7e7;
+			border-radius: 3px;
+			border: 1px solid #2196f3;
+		}
+			
+		.hidden {
+			display: none !important;
+		}
+			
+		.comments {
+			max-height: 50vh;
+			overflow-y: auto;
+			padding-left: 10px;
+		}
+			
+		.comments li {
+			word-break: break-word;
+			margin-right: 20px;
+			display: flex;
+			flex-direction: column;
+			padding: 10px 0px;
+		}
+			
+		.commentButton {
+			background: #2196f3;
+			border: 1px solid #2196f3;
+			margin: 5px;
+			border-radius: 3px;
+			max-height: 30px;
+			cursor: pointer;
+		}
+			
+		.commentButton:hover {
+			background: #4caf50;
+		}
+			
+	</style>
+		
+	</head>
+	<body>
+		<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
+		<div class="center">
+			<img class="logo" src="/assets/logo.svg">
+			<h1>Gracias por haber pasado</h1>
+			<div style="margin: 5px;">La demo de cchan ha cerrado el 01/04/2022, pueden ver los codigos usados con la interfaz de voxed o con la mv2, en el link de abajo</div>
+			<div>saludos</div>
+			<div>
+				<a href="https://github.com/kanmikan/c-chan">Github del proyecto</a>
+				<a href="#" id="goComment">Dejar un comentario</a>
+			</div>
+			
+			<form id="commentForm" class="commentForm hidden" method="POST" action="/m/new" enctype="multipart/form-data">
+				<input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= sesion.simpleCsrfToken %>">
+				<textarea id="commentText" placeholder="Deja una opinion, puteada o lo que sea"></textarea>
+				<button id="commentButton" class="commentButton">Enviar</button>
+			</form>
+			
+			<ul class="comments">
+				<% lista.forEach(function(com){ %>
+					<li><span class="datetime" data-timestamp="<%= com.date %>" >-date-</span>Anon: <%= com.comment %></li>
+				<% })%>
+			</ul>
+			
+		</div>
+		
+		<script>
+		
+			$(document).ready(function() {
+				//render de fecha/hora, para que se adapte al horario local usando el timestamp guardado en el server.
+				$(".comments").find(".datetime").each(function(){
+					let timestamp = $(this).data("timestamp");
+					$(this).text(new Date(timestamp).toLocaleString());
+				});
+			});
+		
+			document.getElementById("goComment").addEventListener("click", function(e){
+				document.getElementById("commentForm").classList.toggle("hidden");
+			});
+			
+			document.getElementById("commentButton").addEventListener("click", function(e){
+				e.preventDefault();
+				let formdata = new FormData();
+				formdata.append("comment", document.getElementById("commentText").value);
+				
+				postForm(formdata, "/m/new", function(){}, function(data){
+					window.location.reload();
+				});
+				
+			});
+			
+			function postForm(formdata, url, before, callback){
+				$.ajax({
+					type: 'POST',
+					url: url,
+					headers: {
+						"X-CSRF-Token": document.getElementById("_csrf_token").value
+					},
+					data: formdata,
+					processData: false,
+					contentType: false,
+					beforeSend: function() {
+						before();
+					}
+				}).done(function(data) {
+					callback(data);
+				}).fail(function(xhr, status, error){
+					if (status === "error"){
+						callback({success: false, data: "error"});
+					}
+				});
+			}
+			
+		</script>
+	</body>
+</html>

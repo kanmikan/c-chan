@@ -10,7 +10,7 @@ const loginLimit = rateLimit({
 
 const apiLimit = rateLimit({
 	windowMs: 15 * 60 * 1000,
-	max: 300,
+	max: 600,
 	standardHeaders: true,
 	legacyHeaders: false,
 	message: {success: false, data: "Superaste el limite maximo de solicitudes"}

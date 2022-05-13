@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	<%- include('./fragments/head', it); %>
+	</head>
+	<body class="loginContainer">
+	<style>		
+		body {
+			background: var(--common-border-color);
+		}
+		
+		.image {
+			display: flex;
+			width: 100%;
+			justify-content: center;
+			padding: 5px;
+		}
+		
+		.code {
+			text-align-last: center;
+			font-size: 2rem;
+			margin: 0px;
+			color: var(--textColor);
+		}
+		.message {
+			font-size: 1rem;
+			text-align-last: center;
+			text-align: center;
+			color: var(--textColor);
+		}
+		
+		.info {
+			background: var(--sideBarBackground);
+			width: 50%;
+			position: fixed;
+			padding: 30px;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			/*box-shadow: 0 3px 3px 0 rgb(0 0 0 / 64%);*/
+		}
+		
+		.bottomlink {
+			display: flex;
+			width: 100%;
+			justify-content: center;
+			margin-top: 30px;
+		}
+		
+		.content {
+			width: 100%;
+			display: flex;
+			align-content: center;
+			align-items: center;
+			flex-direction: column;
+			justify-content: center;
+		}
+		
+		.generalcontainer {
+		    margin-top: 30px;
+			display: flex;
+		}
+		
+		.bottomlink a {
+			font-size: 1.0rem;
+		    text-decoration: underline;
+		}
+		
+		.bottomlink a:hover {
+			color: orange;
+		}
+		
+		@media only screen and (max-width: 800px) {
+			.generalcontainer {
+				display: block;
+			}
+			.info {
+				width: 80%;
+			}
+		}
+		
+	</style>
+		<main class="info">
+			<div class="generalcontainer">
+				<div class="image">
+					<img style="width: 50px" src="/assets/logo.svg"/>
+				</div>
+				<div class="content">
+					<h1 class="code">Bloqueo de acceso activado</h1>
+					<h1 class="message">
+						</br>
+						El administrador ha activado la whitewall, solo los usuarios permitidos pueden acceder al sitio.
+					</h1>
+				</div>
+			</div>
+			<div class="bottomlink">
+				<a href="/login">Ir al login</a>
+			</div>
+		</main>
+	</body>
+	
+</html>

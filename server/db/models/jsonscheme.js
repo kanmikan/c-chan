@@ -163,6 +163,7 @@ const CATEGORY_SCHEME = {
 const SVRCONFIG_SCHEME = {
 	version: 2,
 	whitelist: false, //permitir el uso solo a los usuarios con whitelist o con rango.
+	whitewall: false, //permitir el acceso solo a usuarios con whitelist o rango.
 	login: true, //permitir logeos
 	coms: true, //permitir comentarios
 	boxs: true, //permitir creacion de temas

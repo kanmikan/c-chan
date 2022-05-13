@@ -3,13 +3,11 @@
 		<% let icon = com.icon.split(",");
 		if (icon[0] === "ico") { %>
 			<div class="anonIcon" style="background: <%= icon[1] %>">
-				<div class="anonText <%= icon[5] %>" style="color: <%= icon[2] %>"><%= (icon[4]) ? icon[4] : "ANON" %></div>
-			
+			<div class="anonText <%= icon[5] %>" style="color: <%= icon[2] %>"><%= (icon[4]) ? icon[4] : "ANON" %></div>
 			</div>
 		<% } else if (icon[0] === "class") { %>
 			<div class="anonIcon <%= icon[1] %>">
-				<div class="anonText <%= icon[2] %>"><%= (icon[4]) ? icon[4] : "ANON" %></div>
-		
+			<div class="anonText <%= icon[2] %>"><%= (icon[4]) ? icon[4] : "ANON" %></div>
 			</div>
 		<% } else { %>
 			<img class="avatar" src="<%= com.icon %>" alt="">
@@ -35,7 +33,8 @@
 			</div>
 			<div class="commentRightButtons">
 				<div class="metaElement dateComment"><%= it.utils.timeSince(com.date.created) %></div>
-				<div class="metaElement ficon pointer actionMod"><i class="fas fa-ellipsis-v" style="padding: 0px 3px;"></i>
+				<div class="metaElement ficon pointer actionMod">
+					<img class="svgIcon" src="/assets/uicons/more-vertical.svg"></img>
 				
 				<div class="nanodropdown hidden">
 					<ul class="nanodropdown-content">
@@ -76,6 +75,7 @@
 			<div class="pollOption commentBoxPoll">
 				<% if (poll && poll.voted) { %>
 					<div class="pollOptionText"><%= poll.optionText %></div>
+					<img class="svgIcon" src="/assets/uicons/bar-chart-2.svg"></img>
 				<% } %>
 			</div>
 		<% } %>

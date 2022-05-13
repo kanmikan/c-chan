@@ -21,7 +21,7 @@ function uploadImg(file, callback){
 
 function uploadVid(file, callback){
 	let up = (file.path) ? file.path : file;
-	cloudinary.uploader.upload_large(up, {resource_type: "video"}, function(error, result){
+	cloudinary.uploader.upload_large(up, {resource_type: "video", timeout: 1200000}, function(error, result){
 		if (error){
 			callback({success: false, data: error});
 		} else {

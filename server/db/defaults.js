@@ -56,6 +56,7 @@ function getDefUserConfig(){
 	return {
 		darkmode: true, //tema claro/oscuro.
 		autoloadgifs: true, //[placeholder] define si los gifs se van a cargar automaticamente o si se usará el thumbnail estático.
+		sidebar: true, //mostrar sidebar
 		boxhides: [], //lista de boxs ocultos
 		cathides: [], //lista de categorias ocultas.
 		favs: [], //lista de favoritos.

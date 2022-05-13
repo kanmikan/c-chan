@@ -33,6 +33,20 @@ function toolRemoveFormat(){
 	document.execCommand("removeFormat", false, null);
 }
 
+function toolGT(){
+	document.execCommand("insertHTML", false, `&gt;`);
+}
+
+function toolMedia(data){
+	if (data.video){
+		let videoObject = `</br><div class="video-container"><iframe width="560" height="315" src="${data.raw}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></br>`;
+		document.execCommand("insertHTML", false, videoObject);
+	} else {
+		let imageObject = `<img class="lazy attImage" alt="post image" data-img="${data.raw}|${data.thumb}" data-src="${(isGif(data.raw)) ? data.raw : data.thumb}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAQAAAA3fa6RAAAADklEQVR42mNkAANGCAUAACMAA2w/AMgAAAAASUVORK5CYII=" onerror="this.src='/assets/imageplaceholder.png'"></img>`;
+		document.execCommand("insertHTML", false, imageObject);
+	}
+}
+
 function toolYoutube(){
 	element("richEditor").focus();
 	let url = prompt("Url de youtube/link a imagen/etc.", "");
@@ -75,27 +89,9 @@ document.getElementById("toolSize").addEventListener("change", function(e){
 	document.execCommand("fontSize", false, size);
 });
 
-document.getElementById("toolImageFile").addEventListener("change", function(e){
-	element("richEditor").focus();
-	let file = element("toolImageFile").files.item(0);
-	//subir imagen.
-	getDataURL(file, function(target){
-		element("imgLIcon").classList.remove("hidden");
-		element("imgIcon").classList.add("hidden");
-	}, function(data){
-		element("imgLIcon").classList.add("hidden");
-		element("imgIcon").classList.remove("hidden");
-		if (data.success){
-			console.log(data);
-			let full = data.data.link;
-			let preview = data.data.thumb;
-			//insertar un objeto a con el thumbnail y la imagen original.
-			let imageObject = `</br><div class="attImage"><img data-img="${preview}|${full}" src="${preview}"></img></div></br>`;
-			document.execCommand("insertHTML", false, imageObject);
-		} else {
-			alert(data.data);
-		}
-		element("toolImageFile").value = "";
-	});
-		
+document.querySelector('div[contenteditable="true"]').addEventListener("paste", function(e) {
+	e.preventDefault();
+	var text = e.clipboardData.getData("text/plain");
+	document.execCommand("insertHTML", false, text);
 });
+

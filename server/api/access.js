@@ -3,6 +3,9 @@ const dbManager = require('../db/dbmanager.js');
 const mdbScheme = require('../db/models/mdbscheme.js');
 const jsonScheme = require('../db/models/jsonscheme.js');
 const utils = require('../utils.js');
+const renderConfig = require('../config/renderconfig.js');
+const sesionManager = require('../sesion/sesionmanager.js');
+
 
 async function whitelist(DB, userData, callback){
 	let accessConfig = await dbManager.queryDB(DB, mdbScheme.C_SVR, "", "", function(){})[0];
@@ -14,6 +17,30 @@ async function whitelist(DB, userData, callback){
 		callback(null);
 	}
 	
+}
+
+async function whitewall(req, res, next){
+	let accessConfig = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_SVR, "", "", function(){})[0];
+	if (accessConfig.whitewall){
+		//console.log("Comprobando escudo mikan...");
+		let userData = await dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {sid: req.session.id}, "", function(){});
+		
+		if (userData[0] && (userData[0].permisos.includes("WHITELIST") || userData[0].permisos.includes("ADMIN") || userData[0].permisos.includes("GMOD") || userData[0].permisos.includes("MOD"))){
+			next();
+		} else {
+			res.render("wall", {
+				it: {
+					kind: req.originalUrl,
+					host: req.get('host'),
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session
+				}
+			});
+		}
+	} else {
+		next();
+	}
 }
 
 async function login(req, res, next){
@@ -43,4 +70,4 @@ async function boxs(req, res, next){
 	}	
 }
 
-module.exports = {whitelist, login, coms, boxs};
+module.exports = {whitelist, whitewall, login, coms, boxs};

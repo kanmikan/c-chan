@@ -9,7 +9,7 @@
 			<img alt="video type" class="videoIcon" src="/assets/uicons/film.svg"></img>
 		<% } %>
 		<% if (box.flag.includes("sync")) { %>
-			<img alt="video sync type" class="postIcon postIconSync" src="/assets/uicons/refresh-cw.svg" style="<%= (box.flag.includes("online")) ? "filter: invert(0.5) sepia(1) hue-rotate(310deg) saturate(30);" : "" %>"></img>
+			<img alt="video sync type" class="postIcon postIconSync" src="/assets/uicons/refresh-cw.svg"></img>
 		<% } %>
 		<% if (box.type.includes("post")) { %>
 			<img alt="post type" class="postIcon" src="/assets/uicons/file-text.svg"></img>
@@ -40,7 +40,7 @@
 				}
 			%>
 			<h1 class="info txtpreview"><%- bodypreview %></h1>
-			<h1 class="info"><%= box.content.comments %> Comentarios - Hace <%= it.utils.timeSince(box.date.created, 1) %></h1>
+			<h1 class="info"><span class="postComCount"><%= box.content.comments %></span> Comentarios - Hace <%= it.utils.timeSince(box.date.created, 1) %></h1>
 		</div>
 	</a>
 </li>

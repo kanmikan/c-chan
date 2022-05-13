@@ -8,7 +8,7 @@ module.exports = {
 	DATABASE_CACHE: (process.env.DATABASE_CACHE && process.env.DATABASE_CACHE === "false") ? false : true,
 	STATIC_CACHE_VALUE: {}, //{maxAge: 3600000*12}
 	CRON_THREADS: (process.env.CRON_THREADS && process.env.CRON_THREADS === "true") ? true : false,
-	CRON_HEARTBEAT: '*/30 * * * *', //cada 30 minutos
+	CRON_HEARTBEAT: '*/5 * * * *', //cada 5 minutos
 	
 	/* APIS EXTERNAS */
 	YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,
@@ -31,15 +31,15 @@ module.exports = {
 	
 	/* DELAYS ENTRE OTROS */
 	COMMENT_DELAY: 5, //tiempo de espera en segundos (5 segundos)
-	BOX_DELAY: 120,
+	BOX_DELAY: 60,
 	MAX_TAGS: 5, //maximo numero de tagueos permitidos.
 	/* LIMITES */
 	HOME_BOX_LIMIT: 48, //limite de la carga inicial (no aplica a la v1)
 	HOME_BOX_PAGELOAD: 20, //cantidad de boxs a cargar en cada paginación.
-	CATEGORY_BOX_LIMIT: 82, //maximo de temas en una categoría.
+	CATEGORY_BOX_LIMIT: 41, //maximo de temas en una categoría.
 	
 	/* OTROS */
-	RTF_BOXS: false, //aceptar formato de texto enriquecido en los temas.
-	ENABLE_POSTS: false //formato de posts.
+	RTF_BOXS: true, //aceptar formato de texto enriquecido en los temas.
+	ENABLE_POSTS: true //formato de posts.
 	
 }

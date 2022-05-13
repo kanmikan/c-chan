@@ -1,0 +1,71 @@
+<script src="/node/dash-player/dist/player.js"></script>
+
+<script>
+var player;
+
+$(function () {
+	//REPRODUCTOR DE VIDEOS DASH
+	let container = element("mainSyncContainer");
+	
+	//incrustar elemento
+	let Dplayer = `<video id="mainPlayer" preload="auto" controls muted><video>`;
+	let controls = `<div class="playerControls hidden" id="mainPlayerControls">
+		<img class="control play" data-kind="play" data-state="0" src="/assets/uicons/play.svg" />
+		<img class="control sound" data-kind="sound" data-state="0" style="margin-left: auto" src="/assets/uicons/volume-x.svg" />
+	<div>`;
+		
+	$(container).append(Dplayer);
+	$(container).append(controls);
+
+	//crear el mediaPlayer
+	player = new MediaPlayer({
+		src: "<%= BOX.media.raw.dash_url %>",
+		rootEle: '#mainSyncContainer',
+		videoEle: '#mainPlayer',
+		autoplay: false,
+		loop: false
+	});
+	
+	player.once('canPlay', function () {
+		console.log("[DASH] Ready.");		
+	});
+	
+	player.listener("playbackEnded", function () {
+		if (player.ended){
+			console.log("[DASH] Ended.");
+			player.setSeek(0);
+			player.pause();
+			$(".control.play").data("state", 0);
+			$(".control.play").attr("src", "/assets/uicons/play.svg");
+		}
+	});
+	
+	container.addEventListener("mouseenter", function(e){
+		element("mainPlayerControls").classList.remove("hidden");
+	});
+	
+	container.addEventListener("mouseleave", function(e){
+		element("mainPlayerControls").classList.add("hidden");
+	});
+	
+	$(document).on("click", ".control", function (e) {
+		let target = $(e.currentTarget);
+		let data = target.data();
+		
+		switch(data.kind){
+			case "play":
+				let state = (data.state) ? player.pause() : player.play();
+				target.data("state", (data.state) ? 0 : 1);
+				target.attr("src", (data.state) ? "/assets/uicons/pause.svg" : "/assets/uicons/play.svg");
+				break;
+			case "sound":
+				player.setMute((data.state) ? false : true);
+				target.data("state", (data.state) ? 0 : 1);
+				target.attr("src", (data.state) ? "/assets/uicons/volume-x.svg" : "/assets/uicons/volume-2.svg");
+				break;
+		}
+		
+	});
+	
+});
+</script>

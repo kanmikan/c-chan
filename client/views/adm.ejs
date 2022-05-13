@@ -38,12 +38,17 @@
 			</div>
 		</div>
 		<div>Acciones Generales</div>
-		<div class="pcontainer-int" style="display: flex;justify-content: flex-start;">
+		<div class="pcontainer-int" style="display: flex;justify-content: flex-start; flex-wrap: wrap;">
 			<% let access = it.data.server[0]; %>
 			
 			<button class="itemButton" id="action-1" data-state="<%= (access.whitelist) ? "1" : "0" %>" style="<%= (access.whitelist) ? "background: red" : "" %>" type="submit">
 				<span><%= (access.whitelist) ? "Desactivar" : "Activar" %> Whitelist</span> 
 			</button>
+			
+			<button class="itemButton" id="action-5" data-state="<%= (access.whitewall) ? "1" : "0" %>" style="<%= (access.whitewall) ? "background: red" : "" %>" type="submit">
+				<span><%= (access.whitewall) ? "Desactivar" : "Activar" %> WhiteWall</span> 
+			</button>
+			
 			<button class="itemButton" id="action-2" data-state="<%= (access.login) ? "1" : "0" %>" style="<%= (access.login) ? "" : "background: red" %>" type="submit">
 				<span><%= (access.login) ? "Cerrar" : "Abrir" %> Login</span> 
 			</button>
@@ -53,6 +58,7 @@
 			<button class="itemButton" id="action-4" data-state="<%= (access.boxs) ? "1" : "0" %>" style="<%= (access.boxs) ? "" : "background: red" %>" type="submit">
 				<span><%= (access.boxs) ? "Cerrar" : "Abrir" %> Temas</span> 
 			</button>
+			
 		</div>
 		
 		<div class="admActivity">

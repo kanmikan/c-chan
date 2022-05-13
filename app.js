@@ -44,7 +44,7 @@ app.set('views', path.join(__dirname, './client/views'));
 /* BASE DE DATOS */
 dbManager.connect(sConfig.DBURL, {useNewUrlParser: true, useUnifiedTopology: true, ssl:sConfig.SSL}, async function (db){ 
 	app.locals.db = db;
-	
+		
 	/* SESION */
 	let sesion = sesionManager.create(app);
 	

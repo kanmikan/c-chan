@@ -28,12 +28,7 @@ module.exports = function(app){
 					<span style="color: orange">/msg</span> uid "texto del mensaje"<br/>
 					<span style="color: orange">/user</span> uid opcion valor<br/>
 					<span style="color: orange">/reload</span><br/>
-					<span style="color: orange">/permisos</span> uid<br/>
-					<span style="color: orange">/tracebox</span> bid<br/>
-					<span style="color: orange">/tracecom</span> cid<br/>
-					<span style="color: orange">/updateBox</span> bid mongodb_object<br/>
-					<span style="color: orange">/updateCom</span> cid mongodb_object
-					
+					<span style="color: orange">/permisos</span> uid
 				`;
 				res.send({success: true, data: rbody});
 				break;
@@ -78,33 +73,7 @@ module.exports = function(app){
 				moderation.getUserData(req.app.locals.db, cxArgs[1], function(resp){
 					rbody = `<span style="color:orange">Permisos: ${resp.data[0].permisos}</span>`;
 					res.send({success: true, data: rbody});
-				});
-				break;
-			case "/tracecom":
-				moderation.getUIDbyCID(req.app.locals.db, args[1], function(resp){
-					rbody = `<span style="color:orange">UID: ${resp.data}</span>`;
-					res.send({success: true, data: rbody});
-				});
-				break;
-			case "/tracebox":
-				moderation.getUIDbyBID(req.app.locals.db, args[1], function(resp){
-					rbody = `<span style="color:orange">UID: ${resp.data}</span>`;
-					res.send({success: true, data: rbody});
-				});
-				break;
-			case "/updatebox":
-				let paramsb = JSON.parse(cxArgs[2].substr(1, cxArgs[2].length-2).replace(/'/g, '"'));
-				moderation.updateBoxParams(req.app.locals.db, cxArgs[1], paramsb, function(response){
-					rbody = `<span style="color:orange">Parámetro cambiado, /reload para ver cambios</span>`;
-					res.json({success: true, data: rbody});
-				});
-				break;
-			case "/updatecom":
-				let paramsc = JSON.parse(cxArgs[2].substr(1, cxArgs[2].length-2).replace(/'/g, '"'));
-				moderation.updateComParams(req.app.locals.db, cxArgs[1], paramsc, function(response){
-					rbody = `<span style="color:orange">Parámetro cambiado, /reload para ver cambios</span>`;
-					res.json({success: true, data: rbody});
-				});
+				})
 				break;
 			case "/msg":
 				let text = cxArgs[2].substr(1, cxArgs[2].length-2);
@@ -154,6 +123,11 @@ module.exports = function(app){
 				dbManager.updateDBAll(req.app.locals.db, mdbScheme.C_SVR, {}, {whitelist: wlState}, () => {});
 				res.json({success: true, data: {whitelist: wlState}});
 				break;
+			case "adm_whitewall":
+				let wwState = (data === "1") ? false : true;
+				dbManager.updateDBAll(req.app.locals.db, mdbScheme.C_SVR, {}, {whitewall: wwState}, () => {});
+				res.json({success: true, data: {whitewall: wwState}});
+				break;
 			case "adm_login":
 				let loginState = (data === "1") ? false : true;
 				dbManager.updateDBAll(req.app.locals.db, mdbScheme.C_SVR, {}, {login: loginState}, () => {});
@@ -193,14 +167,12 @@ module.exports = function(app){
 				});
 				break;
 			case "com_ban":
-				let parsed = data.split(":");
-				moderation.banUserByCID(req.app.locals.db, parsed[0], parsed[1], parsed[2], function(response){
+				moderation.banUserByCID(req.app.locals.db, data, "-razon-", 1000, function(response){
 					res.json({success: response.success, data: {action: action, response: response.data}});
 				});
 				break;
 			case "box_ban":
-				let bparsed = data.split(":");
-				moderation.banUserByBID(req.app.locals.db, bparsed[0], bparsed[1], bparsed[2], function(response){
+				moderation.banUserByBID(req.app.locals.db, data, "-razon-", 1000, function(response){
 					res.json({success: response.success, data: {action: action, response: response.data}});
 				});
 				break;
@@ -244,39 +216,25 @@ module.exports = function(app){
 		
 	});
 	
+	app.get('/dev/newcat/:catid', pass.onlyADM, function(req, res){
+		let catid = req.params.catid;
+		
+		let scheme = utils.clone(jsonScheme.CATEGORY_SCHEME);
+		scheme.catid = catid;
+		scheme.content.tid = catid;
+		scheme.content.name = "Categoria Nueva";
+		scheme.content.description = "Descripcion de la categoria";
+		scheme.content.media.icon = "/assets/cat/icon/oficial.jpg";
+		scheme.content.media.image = "/assets/cat/oficial.jpg";		
+		
+		dbManager.insertDB(req.app.locals.db, mdbScheme.C_CATS, scheme, function(){
+			res.send({success: "ok", data: scheme});
+		});
+	});
+	
 	app.get('/dev/ping', pass.onlyADM, function(req, res){
 		res.send({result: "pong", data: req.ip});
 	});
-	
-	app.get('/dev/randomness/:count', pass.onlyADM, function(req, res){
-		let count = parseInt(req.params.count);
-		
-		let anone = [
-			["amarillo", 90], //amarillo
-			["azul", 90], //azul
-			["verde", 90], //verde
-			["rojo", 90], //rojo
-			["multi", 20], //multi
-			["invertido", 20], //invertido
-			["black", 3], //black
-			["yuu.png", 1], //yuu
-			["white", 3] //white
-		];
-		let object = {};
-		
-		for(let i=0; i<count; i++){
-			let selected = utils.weightRandom(anone);
-			if (!object[selected]){
-				object[selected] = 1;
-			} else {
-				object[selected] = object[selected] + 1;
-			}
-		}
-		
-		res.send(object);
-		
-	});
-	
 	
 	app.get('/dev/:bid', pass.onlyADM, async function(req, res) {
 		let bid = req.params.bid;

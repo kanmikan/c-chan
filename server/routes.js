@@ -10,8 +10,74 @@ const compat = require('./db/compat.js');
 const cfilter = require('./sesion/contentfilter.js');
 const sesion = require('./sesion/sesionmanager.js');
 const pass = require('./api/passport.js');
+const access = require('./api/access.js');
+
+const rate = require('./sesion/limiter.js');
+const sesionManager = require('./sesion/sesionmanager.js');
+
 
 module.exports = function(app){
+	
+	/* RUTA DE LOGEO */
+	app.get('/login', function(req, res) {
+		var uid = req.session.uid;
+		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
+			res.render("login", {
+				it : {
+					kind: req.originalUrl,
+					host: req.get('host'),
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session,
+					data: result
+				}
+			});
+		});
+	});
+	
+	//API: login de usuario.
+	//TODO: comprobacion de credenciales, sanitizado
+	app.post('/api/login', rate.loginLimit, access.login, async function(req, res) {
+		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
+		let password = req.fields.password.trim();
+		
+		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {$or: [{uid: userid}, {nick: new RegExp(userid, "i")}]}, "", async function(user){
+			if (user[0]){
+				//existe el usuario, comparar contraseña.
+				//TODO: esto tendría que recibir la contraseña encriptada y bla bla bla..
+				if (password !== user[0].pass){
+					res.json({success: false, data: "Contraseña incorrecta."});
+				} else {
+					//aplicar usuario a la sesion actual.
+					//TODO: añadir soporte de multiples sesiones del mismo usuario.
+					await dbManager.pushDB(req.app.locals.db, mdbScheme.C_ADM, {uid: user[0].uid}, {$set: {sid: req.session.id}});
+					req.session.uid = user[0].uid;
+					req.session.config = user[0].extra.config;
+					sesionManager.disposeUserCache(req.session.id);
+					console.log("[Sesion] Usuario logeado.");
+					res.json({success: true, data: "logueado."});
+				}
+			} else {
+				//crear usuario
+				//primero, comprobar que el userid sea un id valido de 32 caracteres.
+				if (userid.trim().length !== 32){
+					res.json({success: false, data: "ID invalido, tiene que tener 32 caracteres."});
+				} else {
+					let json = sesionManager.genUser(userid, password, req.session.id);
+					dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){
+						req.session.uid = json.uid;
+						req.session.config = json.extra.config;
+						sesionManager.disposeUserCache(req.session.id);
+					});
+					console.log("[Sesion] Usuario creado.");
+					res.json({success: true, data: json});
+				}
+			}
+		});
+	});
+	
+	/* WhiteWall */
+	app.use(access.whitewall);
 	
 	/* RUTA PRINCIPAL */
 	app.get('/', function(req, res) {
@@ -52,23 +118,6 @@ module.exports = function(app){
 		});
 	});
 	
-	/* RUTA DE LOGEO */
-	app.get('/login', function(req, res) {
-		var uid = req.session.uid;
-		dbManager.mQuery(req.app.locals.db, models.HOME_QUERY(uid), function(result){
-			res.render("login", {
-				it : {
-					kind: req.originalUrl,
-					host: req.get('host'),
-					utils: utils,
-					renderConfig: renderConfig,
-					sesion: req.session,
-					data: result
-				}
-			});
-		});
-	});
-	
 	/* RUTA DEL PANEL DE ADMINISTRACION */
 	app.get('/adm', pass.onlyADM, function(req, res) {
 		let uid = req.session.uid;
@@ -88,7 +137,6 @@ module.exports = function(app){
 				}
 			});
 		});
-		
 	});
 	
 	//RUTA: lista de publicaciones propias.
@@ -206,6 +254,20 @@ module.exports = function(app){
 	/* RUTAS DE ADMINISTRACION */
 	adm(app);
 	
+	//RUTA: pagina de info, bienvenida, faqs, reglas, etc.
+	app.get('/info', function(req, res) {
+		var id = req.params.id;
+		res.render("info", {
+			it : {
+					kind: req.originalUrl,
+					host: req.get('host'),
+					utils: utils,
+					renderConfig: renderConfig,
+					sesion: req.session
+				}
+		});
+	});
+	
 	/* CATEGORIAS */
 	app.get('/:cat', function(req, res) {
 		var cat = req.params.cat;
@@ -231,20 +293,6 @@ module.exports = function(app){
 					});
 				});
 			}
-		});
-	});
-	
-		//RUTA: pagina de info, bienvenida, faqs, reglas, etc.
-	app.get('/info/:id', function(req, res) {
-		var id = req.params.id;
-		res.render("info", {
-			it : {
-					kind: req.originalUrl,
-					host: req.get('host'),
-					utils: utils,
-					renderConfig: renderConfig,
-					sesion: req.session
-				}
 		});
 	});
 	

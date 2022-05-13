@@ -316,46 +316,7 @@ module.exports = function(app){
 		
 	});
 	
-	//API: login de usuario.
-	//TODO: comprobacion de credenciales, sanitizado
-	app.post('/api/login', rate.loginLimit, access.login, async function(req, res) {
-		let userid = (req.fields.userid.trim() === "") ? req.session.uid : req.fields.userid.trim();
-		let password = req.fields.password.trim();
-		
-		dbManager.queryDB(req.app.locals.db, mdbScheme.C_ADM, {$or: [{uid: userid}, {nick: new RegExp(userid, "i")}]}, "", async function(user){
-			if (user[0]){
-				//existe el usuario, comparar contraseña.
-				//TODO: esto tendría que recibir la contraseña encriptada y bla bla bla..
-				if (password !== user[0].pass){
-					res.json({success: false, data: "Contraseña incorrecta."});
-				} else {
-					//aplicar usuario a la sesion actual.
-					//TODO: añadir soporte de multiples sesiones del mismo usuario.
-					await dbManager.pushDB(req.app.locals.db, mdbScheme.C_ADM, {uid: user[0].uid}, {$set: {sid: req.session.id}});
-					req.session.uid = user[0].uid;
-					req.session.config = user[0].extra.config;
-					sesionManager.disposeUserCache(req.session.id);
-					console.log("[Sesion] Usuario logeado.");
-					res.json({success: true, data: "logueado."});
-				}
-			} else {
-				//crear usuario
-				//primero, comprobar que el userid sea un id valido de 32 caracteres.
-				if (userid.trim().length !== 32){
-					res.json({success: false, data: "ID invalido, tiene que tener 32 caracteres."});
-				} else {
-					let json = sesionManager.genUser(userid, password, req.session.id);
-					dbManager.insertDB(req.app.locals.db, mdbScheme.C_ADM, json, function(response){
-						req.session.uid = json.uid;
-						req.session.config = json.extra.config;
-						sesionManager.disposeUserCache(req.session.id);
-					});
-					console.log("[Sesion] Usuario creado.");
-					res.json({success: true, data: json});
-				}
-			}
-		});
-	});
+
 	
 	//MUESTRA: obtener todos los boxs, ordenados por ultimo bump y stickys
 	//TODO: añadir filtro de datos

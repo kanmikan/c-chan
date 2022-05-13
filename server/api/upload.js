@@ -78,7 +78,6 @@ function uploadLink(url, callback){
 		//obtener thumbnail de la api.
 		let yid = youtube.youtubeParser(url);
 		youtube.getVideoData(yid, function(result){
-			//console.log(result.snippet.title);
 			let thumbnails = result.snippet.thumbnails;
 			let selectedThumb = "";
 			

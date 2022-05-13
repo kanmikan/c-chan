@@ -132,6 +132,57 @@ function hashScroll(hash){
 	}
 }
 
+//popup de eleccion
+//selectPopup({query: "anda?", optrue: "Si", opfalse: "No"}, function(resultado){})
+function selectPopup(data, callback){
+	element("queryPopupContent").classList.add("queryPopup");
+	element("queryPopupContent").style["flex-direction"] = "column";
+	element("queryPopupContent").innerHTML = `
+	<div style="padding: 20px;text-align: center;">${data.query}</div>
+	<div style="display:flex">
+		<div class="itemButton popupButton" style="${(data.danger) ? "background: red" : ""}" data-option="true">${data.optrue}</div><div class="itemButton popupButton" data-option="false">${data.opfalse}</div>
+	</div>`;
+	element("queryPopupContainer").classList.remove("hidden");
+	$(document).on("click", ".popupButton", function(e){
+		let state = $(e.currentTarget).data("option");
+		element("queryPopupContainer").classList.add("hidden");
+		$(document).off("click", ".popupButton");
+		callback(state);
+	});
+}
+
+//popup generico
+let popupTimeout;
+function genericPopup(data){
+	if (data.msg.banned){
+		element("genericPopupMessage").innerHTML = `<b>Fuiste Baneado</b></br></br>Fecha: ${new Date(data.msg.bandata.fecha)} </br>Por la razon: ${data.msg.bandata.razon}`;
+	} else {
+		element("genericPopupMessage").innerHTML = data.msg;
+	}
+	
+	switch(data.kind){
+		case "error":
+			element("genericPopupContent").style.background = "red";
+			break;
+		case "warning":
+			element("genericPopupContent").style.background = "#ff9800";
+			break;
+	}
+	
+	element("genericPopupContainer").classList.remove("hidden");
+	
+	if (data.autoclose){
+		clearTimeout(popupTimeout);
+		popupTimeout = setTimeout(function(){
+			element("genericPopupContainer").classList.add("hidden");
+		}, 3000);
+	}
+}
+
+element("genericPopupContainer").addEventListener("click", function(e){
+	element("genericPopupContainer").classList.add("hidden");
+});
+
 //filtrar comentarios temporales de la lista
 function clearTempComments(){
 	[].forEach.call(document.querySelectorAll(".jump"), function(e) {e.classList.remove("jump");});
@@ -143,6 +194,31 @@ function clearTempComments(){
 	}
 }
 
+function checkBoxFieldLocal(){
+	//Este es un simple control de campos local, su funcion es simplemente ahorrarse una request al pedo.
+	if (element("catSelector").value === ""){
+		genericPopup({msg: "Elige una categoria valida", kind: "error", autoclose: true});
+		return false;
+	} else if (element("btitle").value === ""){
+		genericPopup({msg: "Falta un titulo", kind: "error", autoclose: true});
+		return false;
+	} else if ((element("bimg").value === "" && element("bvid").value === "")){
+		genericPopup({msg: "Añade una imagen o video", kind: "error", autoclose: true});
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function checkComFieldLocal(){
+	if (element("cimg").value === "" && element("cvid").value === ""){
+		if (element("commentTextarea").value === ""){
+			genericPopup({msg: "Escribe algo o sube una imagen", kind: "error", autoclose: true});
+			return false;
+		}
+	}
+	return true;
+}
 
 let COMMENT_INPUT_BACKUP = {};
 function resetCommentInputData(){
@@ -157,6 +233,7 @@ function resetCommentInputData(){
 	element("commentTextarea").value = "";
 	element("cimg").value = "";
 	element("cvid").value = "";
+	element("cfile").value = "";
 	
 	if (element("pollc")) {
 		COMMENT_INPUT_BACKUP["pollc"] = element("pollc").value;
@@ -251,19 +328,27 @@ function avatarRender(com, act=false){
 	let activity = (act) ? "activityIcon" : "";
 	if (icon[0] === "ico") {
 		ibody +=`<div class="anonIcon ${activity}" style="background: ${icon[1]}">`;
-		ibody +=`<div class="anonText ${icon[5]} ${activity}" style="color: ${icon[2]}">${(icon[4]) ? icon[4] : "ANON"}</div>`;
-	
+		ibody +=`<div class="anonText ${icon[5]} ${activity}" style="color: ${icon[2]}">${(icon[4]) ? icon[4] : "ANON"}</div>`;	
 		ibody +=`</div>`;
 	} else if (icon[0] === "class") {
 		ibody +=`<div class="anonIcon ${activity} ${icon[1]}">`;
 		ibody +=`<div class="anonText ${icon[2]} ${activity}">${(icon[4]) ? icon[4] : "ANON"}</div>`;
-
 		ibody +=`</div>`;
 	} else {
 		ibody += `<img class="avatar ${activity}" src="${com.icon}" alt="">`;
 	}
 	ibody += `<div class="anonIcon ${activity} anonAccesory ${(act) ? "activityAccesory" : ""} ${icon[3]}"></div></div>`;
 	return ibody;
+}
+
+function miniboxRender(box){
+	let bbody = `<div class="miniboxContainer"><div class="miniboxImage"><img src="${box.img.preview}"></img></div><div class="miniboxDescContainer"><div class="miniboxTitle">${box.content.title}</div>`;
+	let bodypreview = box.content.body.replace(/<\/?[^>]+(>|$)/g, " ");
+	if (bodypreview.length > 350){
+		bodypreview = bodypreview.substr(0, 50) + "...";
+	}
+	bbody += `<div class="miniboxBody">${bodypreview}</div></div></div>`;
+	return bbody;
 }
 
 function commentRender(op, com){
@@ -298,7 +383,8 @@ function commentRender(op, com){
 	cbody += `<div class="metaElement cid pointer" onclick="tag('&gt;&gt;${com.cid}')">${com.cid}</div>`;	
 	cbody += `</div><div class="commentRightButtons"><div class="metaElement dateComment">${timeSince(com.date.created)}</div>
 	
-	<div class="metaElement ficon pointer actionMod"><i class="fas fa-ellipsis-v" style="padding: 0px 3px;"></i>
+	<div class="metaElement ficon pointer actionMod">
+		<img class="svgIcon" src="/assets/uicons/more-vertical.svg"></img>
 	
 	<div class="nanodropdown hidden">
 		<ul class="nanodropdown-content">
@@ -334,7 +420,7 @@ function commentRender(op, com){
 		let poll = com.content.extra.poll;
 		cbody += `<div class="pollOption commentBoxPoll">`;
 		if (poll && poll.voted) {
-			cbody +=`<div class="pollOptionText">${poll.optionText}</div>`;
+			cbody +=`<div class="pollOptionText">${poll.optionText}</div><img src="/assets/uicons/bar-chart-2.svg"></img>`;
 		}
 		cbody += `</div>`;
 	}
@@ -357,7 +443,7 @@ function commentRender(op, com){
 }
 
 function actRender(com){
-	let cbody = `<li class="comment activity" onclick="window.location.href='/tema/${com.bid}#${com.cid}'">
+	let cbody = `<li class="comment activity" data-bid="${com.bid}" data-cid="${com.cid}" onclick="window.location.href='/tema/${com.bid}#${com.cid}'">
 	<div class="commentAvatar">`;
 	
 	cbody += avatarRender(com, true);
@@ -365,12 +451,16 @@ function actRender(com){
 	cbody += `</div><div>
 	<div class="activityTitle">${com.user.jerarquia.nick} ha comentado:</div>`;
 	if (com.type.includes("image")) {
-		cbody +=`<div class="commentMedia"><img src="${com.img.preview}"></img></div>`;
+		cbody +=`<div class="commentMedia"><img src="${com.img.preview}" onerror="this.src='/assets/imageplaceholder.png'"></img></div>`;
 	} else if (com.type.includes("video")){
 		cbody +=`<div class="commentMedia actMediaExpand"><img src="${com.media.preview}"></img></div>`;
 	}					
 	
-	cbody +=`<div>${com.content.body}</div>
+	let combody = com.content.body;
+	if (combody.length > 350) {
+		combody = combody.substr(0, 350) + "...";
+	}
+	cbody +=`<div>${combody}</div>
 	</div></li>`;
 		
 	return cbody;
@@ -485,6 +575,12 @@ function commandsParser(rawtext){
 }
 
 function action_newComEffect(data){
+	//actualizar contador de comentarios
+	let countview = $(`#${data.data.bid}`).find(".postComCount");
+	let count = parseInt(countview.html());
+	count++;
+	countview.html(count);
+	
 	element(data.data.bid).firstElementChild.classList.add("signal");
 	setTimeout(function(){
 		element(data.data.bid).firstElementChild.classList.remove("signal");
@@ -625,8 +721,43 @@ function action_openPopup(data){
 	}, 10000);
 }
 
+var MEDIAELEMENTS = [];
+function action_mediaElementAppend(data){
+	MEDIAELEMENTS.push(data);
+		
+	let htmlData = `
+	<li class="mediaElement" id="media_${MEDIAELEMENTS.length-1}">
+		<img id="postImg" src="${data.thumb}"></img>
+		<div class="mediaElementContent">
+			<img src="${(data.video) ? "/assets/uicons/film.svg" : "/assets/uicons/image.svg"}"></img>
+		</div>
+		<div class="buttonsContainer">
+			<div class="itemButton mediaElementTool" data-type="add" data-video="${data.video}" data-img="${data.raw}|${data.thumb}">Añadir</div>
+			<div class="itemButton mediaElementTool" data-type="setMain" data-video="${data.video}" data-img="${data.raw}|${data.thumb}">Portada</div>
+		</div>
+	</li>`;
+	element("mediaElementList").append(parseHTML(htmlData));
+	
+	//seleccionar la portada por defecto.
+	if (MEDIAELEMENTS.length < 2){
+		if (MEDIAELEMENTS[0].video){
+			element("bvid").value = MEDIAELEMENTS[0].raw + ";" + MEDIAELEMENTS[0].thumb;
+			element("postTypeImage").classList.add("hidden");
+			element("postTypeVideo").classList.remove("hidden");
+			element("btitle").value = MEDIAELEMENTS[0].extra;
+			
+		} else {
+			element("bimg").value = MEDIAELEMENTS[0].raw + ";" + MEDIAELEMENTS[0].thumb;
+			element("postTypeVideo").classList.add("hidden");
+			element("postTypeImage").classList.remove("hidden");
+		}
+		element("media_0").classList.add("portada");
+	}
+	
+}
+
 //FUNCION: envia la configuracion al server
-function applyConfig(query){
+function applyConfig(query, callback=function(){}){
 	let formData = new FormData();
 	//ejemplo opcion:valor
 	//opcion_add:valor = añadir elemento a lista
@@ -637,7 +768,10 @@ function applyConfig(query){
 		if (result.data.redirect){
 			manageLogin(result.data);
 		} else if (!result.success){
-			alert(result.data);
+			//alert(result.data);
+			genericPopup({msg: result.data, kind: "error", autoclose: true});
+		} else {
+			callback(result);
 		}
 	});
 }
@@ -724,7 +858,9 @@ $(document).ready(function() {
 		
 		for (var i=0; i<tagnum; i++){
 			let tag = $(tags[i]).data("tag");
-			element(tag).querySelector(".metadataTagList").append(parseHTML(`<a href="#${lcom}" class="tag" data-tag="${lcom}">&gt;&gt;${lcom} ${(op) ? "(OP)" : ""}</a>`));
+			if (element(tag)){
+				element(tag).querySelector(".metadataTagList").append(parseHTML(`<a href="#${lcom}" class="tag" data-tag="${lcom}">&gt;&gt;${lcom} ${(op) ? "(OP)" : ""}</a>`));
+			}
 		}
 	}
 	
@@ -750,7 +886,7 @@ $(document).ready(function() {
 	//evento: comprobar hash al hacer click en una clase tag
 	//TODO: lo mismo de arriba.
 	$(document).on("click","a", function(e){
-		if (this.hash != "") {
+		if (this.hash != "" && !["#reglas", "#use", "#news"].includes(this.hash)) {
 			e.preventDefault();
 			hashScroll(this.hash);
 		}
@@ -810,7 +946,8 @@ $(document).ready(function() {
 					element("attachImage").setAttribute("src", "");
 					element("commentAttachPreview").classList.add("hidden");
 				} else {
-					alert(data.data);
+					//alert(data.data);
+					genericPopup({msg: data.data, kind: "error"});
 					element("attachImage").setAttribute("src", "");
 					element("commentAttachPreview").classList.add("hidden");
 				}
@@ -818,7 +955,19 @@ $(document).ready(function() {
 		});
 	}
 	
-		//evento: al mover un archivo a los comentarios
+	//evento: eliminar imagen incrustada
+	if (element("attachImageClose")){
+		element("attachImageClose").addEventListener("click", function(e){
+			element("cvid").value = "";
+			element("cimg").value = "";
+			element("commentAttachPreview").classList.add("hidden");
+			element("attachImage").setAttribute("src", "");
+			element("sendComIcon").classList.add("hidden");
+			element("commentButtonText").classList.remove("hidden");
+		});
+	}
+	
+	//evento: al mover un archivo a los comentarios
 	$("#commentForm").on("drop", function(e) {
 		action_commentDrop(e);
 	});
@@ -833,11 +982,11 @@ $(document).ready(function() {
 			getDataURL(dataFile, function(target){
 				element("attachImage").setAttribute("src", target);
 				element("commentAttachPreview").classList.remove("hidden");
-				element("sendLText").classList.add("hidden");
-				element("sendLIcon").classList.remove("hidden");
+				element("commentButtonText").classList.add("hidden");
+				element("sendComIcon").classList.remove("hidden");
 			}, function(data){
-				element("sendLText").classList.remove("hidden");
-				element("sendLIcon").classList.add("hidden");
+				element("commentButtonText").classList.remove("hidden");
+				element("sendComIcon").classList.add("hidden");
 				if (data.success){
 					element("attachImage").setAttribute("src", data.data.thumb);
 					element("cimg").value = data.data.link + ";" + data.data.thumb;
@@ -846,7 +995,8 @@ $(document).ready(function() {
 					element("commentAttachPreview").classList.add("hidden");
 					element("attachImage").setAttribute("src", "");
 				} else {
-					alert(JSON.stringify(data.data));
+					//alert(JSON.stringify(data.data));
+					genericPopup({msg: data.data, kind: "error"});
 					element("commentAttachPreview").classList.add("hidden");
 					element("attachImage").setAttribute("src", "");
 				}
@@ -885,7 +1035,8 @@ $(document).ready(function() {
 					element("attachImage").setAttribute("src", "");
 					element("commentAttachPreview").classList.add("hidden");
 				} else {
-					alert(JSON.stringify(data.data));
+					//alert(JSON.stringify(data.data));
+					genericPopup({msg: data.data, kind: "error"});
 					element("attachImage").setAttribute("src", "");
 					element("commentAttachPreview").classList.add("hidden");
 				}
@@ -900,20 +1051,29 @@ $(document).ready(function() {
 			let file = element("bfile").files.item(0);
 			
 			getDataURL(file, function(target){
-				element("postImg").setAttribute("src", target);
 				element("sendLText").classList.add("hidden");
 				element("sendLIcon").classList.remove("hidden");
 			}, function(data){
 				element("sendLText").classList.remove("hidden");
 				element("sendLIcon").classList.add("hidden");
 				if (data.success){
-					element("bimg").value = data.data.link + ";" + data.data.thumb;
-					element("postImg").setAttribute("src", data.data.thumb);
-					element("panelBTop").style.display = "block";
+					console.log(data.data);
+					//agregar archivo a la mediaList
+					action_mediaElementAppend({
+						video: false,
+						raw: data.data.link,
+						thumb: data.data.thumb,
+						extra: "Imagen"
+					});
+					
+					//element("postImg").setAttribute("src", data.data.thumb);
+					//element("panelBTop").style.display = "block";
+					
 				} else if (data.data.redirect) {
 					manageLogin(data.data);
 				} else {
-					alert(data.data);
+					//alert(data.data);
+					genericPopup({msg: data.data, kind: "error"});
 				}
 			});
 			
@@ -944,9 +1104,11 @@ $(document).ready(function() {
 					let formData = new FormData();
 					formData.append("link", link);
 					post(formData, "/api/uplink", function(target){
+						/*
 						if (isImg(link)){
 							element("postImg").setAttribute("src", link);
 						}
+						*/
 						element("sendLText").classList.add("hidden");
 						element("sendLIcon").classList.remove("hidden");
 					}, function(data){
@@ -954,22 +1116,38 @@ $(document).ready(function() {
 						element("sendLIcon").classList.add("hidden");
 						if (data.success){
 							let mediaData = data.data;
+							
 							if (mediaData.video){
-								element("bvid").value = mediaData.raw + ";" + mediaData.thumb;
-								element("btitle").value = mediaData.title;
+								//agregar archivo a la mediaList
+								action_mediaElementAppend({
+									video: true,
+									raw: mediaData.raw,
+									thumb: mediaData.thumb,
+									extra: mediaData.title
+								});
+								
+								//element("bvid").value = mediaData.raw + ";" + mediaData.thumb;
+								
 								//mostrar opcion de sincronizacion
-								element("vidsync").classList.remove("hidden");
+								//element("vidsync").classList.remove("hidden");
 							} else {
-								element("bimg").value = mediaData.raw + ";" + mediaData.thumb;
+								action_mediaElementAppend({
+									video: false,
+									raw: mediaData.raw,
+									thumb: mediaData.thumb,
+									extra: "Imagen"
+								});
+								//element("bimg").value = mediaData.raw + ";" + mediaData.thumb;
 							}
 							//mostrar imagen en el cuadro de preview
-							element("postImg").setAttribute("src", mediaData.thumb);
-							element("panelBTop").style.display = "block";
+							//element("postImg").setAttribute("src", mediaData.thumb);
+							//element("panelBTop").style.display = "block";
 							
 						} else if (data.data.redirect) {
 							manageLogin(data.data);
 						} else {
-							alert(data.data);
+							//alert(data.data);
+							genericPopup({msg: data.data, kind: "error"});
 						}
 					});
 				}
@@ -1022,7 +1200,8 @@ $(document).ready(function() {
 						} else if (data.data.redirect) {
 							manageLogin(data.data);
 						} else {
-							alert(data.data);
+							//alert(data.data);
+							genericPopup({msg: data.data, kind: "error"});
 						}
 					});
 				}
@@ -1035,29 +1214,33 @@ $(document).ready(function() {
 		element("commentSend").addEventListener("click", function(e){
 			e.preventDefault();
 			let form = $("#commentForm").serialize();
-			postForm(form, "/api/com", function(target){
-				element("sendComIcon").classList.remove("hidden");
-				element("commentButtonText").classList.add("hidden");
-				element("commentForm").classList.remove("floatBox");
-				
-				//experimental de render instantaneo
-				action_instantRender(form);
-				resetCommentInputData();
-				
-			}, function(result){
-				clearTempComments();
-				element("sendComIcon").classList.add("hidden");
-				element("commentButtonText").classList.remove("hidden");
-				if (result.success){
-					//resetCommentInputData();
-				} else if (result.data.redirect){
-					manageLogin(result.data);
-					restoreCommentInputData();
-				} else {
-					alert(result.data);
-					restoreCommentInputData();
-				}
-			});
+			
+			if (checkComFieldLocal()){
+				postForm(form, "/api/com", function(target){
+					element("sendComIcon").classList.remove("hidden");
+					element("commentButtonText").classList.add("hidden");
+					element("commentForm").classList.remove("floatBox");
+					
+					//experimental de render instantaneo
+					action_instantRender(form);
+					resetCommentInputData();
+					
+				}, function(result){
+					clearTempComments();
+					element("sendComIcon").classList.add("hidden");
+					element("commentButtonText").classList.remove("hidden");
+					if (result.success){
+						//resetCommentInputData();
+					} else if (result.data.redirect){
+						manageLogin(result.data);
+						restoreCommentInputData();
+					} else {
+						//alert(result.data);
+						genericPopup({msg: result.data, kind: "error", autoclose: true});
+						restoreCommentInputData();
+					}
+				});
+			}
 		});
 	}
 	
@@ -1069,6 +1252,13 @@ $(document).ready(function() {
 		});
 	}
 	
+	if (element("postSendB")){
+		element("postSendB").addEventListener("click", function(e){
+			e.preventDefault();
+			element("postSend").click();
+		});
+	}
+	
 	//enviar post
 	if (element("postSend")){
 		element("postSend").addEventListener("click", function(e){
@@ -1076,22 +1266,26 @@ $(document).ready(function() {
 			
 			//añadir texto del rich text editor
 			element("postTextContent").value = element("richEditor").innerHTML;
-			
 			let form = $("#postForm").serialize();
-			postForm(form, "/api/new", function(target){
-				element("sendLText").classList.add("hidden");
-				element("sendLIcon").classList.remove("hidden");
-			}, function(result){
-				element("sendLText").classList.remove("hidden");
-				element("sendLIcon").classList.add("hidden");
-				if (result.success){
-					window.location.href = result.data.url;
-				} else if (result.data.redirect){
-					manageLogin(result.data);
-				} else {
-					alert(result.data);
-				}
-			});
+			
+			if (checkBoxFieldLocal()){
+				postForm(form, "/api/new", function(target){
+					element("sendLText").classList.add("hidden");
+					element("sendLIcon").classList.remove("hidden");
+				}, function(result){
+					element("sendLText").classList.remove("hidden");
+					element("sendLIcon").classList.add("hidden");
+					if (result.success){
+						window.location.href = result.data.url;
+					} else if (result.data.redirect){
+						manageLogin(result.data);
+					} else {
+						//alert(result.data);
+						genericPopup({msg: result.data, kind: "error"});
+					}
+				});
+			}
+			
 		});
 	}
 	
@@ -1178,7 +1372,8 @@ $(document).ready(function() {
 				} else if (result.data.redirect){
 					manageLogin(result.data);
 				} else {
-					alert(result.data);
+					//alert(result.data);
+					genericPopup({msg: result.data, kind: "error"});
 				}
 			});
 			
@@ -1270,9 +1465,11 @@ $(document).ready(function() {
 			
 			if ($(e.currentTarget).hasClass("faved")){
 				$(e.currentTarget).removeClass("faved");
+				$(e.currentTarget).find("span").text("Favorito");
 				applyConfig("favs_del:" + bid);
 			} else {
 				$(e.currentTarget).addClass("faved");
+				$(e.currentTarget).find("span").text("Añadido");
 				applyConfig("favs_add:" + bid);
 			}
 		});
@@ -1284,21 +1481,28 @@ $(document).ready(function() {
 			let bid = $(e.currentTarget).data().bid;
 			if ($(e.currentTarget).hasClass("hided")){
 				$(e.currentTarget).removeClass("hided");
+				$(e.currentTarget).find("span").text("Ocultar");
 				applyConfig("boxhides_del:" + bid);
 			} else {
 				$(e.currentTarget).addClass("hided");
+				$(e.currentTarget).find("span").text("Oculto");
 				applyConfig("boxhides_add:" + bid);
 			}
 		});
 	}
 	
-	//evento: eliminar imagen incrustada
-	if (element("attachImageClose")){
-		element("attachImageClose").addEventListener("click", function(e){
-			element("cvid").value = "";
-			element("cimg").value = "";
-			element("commentAttachPreview").classList.add("hidden");
-			element("attachImage").setAttribute("src", "");
+	//evento: seguir box (o dejar de ser op)
+	if (element("postActionFollow")){
+		element("postActionFollow").addEventListener("click", function(e){
+			let bid = $(e.currentTarget).data().bid;
+			if (OP){
+				selectPopup({query: "Seguro que querés dejar de ser el OP?</br></br><b>Esta accion no se puede revertir</b>", optrue: "Confirmar", opfalse: "Cancelar", danger: true}, function(res){
+					genericPopup({msg: res, kind: "warning", autoclose: true});
+				});
+			} else {
+				//seguir o dejar de seguir el tema.
+				
+			}
 		});
 	}
 	
@@ -1344,7 +1548,8 @@ $(document).ready(function() {
 			} else if (result.data.redirect){
 				manageLogin(result.data);
 			} else {
-				alert(result.data);
+				//alert(result.data);
+				genericPopup({msg: result.data, kind: "error"});
 			}
 			$(e.currentTarget).removeClass("pollLoading");
 		});
@@ -1367,9 +1572,71 @@ $(document).ready(function() {
 	});
 	
 	//evento: imagenes incrustadas en post
-	$(document).on("click", ".mainPostBody > .attImage", function(e){
-		let data = $(e.currentTarget).children().data("img").split("|");
-		window.open(data[1]);
+	$(document).on("click", ".attImage", function(e){
+		let data = $(e.currentTarget).data("img").split("|");
+		window.open(data[0]);
+	});
+	
+	$(document).on("click", ".mediaElementTool", function(e){
+		let data = $(e.currentTarget).data();
+		let img = data.img.split("|");
+		
+		switch (data.type){
+			case "add":
+				toolMedia({video: data.video, raw: img[0], thumb: img[1]});
+				new LazyLoad({}).update();
+				element("postTypePost").classList.remove("hidden");
+			break;
+			case "setMain":
+				[].forEach.call(document.querySelectorAll(".mediaElement"), function(e) {e.classList.remove("portada");});
+				$(e.currentTarget).parent().parent().addClass("portada");
+				if (data.video){
+					element("bimg").value = "";
+					element("bvid").value = img[0] + ";" + img[1];
+					element("postTypeVideo").classList.remove("hidden");
+					element("postTypeImage").classList.add("hidden");
+				} else {
+					element("bvid").value = "";
+					element("bimg").value = img[0] + ";" + img[1];
+					element("postTypeImage").classList.remove("hidden");
+					element("postTypeVideo").classList.add("hidden");
+				}
+			break;
+		}
+		
+	});
+	
+	//floatquote de actividad para ver resumen de un box
+	let boxview = $(document).find("#floatBoxView");
+	let boxdatacache = {};
+	$(document).on("mouseenter", ".activity", function (e) {
+		boxview.removeClass("hidden");
+		boxview.addClass("popupw");
+		
+		let pos = e.currentTarget.getBoundingClientRect();
+		boxview.css({left: pos.x - 10, top: e.pageY - 100});
+		let data = $(e.currentTarget).data();
+		
+		if (!boxdatacache[data.bid]){
+			request(`/api/box/${data.bid}`, function(response){
+				boxview.html(parseHTML(miniboxRender(response.data[0])));
+				boxdatacache[data.bid] = {data: response.data[0]};
+			});
+		} else {
+			boxview.html(parseHTML(miniboxRender(boxdatacache[data.bid].data)));
+		}
+		
+	});
+	$(document).on("mouseleave", ".activity", function (e) {
+		//boxview.html = "";
+		boxview.addClass("hidden");
+	});
+	
+	
+	//opcion para mostrar el id
+	$(document).on("click", ".uidview", function (e) {
+		let data = $(e.currentTarget).data();
+		$(".uidview span").html(data.uid);
 	});
 	
 });

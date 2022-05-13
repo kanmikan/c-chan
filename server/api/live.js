@@ -43,9 +43,6 @@ function liveSession(io){
 			socket.leaveAll();
 			socket.join(socket.handshake.session.uid);
 		});
-		socket.on('test', function(data){
-			//console.log(LIVEDATA);
-		});
 		socket.on('sync', function(data){
 			if (!LIVEDATA[data.bid]) {
 				LIVEDATA[data.bid] = {};

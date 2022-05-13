@@ -1,0 +1,68 @@
+<script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+
+<script>
+var player;
+
+function onYouTubeIframeAPIReady() {
+	$(function () {
+		//REPRODUCTOR DE YOUTUBE CUSTOMIZADO
+		let container = element("mainSyncContainer");
+		
+		//incrustar elemento
+		let Yplayer = `<iframe id="mainPlayer" width="100%" height="100%" src="<%= BOX.media.raw %>?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+		let controls = `<div class="playerControls hidden" id="mainPlayerControls">
+			<img class="control play" data-kind="play" data-state="0" src="/assets/uicons/play.svg" />
+			<img class="control sound" data-kind="sound" data-state="0" style="margin-left: auto" src="/assets/uicons/volume-x.svg" />
+		<div>`;
+			
+		$(container).append(Yplayer);
+		$(container).append(controls);
+
+		player = new YT.Player('mainPlayer', {
+			playerVars: { 
+				'autoplay': 0,
+				'controls': 0, 
+				'rel' : 0,
+				'fs' : 0,
+			},
+			events: {
+				'onReady': function(e){
+					console.log("[Youtube] listo.");
+				},
+				'onStateChange': function(e){
+					console.log("[Youtube] estado cambiado.");
+				}
+			}
+		});
+		
+		container.addEventListener("mouseenter", function(e){
+			element("mainPlayerControls").classList.remove("hidden");
+		});
+		
+		container.addEventListener("mouseleave", function(e){
+			element("mainPlayerControls").classList.add("hidden");
+		});
+		
+		$(document).on("click", ".control", function (e) {
+			let target = $(e.currentTarget);
+			let data = target.data();
+			
+			switch(data.kind){
+				case "play":
+					let state = (data.state) ? player.pause() : player.play();
+					target.data("state", (data.state) ? 0 : 1);
+					target.attr("src", (data.state) ? "/assets/uicons/pause.svg" : "/assets/uicons/play.svg");
+					break;
+				case "sound":
+					player.setMute((data.state) ? false : true);
+					target.data("state", (data.state) ? 0 : 1);
+					target.attr("src", (data.state) ? "/assets/uicons/volume-x.svg" : "/assets/uicons/volume-2.svg");
+					break;
+			}
+			
+		});
+		
+	});
+}
+
+</script>

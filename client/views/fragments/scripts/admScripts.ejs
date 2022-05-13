@@ -37,6 +37,23 @@
 				}
 			});
 		});
+		//whitewall
+		element("action-5").addEventListener("click", function(e){
+			let target = $(e.currentTarget);
+			admActionSend("adm_whitewall", target.attr("data-state"), function(){}, function(result){
+				if (result.success){
+					if (result.data.whitewall){
+						target.attr("data-state", "1");
+						$("#action-5").css({background: "red"});
+						$("#action-5").text("Desactivar WhiteWall");
+					} else {
+						target.attr("data-state", "0");
+						$("#action-5").css({background: ""});
+						$("#action-5").text("Activar WhiteWall");
+					}
+				}
+			});
+		});
 		
 		//login
 		element("action-2").addEventListener("click", function(e){

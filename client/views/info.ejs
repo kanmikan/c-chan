@@ -1,18 +1,108 @@
 <!doctype html>
 <html lang="en">
 	<head>
-	<%- include('./common/head', it); %>
+	<%- include('./fragments/head', it); %>
+	<style>
+		body {
+			display: flex;
+			height: 100vh;
+			padding: 0px;
+			background: var(--mainBackground);
+			color: var(--textColor);
+		}
+		
+		ul {
+			padding: 5px;
+			margin: inherit;
+		}
+		
+		h4 {
+			margin: 5px 0px;
+		}
+		
+		li {
+			list-style: inherit;
+		}
+
+		h3 img {
+			width: 15px;
+			height: 15px;
+		}
+		
+		.infomenu {
+			position: fixed;
+			height: 100%;
+			width: 14rem;
+			background: var(--sideBarBackground);
+			padding: 20px;
+		}
+		
+		.infoContainer {
+			width: auto;
+			padding: 20px;
+			margin-left: 14.5rem;
+		}
+		
+		.menulist {
+			list-style: none;
+			padding: 0;
+		}
+		
+		.menuElement {
+			padding: 10px;
+			display: flex;
+			align-content: center;
+			align-items: center;
+			justify-content: flex-start;
+		}
+		
+		.menuElement span {
+			padding-left: 10px;
+		}
+		
+		.menuElement:hover {
+			background: var(--colorAccent);
+			cursor: pointer;
+		}
+		
+		.contentElement {
+			min-height: 100vh;
+			padding: 50px 0px;
+			padding-bottom: 10px;
+			margin-bottom: 10px;
+			border-bottom: 1px solid var(--colorAccent);
+		}
+		
+		.buttonElement {
+			display: none;
+			text-align: center;
+		}
+		
+		@media only screen and (max-width: 600px) {
+			.infoContainer {
+				margin-left: 0px;
+			}
+			.info {
+				padding: 0px;
+			}
+			.infomenu {
+				display: none;
+			}
+			.buttonElement {
+				display: block;
+			}
+		}
+	</style>
 	</head>
 	<body class="loginContainer">
 	<script src="/node/jquery/dist/jquery.min.js" type="text/javascript"></script>
 	
 	<div class="infomenu">
-		<div>MENU</div>
+		<div style="padding: 5px;">MENU</div>
 		<ul class="menulist">
-			<li class="menuElement">Bienvenido a Cchan</li>
-			<li class="menuElement">Caracteristicas</li>
-			<li class="menuElement">Reglas</li>
-			<li class="menuElement">Sobre el proyecto</li>
+			<li class="menuElement" data-id="reglas"><img src="/assets/uicons/alert-circle.svg"></img><span>Reglas</span></li>
+			<li class="menuElement" data-id="use"><img src="/assets/uicons/user.svg"></img><span>Uso de Mikanchan</span></li>
+			<li class="menuElement" data-id="news"><img src="/assets/uicons/file-text.svg"></img><span>Noticias/Novedades</span></li>
 			<li class="menuElement" onclick="location.href='/'">Volver a la home</li>
 		</ul>
 	</div>
@@ -20,19 +110,16 @@
 	<div class="infoContainer">
 		<div class="infocontent">
 			<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
-			<div class="contentElement" id="welcome">
-				<h3>Bienvenido a Cchan!</h3>
-				Cchan es un imageboard anonimo y ligero basado en el diseño de voxed.net
+		
+			<div class="contentElement" id="reglas">
+				<h3><img src="/assets/logo.png"> Reglas</h3>
+				<h4>-acá irian las reglas-</h4>
+			
+				
 			</div>
-			<div class="contentElement" id="caracteristicas">
-				<h3>Caracteristicas de Cchan</h3>
-				<ul>
-				<li>tiene 2 interfaces, la interfaz basada en voxed es la mas simplificada de todas y la que viene por defecto. Y la interfaz con una barra lateral con funciones extra. Son configurables en el servidor usando variables de entorno.</li>
-				<li>tiene un sistema de busqueda mas efectivo usando el contenido del tema ademas del titulo y subtitulo</li>
-				<li>se puede añadir formato basico al texto.</li>
-				<li>la pagina fue diseñada para que sea liviana en la carga, para que las conexiones inestables o lentas puedan navegar sin mayores problemas.</li>
-				<li>cchan tiene una caché integrada, lo que hace que se ahorre una gran cantidad de conexiones a la base de datos. Esto puede ser desactivado usando variables de entorno, en situaciones donde sea inútil, por ejemplo, si la base de datos está alojada en el mismo servidor.</li>
-				</ul>
+		
+			<div class="contentElement" id="use">
+				<h3><img src="/assets/logo.png"> Como usar Mikanchan</h3>
 				<h4>Tags disponibles en los comentarios y/o temas</h4>
 				<ul>
 				<li>&gt es el greentext de toda la vida</li>
@@ -41,89 +128,25 @@
 				<li>&gthttps:// se usa para añadir un link externo que abre una nueva pestaña.</li>
 				<li>$RGB -texto- $ colorea el -texto- usando el valor RGB en hexadecimal, (0xRGB ejemplo, F00:rojo 0F0:verde 00F:azul)</li>
 				</ul>
+				<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
 			</div>
-			<div class="contentElement" id="reglas">
-				<h3>Reglas de Cchan</h3>
-				<span>Cchan pretende ser completamente anónima, el generador de sesiones <b>NO</b> guarda la direccion <b>IP</b> ni el <b>User-Agent</b> de los usuarios, pero si utiliza las <b>cookies</b> del navegador para identificar la sesion del usuario. <br>De esta manera, la infraestructura de moderacion y baneos está limitada y la unica forma de proteccion efectiva que tiene el servidor, frente a los accesos recurrentes desconocidos, es usando una lista blanca de usuarios o whitelist que se activará esporádicamente de acuerdo a la situación que lo amerite, bloqueando parcialmente el uso a los usuarios anonimos nuevos. Así queda a responsabilidad del usuario guardar y proteger su ID de acceso.</span>
-				</br>
-				</br>
-				<span>Queda prohibido cualquier accion o incitacion a:</span>
-				<ul>
-				<li>Todo lo que sea ilegal por sentido común, nada de GORE, nada de CP, etc.</li>
-				<li>Flood o hilos repetitivos y molestos</li>
-				<li>Doxxeos, raids o violacion del anonimato de otros usuarios dentro de la página</li>
-				</ul>
-				<div>Al romper estas reglas, y dependiendo de la gravedad, el usuario puede ser baneado parcial o totalmente o advertido a criterio de la administracion.</div>
-				</br>
-				<b>En un futuro, los usuarios advertidos y baneados podrían ser indexados en una blacklist para la proteccion del sitio.</b>
-				</br>
+			
+			<div class="contentElement" id="news">
+				<h3><img src="/assets/logo.png"> Noticias/Novedades</h3>
+				<h4>-Acá iran las novedades-</h4>
+				<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
 			</div>
-			<div class="buttonElement" onclick="location.href='/'">Volver a la home</div>
 			</br></br>
 		</div>
 	</div>
-	
+	<script>
+	$(document).ready(function() {
+		$(document).on("click", ".menuElement", function (e) {
+			let data = $(e.currentTarget).data();
+			let offset = $(`#${data.id}`).offset().top;
+			window.scrollTo({top: offset});
+		});
+	});
+	</script>
 	</body>
-	<%- include('./common/footer', it); %>
 </html>
-<style>
-	body {
-		display: flex;
-		height: 100vh;
-		padding: 0px;
-	}
-
-	.infomenu {
-		position: fixed;
-		height: 100%;
-		width: 14rem;
-		background: var(--base-background1);
-		padding: 20px;
-	}
-	
-	.infoContainer {
-		width: auto;
-		padding: 20px;
-		margin-left: 14.5rem;
-	}
-	
-	.menulist {
-		list-style: none;
-		padding: 0;
-	}
-	
-	.menuElement {
-		padding: 10px;
-	}
-	
-	.menuElement:hover {
-		background: var(--modal-border);
-		cursor: pointer;
-	}
-	
-	.contentElement {
-		padding-bottom: 10px;
-		margin-bottom: 10px;
-		border-bottom: 1px solid var(--modal-border);
-	}
-	
-	.buttonElement {
-		display: none;
-		text-align: center;
-	}
-	
-	@media only screen and (max-width: 600px) {
-		.infoContainer {
-			margin-left: 0px;
-		}
-		.info {
-			padding: 0px;
-		}
-		.infomenu {
-			display: none;
-		}
-		.buttonElement {
-			display: block;
-		}
-	}
-</style>
